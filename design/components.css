@@ -234,3 +234,26 @@ ol.steps { margin: 0; padding: 0; }
   .btn, .icon-btn, .segmented button, .tabbar a, .steps li::before { transition: none; }
   .btn:active, .icon-btn:active { transform: none; }
 }
+
+/* hidden always wins, so states and messages can be toggled with the hidden attribute */
+[hidden] { display: none !important; }
+
+/* ---------- bottom sheet (modal, inside .screen) — see RECIPES.md ---------- */
+.sheet-scrim { position: fixed; top: 0; bottom: 0; left: 50%; width: min(393px, 100%); transform: translateX(-50%); z-index: 20; background: var(--backdrop); opacity: 0; pointer-events: none; transition: opacity var(--t-base) var(--ease-glide); }
+.sheet-scrim.is-open { opacity: 1; pointer-events: auto; }
+.bottom-sheet {
+  position: fixed; left: 50%; bottom: 0; width: min(393px, 100%); z-index: 21; max-height: 85vh; overflow: auto;
+  display: flex; flex-direction: column; gap: var(--s-4);
+  padding: 10px var(--gutter) 34px; border-radius: var(--r-sheet) var(--r-sheet) 0 0; background: var(--white);
+  transform: translate(-50%, 100%); visibility: hidden;
+  transition: transform var(--t-base) var(--ease-glide), visibility 0s linear var(--t-base);
+}
+.bottom-sheet.is-open { transform: translate(-50%, 0); visibility: visible; transition: transform var(--t-base) var(--ease-glide), visibility 0s; }
+.bottom-sheet .grabber { width: 36px; height: 5px; border-radius: 3px; background: var(--line); align-self: center; }
+.bottom-sheet .sheet-head { display: flex; align-items: center; justify-content: space-between; gap: var(--s-3); }
+
+/* ---------- disclosure (details/summary) ---------- */
+details.card > summary { list-style: none; display: flex; align-items: center; justify-content: space-between; gap: var(--s-3); min-height: var(--touch); cursor: pointer; font-weight: 600; }
+details.card > summary::-webkit-details-marker { display: none; }
+details.card > summary .icon { transition: transform var(--t-quick) var(--ease-glide); }
+details.card[open] > summary .icon { transform: rotate(90deg); }

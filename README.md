@@ -28,7 +28,7 @@ Your branch `work/<your-name>` already exists. Work only there. Nobody can push 
 
 ## 3. Your pages
 
-Your folders are already made: `work/<your-name>/<page-id>/`. The page list and owners are in `pages.json`; the map of the app is `team/sitemap.html`. What each page must do is in `specs/<page-id>.md`.
+Your folders are already made: `work/<your-name>/<page-id>/`. The page list and owners are in `pages.json`; the map of the app is `team/sitemap.html`. What each page must do is in `specs/<page-id>.md`. Looking for ideas: `design/INSPIRATION.md`.
 
 ## 4. Work with your AI agent
 

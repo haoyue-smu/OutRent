@@ -23,6 +23,7 @@
   --fig-selected: #B9CFC3;
 
   /* Materials built from the scheme */
+  --backdrop: rgba(30, 38, 34, 0.32);
   --glass-bg: rgba(255, 255, 255, 0.64);
   --glass-border: rgba(255, 255, 255, 0.7);
   --glass-blur: blur(24px) saturate(160%);

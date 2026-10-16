@@ -8,8 +8,9 @@ The person you are helping may be in Year 1 and new to Git and code. Explain eac
 
 1. `design/DESIGN.md`: the look, the rules and what may change (section 10 is the most important).
 2. `design/components.html` (open with `npm run dev`) and `design/components.css`: every component that exists. Reuse these before inventing anything.
-3. `specs/<page-id>.md`: what this page must do, its content, its states and where its links go.
-4. `work/<name>/<page-id>/DECISIONS.md`: the decisions so far.
+3. `design/RECIPES.md`: copy-ready patterns (bottom sheet, show more, segmented switch, agree-before-paying, ruler input, showing states). Use these before writing your own.
+4. `specs/<page-id>.md`: what this page must do, its content, its states and where its links go.
+5. `work/<name>/<page-id>/DECISIONS.md`: the decisions so far.
 
 If a spec is missing or unclear, say so and write the question under "Assumptions and open questions" in DECISIONS.md. Do not guess silently.
 

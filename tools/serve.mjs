@@ -25,7 +25,7 @@ function home() {
   return `<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>OutRent preview</title>
 <style>body{font:16px/1.5 system-ui,sans-serif;max-width:720px;margin:40px auto;padding:0 16px;color:#1E2622;background:#F2F4F1}a{color:#3E6A5A}li{margin:6px 0}small{color:#5C6863}</style>
 <h1>OutRent preview</h1>
-<p><a href="/design/components.html"><b>Component library</b></a>: every colour, type style and component you may use.</p>
+<p><a href="/design/components.html"><b>Component library</b></a>: every colour, type style and component you may use. · <a href="/design/recipes.html"><b>Recipes</b></a>: live versions of RECIPES.md.</p>
 <h2>Work in progress</h2><ul>${rows.join("") || "<li>Nothing yet. Run <code>npm run new -- &lt;name&gt; &lt;page-id&gt;</code>.</li>"}</ul>`;
 }
 
