@@ -1,0 +1,206 @@
+<title>OutRent Iter2 Sitemap</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;600;700&display=swap">
+<style>
+/* Layout: a working sitemap. Tab bar band on top, two lanes (Renting, Storing) of page cards joined by drawn connectors,
+   an out-of-scope band, then a page table. Light-only on purpose: it uses the OutRent colour scheme, which ships light. */
+:root{
+  --sage:#3E6A5A; --sage-dark:#2F5246; --sage-tint:#E3ECE7; --ink:#1E2622; --muted:#5C6863;
+  --mist:#F2F4F1; --line:#DDE2DE; --white:#FFFFFF;
+  --font:'Onest',system-ui,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--mist);color:var(--ink);font-family:var(--font);-webkit-font-smoothing:antialiased}
+.page{max-width:1240px;margin:0 auto;padding-block:32px 72px;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));display:flex;flex-direction:column;gap:28px}
+header{display:flex;flex-direction:column;gap:8px;max-width:760px}
+.eyebrow{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+h1{margin:0;font-size:32px;line-height:36px;font-weight:700;letter-spacing:-.03em;text-wrap:balance}
+header p{margin:0;font-size:16px;line-height:23px;color:var(--muted)}
+.facts{display:flex;flex-wrap:wrap;gap:8px}
+.fact{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;border-radius:16px;background:var(--white);border:1px solid var(--line);font-size:13px}
+.fact b{font-weight:700}
+.legend{display:flex;flex-wrap:wrap;gap:16px;font-size:13px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:8px}
+.sw{width:28px;height:0;border-top:2px solid var(--sage)}
+.sw.alt{border-top:1.5px dashed var(--muted)}
+.box{width:18px;height:14px;border-radius:4px;border:1px solid var(--line);background:var(--white)}
+.box.lead{background:var(--sage-tint);border-color:var(--sage-tint)}
+.box.out{border:1.5px dashed var(--line);background:transparent}
+
+.map-wrap{overflow-x:auto;background:var(--white);border:1px solid var(--line);border-radius:22px}
+
+.wires{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible;z-index:2}
+#paths path{fill:none}
+.wires .tree{stroke:var(--muted);stroke-width:1.4}
+.wires .tree.out-line{stroke:var(--line);stroke-dasharray:4 4}
+.wires .jump{stroke:var(--sage);stroke-width:1.6;stroke-dasharray:6 5}
+.wires .alt{stroke:var(--muted);stroke-width:1.3;stroke-dasharray:5 5}
+.wires text{font-family:var(--font);font-size:11px;font-weight:600;fill:var(--sage-dark);paint-order:stroke;stroke:var(--white);stroke-width:4px}
+.band{display:flex;align-items:center;gap:12px}
+.band-label{flex:none;width:96px;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.tabs{display:flex;gap:8px;padding:6px;border-radius:24px;background:var(--mist)}
+.tab{display:inline-flex;align-items:center;height:34px;padding:0 14px;border-radius:17px;font-size:13px;font-weight:600;background:var(--white);border:1px solid var(--line)}
+.tab.out{background:transparent;border-style:dashed;color:var(--muted);font-weight:400}
+.lane{display:flex;gap:12px}
+.lane .band-label{padding-top:10px}
+.lane-body{flex:1;min-width:0;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:40px 44px}
+.node{position:relative;z-index:1;display:flex;flex-direction:column;gap:6px;padding:10px 12px 12px;border-radius:14px;background:var(--white);border:1px solid var(--line);min-height:96px}
+.node.lead{background:var(--sage-tint);border-color:var(--sage-tint)}
+.node .top{display:flex;justify-content:space-between;align-items:center;gap:6px}
+.node .num{font-size:12px;font-weight:700;color:var(--sage-dark);font-variant-numeric:tabular-nums}
+.node .who{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.node .who.ab{color:var(--sage-dark)}
+.node .name{font-size:15px;line-height:19px;font-weight:700}
+.node .also{font-size:11px;line-height:14px;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:auto}
+.chip{display:inline-flex;align-items:center;height:20px;padding:0 7px;border-radius:10px;font-size:11px;font-weight:600;background:var(--mist);color:var(--sage-dark);white-space:nowrap}
+.chip.he{background:var(--white);border:1px solid var(--line);color:var(--muted);font-weight:400}
+.node.lead .chip{background:var(--white)}
+.out-row{display:flex;flex-wrap:wrap;gap:10px}
+.out{display:inline-flex;flex-direction:column;gap:2px;padding:8px 12px;border-radius:12px;border:1.5px dashed var(--line);font-size:13px;color:var(--muted)}
+.out small{font-size:11px}
+
+.section{display:flex;flex-direction:column;gap:12px}
+h2{margin:0;font-size:20px;line-height:25px;font-weight:600;letter-spacing:-.01em}
+.cov{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr));gap:12px}
+.cov div{background:var(--white);border:1px solid var(--line);border-radius:18px;padding:14px 16px;display:flex;flex-direction:column;gap:6px;font-size:14px;line-height:20px}
+.cov b{font-size:15px}
+.cov span{color:var(--muted)}
+.table-wrap{overflow-x:auto;background:var(--white);border:1px solid var(--line);border-radius:22px}
+table{width:100%;min-width:900px;border-collapse:collapse;font-size:14px;line-height:20px}
+th{text-align:left;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:12px 14px;border-bottom:1px solid var(--line)}
+td{padding:12px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+td.n{font-weight:700;color:var(--sage-dark);font-variant-numeric:tabular-nums;width:48px}
+td.p{font-weight:600;width:170px}
+td.who{width:110px;color:var(--muted)}
+tr.lead td.who{color:var(--sage-dark);font-weight:600}
+.note{font-size:13px;line-height:19px;color:var(--muted);margin:0}
+
+.map{position:relative;min-width:1080px;padding:28px 24px 32px;display:flex;flex-direction:column;gap:56px}
+.root-row{display:flex;justify-content:center}
+.node.root{width:220px}
+.cols{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:36px}
+.col{display:flex;flex-direction:column;align-items:center;gap:28px;min-width:0}
+.sec{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 18px;border-radius:999px;background:var(--ink);color:var(--white);font-size:14px}
+.sec small{font-size:11px;color:var(--line)}
+.sec.grey{background:transparent;color:var(--muted);border:1.5px dashed var(--line)}
+.sec.grey small{color:var(--muted)}
+.stack{display:flex;flex-direction:column;align-items:center;gap:22px;width:100%}
+.stack .node,.stack .out{width:100%;max-width:230px}
+.stack .node{min-height:0}
+.out{position:relative;z-index:1;display:flex;flex-direction:column;gap:2px;padding:8px 12px;border-radius:12px;border:1.5px dashed var(--line);background:var(--white);font-size:13px;color:var(--muted)}
+
+/* simple sitemap */
+.map{position:relative;min-width:1180px;padding:32px 28px 36px;display:flex;flex-direction:column;gap:48px}
+.root-row{display:flex;justify-content:center}
+.cols{display:grid;grid-template-columns:1fr 1fr 2fr 1fr 1fr;gap:32px}
+.sub{display:grid;grid-template-columns:1fr 1fr;gap:20px;width:100%;margin-top:6px}
+#paths path.jump{stroke:var(--sage);stroke-dasharray:5 5;stroke-width:1.4}
+#paths text{font-family:var(--font);font-size:11px;font-weight:600;fill:var(--sage-dark);paint-order:stroke;stroke:var(--white);stroke-width:4px}
+.col{display:flex;flex-direction:column;align-items:center;gap:22px}
+.cap{position:relative;z-index:1;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);height:14px;margin-bottom:-14px;padding:0 6px;background:var(--white)}
+.bx{position:relative;z-index:1;display:flex;align-items:center;gap:10px;width:100%;max-width:200px;min-height:48px;padding:10px 14px;border-radius:10px;background:var(--white);border:1.5px solid var(--ink);font-size:14px;line-height:18px;font-weight:600}
+.bx .n{font-size:12px;font-weight:700;color:var(--sage-dark);font-variant-numeric:tabular-nums}
+.bx.root{max-width:200px;background:var(--sage);border-color:var(--sage);color:var(--white)}
+.bx.root .n{color:var(--sage-tint)}
+.bx.off{border:1.5px dashed var(--line);color:var(--muted);font-weight:400}
+.wires{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible;z-index:0}
+#paths path{fill:none;stroke:var(--ink);stroke-width:1.5}
+#paths path.off{stroke:var(--line);stroke-dasharray:4 4}
+@media (max-width:640px){h1{font-size:26px;line-height:30px}}
+</style>
+
+<main class="page">
+  <header>
+    <span class="eyebrow">Iter2 · draft for discussion · 16 Oct</span>
+    <h1>OutRent sitemap</h1>
+    <p>Pages are numbered in the order Daniel meets them in the easy scenario: renting a fitted hardtail for his first Chestnut ride, then sending his unused old bike to the Hub.</p>
+    <div class="facts">
+      <span class="fact"><b>18</b> pages</span>
+      <span class="fact"><b>9 / 9</b> ideas</span>
+      <span class="fact"><b>3 / 3</b> breakdowns</span>
+      <span class="fact">HE top 3: <b>#6 · #1 · #5</b></span>
+      <span class="fact">Lead <b>6</b> · Amanda, Shanise <b>3</b> · Kai Jun, Minh <b>2</b> · Harwin, Joshua <b>1</b></span>
+    </div>
+  </header>
+
+  <div class="map-wrap">
+    <div class="map" id="map">
+      <svg class="wires" aria-hidden="true"><defs><marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10z" fill="#3E6A5A"/></marker></defs><g id="paths"></g></svg>
+      <div class="root-row"><div class="bx root" id="p1"><span class="n">01</span><span class="t">Home</span></div></div>
+      <div class="cols">
+        <div class="col"><span class="cap">Home card</span><div class="bx" id="p2"><span class="n">02</span><span class="t">Coach's Kit</span></div></div>
+        <div class="col"><span class="cap">Home search</span><div class="bx" id="p4"><span class="n">04</span><span class="t">Search Results</span></div><div class="bx" id="p5"><span class="n">05</span><span class="t">Listing Detail</span></div><div class="bx" id="p6"><span class="n">06</span><span class="t">Delivery &amp; Return</span></div><div class="bx" id="p7"><span class="n">07</span><span class="t">Fees &amp; Liability</span></div><div class="bx" id="p8"><span class="n">08</span><span class="t">Booking Confirmation</span></div></div>
+        <div class="col wide"><span class="cap">Trips tab</span><div class="bx" id="p9"><span class="n">09</span><span class="t">Trips</span></div>
+          <div class="sub">
+            <div class="col"><div class="bx" id="p10"><span class="n">10</span><span class="t">Delivery Tracking</span></div><div class="bx" id="p11"><span class="n">11</span><span class="t">Handover Check</span></div><div class="bx" id="p12"><span class="n">12</span><span class="t">Rental Summary</span></div></div>
+            <div class="col"><div class="bx" id="p13"><span class="n">13</span><span class="t">Weekly Ride</span></div></div>
+          </div>
+        </div>
+        <div class="col"><span class="cap">My gear tab</span><div class="bx" id="p14"><span class="n">14</span><span class="t">My Equipment</span></div><div class="bx" id="p15"><span class="n">15</span><span class="t">Equipment Detail</span></div><div class="bx" id="p16"><span class="n">16</span><span class="t">Storage Options</span></div><div class="bx" id="p17"><span class="n">17</span><span class="t">Hub Pickup</span></div><div class="bx" id="p18"><span class="n">18</span><span class="t">Storage Map</span></div></div>
+        <div class="col"><span class="cap">Profile tab</span><div class="bx off" id="px"><span class="t">Profile (other settings not built)</span></div><div class="bx" id="p3"><span class="n">03</span><span class="t">Fit Profile</span></div></div>
+      </div>
+    </div>
+  </div>
+  <p class="note">Lines show where each page sits in the app. Grey boxes are shown in the app but not built. Numbers follow the order Daniel meets each page.</p>
+  <p class="note"><b style="color:var(--ink)">Shortcuts in the scenario:</b> 02 Coach's Kit → 03 Fit Profile (see your sizes) → back to 02 → 04 Search Results (find a bike) · 04 and 05 → 03 (edit fit) · 08 → 10 (track delivery) · 12 Rental Summary → 13 (repeat every Saturday) · idle-item alert → 15 · 01 Home storage card → 16.</p>
+
+  <section class="section" aria-labelledby="cov-h">
+    <h2 id="cov-h">Coverage</h2>
+    <div class="cov">
+      <div><b>B1 · Transport</b><span>06–12 rental delivery and return, 13 weekly ride, 17 Hub pickup. Ideas 1, 2, 3.</span></div>
+      <div><b>B2 · Fit</b><span>02 coach's advice, 03 fit profile, 04–05 fitted bikes from a specialist shop, 09 set-up photo. Ideas 4, 5, 6.</span></div>
+      <div><b>B3 · Storage</b><span>14–15 gear log and idle alert, 16 Hub, 18 public rack, 15 stored bike rented out. Ideas 7, 8, 9.</span></div>
+      <div><b>HE top 3 for Changes</b><span>#6 storage entry on Home (01, 16) · #1 all-in totals (04, 05, 07) · #5 return shown before confirming (06, 17).</span></div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="tbl-h">
+    <h2 id="tbl-h">Pages</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>#</th><th>Page</th><th>What Daniel does here</th><th>Ideas</th><th>Iter1 HE fixed</th><th>Designer</th></tr></thead>
+        <tbody><tr class="lead"><td class="n">01</td><td class="p">Home</td><td>Sees Coach Aisyah's kit for Saturday, a search bar, and a light storage card.</td><td>4</td><td>#6</td><td class="who">Lead</td></tr><tr class="lead"><td class="n">02</td><td class="p">Coach's Kit</td><td>Coach Aisyah's advice for a first Chestnut ride: a hardtail mountain bike to rent, and which of his own gear is fine. Asks for his fit to show his sizes.</td><td>4</td><td></td><td class="who">Lead</td></tr><tr class="lead"><td class="n">03</td><td class="p">Fit Profile</td><td>Saved under Profile and reused everywhere. Height and inside leg give saddle 72 cm, frame M. Also opened from Search Results and Listing.</td><td>6</td><td></td><td class="who">Lead</td></tr><tr><td class="n">04</td><td class="p">Search Results</td><td>Opened from the kit, already filtered: hardtail, frame M, free on Sat 25 Oct, delivers to Chestnut. Shops and private owners, each with an all-in total.</td><td>5</td><td>#1, #8</td><td class="who">Amanda</td></tr><tr class="lead"><td class="n">05</td><td class="p">Listing Detail</td><td>Checks dated photos of this bike, the set-up made for him, who supplies it, and the all-in price.</td><td>5, 6</td><td>#1, #11, #17</td><td class="who">Lead</td></tr><tr><td class="n">06</td><td class="p">Delivery &amp; Return</td><td>Picks drop-off at the Chestnut trailhead, 7:40, assembled. Sees the after-ride collection before booking.</td><td>1</td><td>#5, #9</td><td class="who">Amanda</td></tr><tr><td class="n">07</td><td class="p">Fees &amp; Liability</td><td>Reviews every charge, the S$150 deposit and damage terms. Ticks the agreement himself before paying.</td><td></td><td>#1, #3, #9</td><td class="who">Amanda</td></tr><tr><td class="n">08</td><td class="p">Booking Confirmation</td><td>Sees the amount paid first and what happens next.</td><td></td><td>#18</td><td class="who">Harwin</td></tr><tr><td class="n">09</td><td class="p">Trips</td><td>Trips tab. Today's trip, the weekly ride and past trips.</td><td></td><td>#4</td><td class="who">Kai Jun</td></tr><tr class="lead"><td class="n">10</td><td class="p">Delivery Tracking</td><td>Sees the bike set to his fit, then on its way. A delay state says what to do next.</td><td>1, 6</td><td>#7</td><td class="who">Lead</td></tr><tr><td class="n">11</td><td class="p">Handover Check</td><td>Compares dated owner photos with his own, marks existing damage, can report a problem and reopen the record.</td><td></td><td>#11, #12, #13, #16</td><td class="who">Minh</td></tr><tr><td class="n">12</td><td class="p">Rental Summary</td><td>Bike collected at the trailhead, condition on return, deposit refunded. Offers "Repeat every Saturday".</td><td>1</td><td>#13</td><td class="who">Minh</td></tr><tr><td class="n">13</td><td class="p">Weekly Ride</td><td>Day, drop-off time, meeting point, after-ride collection, cost per ride. Skip, pause or stop any week.</td><td>3</td><td>#4</td><td class="who">Kai Jun</td></tr><tr><td class="n">14</td><td class="p">My Equipment</td><td>My gear tab. What he owns, with an add-item sheet. The road helmet here is what the coach's list checks.</td><td>9</td><td>#22</td><td class="who">Shanise</td></tr><tr><td class="n">15</td><td class="p">Equipment Detail</td><td>One page, two states. At home: last used 5 months ago, "Store it". At the Hub: storage status and rent-out after confirming.</td><td>8, 9</td><td>#10</td><td class="who">Shanise</td></tr><tr><td class="n">16</td><td class="p">Storage Options</td><td>What the Hub handles, what it costs, and that the bike can earn rent while stored.</td><td>8</td><td>#6</td><td class="who">Shanise</td></tr><tr><td class="n">17</td><td class="p">Hub Pickup</td><td>Home collection (5–7 pm only) or a drop at a nearby rack, picked up on a pooled courier run. Return shown before confirming.</td><td>2, 8</td><td>#5</td><td class="who">Joshua</td></tr><tr class="lead"><td class="n">18</td><td class="p">Storage Map</td><td>Rack A is full, Rack C has space. Shows when counts were updated and whether choosing reserves a spot.</td><td>7</td><td>#15</td><td class="who">Lead</td></tr></tbody>
+      </table>
+    </div>
+    <p class="note">States (loading, delay, error, sheets) belong to their page and are not counted as pages. The A/B experiment page is chosen after the prototype draft.</p>
+  </section>
+</main>
+
+<script>
+(function () {
+  const TREE = [["p1","p2"],["p1","p4"],["p1","p9"],["p1","p14"],["p1","px"],
+    ["p4","p5"],["p5","p6"],["p6","p7"],["p7","p8"],["p9","p10"],["p9","p13"],["p10","p11"],["p11","p12"],
+    ["p14","p15"],["p15","p16"],["p16","p17"],["p17","p18"],["px","p3"]];
+  const JUMPS = [];
+  const map = document.getElementById("map"), g = document.getElementById("paths");
+  function box(id) { const r = document.getElementById(id).getBoundingClientRect(), m = map.getBoundingClientRect(); return { l: r.left - m.left, t: r.top - m.top, r: r.right - m.left, b: r.bottom - m.top, cx: (r.left + r.right) / 2 - m.left, cy: (r.top + r.bottom) / 2 - m.top }; }
+  function draw() {
+    let s = "";
+    const R = box("p1"), lvl1 = ["p2","p4","p9","p14","px"].map(box), busY = (R.b + Math.min(...lvl1.map((f) => f.t))) / 2 + 6;
+    s += `<path d="M${R.cx} ${R.b} L${R.cx} ${busY}"/><path d="M${lvl1[0].cx} ${busY} L${lvl1[4].cx} ${busY}"/>`;
+    for (const [a, b] of TREE) {
+      const A = box(a), B = box(b);
+      const off = (b === "px" || b === "py") ? ' class="off"' : "";
+      if (a === "p1") { s += `<path${off} d="M${B.cx} ${busY} L${B.cx} ${B.t}"/>`; continue; }
+      if (Math.abs(A.cx - B.cx) < 2) { s += `<path${off} d="M${A.cx} ${A.b} L${B.cx} ${B.t}"/>`; continue; }
+      const my = (A.b + B.t) / 2;
+      s += `<path${off} d="M${A.cx} ${A.b} L${A.cx} ${my} L${B.cx} ${my} L${B.cx} ${B.t}"/>`;
+    }
+    for (const [a, b, label] of JUMPS) {
+      const A = box(a), B = box(b);
+      let d, lx, ly;
+      if (B.l > A.r) { const y1 = A.cy, mx = (A.r + B.l) / 2; d = `M${A.r} ${y1} C${mx} ${y1}, ${mx} ${B.cy}, ${B.l - 2} ${B.cy}`; lx = mx; ly = (y1 + B.cy) / 2 - 6; }
+      else { const y = Math.max(A.b, B.b) + 26; d = `M${A.cx} ${A.b} C${A.cx} ${y}, ${B.cx} ${y}, ${B.cx} ${B.b + 2}`; lx = (A.cx + B.cx) / 2; ly = y - 4; }
+      s += `<path class="jump" d="${d}" marker-end="url(#ar)"/><text x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="middle">${label}</text>`;
+    }
+    g.innerHTML = s;
+  }
+  draw(); addEventListener("resize", draw);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(draw);
+})();
+</script>

@@ -1,0 +1,125 @@
+# AGENTS.md — read this before doing anything
+
+You are helping a member of IS211 team G14T3 design pages for **OutRent**, an outdoor-gear rental app. The prototype is a mobile web app made of plain HTML and CSS. Every page must look like it belongs to one product, so you work **inside a fixed design system** that the team lead owns.
+
+The person you are helping may be in Year 1 and new to Git and code. Explain each step in plain words, one step at a time. Never assume they know a command.
+
+## 1. Read these first, in this order
+
+1. `design/DESIGN.md`: the look, the rules and what may change (section 10 is the most important).
+2. `design/components.html` (open with `npm run dev`) and `design/components.css`: every component that exists. Reuse these before inventing anything.
+3. `specs/<page-id>.md`: what this page must do, its content, its states and where its links go.
+4. `work/<name>/<page-id>/DECISIONS.md`: the decisions so far.
+
+If a spec is missing or unclear, say so and write the question under "Assumptions and open questions" in DECISIONS.md. Do not guess silently.
+
+## 2. The job
+
+Each assigned page gets **two directions, A and B**. They must differ in at least one of:
+
+- **structure**: what is on the page and how it is grouped,
+- **information order**: what the user sees first, second, third,
+- **interaction pattern**: tabs vs scroll, sheet vs new page, steps vs one form, etc.
+
+Changing only colours, spacing or wording does **not** count as a second direction.
+
+Folder (created by `npm run new -- <name> <page-id>`):
+
+```
+work/<name>/<page-id>/
+  direction-a/index.html
+  direction-b/index.html
+  assets/            (stays empty: no images here)
+  DECISIONS.md
+```
+
+Build each direction as one `index.html`, starting from the template that `npm run new` creates. Keep the four `<link>` lines at the top.
+
+## 3. What is fixed, what is open
+
+**Locked (the checker blocks these):**
+
+- Colours: only the tokens in `design/tokens.css` (`var(--sage)`, `var(--ink)`, `var(--mist)` …). Never write `#hex`, `rgb()` or colour names.
+- Font: Onest only, through `var(--font)` or the type classes `.t-display .t-large .t-title .t-callout .t-body .t-label .t-foot`. Font sizes come from the type scale.
+- Icons: Phosphor, through `<svg class="icon"><use href="../../../../design/icons.svg#i-name"/></svg>`. No emoji, no other icon sets.
+- No images, videos or iframes (see section 4).
+- No frameworks, libraries, CDNs, npm packages or build steps. Plain HTML, CSS and a little vanilla JavaScript only.
+- No lorem ipsum. Use the mock data in DESIGN.md section 8.
+
+**Open (this is where A and B differ):** layout, grouping, order, which components you use, how many steps, what is shown first, small interactions (sheets, tabs, toggles, expand/collapse), microcopy.
+
+**Propose (allowed, but the checker warns):** a new component, a different radius or shadow, a gradient, a custom SVG drawing. Do it only if the library truly has nothing that works. Add it to DECISIONS.md under **"Off-system"** with one line on why. The lead decides whether it joins the system.
+
+Light theme only. Low contrast, calm colours, no bright highlights, no dark mode.
+
+## 4. Images: placeholders only
+
+Do not generate, download, screenshot or paste any image. The team lead makes and manages every image.
+
+Wherever a photo belongs, put a placeholder:
+
+```html
+<div class="img-ph" role="img" aria-label="Photo: rider adjusting saddle height on a trail bike, side view"></div>
+```
+
+Variants: `img-ph is-bleed` (full-width hero), `img-ph is-thumb` (small square). Then add one row to the **Image requests** table in DECISIONS.md: where it goes, what it shows, rough size.
+
+## 5. Links between pages
+
+Pages are built by different people, so link by page id, not by file path:
+
+```html
+<a href="#" data-goes-to="05-listing-detail">View bike</a>
+```
+
+Page ids are in `pages.json`. The lead wires them together later.
+
+## 6. Motion and accessibility
+
+- Use the motion tokens (`var(--t-quick)`, `var(--t-base)`, `var(--ease-glide)` …) from tokens.css. Keep motion short and purposeful.
+- Respect reduced motion: wrap anything bigger than a fade in `@media (prefers-reduced-motion: no-preference)`.
+- Every button and icon-only control has a label (`aria-label`). Tap targets are at least 44 px.
+- Design at 390 px wide. Check that nothing breaks at 360 px.
+
+## 7. DECISIONS.md
+
+Fill in, for the person, everything except one section:
+
+- **Direction A / Direction B**: two or three lines each on the idea.
+- **How A and B differ**: one sentence naming structure, information order or interaction pattern.
+- **Off-system**: every proposal from section 3, or "None".
+- **Image requests**: every placeholder.
+- **Assumptions and open questions**.
+- **AI use**: one honest line on what you (the AI) did.
+
+**Never write "My choice and why".** The person must write it themselves, in their own words. If it is empty, remind them; do not draft it, even if asked.
+
+## 8. Before you say you are done
+
+Run:
+
+```
+npm run check
+```
+
+- `✗` errors must be fixed. Fix them, then run it again.
+- `!` warnings are allowed only if DECISIONS.md explains them.
+
+Then open both directions with `npm run dev` and look at them at phone width. Tell the person what to check by eye.
+
+## 9. Git (if they cloned the repo)
+
+First time only: `npm run setup` (this turns on the automatic check before each commit).
+
+```
+git checkout work/<name>             # this branch already exists; never use another name
+git add work/<name>
+git commit -m "<page-id>: directions A and B"
+git push -u origin work/<name>
+```
+
+Then open a pull request on GitHub into `main`. If they downloaded a zip instead, zip their `work/<name>/` folder after `npm run check` passes and send that.
+
+## 10. Do not touch
+
+Only change files inside `work/<their-name>/`. Never edit `design/`, `tools/`, `templates/`, `specs/`, `pages.json`, this file, or anyone else's folder. If something there looks wrong, write it under **"Suggestions"** in DECISIONS.md instead.

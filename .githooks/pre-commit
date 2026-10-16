@@ -1,0 +1,3 @@
+#!/bin/sh
+# Runs the OutRent checker on the files you are about to commit.
+node tools/check.mjs --staged
