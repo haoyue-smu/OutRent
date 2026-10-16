@@ -9,36 +9,65 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;600;700&display=swap">
 <link rel="stylesheet" href="../../../../design/tokens.css">
 <link rel="stylesheet" href="../../../../design/components.css">
+<link rel="stylesheet" href="../../_shared/lead.css">
 <style>
-  /* Page-only layout goes here. Use var(--tokens) only: no hex, rgb or px font sizes outside the scale.
-     A new reusable look = a new component: list it under "Off-system" in DECISIONS.md. */
+  /* A's input control only: two typed fields above the figure. The rest of the page is _shared/fit-page.js. */
+  .pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-2); }
+  .field input { width: 3.2ch; }
+  @supports (field-sizing: content) { .field input { width: auto; field-sizing: content; min-width: 1.2ch; } }
+  .pair + .field-error { margin-top: var(--s-2); }
 </style>
 </head>
 <body>
-  <!-- One phone screen, 393 × 852. Build only inside .screen. -->
-  <main class="screen" data-page="03-fit-profile" data-direction="A">
+  <!-- One phone screen, 393 × 852. The shared page is rendered into it by _shared/fit-page.js. -->
+  <main class="screen is-frame" data-page="03-fit-profile" data-direction="A"></main>
 
-    <div class="topbar">
-      <a class="icon-btn" href="#" aria-label="Back" data-goes-to="previous">
-        <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-arrow-left"/></svg>
-      </a>
-      <span class="name">Fit Profile</span>
-      <span></span>
-    </div>
+  <script src="../../_shared/gsap.min.js"></script>
+  <script src="../../_shared/lead.js"></script>
+  <script src="../../_shared/bike-figure.js"></script>
+  <script src="../../_shared/fit-page.js"></script>
+  <script>
+    // A: two typed fields. A value applies once it is in range; out-of-range values say how to fix them.
+    // Like B, it asks height first and moves on to inside leg when that is still empty.
+    let api;
+    const field = (key, label) => `
+      <label class="field" id="f-${key}">${label}
+        <span class="value"><input id="${key}" inputmode="numeric" autocomplete="off" maxlength="3" placeholder="—" aria-describedby="${key}-error"><span class="unit">cm</span></span>
+      </label>`;
 
-    <div class="content" style="padding-top: var(--s-5)">
-      <h1 class="t-large">Fit Profile</h1>
+    FitPage.init({
+      ruler: false,
+      instruction: "Type your height and inside leg.",
+      before: `<div class="pair">${field("height", "Height")}${field("leg", "Inside leg")}</div>
+        <p class="field-error" id="height-error" hidden></p>
+        <p class="field-error" id="leg-error" hidden></p>`,
+      mount(a) {
+        api = a;
+        for (const key of a.ORDER) {
+          const el = document.getElementById(key), { min, max, label } = a.RANGE[key];
+          document.getElementById(key + "-error").textContent = `Enter your ${label.toLowerCase()} in cm, between ${min} and ${max}.`;
+          el.addEventListener("input", () => {
+            const digits = el.value.replace(/\D/g, "");
+            if (digits !== el.value) el.value = digits;
+            const n = Number(digits), ok = digits !== "" && n >= min && n <= max;
+            const judge = digits.length >= String(max).length; // only complain once it is long enough to judge
+            showError(key, !ok && judge);
+            const was = a.model[key];
+            a.set({ [key]: ok ? n : null });
+            if (ok && was == null) { const after = a.next(key); if (after) document.getElementById(after).focus(); }
+          });
+        }
+      },
+      sync(m) {
+        for (const key of api.ORDER) { document.getElementById(key).value = m[key] ?? ""; showError(key, false); }
+      },
+    });
 
-      <!-- Image slot example: always a placeholder. Say what the image should show. -->
-      <div class="img-ph" style="height: 180px" role="img" aria-label="Photo: describe the image here"></div>
-
-      <p class="t-body">Replace this with the page content from specs/03-fit-profile.md.</p>
-    </div>
-
-    <!-- Links to other pages: use href="#" plus data-goes-to="<page-id>", e.g. data-goes-to="05-listing-detail". -->
-    <div class="actionbar glass is-single">
-      <a class="btn is-block" href="#" data-goes-to="next">Primary action</a>
-    </div>
-  </main>
+    function showError(key, on) {
+      document.getElementById(key + "-error").hidden = !on;
+      document.getElementById("f-" + key).classList.toggle("is-error", on);
+      document.getElementById(key).setAttribute("aria-invalid", String(on));
+    }
+  </script>
 </body>
 </html>

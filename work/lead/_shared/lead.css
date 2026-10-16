@@ -1,0 +1,86 @@
+/* Lead pages · shared styles. Load after tokens.css and components.css.
+   Tokens only. Everything here is Off-system on purpose and is listed in each page's DECISIONS.md. */
+
+/* ---------- fixed phone frame: the action bar stays on screen while the content scrolls ---------- */
+.screen.is-frame { height: min(852px, 100dvh); min-height: 0; display: flex; flex-direction: column; }
+.screen.is-frame > .scroll { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none; }
+.screen.is-frame > .scroll::-webkit-scrollbar { display: none; }
+
+/* ---------- bike explainer figure, drawn in the explainer greys ---------- */
+.fig-bike {
+  --b-paper: var(--white); --b-face: var(--white); --b-top: var(--white);
+  --b-side-0: var(--line); --b-side-1: var(--fig-shade-1); --b-side-2: var(--fig-shade-2); --b-side-3: var(--mist);
+  --b-hl-top: var(--white); --b-hl-side: var(--fig-selected);
+  --b-ink-hi: var(--ink); --b-ink-mid: var(--muted); --b-ink-lo: var(--fig-lo); --b-ink-faint: var(--line); --b-ink-hl: var(--sage);
+  --b-shadow: var(--muted); --b-shadow-opacity: .28; --b-dot: var(--ink);
+  --b-weight: .6px;
+  position: relative; display: block; width: 118%; margin: 0 -9%;
+}
+/* Figure paper follows the plate: white plate on a mist page, mist plate on a white page. */
+.screen.is-white .fig-bike { --b-paper: var(--mist); --b-face: var(--mist); }
+.fig-bike .bike { display: block; width: 100%; height: auto; overflow: visible; }
+.fig-bike .bike path, .fig-bike .bike circle { vector-effect: non-scaling-stroke; }
+.b-fill { fill: var(--b-paper); stroke: none; }
+.b-solid[data-hl] > .b-fill { fill: var(--b-face); }
+.b-side, .b-top { stroke: none; }
+.b-side[data-side="0"] { fill: var(--b-side-0); }
+.b-side[data-side="1"] { fill: var(--b-side-1); }
+.b-side[data-side="2"] { fill: var(--b-side-2); }
+.b-side[data-side="3"] { fill: var(--b-side-3); }
+.b-top { fill: var(--b-top); }
+.b-solid[data-hl] > .b-top { fill: var(--b-hl-top); }
+.b-solid[data-hl] > .b-side { fill: var(--b-hl-side); }
+.b-solid[data-joined] > .b-side, .b-solid[data-joined] > .b-top { stroke-width: .4; stroke-linejoin: round; }
+.b-solid[data-joined] > .b-side[data-side="0"] { stroke: var(--b-side-0); }
+.b-solid[data-joined] > .b-side[data-side="1"] { stroke: var(--b-side-1); }
+.b-solid[data-joined] > .b-side[data-side="2"] { stroke: var(--b-side-2); }
+.b-solid[data-joined] > .b-side[data-side="3"] { stroke: var(--b-side-3); }
+.b-solid[data-joined] > .b-top { stroke: var(--b-top); }
+.b-shadow { fill: var(--b-shadow); stroke: none; filter: blur(9px); opacity: var(--b-shadow-opacity); transform: translateY(3px); }
+.b-line { fill: none; stroke: var(--b-ink-lo); stroke-width: var(--b-weight); stroke-linecap: round; stroke-linejoin: round; }
+.b-line[data-ink="hi"] { stroke: var(--b-ink-hi); }
+.b-line[data-ink="mid"] { stroke: var(--b-ink-mid); }
+.b-line[data-ink="lo"] { stroke: var(--b-ink-lo); }
+.b-line[data-ink="faint"] { stroke: var(--b-ink-faint); }
+.b-dots circle { fill: var(--b-dot); stroke: none; opacity: .45; }
+.b-text { fill: var(--b-ink-mid); font-family: var(--font); letter-spacing: .04em; }
+.b-tube-body { fill: var(--b-side-2); stroke: none; }
+.b-tube-shine { fill: var(--b-top); stroke: none; }
+.b-tube-shade { fill: var(--b-side-0); stroke: none; }
+.b-tube-ring { fill: none; stroke: var(--b-ink-lo); stroke-width: .45; stroke-linecap: butt; stroke-linejoin: round; }
+.b-tube-ring[data-ink="mid"] { stroke: var(--b-ink-mid); }
+.b-tube-ring[data-ink="faint"] { stroke: var(--b-ink-faint); }
+.b-tube-ring[data-ink="hi"] { stroke: var(--b-ink-hi); }
+/* Selected part: sage edges, sage-shaded sides; the rest steps back one grey. */
+.fig-bike[data-focus] .b-part:not([data-on]):not([data-part="stand"]) { --b-ink-hi: var(--b-ink-mid); --b-ink-mid: var(--b-ink-lo); }
+.b-part[data-on] { --b-ink-hi: var(--b-ink-hl); --b-ink-mid: var(--b-ink-hl); --b-weight: 1.1px; }
+.b-part[data-on] .b-top, .b-part[data-on] .b-tube-shine { fill: var(--b-hl-top); }
+.b-part[data-on] .b-side, .b-part[data-on] .b-tube-body { fill: var(--b-hl-side); }
+.b-part[data-on] [data-joined] > .b-side { stroke: var(--b-hl-side); }
+.b-part[data-on] [data-joined] > .b-top { stroke: var(--b-hl-top); }
+/* Size swap: the size you just left stays as a dashed outline while it fades. */
+.b-ghost { pointer-events: none; opacity: 0; }
+.b-ghost * { fill: none !important; stroke: var(--fig-lo) !important; stroke-dasharray: 3 3; }
+.b-ghost .b-fill, .b-ghost .b-side, .b-ghost .b-top, .b-ghost .b-tube-body, .b-ghost .b-tube-shine, .b-ghost .b-tube-shade { stroke: none !important; }
+
+/* Rider stand-in until the rider figure arrives. */
+.explainer .placeholder.is-slim { min-height: 0; padding: var(--s-2) var(--s-3); margin: 0 var(--s-2); border-style: dashed; }
+
+/* ---------- hero number (64 px, one per screen) ---------- */
+.t-hero { margin: 0; font-size: 64px; line-height: 64px; font-weight: 700; letter-spacing: -0.045em; color: var(--sage); font-variant-numeric: tabular-nums; }
+.t-hero .unit { font-size: var(--fs-title); font-weight: 600; letter-spacing: 0; }
+
+/* ---------- small helpers built from components ---------- */
+.group { display: flex; flex-direction: column; gap: var(--s-3); }
+.head { display: flex; align-items: center; justify-content: space-between; gap: var(--s-3); min-height: 32px; }
+.stack { display: flex; flex-direction: column; gap: var(--s-1); }
+.verdicts { display: flex; flex-direction: column; gap: var(--s-2); margin: 0; padding: 0; list-style: none; }
+.verdict { display: flex; align-items: flex-start; gap: var(--s-2); font-size: var(--fs-callout); line-height: var(--lh-callout); color: var(--ink); }
+.verdict .icon { color: var(--sage); }
+.verdict.is-off .icon { color: var(--muted); }
+.chip.is-pop { transform-origin: left center; }
+.screen .topbar { padding-bottom: var(--s-2); }
+.segmented button[aria-disabled="true"] { color: var(--muted); cursor: not-allowed; }
+.fig-bike, .explainer .ruler { -webkit-user-select: none; user-select: none; }
+.explainer .ruler:focus:not(:focus-visible) { outline: none; }
+.field-hint { margin: 0; line-height: var(--lh-foot); }
