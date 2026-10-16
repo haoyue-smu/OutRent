@@ -1,0 +1,23 @@
+name: check
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Design system check
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            node tools/check.mjs --pr
+          else
+            node tools/check.mjs
+          fi

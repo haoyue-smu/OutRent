@@ -1,0 +1,79 @@
+/* OutRent design tokens · Trail Glass · v0.1
+   The only values pages may use. Source of truth: design/DESIGN.md.
+   Load once per page, before components.css:
+   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;600;700&display=swap"> */
+
+:root {
+  /* Colour scheme (DESIGN.md §2) */
+  --sage: #3E6A5A;
+  --sage-dark: #2F5246;
+  --sage-tint: #E3ECE7;
+  --ink: #1E2622;
+  --muted: #5C6863;
+  --mist: #F2F4F1;
+  --line: #DDE2DE;
+  --white: #FFFFFF;
+  --error: #B0473B;
+  --error-tint: #F6E4E1;
+
+  /* Explainer figure greys (explainer plate only) */
+  --fig-shade-1: #E6EAE7;
+  --fig-shade-2: #EDF0EE;
+  --fig-lo: #A3ACA7;
+  --fig-selected: #B9CFC3;
+
+  /* Materials built from the scheme */
+  --glass-bg: rgba(255, 255, 255, 0.64);
+  --glass-border: rgba(255, 255, 255, 0.7);
+  --glass-blur: blur(24px) saturate(160%);
+  --shadow-float: 0 8px 24px rgba(30, 38, 34, 0.12);
+  --scrim: linear-gradient(to bottom, rgba(30, 38, 34, 0.35), rgba(30, 38, 34, 0));
+
+  /* Scene placeholders: stand-ins for photos, not UI colours */
+  --scene-1: #DCE6E0;
+  --scene-2: #B9CCC0;
+  --scene-3: #8FAE9C;
+  --scene-4: #5E8574;
+
+  /* Type (DESIGN.md §3) */
+  --font: 'Onest', system-ui, sans-serif;
+  --fs-display: 44px;  --lh-display: 46px;
+  --fs-large: 32px;    --lh-large: 36px;
+  --fs-title: 20px;    --lh-title: 25px;
+  --fs-body: 17px;     --lh-body: 24px;
+  --fs-callout: 15px;  --lh-callout: 21px;
+  --fs-foot: 13px;     --lh-foot: 18px;
+  --fs-label: 12px;    --lh-label: 16px;
+  --track-display: -0.035em;
+  --track-large: -0.03em;
+  --track-title: -0.01em;
+  --track-label: 0.08em;
+
+  /* Space (4 px grid) */
+  --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-5: 20px; --s-6: 24px; --s-8: 32px; --s-10: 40px;
+  --gutter: 20px;
+  --top-safe: 54px;
+  --bottom-float: 22px;
+
+  /* Shape */
+  --r-thumb: 16px;
+  --r-tile: 18px;
+  --r-card: 22px;
+  --r-sheet: 28px;
+  --r-pill: 999px;
+  --touch: 44px;
+
+  /* Motion (DESIGN.md §9) */
+  --t-press: 120ms;
+  --t-quick: 200ms;
+  --t-base: 320ms;
+  --t-slow: 560ms;
+  --ease-glide: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-exit: cubic-bezier(0.4, 0, 1, 1);
+
+  color-scheme: light;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --t-press: 0ms; --t-quick: 160ms; --t-base: 160ms; --t-slow: 160ms; }
+}

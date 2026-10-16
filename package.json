@@ -1,0 +1,13 @@
+{
+  "name": "outrent",
+  "private": true,
+  "type": "module",
+  "description": "OutRent Iter2 prototype workspace. No dependencies: Node 20+ only.",
+  "scripts": {
+    "setup": "node tools/setup.mjs",
+    "new": "node tools/new.mjs",
+    "dev": "node tools/serve.mjs",
+    "check": "node tools/check.mjs"
+  },
+  "engines": { "node": ">=20" }
+}
