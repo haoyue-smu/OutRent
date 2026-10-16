@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fit Profile · Direction A</title>
+<!-- Do not change these four lines. They load the design system. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="../../../../design/tokens.css">
+<link rel="stylesheet" href="../../../../design/components.css">
+<style>
+  /* Page-only layout goes here. Use var(--tokens) only: no hex, rgb or px font sizes outside the scale.
+     A new reusable look = a new component: list it under "Off-system" in DECISIONS.md. */
+</style>
+</head>
+<body>
+  <!-- One phone screen, 393 × 852. Build only inside .screen. -->
+  <main class="screen" data-page="03-fit-profile" data-direction="A">
+
+    <div class="topbar">
+      <a class="icon-btn" href="#" aria-label="Back" data-goes-to="previous">
+        <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-arrow-left"/></svg>
+      </a>
+      <span class="name">Fit Profile</span>
+      <span></span>
+    </div>
+
+    <div class="content" style="padding-top: var(--s-5)">
+      <h1 class="t-large">Fit Profile</h1>
+
+      <!-- Image slot example: always a placeholder. Say what the image should show. -->
+      <div class="img-ph" style="height: 180px" role="img" aria-label="Photo: describe the image here"></div>
+
+      <p class="t-body">Replace this with the page content from specs/03-fit-profile.md.</p>
+    </div>
+
+    <!-- Links to other pages: use href="#" plus data-goes-to="<page-id>", e.g. data-goes-to="05-listing-detail". -->
+    <div class="actionbar glass is-single">
+      <a class="btn is-block" href="#" data-goes-to="next">Primary action</a>
+    </div>
+  </main>
+</body>
+</html>
