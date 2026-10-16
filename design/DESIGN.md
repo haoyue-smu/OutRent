@@ -6,7 +6,7 @@ Version 0.2 · 16 Oct 2026 · Owner: team lead. Agents: read this file fully bef
 
 Photography does the talking. Interface that floats over a photo is frosted glass, like iOS. Everything people read sits on solid white. One sage accent, big confident type, very little else. Daily screens stay calm. A small number of hero moments carry the motion (section 9).
 
-The prototype is a mobile web app. Design and build at 393 × 852 only. There is no desktop or tablet layout.
+The prototype is a mobile web app. Design and build at 393 × 852 only (iPhone 16). There is no desktop or tablet layout.
 
 ## 2. Colour scheme
 
