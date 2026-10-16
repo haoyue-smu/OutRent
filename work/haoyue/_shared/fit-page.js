@@ -10,7 +10,7 @@
 
   const DANIEL = { height: 176, leg: 81, exp: "first" };
   const ORDER = ["height", "leg"];                       // both controls ask in this order
-  const RANGE = { height: { min: 150, max: 200, label: "Height" }, leg: { min: 60, max: 95, label: "Inside leg" } };
+  const RANGE = Fit.range;
   const COPY = {
     tip: "Height: standing, without shoes. Inside leg: in socks, floor to crotch.",
     saveError: "Add your height and inside leg to save your fit.",

@@ -9,36 +9,206 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;600;700&display=swap">
 <link rel="stylesheet" href="../../../../design/tokens.css">
 <link rel="stylesheet" href="../../../../design/components.css">
+<link rel="stylesheet" href="../../_shared/lead.css">
 <style>
-  /* Page-only layout goes here. Use var(--tokens) only: no hex, rgb or px font sizes outside the scale.
-     A new reusable look = a new component: list it under "Off-system" in DECISIONS.md. */
+  /* One kit list in three groups. The numbered rows are also the controls for the figure above them. */
+  .coach { display: flex; align-items: center; gap: var(--s-3); }
+  .coach .img-ph { width: 48px; height: 48px; flex: none; }
+  .coach .body { display: flex; flex-direction: column; }
+  .explainer .placeholder { min-height: 200px; }
+  .kit { display: flex; flex-direction: column; gap: var(--s-2); }
+  .kit .explain-steps li { align-items: center; cursor: pointer; transition: background-color var(--t-quick) var(--ease-glide); }
+  .kit .explain-steps .txt { flex: 1; min-width: 0; }
+  .kit .explain-steps li { background: var(--white); }
+  .kit .explain-steps li[aria-current="true"] { background: var(--sage-tint); }
+  .kit .explain-steps .img-ph { width: 40px; height: 40px; flex: none; }
+  .kit .have { color: var(--sage); }
+  .kit .chip { height: 28px; padding: 0 10px; }
+  .kit .explain-steps li.is-out { background: var(--white); border: 1px dashed var(--line); }
+  .kit .explain-steps li.is-out b { color: var(--muted); }
+  .links { display: flex; flex-wrap: wrap; gap: 0 var(--s-2); margin: calc(var(--s-1) * -1) 0 0; }
+  .pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-2); }
+  .field input { width: 3.2ch; }
+  @supports (field-sizing: content) { .field input { width: auto; field-sizing: content; min-width: 1.2ch; } }
+  .ask { display: flex; flex-direction: column; gap: var(--s-3); }
 </style>
 </head>
 <body>
-  <!-- One phone screen, 393 × 852. Build only inside .screen. -->
-  <main class="screen" data-page="02-coach-kit" data-direction="A">
+  <main class="screen is-frame" data-page="02-coach-kit" data-direction="A">
+    <div class="scroll">
+      <div class="topbar">
+        <a class="icon-btn" href="#" aria-label="Back" data-goes-to="01-home">
+          <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-arrow-left"/></svg>
+        </a>
+        <span class="name">Coach's kit</span>
+        <span></span>
+      </div>
 
-    <div class="topbar">
-      <a class="icon-btn" href="#" aria-label="Back" data-goes-to="previous">
-        <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-arrow-left"/></svg>
-      </a>
-      <span class="name">Coach's Kit</span>
-      <span></span>
+      <div class="content" style="padding-top: var(--s-4)">
+        <div class="coach">
+          <span class="img-ph is-thumb" role="img" aria-label="Photo: Coach Aisyah, head and shoulders, outdoors"></span>
+          <span class="body">
+            <span class="t-callout" style="font-weight: 600">Coach Aisyah</span>
+            <span class="t-foot">Recommends kit. She does not rent anything out.</span>
+          </span>
+        </div>
+
+        <div>
+          <p class="t-label" style="margin: 0 0 var(--s-1)">First trail ride · Sat 25 Oct</p>
+          <h1 class="t-large">Your kit for Chestnut Nature Park</h1>
+        </div>
+
+        <figure class="explainer" style="margin: 0">
+          <span class="corner fig">Fig 1</span><span class="corner title">Your kit</span>
+          <div class="placeholder">Rider kit figure (3D, coming)</div>
+          <span class="corner hint" id="fig-hint">Tap an item</span><span class="corner readout" id="fig-readout" aria-live="polite">1 to rent · 2 you have</span>
+        </figure>
+
+        <section class="kit" aria-labelledby="rent-title">
+          <h2 class="t-label" id="rent-title" style="margin: 0">To rent</h2>
+          <ol class="explain-steps" start="1">
+            <li data-item="Hardtail mountain bike" tabindex="0">
+              <span class="n">1</span>
+              <span class="txt"><b>Hardtail mountain bike</b><span class="d" id="bike-why">Front suspension takes the roots and gravel.</span></span>
+              <span class="chip" id="frame-chip" data-state="default saved"><svg class="icon is-sm" aria-hidden="true"><use href="../../../../design/icons.svg#i-ruler"/></svg>Frame <span id="frame">M</span></span>
+            </li>
+          </ol>
+          <div class="links" data-state="default saved">
+            <a class="btn is-text" href="#" data-goes-to="03-fit-profile">See your sizes</a>
+          </div>
+          <div class="card is-filled verdict" data-state="saved" role="status" hidden>
+            <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-check-circle"/></svg>
+            <span><b>Saved to your fit.</b> Every bike now shows whether it fits you.</span>
+          </div>
+
+          <!-- No fit saved yet: ask for height and inside leg before naming a frame. -->
+          <div class="card ask" data-state="nofit" hidden>
+            <div class="stack">
+              <h3 class="t-title" style="margin: 0">Which frame fits you?</h3>
+              <span class="t-foot">Add your height and inside leg. We save them to your fit, so every bike shows its size for you.</span>
+            </div>
+            <div class="pair">
+              <label class="field" id="f-height">Height
+                <span class="value"><input id="height" inputmode="numeric" autocomplete="off" maxlength="3" placeholder="—" aria-describedby="fit-error"><span class="unit">cm</span></span>
+              </label>
+              <label class="field" id="f-leg">Inside leg
+                <span class="value"><input id="leg" inputmode="numeric" autocomplete="off" maxlength="2" placeholder="—" aria-describedby="fit-error"><span class="unit">cm</span></span>
+              </label>
+            </div>
+            <p class="field-hint">Height: standing, without shoes. Inside leg: in socks, floor to crotch.</p>
+            <p class="field-error" id="fit-error" hidden></p>
+          </div>
+        </section>
+
+        <section class="kit" aria-labelledby="have-title">
+          <h2 class="t-label" id="have-title" style="margin: 0">Already have</h2>
+          <ol class="explain-steps" start="2">
+            <li data-item="Road helmet" tabindex="0">
+              <span class="n">2</span>
+              <span class="img-ph is-thumb" role="img" aria-label="Photo: Daniel's road helmet, from My gear"></span>
+              <span class="txt"><b>Road helmet</b><span class="d">Checked against My gear. Fine for Chestnut's easy trails.</span></span>
+              <svg class="icon have" role="img" aria-label="In My gear"><use href="../../../../design/icons.svg#i-check-circle"/></svg>
+            </li>
+            <li data-item="Gloves" tabindex="0">
+              <span class="n">3</span>
+              <span class="img-ph is-thumb" role="img" aria-label="Photo: Daniel's cycling gloves, from My gear"></span>
+              <span class="txt"><b>Gloves</b><span class="d">In My gear. They save your hands if you slip.</span></span>
+              <svg class="icon have" role="img" aria-label="In My gear"><use href="../../../../design/icons.svg#i-check-circle"/></svg>
+            </li>
+          </ol>
+          <div class="links">
+            <a class="btn is-text" href="#" data-goes-to="14-my-equipment">See My gear</a>
+          </div>
+        </section>
+
+        <section class="kit" aria-labelledby="skip-title">
+          <h2 class="t-label" id="skip-title" style="margin: 0">Not needed</h2>
+          <ol class="explain-steps" start="4">
+            <li class="is-out" data-item="Full-face helmet" tabindex="0">
+              <span class="n">4</span>
+              <span class="txt"><b>Full-face helmet</b><span class="d">For downhill tracks. Chestnut's loops don't need one.</span></span>
+            </li>
+          </ol>
+        </section>
+      </div>
     </div>
 
-    <div class="content" style="padding-top: var(--s-5)">
-      <h1 class="t-large">Coach's Kit</h1>
-
-      <!-- Image slot example: always a placeholder. Say what the image should show. -->
-      <div class="img-ph" style="height: 180px" role="img" aria-label="Photo: describe the image here"></div>
-
-      <p class="t-body">Replace this with the page content from specs/02-coach-kit.md.</p>
-    </div>
-
-    <!-- Links to other pages: use href="#" plus data-goes-to="<page-id>", e.g. data-goes-to="05-listing-detail". -->
     <div class="actionbar glass is-single">
-      <a class="btn is-block" href="#" data-goes-to="next">Primary action</a>
+      <a class="btn is-block" href="#" id="primary" data-goes-to="04-search-results">Find a bike in frame M</a>
     </div>
   </main>
+
+  <script src="../../_shared/lead.js"></script>
+  <script>
+    // States: default (fit saved: frame M), #nofit (ask for height and inside leg first), #saved (just added from here).
+    const $ = (id) => document.getElementById(id);
+    const { Fit, crossFade, still } = Lead;
+    const DANIEL = { height: 176, leg: 81 };
+    const fit = { height: null, leg: null };
+
+    function setPrimary(state) {
+      const btn = $("primary");
+      if (state === "nofit") {
+        btn.textContent = "Show my frame size";
+        btn.removeAttribute("data-goes-to");
+      } else {
+        btn.textContent = `Find a bike in frame ${$("frame").textContent}`;
+        btn.setAttribute("data-goes-to", "04-search-results");
+      }
+      $("bike-why").textContent = state === "nofit"
+        ? "Front suspension takes the roots and gravel. Your frame size comes from your fit."
+        : `Front suspension takes the roots and gravel. Frame ${$("frame").textContent} from your fit.`;
+    }
+
+    Lead.states((state) => {
+      if (state === "nofit") { fit.height = fit.leg = null; $("height").value = $("leg").value = ""; $("fit-error").hidden = true; }
+      else if (state === "default") $("frame").textContent = Fit.frame(DANIEL.height);
+      $("fig-readout").textContent = state === "nofit" ? "Frame size needed" : "1 to rent · 2 you have";
+      setPrimary(state);
+    });
+
+    // Ask for the fit: same ranges as Fit Profile (03).
+    for (const key of ["height", "leg"]) {
+      $(key).addEventListener("input", () => {
+        const el = $(key), digits = el.value.replace(/\D/g, "");
+        if (digits !== el.value) el.value = digits;
+        const { min, max } = Fit.range[key], n = Number(digits);
+        fit[key] = digits !== "" && n >= min && n <= max ? n : null;
+        const judge = digits.length >= String(max).length;
+        $("f-" + key).classList.toggle("is-error", fit[key] == null && judge);
+        if (fit[key] != null || !judge) $("fit-error").hidden = true;
+        if (key === "height" && fit.height != null && fit.leg == null) $("leg").focus();
+      });
+    }
+    $("primary").addEventListener("click", (e) => {
+      if ((location.hash.slice(1) || "default") !== "nofit") return; // otherwise: Find a bike
+      e.preventDefault();
+      const missing = ["height", "leg"].filter((k) => fit[k] == null);
+      if (missing.length) {
+        const { min, max, label } = Fit.range[missing[0]];
+        $("fit-error").textContent = `Add your ${label.toLowerCase()} in cm, between ${min} and ${max}.`;
+        $("fit-error").hidden = false;
+        $(missing[0]).focus();
+        return;
+      }
+      $("frame").textContent = Fit.frame(fit.height);
+      location.hash = "saved";
+      // Small moment: the frame chip pops in where the question was.
+      const chip = $("frame-chip");
+      if (still.matches || !chip.animate) crossFade(chip, () => {});
+      else chip.animate([{ transform: "scale(0.9)", opacity: 0 }, { transform: "none", opacity: 1 }], { duration: 200, easing: "cubic-bezier(0.32,0.72,0,1)" });
+    });
+
+    // The rows are the figure's controls: picking one names it on the plate (the figure itself is still a placeholder).
+    document.querySelectorAll(".kit li[data-item]").forEach((li) => {
+      const pick = () => {
+        const on = li.getAttribute("aria-current") !== "true";
+        document.querySelectorAll(".kit li[data-item]").forEach((x) => x.setAttribute("aria-current", String(on && x === li)));
+        $("fig-readout").textContent = on ? li.dataset.item : "1 to rent · 2 you have";
+      };
+      li.addEventListener("click", pick);
+      li.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); pick(); } });
+    });
+  </script>
 </body>
 </html>

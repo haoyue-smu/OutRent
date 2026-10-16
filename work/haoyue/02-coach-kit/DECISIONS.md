@@ -2,21 +2,26 @@
 
 Designer: Haoyue
 
+Lead hero page: one finished direction (A). Direction B is not built.
+
 ## Direction A
 
-- **Idea in one line:** <!-- e.g. "One scrolling page: price first, then fit, then delivery." -->
+- **Idea in one line:** Coach Aisyah's kit for the first Chestnut ride as one numbered list in three groups (To rent · Already have · Not needed) under a rider kit figure; the rows are also the figure's controls.
 - **Key decisions and why:**
-  - <!-- decision → reason -->
+  - Coach first, with one line saying she recommends kit and does not rent anything out, so nobody reads the list as her shop.
+  - The one thing to rent leads, with its frame size from his fit ("Frame M") and "See your sizes" (→ 03). The single primary button names the result: "Find a bike in frame M" (→ 04, pre-filtered).
+  - "Already have" shows his own road helmet and gloves with photo thumbnails from My gear and a check, plus "See My gear" (→ 14). The list visibly checks what he owns, so he doesn't rent twice.
+  - "Not needed" (full-face helmet) is a dashed, muted row with one line on why.
+  - Numbering 1–4 runs across the groups so the figure can label each piece once it arrives. For now picking a row names it on the plate.
+  - No fit saved (`#nofit`): the frame chip is replaced by "Which frame fits you?" with height and inside-leg fields (same ranges and frame rule as 03, from `_shared/lead.js`). The primary button becomes "Show my frame size"; it explains what is missing, or saves and shows "Frame M" with "Saved to your fit".
 
 ## Direction B
 
-- **Idea in one line:** <!-- -->
-- **Key decisions and why:**
-  - <!-- decision → reason -->
+N/A: lead pages ship one direction, so there is no `direction-b/` (checker warning "direction-b/index.html is not there yet").
 
 ## How A and B differ
 
-<!-- One sentence. Must differ in at least one: structure, information order, or interaction pattern. -->
+Not applicable: lead pages ship one direction.
 
 ## My choice and why
 
@@ -25,25 +30,35 @@ Designer: Haoyue
 
 ## Off-system
 
-<!-- Anything outside the component library: new component, extra Phosphor icon, new use of an existing colour.
-     One line each with the reason. Write "None" if there is nothing. -->
+- `_shared/lead.css` linked as an extra stylesheet (fixed frame and helpers). Checker warning "(lead exception) extra stylesheet".
+- `_shared/lead.js` gives the fit rules (frame from height, accepted ranges), shared with 03 so the two pages always agree.
+- Kit rows reuse `.explain-steps` on a mist page, so they are white (selected: `--sage-tint`); the "Not needed" row is white with a dashed `--line` border and muted title.
+- Explainer plate with the placeholder "Rider kit figure (3D, coming)", 200 px tall.
+- Page layout classes: `.coach`, `.kit`, `.txt`, `.links`, `.pair`, `.ask`, `.have`.
+- The frame chip pops in after saving (200 ms glide; 160 ms cross-fade with reduced motion).
 
 ## Suggestions
 
-<!-- Ideas that break locked rules (new colour, new font size...). Not built, just proposed. Write "None" if empty. -->
+- None.
 
 ## Image requests
 
 | Direction | Slot | Size (px) | What it should show |
 |---|---|---|---|
-| A | | | |
+| A | Coach thumbnail | 48 × 48 | Coach Aisyah, head and shoulders, outdoors |
+| A | Road helmet thumbnail | 40 × 40 | Daniel's own road helmet, as in My gear |
+| A | Gloves thumbnail | 40 × 40 | Daniel's own cycling gloves, as in My gear |
+| A | Rider kit figure | 353 × 200 | Rider figure with each kit piece; the selected piece in sage (to come) |
 
 ## Assumptions and open questions
 
-- <!-- anything the spec did not answer and how you handled it -->
+- States: default (fit saved, frame M), `#nofit` (ask for height and inside leg first), `#saved` (fit just added here; shows frame and "Saved to your fit").
+- Back goes to 01-home.
+- Copy for why each item is (or isn't) needed is mine; please check it matches what Aisyah would say.
+- The figure readout shows "1 to rent · 2 you have" until a row is picked.
 
 ## AI use
 
-- Tool and model used:
-- What the AI generated:
+- Tool and model used: Claude Code (Claude Opus 5.5).
+- What the AI generated: the page, the no-fit flow, the shared fit ranges, and this file except "My choice and why".
 - What I decided or changed myself:

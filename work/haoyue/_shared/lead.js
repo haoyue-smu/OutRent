@@ -45,6 +45,8 @@
     saddleRaw: (leg) => leg * 0.883,                       // crank centre to saddle top
     saddle: (leg) => Math.round(leg * 0.883),
     frame: (height) => (height < 167 ? "S" : height <= 180 ? "M" : "L"),
+    // Accepted input, the same wherever height and inside leg are asked for (03, 02).
+    range: { height: { min: 150, max: 200, label: "Height" }, leg: { min: 60, max: 95, label: "Inside leg" } },
     sizes: {
       S: { scale: 0.92, maxSaddle: 70, reach: 40 },
       M: { scale: 1, maxSaddle: 78, reach: 43 },
