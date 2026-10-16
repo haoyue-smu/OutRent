@@ -1,6 +1,6 @@
 # Fit Profile (03-fit-profile): decisions
 
-Designer: Lead
+Designer: Haoyue
 
 A/B experiment candidate. A and B differ only in the input control for height and inside leg. Everything else (copy, order, figure, size swap, buttons, states, rules) is rendered by one shared file, `_shared/fit-page.js`, and each direction's `index.html` only plugs in its control. Both controls ask for height first, then inside leg, and use the same ranges (height 150–200 cm, inside leg 60–95 cm).
 

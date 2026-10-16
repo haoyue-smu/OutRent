@@ -1,6 +1,6 @@
 # Listing Detail (05-listing-detail): decisions
 
-Designer: Lead
+Designer: Haoyue
 
 Lead hero page: one finished direction (A). Direction B is not built.
 

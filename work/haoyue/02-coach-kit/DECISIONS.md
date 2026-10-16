@@ -1,6 +1,6 @@
 # Coach's Kit (02-coach-kit): decisions
 
-Designer: Lead
+Designer: Haoyue
 
 ## Direction A
 

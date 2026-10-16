@@ -1,6 +1,6 @@
-# Delivery Tracking (10-delivery-tracking): decisions
+# Storage Map (18-storage-map): decisions
 
-Designer: Lead
+Designer: Haoyue
 
 ## Direction A
 

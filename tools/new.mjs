@@ -15,7 +15,7 @@ if (!people.includes(person) || !page) {
   console.log("Names:", people.join(", "));
   console.log("Your pages:");
   for (const p of pages) if (p.designer === person) console.log("  " + p.id + "  " + p.name);
-  if (!people.includes(person)) for (const p of pages) if (p.designer !== "lead") console.log("  " + p.id + "  (" + p.designer + ")");
+  if (!people.includes(person)) for (const p of pages) if (p.designer !== "haoyue") console.log("  " + p.id + "  (" + p.designer + ")");
   process.exit(1);
 }
 if (page.designer !== person) console.log(`Note: ${page.id} is assigned to ${page.designer}. Creating it anyway.`);

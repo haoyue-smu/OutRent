@@ -1,15 +1,15 @@
 {
   "pages": [
-    { "id": "01-home", "name": "Home", "designer": "lead" },
-    { "id": "02-coach-kit", "name": "Coach's Kit", "designer": "lead" },
-    { "id": "03-fit-profile", "name": "Fit Profile", "designer": "lead" },
+    { "id": "01-home", "name": "Home", "designer": "haoyue" },
+    { "id": "02-coach-kit", "name": "Coach's Kit", "designer": "haoyue" },
+    { "id": "03-fit-profile", "name": "Fit Profile", "designer": "haoyue" },
     { "id": "04-search-results", "name": "Search Results", "designer": "amanda" },
-    { "id": "05-listing-detail", "name": "Listing Detail", "designer": "lead" },
+    { "id": "05-listing-detail", "name": "Listing Detail", "designer": "haoyue" },
     { "id": "06-delivery-return", "name": "Delivery & Return", "designer": "amanda" },
     { "id": "07-fees-liability", "name": "Fees & Liability", "designer": "amanda" },
     { "id": "08-booking-confirmation", "name": "Booking Confirmation", "designer": "harwin" },
     { "id": "09-trips", "name": "Trips", "designer": "kaijun" },
-    { "id": "10-delivery-tracking", "name": "Delivery Tracking", "designer": "lead" },
+    { "id": "10-delivery-tracking", "name": "Delivery Tracking", "designer": "haoyue" },
     { "id": "11-handover-check", "name": "Handover Check", "designer": "minh" },
     { "id": "12-rental-summary", "name": "Rental Summary", "designer": "minh" },
     { "id": "13-weekly-ride", "name": "Weekly Ride", "designer": "kaijun" },
@@ -17,7 +17,7 @@
     { "id": "15-equipment-detail", "name": "Equipment Detail", "designer": "shanise" },
     { "id": "16-storage-options", "name": "Storage Options", "designer": "shanise" },
     { "id": "17-hub-pickup", "name": "Hub Pickup", "designer": "joshua" },
-    { "id": "18-storage-map", "name": "Storage Map", "designer": "lead" }
+    { "id": "18-storage-map", "name": "Storage Map", "designer": "haoyue" }
   ],
-  "people": ["lead", "amanda", "harwin", "joshua", "kaijun", "minh", "shanise"]
+  "people": ["haoyue", "amanda", "harwin", "joshua", "kaijun", "minh", "shanise"]
 }

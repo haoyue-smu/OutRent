@@ -20,7 +20,7 @@ const NAMED_COLOURS = /\b(white|black|red|green|blue|yellow|orange|purple|pink|g
 const COMPONENT_CLASSES = new Set([...readFileSync(join(ROOT, "design", "components.css"), "utf8").matchAll(/\.([a-zA-Z][\w-]*)/g)].map((m) => m[1]));
 
 const issues = []; // { file, level: "error" | "warn", msg }
-let lenient = false; // work/lead: hero pages may break rules on purpose, so errors become warnings
+let lenient = false; // work/haoyue (lead pages): hero pages may break rules on purpose, so errors become warnings
 const add = (file, level, msg) => issues.push(lenient && level === "error" ? { file: relative(ROOT, file).split(sep).join("/"), level: "warn", msg: "(lead exception) " + msg } :{ file: relative(ROOT, file).split(sep).join("/"), level, msg });
 const lineOf = (text, index) => text.slice(0, index).split("\n").length;
 
@@ -102,7 +102,7 @@ function checkDecisions(file, text) {
 
 function checkPageFolder(dir) {
   const [person, pageId] = relative(join(ROOT, "work"), dir).split(sep);
-  lenient = person === "lead";
+  lenient = person === "haoyue";
   if (!people.includes(person)) add(dir, "error", `"${person}" is not a team member folder. Use your name from pages.json.`);
   if (!pages.some((p) => p.id === pageId)) add(dir, "error", `"${pageId}" is not a page id. See pages.json (e.g. 04-search-results).`);
   const decPath = join(dir, "DECISIONS.md");
