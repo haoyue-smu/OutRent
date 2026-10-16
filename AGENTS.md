@@ -86,7 +86,7 @@ Page ids are in `pages.json`. The lead wires them together later.
 - Use the motion tokens (`var(--t-quick)`, `var(--t-base)`, `var(--ease-glide)` …) from tokens.css. Keep motion short and purposeful.
 - Respect reduced motion: wrap anything bigger than a fade in `@media (prefers-reduced-motion: no-preference)`.
 - Every button and icon-only control has a label (`aria-label`). Tap targets are at least 44 px.
-- Design at 390 px wide. Check that nothing breaks at 360 px.
+- Design at 393 × 852 (iPhone 16). Check that nothing breaks at 360 px.
 
 ## 7. DECISIONS.md
 
