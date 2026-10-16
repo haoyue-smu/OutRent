@@ -30,7 +30,7 @@ function home() {
 <h2>Work in progress</h2><ul>${rows.map((r) => r[1]).join("") || "<li>Nothing yet. Run <code>npm run new -- &lt;name&gt; &lt;page-id&gt;</code>.</li>"}</ul>`;
 }
 
-createServer((req, res) => {
+const server = createServer((req, res) => {
   const url = decodeURIComponent(req.url.split("?")[0]);
   if (url === "/") { res.writeHead(200, { "content-type": TYPES[".html"] }); return res.end(home()); }
   let file = normalize(join(ROOT, url));
@@ -39,7 +39,17 @@ createServer((req, res) => {
   if (!existsSync(file)) { res.writeHead(404, { "content-type": "text/plain" }); return res.end("Not found: " + url); }
   res.writeHead(200, { "content-type": TYPES[extname(file)] || "application/octet-stream", "cache-control": "no-store" });
   res.end(readFileSync(file));
-}).listen(PORT, () => {
+});
+server.on("error", (err) => {
+  if (err.code === "EADDRINUSE") {
+    console.log(`Port ${PORT} is already in use, so the preview is probably already running.`);
+    console.log(`Just open http://localhost:${PORT} in your browser.`);
+    console.log(`To stop the old one, find its terminal and press Ctrl+C.`);
+    process.exit(0);
+  }
+  throw err;
+});
+server.listen(PORT, () => {
   console.log(`OutRent preview running at http://localhost:${PORT}`);
   console.log("Open it in your browser. Press Ctrl+C here to stop.");
 });

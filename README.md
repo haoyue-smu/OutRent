@@ -34,9 +34,9 @@ Your folders are already made: `work/<your-name>/<page-id>/`. The page list and 
 
 Open this folder in VS Code (or Codex / Claude Code / Cursor) and tell your agent:
 
-> Read AGENTS.md, then help me build direction A of `<page-id>`.
+> Read AGENTS.md and specs/`<page-id>`.md. Build two very different versions, A and B.
 
-AGENTS.md tells the agent the rules. You still decide: **write "My choice and why" in DECISIONS.md yourself.**
+Then pick the one you like, improve it with your agent, and write in DECISIONS.md **which one and why, in your own words.** AGENTS.md tells the agent the rules.
 
 Preview: `npm run dev` → open http://localhost:5173
 

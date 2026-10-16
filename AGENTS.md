@@ -12,11 +12,17 @@ The person you are helping may be in Year 1 and new to Git and code. Explain eac
 4. `specs/<page-id>.md`: what this page must do, its content, its states and where its links go.
 5. `work/<name>/<page-id>/DECISIONS.md`: the decisions so far.
 
-If a spec is missing or unclear, say so and write the question under "Assumptions and open questions" in DECISIONS.md. Do not guess silently.
+If a spec is missing or unclear, say so and write the question under "Notes" in DECISIONS.md. Do not guess silently.
 
 ## 2. The job
 
-Each assigned page gets **two directions, A and B**. They must differ in at least one of:
+Each page goes in three steps:
+
+1. **Build A and B in one go.** Two complete, clearly different versions of the page from the same spec.
+2. **The person picks one.** Show them both and let them choose. Don't push them either way.
+3. **Improve only the chosen one** with them. Leave the other as it is.
+
+A and B must differ in at least one of:
 
 - **structure**: what is on the page and how it is grouped,
 - **information order**: what the user sees first, second, third,
@@ -49,7 +55,7 @@ Build each direction as one `index.html`, starting from the template that `npm r
 
 **Open (this is where A and B differ):** layout, grouping, order, which components you use, how many steps, what is shown first, small interactions (sheets, tabs, toggles, expand/collapse), microcopy.
 
-**Propose (allowed, but the checker warns):** a new component, a different radius or shadow, a gradient, a custom SVG drawing. Do it only if the library truly has nothing that works. Add it to DECISIONS.md under **"Off-system"** with one line on why. The lead decides whether it joins the system.
+**Propose (allowed, but the checker warns):** a new component, a different radius or shadow, a gradient, a custom SVG drawing. Do it only if the library truly has nothing that works. Add one line on why under **"Notes"** in DECISIONS.md. The lead decides whether it joins the system.
 
 Light theme only. Low contrast, calm colours, no bright highlights, no dark mode.
 
@@ -84,16 +90,12 @@ Page ids are in `pages.json`. The lead wires them together later.
 
 ## 7. DECISIONS.md
 
-Fill in, for the person, everything except one section:
+It is short on purpose. You fill in:
 
-- **Direction A / Direction B**: two or three lines each on the idea.
-- **How A and B differ**: one sentence naming structure, information order or interaction pattern.
-- **Off-system**: every proposal from section 3, or "None".
-- **Image requests**: every placeholder.
-- **Assumptions and open questions**.
-- **AI use**: one honest line on what you (the AI) did.
+- **Image requests**: one row per placeholder in the chosen version.
+- **Notes** (only if needed): anything off-system (section 3) or a question the spec didn't answer.
 
-**Never write "My choice and why".** The person must write it themselves, in their own words. If it is empty, remind them; do not draft it, even if asked.
+**Never write "My choice".** The person writes which version and why, in their own words. If it is empty, remind them; do not draft it, even if asked.
 
 ## 8. Before you say you are done
 
@@ -104,7 +106,7 @@ npm run check
 ```
 
 - `✗` errors must be fixed. Fix them, then run it again.
-- `!` warnings are allowed only if DECISIONS.md explains them.
+- `!` warnings are allowed only if the Notes in DECISIONS.md explain them.
 
 Then open both directions with `npm run dev` and look at them at phone width. Tell the person what to check by eye.
 
@@ -115,7 +117,7 @@ First time only: `npm run setup` (this turns on the automatic check before each 
 ```
 git checkout work/<name>             # this branch already exists; never use another name
 git add work/<name>
-git commit -m "<page-id>: directions A and B"
+git commit -m "<page-id>: chose A, improved"
 git push -u origin work/<name>
 ```
 
@@ -123,4 +125,4 @@ Push only to `work/<name>`; never push to `main` (it is protected anyway). No pu
 
 ## 10. Do not touch
 
-Only change files inside `work/<their-name>/`. Never edit `design/`, `tools/`, `templates/`, `specs/`, `pages.json`, this file, or anyone else's folder. If something there looks wrong, write it under **"Suggestions"** in DECISIONS.md instead.
+Only change files inside `work/<their-name>/`. Never edit `design/`, `tools/`, `templates/`, `specs/`, `pages.json`, this file, or anyone else's folder. If something there looks wrong, write it under **"Notes"** in DECISIONS.md instead.
