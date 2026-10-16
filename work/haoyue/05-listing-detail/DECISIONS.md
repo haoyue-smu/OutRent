@@ -41,6 +41,7 @@ Lead hero page: one finished direction (A). Direction B is not built.
 - `.screen.is-frame` + `.scroll`: the 393 × 852 frame scrolls inside, so the price bar stays on screen.
 - Page classes, built from tokens: `.hero-photo`, `.on-photo` (glass chips on the photo), `.photos` (dated thumbnail strip), `.lines` (price breakdown), plus `.group`, `.head`, `.stack`, `.verdict` from `_shared/lead.css`.
 - No `direction-b/`: lead pages ship one direction (checker warning "direction-b/index.html is not there yet").
+- Favicon: `<link rel="icon" href="../../../../design/brand/favicon.svg">` (DESIGN.md 5a). The checker reads any `<link>` as a stylesheet, so it warns "(lead exception) extra stylesheet … favicon.svg".
 
 ### Assumptions and open questions
 

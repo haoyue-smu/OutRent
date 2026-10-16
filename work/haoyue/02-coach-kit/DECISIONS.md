@@ -39,6 +39,7 @@ Lead hero page: one finished direction (A). Direction B is not built.
 - Page layout classes: `.coach`, `.kit`, `.txt`, `.links`, `.pair`, `.ask`, `.have`.
 - The frame chip pops in after saving (200 ms glide; 160 ms cross-fade with reduced motion).
 - No `direction-b/`: lead pages ship one direction (checker warning "direction-b/index.html is not there yet").
+- Favicon: `<link rel="icon" href="../../../../design/brand/favicon.svg">` (DESIGN.md 5a). The checker reads any `<link>` as a stylesheet, so it warns "(lead exception) extra stylesheet … favicon.svg".
 
 ### Assumptions and open questions
 

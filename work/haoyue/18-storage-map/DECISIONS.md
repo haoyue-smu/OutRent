@@ -34,6 +34,7 @@ Lead hero page: one finished direction (A). Direction B is not built.
 - Rack rows (`.rack`): list rows with a lettered circle instead of a thumbnail and a count column (Title size number, Label size caption).
 - Page classes: `.map`, `.racks`, `.head`, `.full-note`.
 - No `direction-b/`: lead pages ship one direction (checker warning "direction-b/index.html is not there yet").
+- Favicon: `<link rel="icon" href="../../../../design/brand/favicon.svg">` (DESIGN.md 5a). The checker reads any `<link>` as a stylesheet, so it warns "(lead exception) extra stylesheet … favicon.svg".
 
 ### Assumptions and open questions
 

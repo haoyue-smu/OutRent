@@ -32,12 +32,13 @@ Lead hero page: one finished direction (A). Direction B is not built.
 
 - `_shared/lead.css` linked as an extra stylesheet (fixed frame and helpers). Checker warning "(lead exception) extra stylesheet".
 - Headline 38 / 41 px on the photo (from the chosen home look); the large title is 30–34.
-- "OutRent" wordmark: text in Title size, ink, on the photo's top scrim.
+- Logo: `design/brand/outrent-lockup.svg` inlined in a glass pill at the top left, 22 px tall (DESIGN.md 5a: lockup on light surfaces, at least 20 px, clear space of a dot's diameter). Its colours are set by class to the same tokens (sage, sage-dark, ink) instead of hex, which the checker forbids. Checker warning "hand-drawn SVG". The date chip moved to the top right.
 - `.search`: a glass capsule split into three parts (what, where, when); built from the glass recipe, `--line` dividers and the label and callout sizes.
 - `.store`: the storage card (filled card, white icon tile, close button, secondary button). `.toast`: the "Hidden…" note with Undo.
 - `.screen.is-frame` + `.scroll`: the frame scrolls inside, so the tab bar stays on screen.
 - Dismiss and Undo fade the group out and back in (200 ms exit curve, 200 ms glide; 160 ms cross-fade with reduced motion).
 - No `direction-b/`: lead pages ship one direction (checker warning "direction-b/index.html is not there yet").
+- Favicon: `<link rel="icon" href="../../../../design/brand/favicon.svg">` (DESIGN.md 5a). The checker reads any `<link>` as a stylesheet, so it warns "(lead exception) extra stylesheet … favicon.svg".
 
 ### Assumptions and open questions
 

@@ -39,6 +39,7 @@ Lead hero page: one finished direction (A). Direction B is not built.
 - Bottom sheets from RECIPES §1 for "Change drop-off time" and "Cancel".
 - Page classes: `.eta`, `.delay`, `.lines`, `.hero-photo`, `.on-photo`.
 - No `direction-b/`: lead pages ship one direction (checker warning "direction-b/index.html is not there yet").
+- Favicon: `<link rel="icon" href="../../../../design/brand/favicon.svg">` (DESIGN.md 5a). The checker reads any `<link>` as a stylesheet, so it warns "(lead exception) extra stylesheet … favicon.svg".
 
 ### Assumptions and open questions
 

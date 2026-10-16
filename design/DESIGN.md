@@ -83,6 +83,24 @@ The team lead generates and manages every image, and swaps them in when the fina
 
 Icons are Phosphor, regular weight, 20–24 px. Use the fill weight only for a selected tab. Do not use emoji.
 
+## 5a. Logo
+
+The files are in `design/brand/`. Use them as they are.
+
+| File | Use it |
+|---|---|
+| `outrent-lockup.svg` | Mark + name on light surfaces: white, `--mist`, and glass pills or bars |
+| `outrent-lockup-white.svg` | Mark + name directly on `--sage` or on a photo |
+| `outrent-mark.svg` / `outrent-mark-white.svg` | The mark alone, where there is no room for the lockup at 20 px tall or more |
+| `outrent-wordmark.svg` / `outrent-wordmark-white.svg` | The name alone, only where the mark is already shown nearby |
+| `favicon.svg` | The browser tab: `<link rel="icon" href="../../../../design/brand/favicon.svg">` |
+| `app-icon.svg` | Home-screen and store icon (1024 × 1024) |
+
+Rules:
+- The lockup is at least 20 px tall. Smaller than that, use the mark alone.
+- Keep clear space around it equal to the dot's diameter, on every side.
+- Never recolour, stretch, rotate, outline, add shadows or other effects, or set "OutRent" in type yourself.
+
 ## 6. Layout patterns
 
 - **Photo top, sheet below.** Used on Home and Listing.

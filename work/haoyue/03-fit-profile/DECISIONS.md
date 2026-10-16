@@ -60,6 +60,7 @@ Checked by driving the same nine steps through each control (default, height 185
 - `.verdict`: icon + one line, for the size check and the "Fit saved" note.
 - Layout-only classes: `.group`, `.head`, `.stack`, `.verdicts` (shared); `.pair` (A's two fields); `.segmented.is-measure` (B's two-line switch).
 - The plate's bottom-right readout shows "Frame M" rather than a length, because saddle height has the 64 px number below.
+- Favicon: `<link rel="icon" href="../../../../design/brand/favicon.svg">` (DESIGN.md 5a). The checker reads any `<link>` as a stylesheet, so it warns "(lead exception) extra stylesheet … favicon.svg".
 
 ### Suggestions
 

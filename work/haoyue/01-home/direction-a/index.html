@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Home · Direction A</title>
+<link rel="icon" type="image/svg+xml" href="../../../../design/brand/favicon.svg">
 <!-- Do not change these four lines. They load the design system. -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;600;700&display=swap">
@@ -13,7 +14,13 @@
 <style>
   .photo-top.is-home { height: 452px; }
   .hero-photo { position: absolute; inset: 0; align-items: center; justify-content: center; }
-  .wordmark { font-size: var(--fs-title); line-height: var(--lh-title); font-weight: 700; letter-spacing: var(--track-title); color: var(--ink); }
+  /* Logo (DESIGN.md 5a): the lockup on a glass pill, 22 px tall, with more than the dot's diameter clear around it. */
+  .brand { height: 36px; padding: 0 var(--s-3); }
+  .logo { display: block; height: 22px; width: auto; }
+  .logo .lg-line { stroke: var(--sage); }
+  .logo .lg-dot { fill: var(--sage-dark); }
+  .logo .lg-ink { fill: var(--ink); }
+  .logo .lg-sage { fill: var(--sage); }
   .headline { position: absolute; top: 112px; left: var(--gutter); right: var(--gutter); z-index: 2; margin: 0; font-size: 38px; line-height: 41px; letter-spacing: var(--track-display); }
 
   /* Search: one glass capsule, three parts (what, where, when). Each part opens Search. */
@@ -42,8 +49,8 @@
       <div class="photo-top is-home">
         <div class="img-ph is-bleed hero-photo" role="img" aria-label="Photo: a rider on a forest trail at Chestnut Nature Park, early morning, soft light, quiet foliage in the top 40%"></div>
         <div class="float-top">
+          <span class="chip glass brand"><svg class="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 22 484 86" role="img" aria-label="OutRent"><g transform="translate(0 21) scale(1.896)"><path d="M5 36 L18 17 L26 28 L32 21 L43 36" fill="none" class="lg-line" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="34" cy="10" r="3.4" class="lg-dot"/></g><g transform="translate(109.0 0)"><path d="M38.50 100.80Q27.60 100.80 19.75 96.20Q11.90 91.60 7.75 83.45Q3.60 75.30 3.60 64.70Q3.60 53.90 7.85 45.70Q12.10 37.50 20 32.95Q27.90 28.40 38.80 28.40Q49.60 28.40 57.40 32.90Q65.20 37.40 69.45 45.50Q73.70 53.60 73.70 64.40Q73.70 75 69.45 83.25Q65.20 91.50 57.35 96.15Q49.50 100.80 38.50 100.80M38.70 87.40Q45.90 87.40 50.40 84.10Q54.90 80.80 56.95 75.60Q59 70.40 59 64.70Q59 60.50 57.85 56.40Q56.70 52.30 54.30 49Q51.90 45.70 48 43.75Q44.10 41.80 38.60 41.80Q31.50 41.80 27 45.05Q22.50 48.30 20.35 53.50Q18.20 58.70 18.20 64.60Q18.20 70.50 20.35 75.70Q22.50 80.90 27.05 84.15Q31.60 87.40 38.70 87.40M103.20 100.70Q91.60 100.70 85.35 94.75Q79.10 88.80 79.10 76.80L79.10 47.30L93.10 47.30L93.10 75.80Q93.10 79.40 94.15 82.15Q95.20 84.90 97.40 86.50Q99.60 88.10 103.20 88.10Q107.10 88.10 109.20 86.40Q111.30 84.70 112.10 81.85Q112.90 79 112.90 75.80L112.90 47.30L126.90 47.30L126.90 76.80Q126.90 89.30 120.65 95Q114.40 100.70 103.20 100.70M163.20 100L157.30 100Q150.70 100 146.50 98.40Q142.30 96.80 140.25 92.95Q138.20 89.10 138.20 82.40L138.20 59.80L130.40 59.80L130.40 47.30L138.20 47.30L138.20 33.20L152.20 33.20L152.20 47.30L163.70 47.30L163.70 59.80L152.20 59.80L152.20 80.40Q152.20 83.70 153.40 85.60Q154.60 87.50 158.80 87.50L163.20 87.50" class="lg-ink"/><path d="M183.70 100L169.40 100L169.40 29.20L197.90 29.20Q203.20 29.20 208.05 30.25Q212.90 31.30 216.80 33.80Q220.70 36.30 222.95 40.75Q225.20 45.20 225.20 52.10Q225.20 57.20 223.50 61.30Q221.80 65.40 218.50 68.30Q215.20 71.20 210.60 72.80L226.30 100L210.20 100L196.40 75.10L183.70 75.10L183.70 100M183.70 42.50L183.70 62.40L196.90 62.40Q200 62.40 202.55 61.85Q205.10 61.30 206.95 60.10Q208.80 58.90 209.85 56.90Q210.90 54.90 210.90 52Q211 48.30 209.35 46.25Q207.70 44.20 204.75 43.35Q201.80 42.50 197.80 42.50M256.90 100.70Q248.60 100.70 242.80 97.40Q237 94.10 233.90 88.05Q230.80 82 230.80 73.90Q230.80 65.70 234 59.55Q237.20 53.40 243.05 49.90Q248.90 46.40 256.90 46.40Q262.90 46.40 267.45 48.40Q272 50.40 275.15 54Q278.30 57.60 279.85 62.35Q281.40 67.10 281.30 72.60Q281.30 74 281.20 75.30Q281.10 76.60 280.80 77.90L244.70 77.90Q245 80.90 246.40 83.40Q247.80 85.90 250.35 87.35Q252.90 88.80 256.70 88.80Q259.20 88.80 261.30 88.25Q263.40 87.70 264.90 86.50Q266.40 85.30 267 83.70L280.80 83.70Q279.50 89.60 275.95 93.40Q272.40 97.20 267.40 98.95Q262.40 100.70 256.90 100.70M245 68.10L267.90 68.10Q267.80 65.40 266.55 63.05Q265.30 60.70 262.85 59.25Q260.40 57.80 256.60 57.80Q252.80 57.80 250.25 59.30Q247.70 60.80 246.45 63.15Q245.20 65.50 245 68.10M300.80 100L286.80 100L286.80 47.30L299.90 47.30L300.60 53.40Q302.80 50.70 305.65 49.15Q308.50 47.60 311.45 47Q314.40 46.40 316.80 46.40Q324.40 46.40 328.65 49.70Q332.90 53 334.75 58.55Q336.60 64.10 336.60 70.90L336.60 100L322.60 100L322.60 72.70Q322.60 70.30 322.20 67.90Q321.80 65.50 320.75 63.50Q319.70 61.50 317.80 60.30Q315.90 59.10 312.80 59.10Q308.80 59.10 306.10 61.10Q303.40 63.10 302.10 66.50Q300.80 69.90 300.80 74M372.70 100L366.80 100Q360.20 100 356 98.40Q351.80 96.80 349.75 92.95Q347.70 89.10 347.70 82.40L347.70 59.80L339.90 59.80L339.90 47.30L347.70 47.30L347.70 33.20L361.70 33.20L361.70 47.30L373.20 47.30L373.20 59.80L361.70 59.80L361.70 80.40Q361.70 83.70 362.90 85.60Q364.10 87.50 368.30 87.50L372.70 87.50" class="lg-sage"/></g></svg></span>
           <span class="chip glass"><svg class="icon is-sm" aria-hidden="true"><use href="../../../../design/icons.svg#i-calendar-blank"/></svg>Sat 25 Oct</span>
-          <span class="wordmark">OutRent</span>
         </div>
         <h1 class="t-large headline">Ride the trail.<br><span class="t-accent">We bring the bike.</span></h1>
 
