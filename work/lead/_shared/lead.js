@@ -100,6 +100,24 @@
       this.root.toggleAttribute("data-focus", !!part);
       this.nodes.forEach((o) => o.el.toggleAttribute("data-on", !!part && o.part === part));
     }
+    // Hero moment 2: parts lift apart along their own axis (1) or snap back (0); the frame never moves.
+    // Tweened with GSAP so the timing follows the storyboard; reduced motion gets a 160 ms cross-fade.
+    explode(on, { ids = ["saddle", "cockpit"], duration = 0.48, stagger = 0.08 } = {}) {
+      const to = on ? 1 : 0, list = (on ? ids : [...ids].reverse()).map((id) => this.sp[id]);
+      const gsap = window.gsap;
+      if (still.matches || !gsap) {
+        crossFade(this.root, () => { list.forEach((s) => { s.x = s.want = to; s.v = 0; }); this.place(); });
+        return null;
+      }
+      gsap.killTweensOf(list);
+      list.forEach((s) => { s.want = to; s.v = 0; s.locked = true; });
+      return gsap.to(list, { x: to, duration, stagger, ease: "expo.out", onUpdate: () => this.place(), onComplete: () => list.forEach((s) => { s.locked = false; }) });
+    }
+    // Fork sag: the front end sinks by its travel (step 2 on the listing).
+    travel(on) {
+      this.sp.travel.want = on ? 1 : 0;
+      this.run();
+    }
     // Hero moment 1: the frame grows or shrinks from where the rear tyre touches the plate.
     swap(toScale) {
       const from = this.scale;
@@ -132,6 +150,7 @@
       this.last = now;
       let moving = false;
       for (const s of Object.values(this.sp)) {
+        if (s.locked) continue; // driven by a tween
         if (still.matches) { s.x = s.want; s.v = 0; continue; }
         for (let i = 0; i < SPRING.substeps; i++) { const h = dt / SPRING.substeps; s.v += ((s.want - s.x) * SPRING.stiffness - s.v * SPRING.damping) * h; s.x += s.v * h; }
         if (Math.abs(s.want - s.x) < 1e-3 && Math.abs(s.v) < 1e-3) { s.x = s.want; s.v = 0; }

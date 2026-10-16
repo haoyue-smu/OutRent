@@ -9,36 +9,255 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;600;700&display=swap">
 <link rel="stylesheet" href="../../../../design/tokens.css">
 <link rel="stylesheet" href="../../../../design/components.css">
+<link rel="stylesheet" href="../../_shared/lead.css">
 <style>
-  /* Page-only layout goes here. Use var(--tokens) only: no hex, rgb or px font sizes outside the scale.
-     A new reusable look = a new component: list it under "Off-system" in DECISIONS.md. */
+  /* Card → page (hero moment 3): 04's Trek Marlin 7 card photo carries the same name, so it grows into this hero. */
+  @view-transition { navigation: auto; }
+  ::view-transition-group(listing-photo) { animation-duration: var(--t-slow); animation-timing-function: var(--ease-glide); }
+  @media (prefers-reduced-motion: reduce) {
+    ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation-duration: 160ms !important; }
+  }
+
+  .hero-photo { position: absolute; inset: 0; align-items: center; justify-content: center; view-transition-name: listing-photo; }
+  .on-photo { position: absolute; bottom: 50px; z-index: 2; }
+  .photos { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--s-2); margin: 0; padding: 0; list-style: none; }
+  .photos button { width: 100%; display: flex; flex-direction: column; gap: var(--s-1); padding: 0; border: 0; background: none; color: var(--muted); font-size: var(--fs-label); line-height: var(--lh-label); text-align: left; cursor: pointer; }
+  .photos .img-ph { display: block; width: 100%; min-height: 0; aspect-ratio: 1 / 1; outline-offset: 2px; }
+  .photos button[aria-pressed="true"] { color: var(--ink); font-weight: 600; }
+  .photos button[aria-pressed="true"] .img-ph { outline: 2px solid var(--sage); }
+  .explain-steps li { cursor: pointer; transition: background-color var(--t-quick) var(--ease-glide); }
+  .explain-steps .n { transition: background-color var(--t-quick) var(--ease-glide), color var(--t-quick) var(--ease-glide); }
+  .lines { display: flex; flex-direction: column; gap: var(--s-2); margin: 0; }
+  .lines div { display: flex; justify-content: space-between; gap: var(--s-3); font-size: var(--fs-callout); line-height: var(--lh-callout); }
+  .lines dt { color: var(--muted); }
+  .lines dd { margin: 0; font-variant-numeric: tabular-nums; }
+  .lines .total { padding-top: var(--s-2); border-top: 1px solid var(--line); font-weight: 700; font-size: var(--fs-body); }
+  .sheet { gap: var(--s-6); }
+  a.chip { text-decoration: none; }
+  .actionbar .btn { white-space: nowrap; flex: none; }
+  .actionbar .price small { white-space: nowrap; }
+  .b-mark circle { fill: var(--white); stroke: var(--sage); stroke-width: 1.5; vector-effect: non-scaling-stroke; }
+  .b-mark text { fill: var(--sage); font-family: var(--font); font-size: 16px; font-weight: 700; }
+  .b-mark.is-on circle { fill: var(--sage); }
+  .b-mark.is-on text { fill: var(--white); }
+  .b-mark { opacity: 0; transition: opacity var(--t-quick) var(--ease-glide); }
+  .fig-bike[data-apart] .b-mark { opacity: 1; }
+  @media (prefers-reduced-motion: reduce) { .b-mark { opacity: 1; } }
 </style>
 </head>
 <body>
-  <!-- One phone screen, 393 × 852. Build only inside .screen. -->
-  <main class="screen" data-page="05-listing-detail" data-direction="A">
+  <main class="screen is-white is-frame" data-page="05-listing-detail" data-direction="A">
+    <div class="scroll" id="scroller">
+      <div class="photo-top">
+        <div class="img-ph is-bleed hero-photo" id="hero-photo" role="img" aria-label="Photo: this Trek Marlin 7, size M, side view on the Loop Cycles stand"></div>
+        <div class="float-top" data-enter="glass">
+          <a class="icon-btn glass" href="#" aria-label="Back" data-goes-to="04-search-results">
+            <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-arrow-left"/></svg>
+          </a>
+          <button type="button" class="icon-btn glass" aria-label="Save this bike" aria-pressed="false" id="save-bike">
+            <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-heart"/></svg>
+          </button>
+        </div>
+        <a class="chip glass on-photo" style="left: 20px" href="#" data-goes-to="03-fit-profile" data-enter="glass">
+          <svg class="icon is-sm" aria-hidden="true" style="color: var(--sage)"><use href="../../../../design/icons.svg#i-check-circle"/></svg>Fits you · frame M
+        </a>
+        <span class="chip glass on-photo num" style="right: 20px" id="photo-date" data-enter="glass">Wed 22 Oct · 1/4</span>
+      </div>
 
-    <div class="topbar">
-      <a class="icon-btn" href="#" aria-label="Back" data-goes-to="previous">
-        <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-arrow-left"/></svg>
-      </a>
-      <span class="name">Listing Detail</span>
-      <span></span>
+      <div class="sheet" data-enter="sheet">
+        <div class="stack">
+          <span class="t-foot">Loop Cycles · Bukit Timah</span>
+          <h1 class="t-large">Trek Marlin 7</h1>
+          <span class="t-callout" style="color: var(--muted)">Hardtail · 29" wheels · frame M</span>
+        </div>
+
+        <section class="group" aria-labelledby="photos-title">
+          <div class="stack">
+            <h2 class="t-title" id="photos-title">Photos of this bike</h2>
+            <span class="t-foot">Taken by Loop Cycles on Wed 22 Oct. This exact bike, not a catalogue picture.</span>
+          </div>
+          <ul class="photos" id="photos"></ul>
+        </section>
+
+        <a class="row" href="#" aria-label="Loop Cycles, bike shop in Bukit Timah. Sets up, delivers and collects this bike.">
+          <span class="thumb"><svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-bicycle"/></svg></span>
+          <span class="body">
+            <span class="meta">Bike shop · Bukit Timah</span>
+            <span class="name">Loop Cycles</span>
+            <span class="meta">Sets up, delivers and collects this bike</span>
+          </span>
+        </a>
+
+        <section class="group" id="setup" aria-labelledby="setup-title">
+          <div class="head">
+            <h2 class="t-title" id="setup-title">Set up for you before delivery</h2>
+          </div>
+          <div class="head" style="min-height: 0">
+            <span class="t-foot">From your fit: 176 cm, inside leg 81 cm.</span>
+            <a class="btn is-text" href="#" data-goes-to="03-fit-profile">Edit fit</a>
+          </div>
+          <figure class="explainer" id="plate" style="margin: 0">
+            <span class="corner fig">Fig 1</span><span class="corner title">Set-up</span>
+            <div class="fig-bike" id="fig" tabindex="0" role="group" aria-label="Bike set-up figure. Tap to take it apart; arrow keys step through the three adjustments."></div>
+            <span class="corner hint" id="fig-hint">Scroll to step through</span><span class="corner readout" id="fig-readout" aria-live="polite">Assembled for Daniel</span>
+          </figure>
+          <ol class="explain-steps" id="steps">
+            <li data-step="1" tabindex="0"><span class="n">1</span><span><b>Saddle 72 cm</b><span class="d">Set from your 81 cm inside leg. Your knee keeps a slight bend.</span></span></li>
+            <li data-step="2" tabindex="0"><span class="n">2</span><span><b>Fork sag 25%</b><span class="d">Softer for your first ride on dirt.</span></span></li>
+            <li data-step="3" tabindex="0"><span class="n">3</span><span><b>Bars +1 cm</b><span class="d">One spacer under the stem, so you sit a little more upright.</span></span></li>
+          </ol>
+          <div class="stats" aria-label="Set-up values">
+            <div class="stat"><span class="v"><span id="v-saddle">72</span><small> cm</small></span><span class="k">Saddle</span></div>
+            <div class="stat"><span class="v"><span id="v-sag">25</span><small>%</small></span><span class="k">Fork sag</span></div>
+            <div class="stat"><span class="v"><span id="v-bars">+1</span><small> cm</small></span><span class="k">Bars</span></div>
+          </div>
+          <div class="verdict">
+            <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-truck"/></svg>
+            <span><b>To Chestnut Nature Park, Sat 25 Oct, 7:40.</b> Set up at Loop Cycles before it leaves, so you ride straight away.</span>
+          </div>
+        </section>
+
+        <section class="card group" aria-labelledby="price-title">
+          <div class="stack">
+            <h2 class="t-title" id="price-title">S$53 all-in for Sat 25 Oct</h2>
+            <span class="t-foot">Everything you pay. Nothing is added at checkout.</span>
+          </div>
+          <dl class="lines">
+            <div><dt>Rental, 1 day</dt><dd>S$38</dd></div>
+            <div><dt>Delivery and collection</dt><dd>S$12</dd></div>
+            <div><dt>Service</dt><dd>S$3</dd></div>
+            <div class="total"><dt>Total</dt><dd>S$53</dd></div>
+          </dl>
+          <div class="verdict">
+            <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-info"/></svg>
+            <span>Plus a S$150 deposit, held on your card and refunded when the bike is back.</span>
+          </div>
+        </section>
+      </div>
     </div>
 
-    <div class="content" style="padding-top: var(--s-5)">
-      <h1 class="t-large">Listing Detail</h1>
-
-      <!-- Image slot example: always a placeholder. Say what the image should show. -->
-      <div class="img-ph" style="height: 180px" role="img" aria-label="Photo: describe the image here"></div>
-
-      <p class="t-body">Replace this with the page content from specs/05-listing-detail.md.</p>
-    </div>
-
-    <!-- Links to other pages: use href="#" plus data-goes-to="<page-id>", e.g. data-goes-to="05-listing-detail". -->
-    <div class="actionbar glass is-single">
-      <a class="btn is-block" href="#" data-goes-to="next">Primary action</a>
+    <div class="actionbar glass" data-enter="bar">
+      <span class="price"><b>S$53 <span>all-in</span></b><small>+ S$150 deposit, refunded</small></span>
+      <a class="btn" href="#" data-goes-to="06-delivery-return">Choose delivery</a>
     </div>
   </main>
+
+  <script src="../../_shared/gsap.min.js"></script>
+  <script src="../../_shared/ScrollTrigger.min.js"></script>
+  <script src="../../_shared/lead.js"></script>
+  <script src="../../_shared/bike-figure.js"></script>
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const { BikeFigure, roll, crossFade, still } = Lead;
+
+    // ---------- dated photos of this bike ----------
+    const PHOTOS = [
+      { name: "Side", label: "this Trek Marlin 7, size M, side view on the Loop Cycles stand" },
+      { name: "Drivetrain", label: "chain, cassette and rear derailleur of this bike, close up" },
+      { name: "Fork", label: "front fork and stanchions of this bike, close up" },
+      { name: "Tyres", label: "tread on both tyres of this bike, close up" },
+    ];
+    $("photos").innerHTML = PHOTOS.map((p, i) => `
+      <li><button type="button" aria-pressed="${i === 0}" data-i="${i}">
+        <span class="img-ph is-thumb" role="img" aria-label="Photo: ${p.label}, taken Wed 22 Oct"></span>${p.name}
+      </button></li>`).join("");
+    $("photos").addEventListener("click", (e) => {
+      const b = e.target.closest("button"); if (!b) return;
+      const i = +b.dataset.i, hero = $("hero-photo");
+      $("photos").querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+      crossFade(hero, () => { hero.setAttribute("aria-label", `Photo: ${PHOTOS[i].label}`); $("photo-date").textContent = `Wed 22 Oct · ${i + 1}/4`; });
+    });
+    $("save-bike").addEventListener("click", (e) => { const b = e.currentTarget; b.setAttribute("aria-pressed", String(b.getAttribute("aria-pressed") !== "true")); });
+
+    // ---------- hero moment 2: exploded set-up ----------
+    const fig = new BikeFigure($("fig"));
+    const STEPS = [
+      { part: null, text: "Assembled for Daniel" },
+      { part: "saddle", text: "Saddle 72 cm" },
+      { part: "front", text: "Fork sag 25%" },
+      { part: "cockpit", text: "Bars +1 cm" },
+    ];
+    // Numbered marks ride on the part they name (1 saddle, 2 fork, 3 bars).
+    const NS = "http://www.w3.org/2000/svg";
+    const marks = [1, 2, 3].map((n) => {
+      const part = STEPS[n].part;
+      const groups = fig.nodes.filter((o) => o.part === part);
+      const host = (groups.find((o) => o.move.some(Boolean)) || groups.reduce((a, b) => (b.el.getBBox().width > a.el.getBBox().width ? b : a))).el;
+      const box = groups.map((o) => o.el.getBBox()).reduce((a, b) => (b.y < a.y ? b : a));
+      const g = document.createElementNS(NS, "g");
+      g.setAttribute("class", "b-mark");
+      g.innerHTML = `<circle cx="${box.x + box.width / 2}" cy="${box.y - 20}" r="14"/><text x="${box.x + box.width / 2}" y="${box.y - 14.5}" text-anchor="middle">${n}</text>`;
+      host.appendChild(g);
+      return g;
+    });
+
+    let sel = 0, apart = false;
+    function setApart(on) {
+      if (on === apart) return;
+      apart = on;
+      $("fig").toggleAttribute("data-apart", on);
+      fig.explode(on);
+    }
+    function select(n) {
+      if (n === sel) return;
+      sel = n;
+      fig.focus(STEPS[n].part);
+      fig.travel(n === 2);
+      marks.forEach((m, i) => m.classList.toggle("is-on", i + 1 === n));
+      $("steps").querySelectorAll("li").forEach((li) => li.setAttribute("aria-current", String(+li.dataset.step === n)));
+      $("fig-readout").textContent = STEPS[n].text;
+    }
+    // End of the walk-through: parts snap back and the three values count up into the tiles.
+    function finish() {
+      select(0);
+      setApart(false);
+      $("fig-readout").textContent = "Ready at 7:40";
+      [["v-saddle", 72], ["v-sag", 25], ["v-bars", 1]].forEach(([id, v]) => {
+        const el = $(id); el.dataset.v = 0;
+        roll(el, v, (x) => (id === "v-bars" ? "+" : "") + Math.round(x));
+      });
+    }
+
+    // Tap and keyboard: the numbered rows are also the controls.
+    $("steps").addEventListener("click", (e) => { const li = e.target.closest("li"); if (!li) return; manual(); setApart(true); select(sel === +li.dataset.step ? 0 : +li.dataset.step); });
+    $("steps").addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); e.target.click(); } });
+    $("fig").addEventListener("click", () => { manual(); const on = !apart; setApart(on); if (!on) select(0); });
+    $("fig").addEventListener("keydown", (e) => {
+      const d = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[e.key];
+      if (d) { e.preventDefault(); manual(); setApart(true); select(Math.max(0, Math.min(3, sel + d))); if (!sel) setApart(false); }
+      if (e.key === "Escape") { manual(); select(0); setApart(false); }
+    });
+
+    // Scroll: when 40% of the plate is on screen the parts lift apart (once per visit), then scrolling
+    // walks 1 → 2 → 3, and at the end of the section everything snaps back. Taps take over from scroll.
+    let scrollDriven = true, triggers = [];
+    function manual() { if (!scrollDriven) return; scrollDriven = false; triggers.forEach((t) => t.kill()); $("fig-hint").textContent = "Tap a step"; }
+    if (!still.matches && window.ScrollTrigger) {
+      gsap.registerPlugin(ScrollTrigger);
+      const scroller = $("scroller");
+      triggers.push(ScrollTrigger.create({ scroller, trigger: "#plate", start: "40% bottom", once: true, onEnter: () => setApart(true) }));
+      triggers.push(ScrollTrigger.create({
+        scroller, trigger: "#setup", start: "40% bottom", end: "bottom bottom",
+        onUpdate: (st) => { if (st.isActive) { setApart(true); select(Math.min(3, 1 + Math.floor(st.progress * 3))); } },
+        onLeave: finish,
+        onLeaveBack: () => { select(0); },
+      }));
+    } else {
+      // Reduced motion: a static, numbered figure; the rows still select a part (160 ms cross-fade).
+      $("fig-hint").textContent = "Tap a step";
+      scrollDriven = false;
+      $("fig").setAttribute("data-apart", "");
+    }
+
+    // ---------- hero moment 3, receiving end: after the photo flies in, the sheet rises, glass fades in, price bar last ----------
+    addEventListener("pagereveal", (e) => {
+      if (!e.viewTransition || still.matches) return;
+      const ease = getComputedStyle(document.documentElement).getPropertyValue("--ease-glide").trim();
+      const play = (sel, frames, delay, duration) => document.querySelectorAll(sel).forEach((el) => el.animate(frames, { delay, duration, easing: ease, fill: "backwards" }));
+      play('[data-enter="sheet"]', [{ transform: "translateY(64px)", opacity: 0 }, { transform: "none", opacity: 1 }], 360, 280);
+      play('[data-enter="glass"]', [{ opacity: 0 }, { opacity: 1 }], 360, 280);
+      play('[data-enter="bar"]', [{ transform: "translateY(120%)" }, { transform: "none" }], 560, 200);
+    });
+  </script>
 </body>
 </html>
