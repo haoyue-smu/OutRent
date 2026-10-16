@@ -43,7 +43,10 @@ Preview: `npm run dev` → open http://localhost:5173
 ## 5. Hand in
 
 1. `npm run check` until there are no ✗.
-2. GitHub: commit and push to `work/<your-name>`, then open a pull request into `main`. Zip: zip your `work/<your-name>/` folder and send it.
+2. GitHub: commit and push to `work/<your-name>`. Zip: zip your `work/<your-name>/` folder and send it.
+3. Tell the team lead you're done. No pull request needed.
+
+Git trouble (conflict, error)? Ask your AI agent to sort it out.
 
 ## Rules in one line each
 

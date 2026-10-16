@@ -119,7 +119,7 @@ git commit -m "<page-id>: directions A and B"
 git push -u origin work/<name>
 ```
 
-Then open a pull request on GitHub into `main`. If they downloaded a zip instead, zip their `work/<name>/` folder after `npm run check` passes and send that.
+Push only to `work/<name>`; never push to `main` (it is protected anyway). No pull request is needed: when the page is done, the person tells the team lead. If `git pull` or `git push` reports a merge conflict or any Git error, resolve it for them, keeping their own work, and explain in one line what happened. If they downloaded a zip instead, zip their `work/<name>/` folder after `npm run check` passes and they send that.
 
 ## 10. Do not touch
 
