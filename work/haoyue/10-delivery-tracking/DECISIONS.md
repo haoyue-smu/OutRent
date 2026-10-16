@@ -1,10 +1,22 @@
-# Delivery Tracking (10-delivery-tracking): decisions
+# Delivery Tracking (10-delivery-tracking)
 
 Designer: Haoyue
 
+## My choice
+
+<!-- A or B. Then 2–3 lines on why, in YOUR OWN words (not the AI's). -->
+
+## Image requests
+
+| Where | What it should show |
+|---|---|
+| Set-up photo (hero) (393 × 360) | This Trek Marlin 7 on the Loop Cycles stand this morning, saddle set to 72 cm, a tape measure on the seat post |
+
+## Notes
+
 Lead hero page: one finished direction (A). Direction B is not built.
 
-## Direction A
+### The page
 
 - **Idea in one line:** The set-up photo proves the bike was set to his fit; below it, the arrival time is the one big number, then where the bike is on the route, then a timed status list. A delay replaces the calm view with what happened and three clear choices.
 - **Key decisions and why:**
@@ -16,20 +28,7 @@ Lead hero page: one finished direction (A). Direction B is not built.
   - "Bike has arrived" (→ 11) is the one primary button in every state.
   - Step progress Pick → Fit → **Deliver** → Ride → Return (flow page); no tab bar.
 
-## Direction B
-
-N/A: lead pages ship one direction, so there is no `direction-b/` (checker warning "direction-b/index.html is not there yet").
-
-## How A and B differ
-
-Not applicable: lead pages ship one direction.
-
-## My choice and why
-
-<!-- WRITE THIS YOURSELF, in your own words. Agents must not write this section.
-     Which direction would you ship, and why? Think about Daniel, the spec, and the HE fixes. -->
-
-## Off-system
+### Off-system
 
 - `_shared/lead.css` linked as an extra stylesheet (fixed frame and helpers). Checker warning "(lead exception) extra stylesheet".
 - Route strip (`.route`): an inline SVG line drawn in tokens (`--line` dashed for the rest of the way, `--sage` for the part done, white stops). Small moment "route draws on" (clip-path, 560 ms).
@@ -39,18 +38,9 @@ Not applicable: lead pages ship one direction.
 - Drop-off time buttons (`.slots`), a pill toggle built from the field and chip tokens.
 - Bottom sheets from RECIPES §1 for "Change drop-off time" and "Cancel".
 - Page classes: `.eta`, `.delay`, `.lines`, `.hero-photo`, `.on-photo`.
+- No `direction-b/`: lead pages ship one direction (checker warning "direction-b/index.html is not there yet").
 
-## Suggestions
-
-- None.
-
-## Image requests
-
-| Direction | Slot | Size (px) | What it should show |
-|---|---|---|---|
-| A | Set-up photo (hero) | 393 × 360 | This Trek Marlin 7 on the Loop Cycles stand this morning, saddle set to 72 cm, a tape measure on the seat post |
-
-## Assumptions and open questions
+### Assumptions and open questions
 
 - States: default (on time), `#delayed`, `#waiting` (he chose to wait), `#moved` (he picked a new drop-off time).
 - Working values, not in the spec: set-up photo at 6:52, left Loop Cycles at 7:05, new drop-off times 8:15 / 8:30 / 9:00 at the same price.
@@ -58,8 +48,8 @@ Not applicable: lead pages ship one direction.
 - Cancel shows the S$53 paid back and the S$150 deposit hold released; "Cancel booking" goes to 09-trips.
 - Back goes to 09-trips (he can also come from 08).
 
-## AI use
+### AI use
 
 - Tool and model used: Claude Code (Claude Opus 5.5).
-- What the AI generated: the page, the delay choices and sheets, the route strip and timeline, and this file except "My choice and why".
+- What the AI generated: the page, the delay choices and sheets, the route strip and timeline, and this file except "My choice".
 - What I decided or changed myself:

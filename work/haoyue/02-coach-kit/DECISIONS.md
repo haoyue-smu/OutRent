@@ -1,10 +1,25 @@
-# Coach's Kit (02-coach-kit): decisions
+# Coach's Kit (02-coach-kit)
 
 Designer: Haoyue
 
+## My choice
+
+<!-- A or B. Then 2–3 lines on why, in YOUR OWN words (not the AI's). -->
+
+## Image requests
+
+| Where | What it should show |
+|---|---|
+| Coach thumbnail (48 × 48) | Coach Aisyah, head and shoulders, outdoors |
+| Road helmet thumbnail (40 × 40) | Daniel's own road helmet, as in My gear |
+| Gloves thumbnail (40 × 40) | Daniel's own cycling gloves, as in My gear |
+| Rider kit figure (353 × 200) | Rider figure with each kit piece; the selected piece in sage (to come) |
+
+## Notes
+
 Lead hero page: one finished direction (A). Direction B is not built.
 
-## Direction A
+### The page
 
 - **Idea in one line:** Coach Aisyah's kit for the first Chestnut ride as one numbered list in three groups (To rent · Already have · Not needed) under a rider kit figure; the rows are also the figure's controls.
 - **Key decisions and why:**
@@ -15,20 +30,7 @@ Lead hero page: one finished direction (A). Direction B is not built.
   - Numbering 1–4 runs across the groups so the figure can label each piece once it arrives. For now picking a row names it on the plate.
   - No fit saved (`#nofit`): the frame chip is replaced by "Which frame fits you?" with height and inside-leg fields (same ranges and frame rule as 03, from `_shared/lead.js`). The primary button becomes "Show my frame size"; it explains what is missing, or saves and shows "Frame M" with "Saved to your fit".
 
-## Direction B
-
-N/A: lead pages ship one direction, so there is no `direction-b/` (checker warning "direction-b/index.html is not there yet").
-
-## How A and B differ
-
-Not applicable: lead pages ship one direction.
-
-## My choice and why
-
-<!-- WRITE THIS YOURSELF, in your own words. Agents must not write this section.
-     Which direction would you ship, and why? Think about Daniel, the spec, and the HE fixes. -->
-
-## Off-system
+### Off-system
 
 - `_shared/lead.css` linked as an extra stylesheet (fixed frame and helpers). Checker warning "(lead exception) extra stylesheet".
 - `_shared/lead.js` gives the fit rules (frame from height, accepted ranges), shared with 03 so the two pages always agree.
@@ -36,29 +38,17 @@ Not applicable: lead pages ship one direction.
 - Explainer plate with the placeholder "Rider kit figure (3D, coming)", 200 px tall.
 - Page layout classes: `.coach`, `.kit`, `.txt`, `.links`, `.pair`, `.ask`, `.have`.
 - The frame chip pops in after saving (200 ms glide; 160 ms cross-fade with reduced motion).
+- No `direction-b/`: lead pages ship one direction (checker warning "direction-b/index.html is not there yet").
 
-## Suggestions
-
-- None.
-
-## Image requests
-
-| Direction | Slot | Size (px) | What it should show |
-|---|---|---|---|
-| A | Coach thumbnail | 48 × 48 | Coach Aisyah, head and shoulders, outdoors |
-| A | Road helmet thumbnail | 40 × 40 | Daniel's own road helmet, as in My gear |
-| A | Gloves thumbnail | 40 × 40 | Daniel's own cycling gloves, as in My gear |
-| A | Rider kit figure | 353 × 200 | Rider figure with each kit piece; the selected piece in sage (to come) |
-
-## Assumptions and open questions
+### Assumptions and open questions
 
 - States: default (fit saved, frame M), `#nofit` (ask for height and inside leg first), `#saved` (fit just added here; shows frame and "Saved to your fit").
 - Back goes to 01-home.
 - Copy for why each item is (or isn't) needed is mine; please check it matches what Aisyah would say.
 - The figure readout shows "1 to rent · 2 you have" until a row is picked.
 
-## AI use
+### AI use
 
 - Tool and model used: Claude Code (Claude Opus 5.5).
-- What the AI generated: the page, the no-fit flow, the shared fit ranges, and this file except "My choice and why".
+- What the AI generated: the page, the no-fit flow, the shared fit ranges, and this file except "My choice".
 - What I decided or changed myself:

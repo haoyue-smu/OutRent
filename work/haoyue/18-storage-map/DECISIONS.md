@@ -1,10 +1,22 @@
-# Storage Map (18-storage-map): decisions
+# Storage Map (18-storage-map)
 
 Designer: Haoyue
 
+## My choice
+
+<!-- A or B. Then 2–3 lines on why, in YOUR OWN words (not the AI's). -->
+
+## Image requests
+
+| Where | What it should show |
+|---|---|
+| Map (393 × 400) | Calm street map of Daniel's area in Bukit Timah (no labels needed); pins are drawn on top by the page at A (west, close to home), B (north-east) and C (south-east) |
+
+## Notes
+
 Lead hero page: one finished direction (A). Direction B is not built.
 
-## Direction A
+### The page
 
 - **Idea in one line:** Map on top with a glass pin per rack showing its spaces; below, the hold rule, then the same racks as a list with counts. Picking a full rack says so and offers the nearest rack with space.
 - **Key decisions and why:**
@@ -15,37 +27,15 @@ Lead hero page: one finished direction (A). Direction B is not built.
   - The nearest rack with space (B) is chosen by default; the one primary button names the result: "Hold a space at Rack B" (→ 17).
   - Rack full (`#full`, or tapping Rack A): the button turns off and reads "Rack A is full"; a card explains it (0 of 8 spaces, can't hold one now) with "Choose Rack B, 1 space left".
 
-## Direction B
-
-N/A: lead pages ship one direction, so there is no `direction-b/` (checker warning "direction-b/index.html is not there yet").
-
-## How A and B differ
-
-Not applicable: lead pages ship one direction.
-
-## My choice and why
-
-<!-- WRITE THIS YOURSELF, in your own words. Agents must not write this section.
-     Which direction would you ship, and why? Think about Daniel, the spec, and the HE fixes. -->
-
-## Off-system
+### Off-system
 
 - `_shared/lead.css` linked as an extra stylesheet (fixed frame and helpers). Checker warning "(lead exception) extra stylesheet".
 - Map pins (`.pin`): glass capsules over the map placeholder with a lettered circle; the chosen pin turns `--sage`; a full rack's pin is muted. "You" marker: a sage dot with a white ring and the float shadow.
 - Rack rows (`.rack`): list rows with a lettered circle instead of a thumbnail and a count column (Title size number, Label size caption).
 - Page classes: `.map`, `.racks`, `.head`, `.full-note`.
+- No `direction-b/`: lead pages ship one direction (checker warning "direction-b/index.html is not there yet").
 
-## Suggestions
-
-- None.
-
-## Image requests
-
-| Direction | Slot | Size (px) | What it should show |
-|---|---|---|---|
-| A | Map | 393 × 400 | Calm street map of Daniel's area in Bukit Timah (no labels needed); pins are drawn on top by the page at A (west, close to home), B (north-east) and C (south-east) |
-
-## Assumptions and open questions
+### Assumptions and open questions
 
 - States: default (Rack B chosen) and `#full` (Rack A chosen).
 - Working values, not in the spec: distances 200 m / 450 m / 700 m and walk times 3 / 6 / 9 min.
@@ -53,8 +43,8 @@ Not applicable: lead pages ship one direction.
 - Back and "Hold a space" both go to 17-hub-pickup.
 - A real map would come from a map provider; here it is an image placeholder with pins on top.
 
-## AI use
+### AI use
 
 - Tool and model used: Claude Code (Claude Opus 5.5).
-- What the AI generated: the page, the rack choice and full state, and this file except "My choice and why".
+- What the AI generated: the page, the rack choice and full state, and this file except "My choice".
 - What I decided or changed myself:

@@ -1,10 +1,22 @@
-# Fit Profile (03-fit-profile): decisions
+# Fit Profile (03-fit-profile)
 
 Designer: Haoyue
 
+## My choice
+
+<!-- A or B. Then 2–3 lines on why, in YOUR OWN words (not the AI's). -->
+
+## Image requests
+
+| Where | What it should show |
+|---|---|
+| A, B: Rider figure on the explainer plate (353 × 40 now; full plate when it arrives) | Daniel as a grey rider on the bike, so the wrong frame size shows on his body |
+
+## Notes
+
 A/B experiment candidate. A and B differ only in the input control for height and inside leg. Everything else (copy, order, figure, size swap, buttons, states, rules) is rendered by one shared file, `_shared/fit-page.js`, and each direction's `index.html` only plugs in its control. Both controls ask for height first, then inside leg, and use the same ranges (height 150–200 cm, inside leg 60–95 cm).
 
-## Direction A
+### The page
 
 - **Idea in one line:** Two typed fields (height, inside leg) above the figure; the figure and every result update as he types.
 - **Key decisions and why:**
@@ -12,7 +24,7 @@ A/B experiment candidate. A and B differ only in the input control for height an
   - A value applies once it is in range; an out-of-range number shows a fix-it message once it is long enough to judge.
   - First time through, a valid height moves the cursor to inside leg.
 
-## Direction B
+### Direction B
 
 - **Idea in one line:** A switch above the figure picks height or inside leg, and the ruler on the figure's top edge sets it.
 - **Key decisions and why:**
@@ -20,7 +32,7 @@ A/B experiment candidate. A and B differ only in the input control for height an
   - First time through, letting go of the height ruler moves the switch on to inside leg.
   - Snaps to whole cm, arrow keys step 1 cm (Page Up / Down 5 cm), light haptic per cm where supported.
 
-## How A and B differ
+### How A and B differ
 
 Interaction pattern only: A types the two lengths into fields above the figure; B drags them on a ruler built into the figure.
 
@@ -35,12 +47,7 @@ Differences that come with the control and cannot be removed:
 
 Checked by driving the same nine steps through each control (default, height 185, leg 70, try S, Regular, Save, `#empty`, Save while empty, height 170): every shared readout, button and figure scale matched.
 
-## My choice and why
-
-<!-- WRITE THIS YOURSELF, in your own words. Agents must not write this section.
-     Which direction would you ship, and why? Think about Daniel, the spec, and the HE fixes. -->
-
-## Off-system
+### Off-system
 
 - `_shared/lead.css` linked as an extra stylesheet: shared lead-page styles (figure colours, fixed frame, hero number). Checker warning "(lead exception) extra stylesheet".
 - GSAP 3.15 (`_shared/gsap.min.js`, local copy, no CDN) drives the size swap. Approved lead exception to "no libraries".
@@ -54,17 +61,11 @@ Checked by driving the same nine steps through each control (default, height 185
 - Layout-only classes: `.group`, `.head`, `.stack`, `.verdicts` (shared); `.pair` (A's two fields); `.segmented.is-measure` (B's two-line switch).
 - The plate's bottom-right readout shows "Frame M" rather than a length, because saddle height has the 64 px number below.
 
-## Suggestions
+### Suggestions
 
 - Add a hero type size (64 / 64) to the scale if the lead pages keep it.
 
-## Image requests
-
-| Direction | Slot | Size (px) | What it should show |
-|---|---|---|---|
-| A, B | Rider figure on the explainer plate | 353 × 40 now; full plate when it arrives | Daniel as a grey rider on the bike, so the wrong frame size shows on his body |
-
-## Assumptions and open questions
+### Assumptions and open questions
 
 - States: `#empty` (first time: nothing entered, Save explains what is missing), `#saved` (after Save: confirmation, button becomes "Done" and goes back, values kept). Default (no hash) is his saved profile being edited. Editing after saving returns to "not saved yet".
 - Step progress (Pick → Fit …) shows only when he arrives from search or a listing: add `?from=04-search-results` or `?from=05-listing-detail`.
@@ -76,8 +77,8 @@ Checked by driving the same nine steps through each control (default, height 185
   - Trail experience: First time = fork sag 25%, bars +1 cm; A few rides = 22%, bars 0; Regular = 20%, bars 0.
 - Reduced motion: the size swap and number rolls become a 160 ms cross-fade; the saddle jumps instead of springing. Not yet checked with the OS setting turned on.
 
-## AI use
+### AI use
 
 - Tool and model used: Claude Code (Claude Opus 5.5).
-- What the AI generated: both directions' input controls, `_shared/lead.css`, `_shared/lead.js`, `_shared/fit-page.js` (page, fit rules, size-swap timeline, saddle spring), the A/B parity check, and this file except "My choice and why".
+- What the AI generated: both directions' input controls, `_shared/lead.css`, `_shared/lead.js`, `_shared/fit-page.js` (page, fit rules, size-swap timeline, saddle spring), the A/B parity check, and this file except "My choice".
 - What I decided or changed myself:
