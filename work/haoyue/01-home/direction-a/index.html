@@ -9,36 +9,129 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;600;700&display=swap">
 <link rel="stylesheet" href="../../../../design/tokens.css">
 <link rel="stylesheet" href="../../../../design/components.css">
+<link rel="stylesheet" href="../../_shared/lead.css">
 <style>
-  /* Page-only layout goes here. Use var(--tokens) only: no hex, rgb or px font sizes outside the scale.
-     A new reusable look = a new component: list it under "Off-system" in DECISIONS.md. */
+  .photo-top.is-home { height: 452px; }
+  .hero-photo { position: absolute; inset: 0; align-items: center; justify-content: center; }
+  .wordmark { font-size: var(--fs-title); line-height: var(--lh-title); font-weight: 700; letter-spacing: var(--track-title); color: var(--ink); }
+  .headline { position: absolute; top: 112px; left: var(--gutter); right: var(--gutter); z-index: 2; margin: 0; font-size: 38px; line-height: 41px; letter-spacing: var(--track-display); }
+
+  /* Search: one glass capsule, three parts (what, where, when). Each part opens Search. */
+  .search { position: absolute; left: var(--gutter); right: var(--gutter); bottom: 54px; z-index: 2; display: grid; grid-template-columns: 1.3fr 1fr 1fr; align-items: stretch; height: 64px; padding: 0 var(--s-1); border-radius: var(--r-pill); }
+  .search a { display: flex; flex-direction: column; justify-content: center; gap: 2px; min-width: 0; padding: 0 var(--s-3); color: var(--ink); text-decoration: none; border-radius: var(--r-pill); }
+  .search a + a { border-left: 1px solid var(--line); border-radius: 0; }
+  .search .k { display: flex; align-items: center; gap: var(--s-1); font-size: var(--fs-label); line-height: var(--lh-label); color: var(--muted); }
+  .search .v { font-size: var(--fs-callout); line-height: var(--lh-callout); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .search .v.is-empty { font-weight: 400; color: var(--muted); }
+
+  .sheet { gap: var(--s-5); padding-bottom: 132px; }
+  .row .meta { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .job { display: flex; flex-direction: column; gap: var(--s-3); }
+  .row .chev { color: var(--muted); }
+  .store { display: flex; flex-direction: column; gap: var(--s-3); }
+  .store .top { display: flex; align-items: flex-start; gap: var(--s-3); }
+  .store .top .body { flex: 1; display: flex; flex-direction: column; gap: var(--s-1); }
+  .store .tile { width: 48px; height: 48px; flex: none; border-radius: var(--r-thumb); background: var(--white); color: var(--sage-dark); display: flex; align-items: center; justify-content: center; }
+  .store .close { margin: -6px -6px 0 0; border-color: transparent; background: none; }
+  .toast { display: flex; align-items: center; justify-content: space-between; gap: var(--s-3); padding: var(--s-2) var(--s-2) var(--s-2) var(--s-4); border-radius: var(--r-tile); background: var(--mist); font-size: var(--fs-foot); line-height: var(--lh-foot); color: var(--ink); }
 </style>
 </head>
 <body>
-  <!-- One phone screen, 393 × 852. Build only inside .screen. -->
-  <main class="screen" data-page="01-home" data-direction="A">
+  <main class="screen is-white is-frame" data-page="01-home" data-direction="A">
+    <div class="scroll">
+      <div class="photo-top is-home">
+        <div class="img-ph is-bleed hero-photo" role="img" aria-label="Photo: a rider on a forest trail at Chestnut Nature Park, early morning, soft light, quiet foliage in the top 40%"></div>
+        <div class="float-top">
+          <span class="chip glass"><svg class="icon is-sm" aria-hidden="true"><use href="../../../../design/icons.svg#i-calendar-blank"/></svg>Sat 25 Oct</span>
+          <span class="wordmark">OutRent</span>
+        </div>
+        <h1 class="t-large headline">Ride the trail.<br><span class="t-accent">We bring the bike.</span></h1>
 
-    <div class="topbar">
-      <a class="icon-btn" href="#" aria-label="Back" data-goes-to="previous">
-        <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-arrow-left"/></svg>
-      </a>
-      <span class="name">Home</span>
-      <span></span>
+        <nav class="search glass" aria-label="Search gear">
+          <a href="#" data-goes-to="04-search-results">
+            <span class="k"><svg class="icon is-sm" aria-hidden="true"><use href="../../../../design/icons.svg#i-magnifying-glass"/></svg>What</span>
+            <span class="v is-empty">Bike, helmet…</span>
+          </a>
+          <a href="#" data-goes-to="04-search-results">
+            <span class="k">Where</span>
+            <span class="v">Chestnut</span>
+          </a>
+          <a href="#" data-goes-to="04-search-results">
+            <span class="k">When</span>
+            <span class="v num">Sat 25 Oct</span>
+          </a>
+        </nav>
+      </div>
+
+      <div class="sheet">
+        <section class="job" aria-labelledby="ride-title">
+          <h2 class="t-label" id="ride-title" style="margin: 0">Ride this weekend</h2>
+          <a class="row" href="#" data-goes-to="02-coach-kit">
+            <span class="img-ph is-thumb thumb" role="img" aria-label="Photo: Coach Aisyah at the Chestnut Nature Park trailhead, smiling, helmet on"></span>
+            <span class="body">
+              <span class="meta">Coach Aisyah · Sat 25 Oct</span>
+              <span class="name">What to rent for Chestnut</span>
+            </span>
+            <svg class="icon is-sm chev" aria-hidden="true"><use href="../../../../design/icons.svg#i-caret-right"/></svg>
+          </a>
+        </section>
+
+        <section class="job" aria-labelledby="own-title">
+          <h2 class="t-label" id="own-title" style="margin: 0">Gear you own</h2>
+
+          <div class="card is-filled store" id="store" data-state="default">
+            <div class="top">
+              <span class="tile"><svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-backpack"/></svg></span>
+              <span class="body">
+                <span class="t-title">Store gear you're not using</span>
+                <span class="t-foot" style="color: var(--ink)">We pick it up, keep it checked and clean, and it can earn rent while it waits.</span>
+              </span>
+              <button type="button" class="icon-btn close" id="dismiss" aria-label="Hide the storage card">
+                <svg class="icon is-sm" aria-hidden="true"><use href="../../../../design/icons.svg#i-x"/></svg>
+              </button>
+            </div>
+            <a class="btn is-secondary is-block" href="#" data-goes-to="16-storage-options">See storage</a>
+          </div>
+
+          <div class="toast" data-state="dismissed" role="status" hidden>
+            <span>Hidden. Storage is always under My gear.</span>
+            <a class="btn is-text" href="#" id="undo">Undo</a>
+          </div>
+          <a class="row" href="#" data-goes-to="14-my-equipment" data-state="dismissed" hidden>
+            <span class="thumb"><svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-backpack"/></svg></span>
+            <span class="body">
+              <span class="meta">My gear</span>
+              <span class="name">Your bike, helmet and gloves</span>
+            </span>
+            <svg class="icon is-sm chev" aria-hidden="true"><use href="../../../../design/icons.svg#i-caret-right"/></svg>
+          </a>
+        </section>
+      </div>
     </div>
 
-    <div class="content" style="padding-top: var(--s-5)">
-      <h1 class="t-large">Home</h1>
-
-      <!-- Image slot example: always a placeholder. Say what the image should show. -->
-      <div class="img-ph" style="height: 180px" role="img" aria-label="Photo: describe the image here"></div>
-
-      <p class="t-body">Replace this with the page content from specs/01-home.md.</p>
-    </div>
-
-    <!-- Links to other pages: use href="#" plus data-goes-to="<page-id>", e.g. data-goes-to="05-listing-detail". -->
-    <div class="actionbar glass is-single">
-      <a class="btn is-block" href="#" data-goes-to="next">Primary action</a>
-    </div>
+    <nav class="tabbar glass" aria-label="Main">
+      <a href="#" aria-current="page"><svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-house-fill"/></svg><span class="label">Home</span></a>
+      <a href="#" aria-label="Trips" data-goes-to="09-trips"><svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-calendar-blank"/></svg><span class="label">Trips</span></a>
+      <a href="#" aria-label="My gear" data-goes-to="14-my-equipment"><svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-backpack"/></svg><span class="label">My gear</span></a>
+      <a href="#" aria-label="Profile" data-goes-to="profile"><svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-user"/></svg><span class="label">Profile</span></a>
+    </nav>
   </main>
+
+  <script src="../../_shared/lead.js"></script>
+  <script>
+    // States: default, and #dismissed (storage card hidden). Dismiss and Undo fade (200 ms; 160 ms cross-fade with reduced motion).
+    const job = document.getElementById("store").parentElement;
+    Lead.states();
+    function go(state) {
+      const swap = () => { history.replaceState(null, "", state === "default" ? location.pathname : "#" + state); dispatchEvent(new HashChangeEvent("hashchange")); };
+      if (Lead.still.matches || !job.animate) { Lead.crossFade(job, swap); return; }
+      job.animate([{ opacity: 1 }, { opacity: 0, transform: "translateY(8px)" }], { duration: 200, easing: "cubic-bezier(0.4,0,1,1)" }).onfinish = () => {
+        swap();
+        job.animate([{ opacity: 0, transform: "translateY(8px)" }, { opacity: 1, transform: "none" }], { duration: 200, easing: "cubic-bezier(0.32,0.72,0,1)" });
+      };
+    }
+    document.getElementById("dismiss").addEventListener("click", () => go("dismissed"));
+    document.getElementById("undo").addEventListener("click", (e) => { e.preventDefault(); go("default"); });
+  </script>
 </body>
 </html>
