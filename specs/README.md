@@ -1,5 +1,10 @@
 # Page specs
 
-One file per page: `specs/<page-id>.md`. Each spec says what the page is for, what it must show, its states, and where its links go (by page id).
+One file per page: `specs/<page-id>.md`. Each says what the page is for, where it sits in the app, what it must show, its states, and which Iter1 problem it fixes.
 
-Specs are being added by the team lead. If your page's spec is not here yet, start from `team/sitemap.html` and DESIGN.md, and write your assumptions in DECISIONS.md.
+- Persona: **Daniel**. Mock data comes from `design/DESIGN.md` section 8 (Trek Marlin 7, Loop Cycles, Chestnut Nature Park, Sat 25 Oct, 7:40, S$38 / day, S$150 deposit, Coach Aisyah).
+- Numbers marked `*` are working values. Use them as written so every page agrees; the team lead may adjust them later.
+- A spec lists **what** must be there, not **how** it looks. That part is your A and B.
+- Something unclear or wrong? Write it under "Assumptions and open questions" in your DECISIONS.md.
+
+Map of the app: `team/sitemap.html`.
