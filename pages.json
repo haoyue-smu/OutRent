@@ -19,5 +19,6 @@
     { "id": "17-hub-pickup", "name": "Hub Pickup", "designer": "joshua" },
     { "id": "18-storage-map", "name": "Storage Map", "designer": "haoyue" }
   ],
-  "people": ["haoyue", "amanda", "harwin", "joshua", "kaijun", "minh", "shanise"]
+  "people": ["haoyue", "amanda", "harwin", "joshua", "kaijun", "minh", "shanise"],
+  "names": { "minh": "Minh Tuan" }
 }

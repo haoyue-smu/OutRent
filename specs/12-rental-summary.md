@@ -1,6 +1,6 @@
 # 12 Rental Summary
 
-**Designer:** Minh  ·  **Where:** Trips → past trip (after collection)
+**Designer:** Minh Tuan  ·  **Where:** Trips → past trip (after collection)
 
 ## Purpose
 The ride is done: the bike is back, condition on return is recorded, the deposit is coming back.

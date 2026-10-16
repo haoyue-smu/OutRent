@@ -1,6 +1,6 @@
 # 11 Handover Check
 
-**Designer:** Minh  ·  **Where:** Delivery Tracking → bike arrived
+**Designer:** Minh Tuan  ·  **Where:** Delivery Tracking → bike arrived
 
 ## Purpose
 Before riding, Daniel and the courier agree on the bike's condition, so he isn't blamed for old damage.

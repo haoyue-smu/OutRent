@@ -6,7 +6,7 @@ import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const ROOT = fileURLToPath(new URL("..", import.meta.url));
-const { pages, people } = JSON.parse(readFileSync(join(ROOT, "pages.json"), "utf8"));
+const { pages, people, names = {} } = JSON.parse(readFileSync(join(ROOT, "pages.json"), "utf8"));
 const [person, pageId] = process.argv.slice(2).map((s) => (s || "").toLowerCase());
 
 const page = pages.find((p) => p.id === pageId);
@@ -25,7 +25,7 @@ if (existsSync(dir)) { console.log("Already exists: work/" + person + "/" + page
 
 const fill = (text, direction = "") => text
   .replaceAll("{{PAGE_NAME}}", page.name).replaceAll("{{PAGE_ID}}", page.id)
-  .replaceAll("{{DIRECTION}}", direction).replaceAll("{{PERSON}}", person[0].toUpperCase() + person.slice(1));
+  .replaceAll("{{DIRECTION}}", direction).replaceAll("{{PERSON}}", names[person] || person[0].toUpperCase() + person.slice(1));
 
 const pageTpl = readFileSync(join(ROOT, "templates", "page.html"), "utf8");
 for (const d of ["a", "b"]) {
