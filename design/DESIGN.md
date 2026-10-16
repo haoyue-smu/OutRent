@@ -198,12 +198,12 @@ Small moments anyone may use:
 - Empty, loading and error states.
 - The small motion moments in section 9.
 
-**Propose** (the checker warns). You may do these, but list each one under "Off-system" in DECISIONS.md with a reason:
+**Propose** (the checker warns). You may do these, but explain each one in one line under "Notes" in DECISIONS.md:
 - A new component built only from tokens.
 - An extra Phosphor icon.
 - A new use of an existing colour, such as a sage block.
 
-New colours or type sizes are never built. Put them under "Suggestions" instead.
+New colours or type sizes are never built. Suggest them under "Notes" instead.
 
 **Rules for your two directions:**
 - Directions A and B must differ in at least one of these: structure, information order or interaction pattern. Say which one in a sentence.

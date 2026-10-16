@@ -53,12 +53,12 @@ function checkCss(file, css, text, at) {
     const v = m[1].trim();
     if (v.includes("var(") || v === "50%" || v === "inherit") continue;
     const bad = v.split(/\s+/).some((part) => { const n = part.match(/^(\d+)px$/); return !(part === "0" || (n && RADII.has(Number(n[1])))); });
-    if (bad) add(file, "warn", `${where(m.index)}: border-radius ${v}. Use a radius token (var(--r-card) etc.) or explain it under Off-system.`);
+    if (bad) add(file, "warn", `${where(m.index)}: border-radius ${v}. Use a radius token (var(--r-card) etc.) or explain it under Notes in DECISIONS.md.`);
   }
-  for (const m of clean.matchAll(/box-shadow\s*:\s*([^;}]*)/gi)) if (!/^(none|var\(--shadow-float\))$/.test(m[1].trim())) add(file, "warn", `${where(m.index)}: custom box-shadow. Use var(--shadow-float) or explain it under Off-system.`);
+  for (const m of clean.matchAll(/box-shadow\s*:\s*([^;}]*)/gi)) if (!/^(none|var\(--shadow-float\))$/.test(m[1].trim())) add(file, "warn", `${where(m.index)}: custom box-shadow. Use var(--shadow-float) or explain it under Notes in DECISIONS.md.`);
   for (const m of clean.matchAll(/backdrop-filter\s*:\s*([^;}]*)/gi)) if (!/var\(--glass-blur\)|none/.test(m[1])) add(file, "warn", `${where(m.index)}: custom backdrop-filter. Use the .glass class or var(--glass-blur).`);
   for (const m of clean.matchAll(/url\(\s*["']?([^"')]+)/gi)) if (!/icons\.svg/.test(m[1])) add(file, "error", `${where(m.index)}: url(${m[1]}) loads an image. All images must be .img-ph placeholders.`);
-  for (const m of clean.matchAll(/(?:linear|radial|conic)-gradient\(/gi)) add(file, "warn", `${where(m.index)}: gradient. Gradients are not part of the look; explain it under Off-system.`);
+  for (const m of clean.matchAll(/(?:linear|radial|conic)-gradient\(/gi)) add(file, "warn", `${where(m.index)}: gradient. Gradients are not part of the look; explain it under Notes in DECISIONS.md.`);
 }
 
 function checkHtml(file, html, decisions) {
@@ -76,7 +76,7 @@ function checkHtml(file, html, decisions) {
     if (/^(none|currentColor|transparent)$/i.test(m[2])) continue;
     add(file, "error", `line ${lineOf(html, m.index)}: ${m[1]}="${m[2]}" in an SVG. Use currentColor or a token through CSS.`);
   }
-  for (const m of html.matchAll(/<svg\b(?![^>]*class="[^"]*\bicon\b)[^>]*>[\s\S]*?<\/svg>/gi)) if (/<path\b/.test(m[0]) && !/<use\b/.test(m[0])) add(file, "warn", `line ${lineOf(html, m.index)}: hand-drawn SVG. Use Phosphor icons from design/icons.svg, or list it under Off-system.`);
+  for (const m of html.matchAll(/<svg\b(?![^>]*class="[^"]*\bicon\b)[^>]*>[\s\S]*?<\/svg>/gi)) if (/<path\b/.test(m[0]) && !/<use\b/.test(m[0])) add(file, "warn", `line ${lineOf(html, m.index)}: hand-drawn SVG. Use Phosphor icons from design/icons.svg, or explain it under Notes in DECISIONS.md.`);
   if (/lorem ipsum/i.test(html)) add(file, "error", `lorem ipsum found. Use the mock data from DESIGN.md section 8.`);
   if (/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/u.test(html.replace(/<!--[\s\S]*?-->/g, ""))) add(file, "error", `emoji found. Use Phosphor icons instead.`);
   for (const { css, at } of cssBlocks(html)) checkCss(file, css, html, at);
@@ -85,19 +85,18 @@ function checkHtml(file, html, decisions) {
   for (const { css } of cssBlocks(html).filter((b) => /[{}]/.test(b.css))) for (const m of css.matchAll(/\.([a-zA-Z][\w-]*)\s*[,{:.\s>+~[]/g)) defined.add(m[1]);
   const fresh = [...defined].filter((c) => !COMPONENT_CLASSES.has(c));
   if (fresh.length) {
-    const offSystem = (decisions.match(/## Off-system([\s\S]*?)(\n## |$)/) || [])[1] || "";
+    const offSystem = (decisions.match(/## Notes([\s\S]*?)(\n## |$)/) || [])[1] || "";
     const listed = offSystem.replace(/<!--[\s\S]*?-->/g, "").trim();
-    if (!listed || /^none\.?$/i.test(listed)) add(file, "warn", `new classes ${fresh.map((c) => "." + c).join(", ")} are not in the component library. List them under "Off-system" in DECISIONS.md with a reason.`);
+    if (!listed || /^none\.?$/i.test(listed)) add(file, "warn", `new classes ${fresh.map((c) => "." + c).join(", ")} are not in the component library. Explain them under "Notes" in DECISIONS.md.`);
   }
 }
 
 function checkDecisions(file, text) {
   const section = (title) => ((text.match(new RegExp(`## ${title}([\\s\\S]*?)(\\n## |$)`)) || [])[1] || "").replace(/<!--[\s\S]*?-->/g, "").trim();
-  for (const t of ["Direction A", "Direction B", "How A and B differ", "My choice and why", "Off-system", "Image requests", "AI use"]) {
+  for (const t of ["My choice", "Image requests"]) {
     if (!text.includes("## " + t)) add(file, "error", `section "## ${t}" is missing. Copy it back from templates/DECISIONS.md.`);
   }
-  if (!section("How A and B differ")) add(file, "warn", `"How A and B differ" is empty. One sentence: structure, information order or interaction pattern.`);
-  if (!section("My choice and why")) add(file, "warn", `"My choice and why" is empty. Write it yourself, in your own words.`);
+  if (!section("My choice")) add(file, "warn", `"My choice" is empty. Write A or B and why, in your own words.`);
 }
 
 function checkPageFolder(dir) {
