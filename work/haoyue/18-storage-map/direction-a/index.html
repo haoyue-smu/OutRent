@@ -9,36 +9,138 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;600;700&display=swap">
 <link rel="stylesheet" href="../../../../design/tokens.css">
 <link rel="stylesheet" href="../../../../design/components.css">
+<link rel="stylesheet" href="../../_shared/lead.css">
 <style>
-  /* Page-only layout goes here. Use var(--tokens) only: no hex, rgb or px font sizes outside the scale.
-     A new reusable look = a new component: list it under "Off-system" in DECISIONS.md. */
+  .photo-top.is-map { height: 400px; }
+  .map { position: absolute; inset: 0; align-items: flex-start; justify-content: center; padding-top: 104px; }
+  .map::after { margin-top: 0; }
+
+  /* Pins: glass labels on the map, one per rack, plus "You". */
+  .pin { position: absolute; z-index: 2; display: inline-flex; align-items: center; gap: 6px; height: var(--touch); padding: 0 14px 0 6px; border-radius: var(--r-pill); color: var(--ink); font-size: var(--fs-callout); font-weight: 600; cursor: pointer; transform: translate(-50%, -50%); transition: transform var(--t-press) var(--ease-glide), background-color var(--t-quick) var(--ease-glide); }
+  .pin .letter { width: 32px; height: 32px; border-radius: var(--r-pill); background: var(--white); border: 1.5px solid var(--sage); color: var(--sage-dark); display: flex; align-items: center; justify-content: center; font-size: var(--fs-callout); font-weight: 700; }
+  .pin.is-full .letter { border-color: var(--muted); color: var(--muted); }
+  .pin.is-full { color: var(--muted); }
+  .pin[aria-pressed="true"] { background: var(--sage); color: var(--white); border-color: var(--sage); }
+  .pin[aria-pressed="true"] .letter { background: var(--white); color: var(--sage-dark); border-color: var(--white); }
+  .pin.is-full[aria-pressed="true"] { background: var(--white); color: var(--ink); border-color: var(--muted); }
+  .pin:active { transform: translate(-50%, -50%) scale(0.97); }
+  .you { position: absolute; z-index: 2; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: var(--fs-label); line-height: var(--lh-label); font-weight: 600; }
+  .you .dot { width: 18px; height: 18px; border-radius: var(--r-pill); background: var(--sage); border: 3px solid var(--white); box-shadow: var(--shadow-float); }
+
+  .sheet { gap: var(--s-4); }
+  .racks { display: flex; flex-direction: column; margin: 0; padding: 0; list-style: none; }
+  .racks li + li { border-top: 1px solid var(--line); }
+  .rack { width: 100%; display: flex; align-items: center; gap: var(--s-3); min-height: 72px; padding: var(--s-2) 0; border: 0; background: none; text-align: left; color: var(--ink); cursor: pointer; }
+  .rack .letter { width: 44px; height: 44px; flex: none; border-radius: var(--r-pill); border: 1.5px solid var(--sage); color: var(--sage-dark); display: flex; align-items: center; justify-content: center; font-size: var(--fs-body); font-weight: 700; transition: background-color var(--t-quick) var(--ease-glide); }
+  .rack .body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+  .rack .name { font-size: 18px; line-height: 23px; font-weight: 600; }
+  .rack .meta { font-size: var(--fs-foot); line-height: var(--lh-foot); color: var(--muted); }
+  .rack .count { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+  .rack .count b { font-size: var(--fs-title); line-height: var(--lh-title); font-variant-numeric: tabular-nums; }
+  .rack .count small { font-size: var(--fs-label); line-height: var(--lh-label); color: var(--muted); }
+  .rack[aria-pressed="true"] .letter { background: var(--sage); border-color: var(--sage); color: var(--white); }
+  .rack.is-full .letter { border-color: var(--muted); color: var(--muted); }
+  .rack.is-full[aria-pressed="true"] .letter { background: var(--mist); color: var(--muted); border-color: var(--muted); }
+  .rack.is-full .count b { color: var(--muted); }
+  .head { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--s-3); }
+  .full-note { display: flex; flex-direction: column; gap: var(--s-3); }
 </style>
 </head>
 <body>
-  <!-- One phone screen, 393 × 852. Build only inside .screen. -->
-  <main class="screen" data-page="18-storage-map" data-direction="A">
+  <main class="screen is-white is-frame" data-page="18-storage-map" data-direction="A">
+    <div class="scroll">
+      <div class="photo-top is-map">
+        <div class="img-ph is-bleed map" role="img" aria-label="Map: streets around Daniel's home in Bukit Timah, with three public bike racks marked A, B and C"></div>
+        <div class="float-top">
+          <a class="icon-btn glass" href="#" aria-label="Back" data-goes-to="17-hub-pickup">
+            <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-arrow-left"/></svg>
+          </a>
+          <span class="chip glass"><svg class="icon is-sm" aria-hidden="true"><use href="../../../../design/icons.svg#i-clock"/></svg>Updated 2 min ago</span>
+        </div>
+        <div class="you" style="left: 46%; top: 66%"><span class="dot" aria-hidden="true"></span><span>You</span></div>
+        <button type="button" class="pin glass is-full" data-rack="A" style="left: 26%; top: 54%" aria-pressed="false" aria-label="Rack A, full, 0 of 8 spaces"><span class="letter">A</span>Full</button>
+        <button type="button" class="pin glass" data-rack="B" style="left: 72%; top: 44%" aria-pressed="false" aria-label="Rack B, 1 space left"><span class="letter">B</span>1 left</button>
+        <button type="button" class="pin glass" data-rack="C" style="left: 64%; top: 80%" aria-pressed="false" aria-label="Rack C, 4 spaces left"><span class="letter">C</span>4 left</button>
+      </div>
 
-    <div class="topbar">
-      <a class="icon-btn" href="#" aria-label="Back" data-goes-to="previous">
-        <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-arrow-left"/></svg>
-      </a>
-      <span class="name">Storage Map</span>
-      <span></span>
+      <div class="sheet">
+        <div class="head">
+          <div class="stack">
+            <h1 class="t-large">Choose a rack</h1>
+            <span class="t-foot">Public racks near home, Bukit Timah. Spaces updated 2 min ago.</span>
+          </div>
+        </div>
+
+        <div class="card is-filled verdict" role="note">
+          <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-info"/></svg>
+          <span><b>Choosing a rack holds one space for you for 24 hours.</b> Drop the bike before then, or the hold ends and the space goes back.</span>
+        </div>
+
+        <ul class="racks" aria-label="Racks near you">
+          <li><button type="button" class="rack is-full" data-rack="A" aria-pressed="false">
+            <span class="letter">A</span>
+            <span class="body"><span class="name">Rack A</span><span class="meta">Closest · 200 m, 3 min walk</span></span>
+            <span class="count"><b>0/8</b><small>Full</small></span>
+          </button></li>
+          <li><button type="button" class="rack" data-rack="B" aria-pressed="false">
+            <span class="letter">B</span>
+            <span class="body"><span class="name">Rack B</span><span class="meta">450 m, 6 min walk</span></span>
+            <span class="count"><b>1</b><small>space left</small></span>
+          </button></li>
+          <li><button type="button" class="rack" data-rack="C" aria-pressed="false">
+            <span class="letter">C</span>
+            <span class="body"><span class="name">Rack C</span><span class="meta">700 m, 9 min walk</span></span>
+            <span class="count"><b>4</b><small>spaces left</small></span>
+          </button></li>
+        </ul>
+
+        <div class="card full-note" data-state="full" role="status" hidden>
+          <div class="verdict">
+            <svg class="icon" aria-hidden="true" style="color: var(--ink)"><use href="../../../../design/icons.svg#i-warning-circle"/></svg>
+            <span><b>Rack A is full: 0 of 8 spaces.</b> It's the closest, but we can't hold a space there right now.</span>
+          </div>
+          <button type="button" class="btn is-secondary is-block" data-pick="B">Choose Rack B, 1 space left</button>
+        </div>
+
+      </div>
     </div>
 
-    <div class="content" style="padding-top: var(--s-5)">
-      <h1 class="t-large">Storage Map</h1>
-
-      <!-- Image slot example: always a placeholder. Say what the image should show. -->
-      <div class="img-ph" style="height: 180px" role="img" aria-label="Photo: describe the image here"></div>
-
-      <p class="t-body">Replace this with the page content from specs/18-storage-map.md.</p>
-    </div>
-
-    <!-- Links to other pages: use href="#" plus data-goes-to="<page-id>", e.g. data-goes-to="05-listing-detail". -->
     <div class="actionbar glass is-single">
-      <a class="btn is-block" href="#" data-goes-to="next">Primary action</a>
+      <a class="btn is-block" href="#" id="hold" data-goes-to="17-hub-pickup">Hold a space at Rack B</a>
     </div>
   </main>
+
+  <script src="../../_shared/lead.js"></script>
+  <script>
+    // States: default (nearest rack with space is chosen: B) and #full (he picked Rack A, which is full).
+    const RACKS = { A: { name: "Rack A", left: 0 }, B: { name: "Rack B", left: 1 }, C: { name: "Rack C", left: 4 } };
+    const hold = document.getElementById("hold");
+    let chosen = "B";
+
+    function choose(id) {
+      chosen = id;
+      document.querySelectorAll("[data-rack]").forEach((el) => el.setAttribute("aria-pressed", String(el.dataset.rack === id)));
+      const full = RACKS[id].left === 0;
+      if (full) {
+        hold.textContent = `${RACKS[id].name} is full`;
+        hold.setAttribute("aria-disabled", "true");
+        hold.removeAttribute("data-goes-to");
+      } else {
+        hold.textContent = `Hold a space at ${RACKS[id].name}`;
+        hold.setAttribute("aria-disabled", "false");
+        hold.setAttribute("data-goes-to", "17-hub-pickup");
+      }
+      // Keep the address bar in step with what is showing, so #full can be opened directly.
+      const want = full ? "#full" : "";
+      if (location.hash !== want) { history.replaceState(null, "", location.pathname + want); dispatchEvent(new HashChangeEvent("hashchange")); }
+    }
+
+    document.querySelectorAll("[data-rack]").forEach((el) => el.addEventListener("click", () => choose(el.dataset.rack)));
+    document.querySelector("[data-pick]").addEventListener("click", (e) => choose(e.currentTarget.dataset.pick));
+    hold.addEventListener("click", (e) => { if (hold.getAttribute("aria-disabled") === "true") e.preventDefault(); });
+
+    Lead.states((state) => { if (state === "full" && chosen !== "A") choose("A"); if (state === "default" && chosen === "A") choose("B"); });
+    choose(location.hash === "#full" ? "A" : "B");
+  </script>
 </body>
 </html>

@@ -2,21 +2,26 @@
 
 Designer: Haoyue
 
+Lead hero page: one finished direction (A). Direction B is not built.
+
 ## Direction A
 
-- **Idea in one line:** <!-- e.g. "One scrolling page: price first, then fit, then delivery." -->
+- **Idea in one line:** Map on top with a glass pin per rack showing its spaces; below, the hold rule, then the same racks as a list with counts. Picking a full rack says so and offers the nearest rack with space.
 - **Key decisions and why:**
-  - <!-- decision → reason -->
+  - Each pin shows its count ("Full", "1 left", "4 left"), so availability can be read from the map before reading any list → HE #15.
+  - "Updated 2 min ago" sits on the map (glass chip) and under the title, so he knows how fresh the counts are.
+  - The hold rule is the first thing in the sheet, above the racks: choosing a rack holds one space for 24 hours, and the hold ends if the bike isn't dropped by then → HE #15.
+  - The list repeats the racks with distance and walk time; Rack A is labelled "Closest" but shown as full (0/8) in muted grey.
+  - The nearest rack with space (B) is chosen by default; the one primary button names the result: "Hold a space at Rack B" (→ 17).
+  - Rack full (`#full`, or tapping Rack A): the button turns off and reads "Rack A is full"; a card explains it (0 of 8 spaces, can't hold one now) with "Choose Rack B, 1 space left".
 
 ## Direction B
 
-- **Idea in one line:** <!-- -->
-- **Key decisions and why:**
-  - <!-- decision → reason -->
+N/A: lead pages ship one direction, so there is no `direction-b/` (checker warning "direction-b/index.html is not there yet").
 
 ## How A and B differ
 
-<!-- One sentence. Must differ in at least one: structure, information order, or interaction pattern. -->
+Not applicable: lead pages ship one direction.
 
 ## My choice and why
 
@@ -25,25 +30,31 @@ Designer: Haoyue
 
 ## Off-system
 
-<!-- Anything outside the component library: new component, extra Phosphor icon, new use of an existing colour.
-     One line each with the reason. Write "None" if there is nothing. -->
+- `_shared/lead.css` linked as an extra stylesheet (fixed frame and helpers). Checker warning "(lead exception) extra stylesheet".
+- Map pins (`.pin`): glass capsules over the map placeholder with a lettered circle; the chosen pin turns `--sage`; a full rack's pin is muted. "You" marker: a sage dot with a white ring and the float shadow.
+- Rack rows (`.rack`): list rows with a lettered circle instead of a thumbnail and a count column (Title size number, Label size caption).
+- Page classes: `.map`, `.racks`, `.head`, `.full-note`.
 
 ## Suggestions
 
-<!-- Ideas that break locked rules (new colour, new font size...). Not built, just proposed. Write "None" if empty. -->
+- None.
 
 ## Image requests
 
 | Direction | Slot | Size (px) | What it should show |
 |---|---|---|---|
-| A | | | |
+| A | Map | 393 × 400 | Calm street map of Daniel's area in Bukit Timah (no labels needed); pins are drawn on top by the page at A (west, close to home), B (north-east) and C (south-east) |
 
 ## Assumptions and open questions
 
-- <!-- anything the spec did not answer and how you handled it -->
+- States: default (Rack B chosen) and `#full` (Rack A chosen).
+- Working values, not in the spec: distances 200 m / 450 m / 700 m and walk times 3 / 6 / 9 min.
+- Picking a rack only chooses it here; the 24-hour hold starts when he confirms on 17. Please confirm that's the intended moment.
+- Back and "Hold a space" both go to 17-hub-pickup.
+- A real map would come from a map provider; here it is an image placeholder with pins on top.
 
 ## AI use
 
-- Tool and model used:
-- What the AI generated:
+- Tool and model used: Claude Code (Claude Opus 5.5).
+- What the AI generated: the page, the rack choice and full state, and this file except "My choice and why".
 - What I decided or changed myself:
