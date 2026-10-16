@@ -12,9 +12,9 @@ Daniel picks a public rack near him that has space.
 Link with `data-goes-to="<page-id>"`.
 
 ## Must show
-- Map with racks: Rack A full, Rack C has space
-- When the counts were last updated
-- Whether choosing a rack reserves a spot
+- Map with three racks*: Rack A (closest) full 0/8 · Rack B 1 space left · Rack C 4 spaces left
+- Counts "Updated 2 min ago"*
+- Choosing a rack holds one space for 24 hours*; drop the bike before then or the hold ends
 
 ## States
 - Default

@@ -93,7 +93,7 @@ Icons are Phosphor, regular weight, 20–24 px. Use the fill weight only for a s
   - The page sits on a `--mist` background, with a glass back button at the top left and a centred page name.
   - The large title sits on the left. White input tiles go below it.
   - A glass action bar sits at the bottom with one primary button.
-- **Floating tab bar.** Shown on the 4 root tabs only: Home, Explore, Trips, My gear.
+- **Floating tab bar.** Shown on the 4 root tabs only: Home, Trips, My gear, Profile.
   - It is a glass capsule, centred, with its bottom 26 px above the screen edge.
   - The selected tab grows to show its label on a `--sage-tint` pill.
   - Hide it on flow pages: listing, fit, booking, delivery.

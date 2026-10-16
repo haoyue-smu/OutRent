@@ -14,7 +14,7 @@ Link with `data-goes-to="<page-id>"`.
 ## Must show
 - Set-up photo: bike set to his fit (placeholder)
 - Status: being set up → on its way → arriving 7:40
-- Delay state that says what happens and what he can do
+- Delay state: "Running 15 min late · now 7:55"*; he can wait, change the drop-off time, or cancel free of charge
 
 ## States
 - On time

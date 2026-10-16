@@ -129,7 +129,7 @@ const pageDirsUnder = (p) => {
   if (!existsSync(p)) return [];
   const rel = relative(workRoot, p).split(sep).filter(Boolean);
   if (rel.length >= 2) return [join(workRoot, rel[0], rel[1])];
-  if (rel.length === 1) return readdirSync(p).map((c) => join(p, c)).filter((c) => statSync(c).isDirectory());
+  if (rel.length === 1) return readdirSync(p).filter((c) => !c.startsWith("_")).map((c) => join(p, c)).filter((c) => statSync(c).isDirectory());
   return readdirSync(p).flatMap((person) => statSync(join(p, person)).isDirectory() ? pageDirsUnder(join(p, person)) : []);
 };
 
@@ -139,7 +139,7 @@ if (STAGED) {
   if (outside.length && !LEAD) for (const f of outside) add(join(ROOT, f), "error", `only files inside work/<your-name>/ may be changed. Undo this change (ask your agent: "unstage ${f}").`);
   const owners = new Set(files.filter((f) => f.startsWith("work/")).map((f) => f.split("/")[1]));
   if (owners.size > 1 && !LEAD) add(workRoot, "warn", `this commit touches more than one person's folder (${[...owners].join(", ")}). Only change your own.`);
-  targets = [...new Set(files.filter((f) => f.startsWith("work/") && f.split("/").length > 3).map((f) => join(workRoot, f.split("/")[1], f.split("/")[2])))].filter(existsSync);
+  targets = [...new Set(files.filter((f) => f.startsWith("work/") && f.split("/").length > 3 && !f.split("/")[2].startsWith("_")).map((f) => join(workRoot, f.split("/")[1], f.split("/")[2])))].filter(existsSync);
 } else if (args.includes("--pr")) {
   // Pull request check (GitHub Actions): branch must be work/<name>, and only work/<name>/ may change.
   const branch = process.env.GITHUB_HEAD_REF || execSync("git rev-parse --abbrev-ref HEAD", { cwd: ROOT }).toString().trim();
@@ -151,7 +151,7 @@ if (STAGED) {
     if (!m || !people.includes(m[1])) add(workRoot, "error", `branch "${branch}" is not allowed. Use your own branch: work/<your-name> (e.g. work/amanda).`);
     else for (const f of files) if (!f.startsWith(`work/${m[1]}/`)) add(join(ROOT, f), "error", `this pull request changes a file outside work/${m[1]}/. Only your own folder may change.`);
   }
-  targets = [...new Set(files.filter((f) => f.startsWith("work/") && f.split("/").length > 3).map((f) => join(workRoot, f.split("/")[1], f.split("/")[2])))].filter(existsSync);
+  targets = [...new Set(files.filter((f) => f.startsWith("work/") && f.split("/").length > 3 && !f.split("/")[2].startsWith("_")).map((f) => join(workRoot, f.split("/")[1], f.split("/")[2])))].filter(existsSync);
 } else {
   const given = args.filter((a) => !a.startsWith("--"));
   targets = given.length ? given.flatMap((g) => pageDirsUnder(join(ROOT, g))) : pageDirsUnder(workRoot);

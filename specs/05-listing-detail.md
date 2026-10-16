@@ -15,7 +15,8 @@ Link with `data-goes-to="<page-id>"`.
 - Trek Marlin 7, size M, Loop Cycles, Bukit Timah
 - Dated photos of this bike
 - Set-up for him: saddle 72 cm, fork sag 25%, bars +1 cm
-- All-in S$53* plus S$150 refundable deposit
+- All-in S$53* (rental S$38 + delivery and collection S$12* + service S$3*) plus S$150 refundable deposit
+- Photos dated Wed 22 Oct*
 
 ## States
 - Default

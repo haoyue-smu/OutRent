@@ -19,6 +19,9 @@ Link with `data-goes-to="<page-id>"`.
 - A "Fits you" chip where the frame matches his fit
 - Way to edit his fit (→ 03)
 
+## Shared transition (required)
+The photo on the Trek Marlin 7 card must have `style="view-transition-name: listing-photo"`, and the page needs `<style>@view-transition { navigation: auto; }</style>`. 05 Listing Detail uses the same name, so tapping the card grows its photo into the next page. Only that one card gets the name.
+
 ## States
 - Loading
 - No results for these filters (say which filter to relax)
