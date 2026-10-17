@@ -14,15 +14,36 @@
 <style>
   /* One kit list in three groups. The numbered rows are also the controls for the figure above them. */
   .coach { display: flex; align-items: center; gap: var(--s-3); }
-  .coach .img-ph { width: 48px; height: 48px; flex: none; }
+  @view-transition { navigation: auto; }
+  ::view-transition-group(kit-photo), ::view-transition-group(fit-chip) { animation-duration: var(--t-slow); animation-timing-function: var(--ease-glide); }
+  @media (prefers-reduced-motion: reduce) { ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation-duration: 160ms !important; } }
+  .kit-photo { display: block; width: 100%; height: 112px; object-fit: cover; object-position: center 45%; border-radius: var(--r-card); view-transition-name: kit-photo; }
+  .coach img { width: 48px; height: 48px; flex: none; border-radius: 50%; object-fit: cover; object-position: center 25%; }
+  /* Kit board: the coach's four items as product cut-outs, checked one by one against My gear. */
+  .board { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-2); margin-top: var(--s-2); }
+  .cell { position: relative; display: flex; flex-direction: column; align-items: center; gap: var(--s-1); padding: var(--s-3) var(--s-2) var(--s-2); border-radius: var(--r-tile); background: var(--white); border: 1.5px solid transparent; transition: opacity var(--t-base) var(--ease-glide), border-color var(--t-base) var(--ease-glide); }
+  .cell img { width: 100%; height: 76px; object-fit: contain; transition: opacity var(--t-base) var(--ease-glide), filter var(--t-base) var(--ease-glide); }
+  .cell .cap { font-size: var(--fs-label); line-height: var(--lh-label); color: var(--muted); text-align: center; }
+  .cell .cap b { display: block; color: var(--ink); font-weight: 600; }
+  .cell .badge { position: absolute; top: var(--s-2); right: var(--s-2); width: 24px; height: 24px; border-radius: 12px; background: var(--white); color: var(--sage); display: flex; align-items: center; justify-content: center; opacity: 0; transform: scale(.4); }
+  .cell .badge .icon { width: 24px; height: 24px; }
+  .cell.is-have .badge { opacity: 1; transform: none; transition: transform var(--t-base) cubic-bezier(.34,1.56,.64,1), opacity var(--t-quick) var(--ease-glide); }
+  .cell.is-have .cap span { color: var(--sage-dark); font-weight: 600; }
+  .cell.is-skip { opacity: .45; }
+  .cell.is-rent { border: 1.5px dashed var(--sage); background: var(--mist); }
+  .cell.is-rent img { opacity: .28; filter: grayscale(1); }
+  .cell.is-rent .cap span { color: var(--sage-dark); font-weight: 600; }
+  .explainer.kit-plate { padding-top: 34px; padding-bottom: 38px; min-height: 0; }
+  #primary[aria-disabled="true"] { opacity: .5; pointer-events: none; }
+  #primary { transition: opacity var(--t-base) var(--ease-glide); }
+  .fit-chip { view-transition-name: fit-chip; }
+  .kit .thumb-cut { width: 40px; height: 40px; flex: none; border-radius: var(--r-thumb); background: var(--mist); object-fit: contain; padding: 4px; box-sizing: border-box; }
   .coach .body { display: flex; flex-direction: column; }
-  .explainer .placeholder { min-height: 200px; }
   .kit { display: flex; flex-direction: column; gap: var(--s-2); }
   .kit .explain-steps li { align-items: center; cursor: pointer; transition: background-color var(--t-quick) var(--ease-glide); }
   .kit .explain-steps .txt { flex: 1; min-width: 0; }
   .kit .explain-steps li { background: var(--white); }
   .kit .explain-steps li[aria-current="true"] { background: var(--sage-tint); }
-  .kit .explain-steps .img-ph { width: 40px; height: 40px; flex: none; }
   .kit .have { color: var(--sage); }
   .kit .chip { height: 28px; padding: 0 10px; }
   .kit .explain-steps li.is-out { background: var(--white); border: 1px dashed var(--line); }
@@ -46,8 +67,9 @@
       </div>
 
       <div class="content" style="padding-top: var(--s-4)">
+        <img class="kit-photo" src="../assets/group-ride.jpg" alt="A small group riding a forest trail">
         <div class="coach">
-          <span class="img-ph is-thumb" role="img" aria-label="Photo: Coach Aisyah, head and shoulders, outdoors"></span>
+          <img src="../assets/coach-aisyah.jpg" alt="Coach Aisyah">
           <span class="body">
             <span class="t-callout" style="font-weight: 600">Coach Aisyah</span>
             <span class="t-foot">Recommends kit. She does not rent anything out.</span>
@@ -59,10 +81,15 @@
           <h1 class="t-large">Your kit for Chestnut Nature Park</h1>
         </div>
 
-        <figure class="explainer" style="margin: 0">
-          <span class="corner fig">Fig 1</span><span class="corner title">Your kit</span>
-          <div class="placeholder">Rider kit figure (3D, coming)</div>
-          <span class="corner hint" id="fig-hint">Tap an item</span><span class="corner readout" id="fig-readout" aria-live="polite">1 to rent · 2 you have</span>
+        <figure class="explainer kit-plate" style="margin: 0" aria-label="Coach Aisyah's kit checked against My gear">
+          <span class="corner fig">Fig 1</span><span class="corner title">Kit check</span>
+          <div class="board" id="board">
+            <div class="cell" data-kind="rent" data-item="Hardtail mountain bike"><img src="../assets/kit-hardtail.webp" alt=""><span class="cap"><b>Hardtail bike</b><span>Checking My gear…</span></span></div>
+            <div class="cell" data-kind="have" data-item="Road helmet"><span class="badge"><svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-check-circle"/></svg></span><img src="../assets/kit-road-helmet.webp" alt=""><span class="cap"><b>Road helmet</b><span>Checking My gear…</span></span></div>
+            <div class="cell" data-kind="have" data-item="Gloves"><span class="badge"><svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-check-circle"/></svg></span><img src="../assets/kit-gloves.webp" alt=""><span class="cap"><b>Gloves</b><span>Checking My gear…</span></span></div>
+            <div class="cell" data-kind="skip" data-item="Full-face helmet"><img src="../assets/kit-fullface-helmet.webp" alt=""><span class="cap"><b>Full-face helmet</b><span>Checking My gear…</span></span></div>
+          </div>
+          <span class="corner hint" id="fig-hint">From Coach Aisyah's list</span><span class="corner readout" id="fig-readout" aria-live="polite">You have <span id="have-n">0</span> of 3</span>
         </figure>
 
         <section class="kit" aria-labelledby="rent-title">
@@ -106,13 +133,13 @@
           <ol class="explain-steps" start="2">
             <li data-item="Road helmet" tabindex="0">
               <span class="n">2</span>
-              <span class="img-ph is-thumb" role="img" aria-label="Photo: Daniel's road helmet, from My gear"></span>
+              <img class="thumb-cut" src="../assets/kit-road-helmet.webp" alt="">
               <span class="txt"><b>Road helmet</b><span class="d">Checked against My gear. Fine for Chestnut's easy trails.</span></span>
               <svg class="icon have" role="img" aria-label="In My gear"><use href="../../../../design/icons.svg#i-check-circle"/></svg>
             </li>
             <li data-item="Gloves" tabindex="0">
               <span class="n">3</span>
-              <span class="img-ph is-thumb" role="img" aria-label="Photo: Daniel's cycling gloves, from My gear"></span>
+              <img class="thumb-cut" src="../assets/kit-gloves.webp" alt="">
               <span class="txt"><b>Gloves</b><span class="d">In My gear. They save your hands if you slip.</span></span>
               <svg class="icon have" role="img" aria-label="In My gear"><use href="../../../../design/icons.svg#i-check-circle"/></svg>
             </li>
@@ -143,7 +170,7 @@
   <script>
     // States: default (fit saved: frame M), #nofit (ask for height and inside leg first), #saved (just added from here).
     const $ = (id) => document.getElementById(id);
-    const { Fit, crossFade, still } = Lead;
+    const { Fit, crossFade, roll, still } = Lead;
     const DANIEL = { height: 176, leg: 81 };
     const fit = { height: null, leg: null };
 
@@ -153,7 +180,7 @@
         btn.textContent = "Show my frame size";
         btn.removeAttribute("data-goes-to");
       } else {
-        btn.textContent = `Find a bike in frame ${$("frame").textContent}`;
+        btn.innerHTML = `<span>Find a bike in <span class="fit-chip">frame ${$("frame").textContent}</span></span>`;
         btn.setAttribute("data-goes-to", "04-search-results");
       }
       $("bike-why").textContent = state === "nofit"
@@ -161,11 +188,52 @@
         : `Front suspension takes the roots and gravel. Frame ${$("frame").textContent} from your fit.`;
     }
 
+    // ---------- signature moment: the coach's list, checked against My gear ----------
+    const cells = [...document.querySelectorAll("#board .cell")];
+    const ORDER = ["Road helmet", "Gloves", "Full-face helmet", "Hardtail mountain bike"];
+    const frameText = () => ((location.hash.slice(1) || "default") === "nofit" ? "?" : $("frame").textContent);
+    const RESULT = {
+      have: () => "In My gear",
+      skip: () => "Not needed",
+      rent: () => `To rent · frame <span class="frame-q">${frameText()}</span>`,
+    };
+    let timers = [];
+    function resolve(cell) {
+      cell.classList.add("is-" + cell.dataset.kind);
+      cell.querySelector(".cap span").innerHTML = RESULT[cell.dataset.kind]();
+    }
+    function checkKit({ animate = true } = {}) {
+      timers.forEach(clearTimeout); timers = [];
+      const have = $("have-n");
+      cells.forEach((c) => { c.classList.remove("is-have", "is-skip", "is-rent"); c.querySelector(".cap span").textContent = "Checking My gear…"; });
+      have.textContent = "0"; have.dataset.v = 0;
+      const btn = $("primary"), nofit = (location.hash.slice(1) || "default") === "nofit";
+      const order = ORDER.map((n) => cells.find((c) => c.dataset.item === n));
+      if (!animate || still.matches) {
+        crossFade($("board"), () => { order.forEach(resolve); have.textContent = "2"; have.dataset.v = 2; });
+        btn.removeAttribute("aria-disabled");
+        return;
+      }
+      btn.setAttribute("aria-disabled", "true");
+      let n = 0;
+      order.forEach((c, i) => timers.push(setTimeout(() => {
+        resolve(c);
+        if (c.dataset.kind === "have") roll(have, ++n);
+      }, 250 + i * 220)));
+      timers.push(setTimeout(() => btn.removeAttribute("aria-disabled"), 250 + ORDER.length * 220 + 80));
+    }
+
+    let lastState = null;
     Lead.states((state) => {
       if (state === "nofit") { fit.height = fit.leg = null; $("height").value = $("leg").value = ""; $("fit-error").hidden = true; }
       else if (state === "default") $("frame").textContent = Fit.frame(DANIEL.height);
-      $("fig-readout").textContent = state === "nofit" ? "Frame size needed" : "1 to rent · 2 you have";
       setPrimary(state);
+      if (lastState === "nofit" && state === "saved") {
+        // Saved from here: only the "?" on the bike changes to his frame.
+        const q = document.querySelector("#board .frame-q");
+        if (q) crossFade(q, () => { q.textContent = $("frame").textContent; });
+      } else checkKit();
+      lastState = state;
     });
 
     // Ask for the fit: same ranges as Fit Profile (03).
@@ -205,7 +273,7 @@
       const pick = () => {
         const on = li.getAttribute("aria-current") !== "true";
         document.querySelectorAll(".kit li[data-item]").forEach((x) => x.setAttribute("aria-current", String(on && x === li)));
-        $("fig-readout").textContent = on ? li.dataset.item : "1 to rent · 2 you have";
+        cells.forEach((c) => c.style.outline = on && c.dataset.item === li.dataset.item ? "2px solid var(--sage)" : "");
       };
       li.addEventListener("click", pick);
       li.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); pick(); } });
