@@ -53,10 +53,10 @@
         </div>
         <div class="group">
           <div class="head">
-            <h2 class="t-title">Frame size</h2>
+            <h2 class="t-title">Bike size</h2>
             <span class="chip" id="size-chip" aria-live="polite"></span>
           </div>
-          <div class="segmented" role="radiogroup" aria-label="Try a frame size" id="size">
+          <div class="segmented" role="radiogroup" aria-label="Try a bike size" id="size">
             ${["S", "M", "L"].map((s) => `<button type="button" role="radio" aria-checked="false" data-size="${s}">${s}</button>`).join("")}
           </div>
           <ul class="verdicts" id="verdict" aria-live="polite"></ul>
@@ -77,7 +77,7 @@
         <div class="group">
           <h2 class="t-title">Set on every bike for you</h2>
           <div class="stats">
-            <div class="stat"><span class="v"><span id="stat-frame">M</span></span><span class="k">Frame</span></div>
+            <div class="stat"><span class="v"><span id="stat-frame">M</span></span><span class="k">Size</span></div>
             <div class="stat"><span class="v"><span id="stat-sag">25</span><small>%</small></span><span class="k">Fork sag</span></div>
             <div class="stat"><span class="v"><span id="stat-bars">+1</span><small> cm</small></span><span class="k">Bars</span></div>
           </div>
@@ -182,7 +182,7 @@
       else swapMoment(size);
     }
     fig.focus(model.leg != null ? "saddle" : null);
-    $("fig-readout").textContent = fit ? `Frame ${size}` : "Frame —";
+    $("fig-readout").textContent = fit ? `Size ${size}` : "Size —";
     $("fig-hint").textContent = complete() ? "Try S · M · L" : "Add height and inside leg";
 
     // Size control and verdict.
