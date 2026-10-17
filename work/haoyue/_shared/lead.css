@@ -2,7 +2,8 @@
    Tokens only. Everything here is Off-system on purpose and is listed in each page's DECISIONS.md. */
 
 /* ---------- fixed phone frame: the action bar stays on screen while the content scrolls ---------- */
-.screen.is-frame { height: min(852px, 100dvh); min-height: 0; display: flex; flex-direction: column; }
+/* The design frame is 393 wide, but it never forces the page wider than the phone (360 px phones, desktop scrollbars). */
+.screen.is-frame { width: min(393px, 100%); height: min(852px, 100dvh); min-height: 0; display: flex; flex-direction: column; }
 .screen.is-frame > .scroll { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none; }
 .screen.is-frame > .scroll::-webkit-scrollbar { display: none; }
 
