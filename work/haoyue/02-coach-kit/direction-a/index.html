@@ -17,7 +17,7 @@
   @view-transition { navigation: auto; }
   ::view-transition-group(kit-photo), ::view-transition-group(fit-chip) { animation-duration: var(--t-slow); animation-timing-function: var(--ease-glide); }
   @media (prefers-reduced-motion: reduce) { ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation-duration: 160ms !important; } }
-  .kit-photo { display: block; width: 100%; height: 112px; object-fit: cover; object-position: center 45%; border-radius: var(--r-card); view-transition-name: kit-photo; }
+  .kit-photo { height: 112px; border-radius: var(--r-card); view-transition-name: kit-photo; }
   .coach img { width: 48px; height: 48px; flex: none; border-radius: 50%; object-fit: cover; object-position: center 25%; }
   /* Kit board: the coach's four items as product cut-outs, checked one by one against My gear. */
   .board { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-2); margin-top: var(--s-2); }
@@ -67,7 +67,7 @@
       </div>
 
       <div class="content" style="padding-top: var(--s-4)">
-        <img class="kit-photo" src="../assets/group-ride.jpg" alt="A small group riding a forest trail">
+        <span class="calm kit-photo"><img src="../assets/group-ride.jpg" alt="A small group riding a forest trail"></span>
         <div class="coach">
           <img src="../assets/coach-aisyah.jpg" alt="Coach Aisyah">
           <span class="body">

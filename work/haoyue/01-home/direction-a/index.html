@@ -38,13 +38,11 @@
   .finder .store-copy { margin: 0; font-size: var(--fs-callout); line-height: var(--lh-callout); }
 
   .cats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--s-2); margin: 0; padding: 0; list-style: none; }
-  .cats a { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; height: 76px; border-radius: var(--r-tile); background: var(--mist); color: var(--ink); text-decoration: none; font-size: var(--fs-foot); font-weight: 600; }
-  .cats a.is-on { background: var(--sage-tint); color: var(--sage-dark); }
+  .cats a { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; height: 72px; border-radius: var(--r-tile); background: var(--mist); color: var(--ink); text-decoration: none; font-size: var(--fs-foot); font-weight: 600; }
   .cats .icon { width: 22px; height: 22px; margin-bottom: 2px; }
-  .cats small { font-size: 11px; font-weight: 400; color: var(--sage-dark); }
 
   .kit-card { display: flex; flex-direction: column; border-radius: var(--r-card); border: 1px solid var(--line); overflow: hidden; color: var(--ink); text-decoration: none; }
-  .kit-card img { display: block; width: 100%; height: 132px; object-fit: cover; object-position: center 45%; view-transition-name: kit-photo; }
+  .kit-card .calm { height: 132px; view-transition-name: kit-photo; }
   .kit-card .b { display: flex; flex-direction: column; gap: 6px; padding: var(--s-4); }
   .kit-card .bar { display: flex; align-items: center; gap: var(--s-2); }
   .kit-card .track { flex: 1; height: 6px; border-radius: 3px; background: var(--sage-tint); overflow: hidden; }
@@ -99,7 +97,7 @@
         <section class="group" aria-labelledby="cat-title">
           <h2 class="t-title" id="cat-title">Rent by category</h2>
           <ul class="cats">
-            <li><a href="#" class="is-on" data-goes-to="04-search-results"><svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-bicycle"/></svg>Bikes<small>This weekend</small></a></li>
+            <li><a href="#" data-goes-to="04-search-results"><svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-bicycle"/></svg>Bikes</a></li>
             <li><a href="#" data-goes-to="04-search-results"><svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-waves"/></svg>Kayaks</a></li>
             <li><a href="#" data-goes-to="04-search-results"><svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-tent"/></svg>Camping</a></li>
             <li><a href="#" data-goes-to="04-search-results"><svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-mountains"/></svg>Climbing</a></li>
@@ -109,7 +107,7 @@
         <section class="group" aria-labelledby="kit-title">
           <h2 class="t-title" id="kit-title">Kit lists shared with you</h2>
           <a class="kit-card" href="#" data-goes-to="02-coach-kit">
-            <img src="../assets/group-ride.jpg" alt="">
+            <span class="calm"><img src="../assets/group-ride.jpg" alt=""></span>
             <span class="b">
               <span class="t-foot" style="color: var(--muted)">From Coach Aisyah · Beginner trail ride</span>
               <span class="t-title">Sat 25 Oct · Chestnut Nature Park</span>
