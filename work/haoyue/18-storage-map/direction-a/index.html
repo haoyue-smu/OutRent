@@ -31,16 +31,16 @@
   .scale { position: absolute; left: 20px; top: 352px; z-index: 2; display: flex; flex-direction: column; gap: 2px; font-size: var(--fs-label); line-height: var(--lh-label); color: var(--muted); }
   .scale i { display: block; height: 4px; border: 1.5px solid var(--muted); border-top: 0; transition: width var(--t-slow) var(--ease-glide); }
   /* Zoom layer: map, pins and "You" move together; pins keep their size by scaling back by 1/z. */
-  .mapzoom { position: absolute; inset: 0; transform-origin: 0 0; transition: transform var(--t-slow) var(--ease-glide); --inv: 1; }
+  .mapzoom { position: absolute; inset: 0; transform-origin: 0 0; transition: transform 900ms var(--ease-glide); --inv: 1; }
   /* Pins: the letter sits on the rack. Three levels: chosen (largest), free, full (smallest). */
-  .pin { position: absolute; z-index: 2; display: inline-flex; align-items: center; gap: 6px; height: 36px; padding: 0 12px 0 4px; border-radius: var(--r-pill); color: var(--ink); font-size: 14px; font-weight: 600; cursor: pointer; transform-origin: 18px 50%; transform: translate(-18px, -50%) scale(var(--inv)); transition: height var(--t-base) var(--ease-glide), padding var(--t-base) var(--ease-glide), font-size var(--t-base) var(--ease-glide), background-color var(--t-base) var(--ease-glide), color var(--t-base), transform var(--t-slow) var(--ease-glide); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .pin { position: absolute; z-index: 2; display: inline-flex; align-items: center; gap: 6px; height: 36px; padding: 0 12px 0 4px; border-radius: var(--r-pill); color: var(--ink); font-size: 14px; font-weight: 600; cursor: pointer; transform-origin: 18px 50%; transform: translate(-18px, -50%) scale(var(--inv)); transition: height var(--t-base) var(--ease-glide), padding var(--t-base) var(--ease-glide), font-size var(--t-base) var(--ease-glide), background-color var(--t-base) var(--ease-glide), color var(--t-base), transform 900ms var(--ease-glide); font-variant-numeric: tabular-nums; white-space: nowrap; }
   .pin .letter { width: 28px; height: 28px; flex: none; border-radius: var(--r-pill); background: var(--white); border: 1.5px solid var(--sage); color: var(--sage-dark); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; box-sizing: border-box; transition: width var(--t-base) var(--ease-glide), height var(--t-base) var(--ease-glide), border-color var(--t-base), color var(--t-base); }
   .pin[aria-pressed="true"] { z-index: 3; height: 48px; padding: 0 18px 0 6px; font-size: 17px; background: var(--sage); color: var(--white); border-color: var(--sage); box-shadow: var(--shadow-float); transform-origin: 23px 50%; transform: translate(-23px, -50%) scale(var(--inv)); }
   .pin[aria-pressed="true"] .letter { width: 36px; height: 36px; font-size: 16px; color: var(--sage-dark); border-color: var(--white); }
   .pin.is-full { height: 30px; padding: 0 10px 0 3px; font-size: 12px; color: var(--muted); transform-origin: 15px 50%; transform: translate(-15px, -50%) scale(var(--inv)); }
   .pin.is-full .letter { width: 24px; height: 24px; font-size: 11px; border-color: var(--fig-lo); color: var(--muted); }
   .pin:active { filter: brightness(.97); }
-  .you { position: absolute; z-index: 2; transform: translate(-50%, -9px) scale(var(--inv)); transform-origin: 50% 9px; transition: transform var(--t-slow) var(--ease-glide); display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: var(--fs-label); line-height: var(--lh-label); font-weight: 600; }
+  .you { position: absolute; z-index: 2; transform: translate(-50%, -9px) scale(var(--inv)); transform-origin: 50% 9px; transition: transform 900ms var(--ease-glide); display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: var(--fs-label); line-height: var(--lh-label); font-weight: 600; }
   .you .dot { width: 18px; height: 18px; border-radius: var(--r-pill); background: var(--sage); border: 3px solid var(--white); box-shadow: var(--shadow-float); }
 
   .sheet { gap: var(--s-4); }
@@ -63,7 +63,7 @@
   .slots i { width: 14px; height: 14px; border-radius: 4px; border: 1.5px solid var(--line); box-sizing: border-box; }
   .slots i.is-taken { background: var(--fig-lo); border-color: var(--fig-lo); }
   .slots i.is-yours { background: var(--sage); border-color: var(--sage); }
-  .slots i.is-new { animation: slot-in var(--t-base) cubic-bezier(.34,1.56,.64,1); }
+  .slots i.is-new { animation: slot-in 520ms cubic-bezier(.34,1.56,.64,1); }
   @keyframes slot-in { from { transform: scale(.2); } to { transform: none; } }
 
   .note { display: flex; flex-direction: column; gap: var(--s-2); }
@@ -1006,7 +1006,7 @@
       if (!animate || still.matches) return;
       items.forEach((li) => {
         const dy = before.get(li) - li.getBoundingClientRect().top;
-        if (dy) li.animate([{ transform: `translateY(${dy}px)` }, { transform: "none" }], { duration: 420, easing: "cubic-bezier(0.32,0.72,0,1)" });
+        if (dy) li.animate([{ transform: `translateY(${dy}px)` }, { transform: "none" }], { duration: 640, easing: "cubic-bezier(0.32,0.72,0,1)" });
       });
     }
     function startClock() {
@@ -1047,9 +1047,10 @@
         RACKS.A.taken = 8;
         crossFade($("updated"), () => ($("updated").textContent = "Updated just now"));
         paint("A", { animateCount: true, newSlot: 7 });
-        setTimeout(() => { order(true); zoomOn = true; choose("B"); $("full-note").hidden = false; }, still.matches ? 0 : 420);
+        setTimeout(() => { order(true); $("full-note").hidden = false; }, still.matches ? 0 : 900);
+        setTimeout(() => { zoomOn = true; choose("B"); }, still.matches ? 0 : 1700);
       };
-      if (still.matches) go(); else setTimeout(go, 700);
+      if (still.matches) go(); else setTimeout(go, 1300);
     }
 
     document.querySelectorAll("[data-rack]").forEach((el) => el.addEventListener("click", () => { if (!held) { zoomOn = true; choose(el.dataset.rack); } }));
