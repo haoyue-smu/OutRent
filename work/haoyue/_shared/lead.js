@@ -44,7 +44,8 @@
   const Fit = {
     saddleRaw: (leg) => leg * 0.883,                       // crank centre to saddle top
     saddle: (leg) => Math.round(leg * 0.883),
-    frame: (height) => (height < 167 ? "S" : height <= 180 ? "M" : "L"),
+    // Trek Marlin 7 size chart: S 155–165 cm, M 165–177 cm, L 177–188 cm (M/L 173–180 cm is not stocked here).
+    frame: (height) => (height < 165 ? "S" : height <= 177 ? "M" : "L"),
     // Accepted input, the same wherever height and inside leg are asked for (03, 02).
     range: { height: { min: 150, max: 200, label: "Height" }, leg: { min: 60, max: 95, label: "Inside leg" } },
     sizes: {
