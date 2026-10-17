@@ -91,5 +91,5 @@
 
 /* Calm photo: a busy photo inside a card is muted a little and washed with sage, so it sits with the page. */
 .calm { position: relative; display: block; overflow: hidden; }
-.calm img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center 45%; filter: saturate(.62) contrast(.92) brightness(1.04); }
-.calm::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(47, 82, 70, .14), rgba(47, 82, 70, .30)); pointer-events: none; }
+.calm img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center 45%; filter: saturate(.88); }
+.calm::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(47, 82, 70, .04), rgba(47, 82, 70, .10)); pointer-events: none; }
