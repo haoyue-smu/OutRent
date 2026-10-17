@@ -207,7 +207,7 @@ Small moments anyone may use:
 - The mock data in section 8.
 - The 393 frame, 44 px targets and contrast minimums.
 
-**Open.** This is where your two directions should differ:
+**Open.** This is your design:
 - Page structure: scroll, steps, tabs or sheet.
 - Information order.
 - Which components you use and how you combine them.
@@ -223,8 +223,8 @@ Small moments anyone may use:
 
 New colours or type sizes are never built. Suggest them under "Notes" instead.
 
-**Rules for your two directions:**
-- Directions A and B must differ in at least one of these: structure, information order or interaction pattern. Say which one in a sentence.
+**Rules:**
+- A second version (direction-b) is optional. If you build one, it must differ in structure, information order or interaction pattern. Say which one in a sentence.
 - Rule-breaking hero moments belong to the lead's pages only.
 
 ## 11. Do not

@@ -37,7 +37,7 @@ Add "mobbin" or "dribbble" to a search to get screenshots instead of articles.
 ## How to use a reference
 
 1. Screenshot 2–3 screens that solve the same problem as your page.
-2. Write one line each under "Direction A / B" in DECISIONS.md: what you borrowed (order, grouping, interaction) and from where.
+2. Write one line under "Notes" in DECISIONS.md: what you borrowed (order, grouping, interaction) and from where.
 3. Rebuild it with our components. Never copy their colours, fonts, icons or images.
 
 ## What to avoid

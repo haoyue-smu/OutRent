@@ -17,7 +17,8 @@ function home() {
     for (const pid of readdirSync(join(workDir, person))) {
       const p = pages.find((x) => x.id === pid);
       if (!p) continue;
-      const links = ["a", "b"].filter((d) => existsSync(join(workDir, person, pid, "direction-" + d, "index.html")))
+      const built = (d) => { const f = join(workDir, person, pid, "direction-" + d, "index.html"); return existsSync(f) && (d === "a" || !readFileSync(f, "utf8").includes("Replace this with the page content")); };
+      const links = ["a", "b"].filter(built)
         .map((d) => `<a href="/work/${person}/${pid}/direction-${d}/">Direction ${d.toUpperCase()}</a>`).join(" · ");
       rows.push([pid, `<li><b>${pid}</b> ${p.name} <small>(${names[person] || person})</small> — ${links} · <a href="/work/${person}/${pid}/DECISIONS.md">DECISIONS.md</a></li>`]);
     }

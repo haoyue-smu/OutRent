@@ -28,7 +28,7 @@ const fill = (text, direction = "") => text
   .replaceAll("{{DIRECTION}}", direction).replaceAll("{{PERSON}}", names[person] || person[0].toUpperCase() + person.slice(1));
 
 const pageTpl = readFileSync(join(ROOT, "templates", "page.html"), "utf8");
-for (const d of ["a", "b"]) {
+for (const d of ["a"]) {
   mkdirSync(join(dir, "direction-" + d), { recursive: true });
   writeFileSync(join(dir, "direction-" + d, "index.html"), fill(pageTpl, d.toUpperCase()));
 }
@@ -36,5 +36,5 @@ mkdirSync(join(dir, "assets"), { recursive: true });
 writeFileSync(join(dir, "assets", ".gitkeep"), "");
 writeFileSync(join(dir, "DECISIONS.md"), fill(readFileSync(join(ROOT, "templates", "DECISIONS.md"), "utf8")));
 console.log("Created work/" + person + "/" + page.id + "/");
-console.log("  direction-a/index.html, direction-b/index.html, assets/, DECISIONS.md");
+console.log("  direction-a/index.html, assets/, DECISIONS.md   (add direction-b only for a second, clearly different idea)");
 console.log("Preview: npm run dev, then open http://localhost:5173/work/" + person + "/" + page.id + "/direction-a/");

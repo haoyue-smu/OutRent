@@ -62,7 +62,7 @@ npm run setup
 npm run dev
 ```
 
-Open http://localhost:5173. The start page lists every page and its two design directions.
+Open http://localhost:5173. The start page lists every page.
 
 On a new computer, the install script sets up Git, Node and VS Code:
 
@@ -85,13 +85,13 @@ pages.json     page list and owners
 AGENTS.md      rules for AI coding agents working in this repo
 ```
 
-Each page has two design directions and a short record of the choice between them:
+Each page lives in its own folder:
 
 ```
 work/<name>/<page-id>/
-  direction-a/index.html
-  direction-b/index.html
-  DECISIONS.md
+  direction-a/index.html   the page
+  direction-b/index.html   optional: a second, clearly different idea
+  DECISIONS.md             image requests and notes
 ```
 
 ## Built with
@@ -113,8 +113,8 @@ work/<name>/<page-id>/
 Each designer owns a few pages and works on their own branch, `work/<name>`. `main` is protected and is merged by haoyue.
 
 1. Read the page brief in `specs/<page-id>.md`.
-2. Build two clearly different directions, A and B. They must differ in structure, information order or interaction, not only in colour or wording.
-3. Choose one, improve it, and record why in `DECISIONS.md`.
+2. Build the page in `direction-a`. If you have a genuinely different second idea, build it in `direction-b`, choose one and record why in `DECISIONS.md`.
+3. Improve the page.
 4. Run `npm run check` until nothing is marked `✗`, then push to your branch.
 
 Use `.img-ph` placeholders for photos and list each one under *Image requests* in `DECISIONS.md`. If you use an AI coding agent, point it at [`AGENTS.md`](AGENTS.md) first.

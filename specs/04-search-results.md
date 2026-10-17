@@ -29,5 +29,5 @@ The photo on the Trek Marlin 7 card must have `style="view-transition-name: list
 ## Iter1 problem this page fixes
 HE #1 (total excluded charges), HE #8. Make the fix obvious: a tester should notice it without being told.
 
-## Room for A and B
-Everything above must be on the page. How it is ordered, grouped and interacted with is yours. A and B must differ in structure, information order or interaction pattern.
+## Room for your design
+Everything above must be on the page. How it is ordered, grouped and interacted with is yours. A second version is optional; if you build one, it must differ in structure, information order or interaction pattern.

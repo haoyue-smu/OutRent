@@ -96,8 +96,9 @@ function checkDecisions(file, text) {
   for (const t of ["My choice", "Image requests"]) {
     if (!text.includes("## " + t)) add(file, "error", `section "## ${t}" is missing. Copy it back from templates/DECISIONS.md.`);
   }
-  if (!section("My choice")) add(file, "warn", `"My choice" is empty. Write A or B and why, in your own words.`);
+  return section("My choice");
 }
+const isStarter = (html) => html.includes("Replace this with the page content");
 
 function checkPageFolder(dir) {
   const [person, pageId] = relative(join(ROOT, "work"), dir).split(sep);
@@ -107,11 +108,15 @@ function checkPageFolder(dir) {
   const decPath = join(dir, "DECISIONS.md");
   const decisions = existsSync(decPath) ? readFileSync(decPath, "utf8") : "";
   if (!decisions) add(dir, "error", `DECISIONS.md is missing. Run: npm run new -- ${person} ${pageId}`);
-  else checkDecisions(decPath, decisions);
-  for (const d of ["direction-a", "direction-b"]) {
-    const f = join(dir, d, "index.html");
-    if (!existsSync(f)) { add(dir, "warn", `${d}/index.html is not there yet.`); continue; }
-    checkHtml(f, readFileSync(f, "utf8"), decisions);
+  const choice = decisions ? checkDecisions(decPath, decisions) : "";
+  // direction-a is the page. direction-b is optional: only a second, clearly different idea goes there.
+  const fa = join(dir, "direction-a", "index.html");
+  if (!existsSync(fa)) add(dir, "warn", `direction-a/index.html is not there yet.`);
+  else checkHtml(fa, readFileSync(fa, "utf8"), decisions);
+  const fb = join(dir, "direction-b", "index.html");
+  if (existsSync(fb) && !isStarter(readFileSync(fb, "utf8"))) {
+    checkHtml(fb, readFileSync(fb, "utf8"), decisions);
+    if (!choice) add(decPath, "warn", `you built a second idea in direction-b, so "My choice" needs which one you kept and why, in your own words.`);
   }
   const walk = (p) => statSync(p).isDirectory() ? readdirSync(p).flatMap((c) => walk(join(p, c))) : [p];
   for (const f of walk(dir)) {
