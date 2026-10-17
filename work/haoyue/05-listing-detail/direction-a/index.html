@@ -20,18 +20,21 @@
   }
 
   .hero-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 62%; view-transition-name: listing-photo; }
+  /* Same light wash as the .calm photos, so the shop photos sit with the page. */
+  .hero-photo, .photos img, .row .thumb img { filter: saturate(.84) contrast(.96); }
+  .photo-top::before { content: ""; position: absolute; inset: 0; z-index: 1; background: linear-gradient(to bottom, rgba(47, 82, 70, .06), rgba(47, 82, 70, .13)); pointer-events: none; }
+  .photos .calm::after, .row .thumb.calm::after { background: linear-gradient(to bottom, rgba(47, 82, 70, .06), rgba(47, 82, 70, .13)); }
+  .photos .calm { border-radius: var(--r-thumb); }
+  .photos .calm img { border-radius: 0; aspect-ratio: 1 / 1; height: auto; }
+  .photos button[aria-pressed="true"] .calm { outline: 2px solid var(--sage); outline-offset: 2px; }
   .fit-chip { view-transition-name: fit-chip; }
+  .fit-link { min-height: 0; padding-top: var(--s-3); border-top: 1px solid var(--line); }
   .on-photo { position: absolute; bottom: 50px; z-index: 2; }
   .photos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-2); margin: 0; padding: 0; list-style: none; }
   .photos button { width: 100%; display: flex; flex-direction: column; gap: var(--s-1); padding: 0; border: 0; background: none; color: var(--muted); font-size: var(--fs-label); line-height: var(--lh-label); text-align: left; cursor: pointer; }
   .photos img { display: block; width: 100%; aspect-ratio: 1 / 1; object-fit: cover; border-radius: var(--r-thumb); outline-offset: 2px; }
   .photos button[aria-pressed="true"] { color: var(--ink); font-weight: 600; }
-  .photos button[aria-pressed="true"] img { outline: 2px solid var(--sage); }
   .row .thumb img { width: 100%; height: 100%; object-fit: cover; object-position: 30% center; }
-  .explain-steps li { cursor: pointer; transition: background-color var(--t-base) var(--ease-glide); }
-  .explain-steps .n { transition: background-color var(--t-base) var(--ease-glide), color var(--t-base) var(--ease-glide); }
-  .explain-steps li[data-done] { background: var(--sage-tint); }
-  .explain-steps li[data-done] .n { background: var(--sage); color: var(--white); }
   .lines { display: flex; flex-direction: column; gap: var(--s-2); margin: 0; }
   .lines div { display: flex; justify-content: space-between; gap: var(--s-3); font-size: var(--fs-callout); line-height: var(--lh-callout); }
   .lines dt { color: var(--muted); }
@@ -42,18 +45,6 @@
   .actionbar .btn { white-space: nowrap; flex: none; }
   .actionbar .price small { white-space: nowrap; }
   #bar-total { font-size: inherit; color: inherit; font-weight: inherit; }
-  #fig { cursor: pointer; }
-  /* Figure overlay: the saddle-height dimension, the 1 cm spacer and the detail circle. */
-  .fx-dim { fill: none; stroke: var(--sage); stroke-width: 1.4; stroke-dasharray: 4 3; vector-effect: non-scaling-stroke; }
-  .fx-tick { fill: none; stroke: var(--sage); stroke-width: 1.4; vector-effect: non-scaling-stroke; }
-  .fx-ext { fill: none; stroke: var(--fig-lo); stroke-width: .8; vector-effect: non-scaling-stroke; }
-  .fx-label { fill: var(--sage-dark); font-family: var(--font); font-size: 19px; font-weight: 700; paint-order: stroke; stroke: var(--mist); stroke-width: 5px; stroke-linejoin: round; font-variant-numeric: tabular-nums; }
-  .fx-spacer { fill: var(--sage); stroke: var(--sage-dark); stroke-width: .3; }
-  .fx-loupe-bg { fill: var(--white); }
-  .fx-loupe-ring { fill: none; stroke: var(--sage); stroke-width: 1.4; vector-effect: non-scaling-stroke; }
-  .fx-lead { fill: none; stroke: var(--fig-lo); stroke-width: 1; vector-effect: non-scaling-stroke; }
-  .fx-pin { fill: var(--white); stroke: var(--sage); stroke-width: 1.4; vector-effect: non-scaling-stroke; }
-  .fx-loupe-label { fill: var(--sage-dark); font-family: var(--font); font-size: 15px; font-weight: 700; paint-order: stroke; stroke: var(--mist); stroke-width: 4px; stroke-linejoin: round; }
   [data-fx] { opacity: 0; }
 </style>
 </head>
@@ -61,7 +52,7 @@
   <main class="screen is-white is-frame" data-page="05-listing-detail" data-direction="A">
     <div class="scroll" id="scroller">
       <div class="photo-top">
-        <img class="hero-photo" id="hero-photo" src="../assets/listing-hero.jpg" alt="This Trek Marlin 7, size M, on the Loop Cycles stand">
+        <img class="hero-photo" id="hero-photo" src="../assets/listing-hero.jpg" alt="This Trek Marlin 7, size M, on the Timah Cycles stand">
         <div class="float-top" data-enter="glass">
           <a class="icon-btn glass" href="#" aria-label="Back" data-goes-to="04-search-results">
             <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-arrow-left"/></svg>
@@ -78,7 +69,7 @@
 
       <div class="sheet" data-enter="sheet">
         <div class="stack">
-          <span class="t-foot">Loop Cycles · Bukit Timah</span>
+          <span class="t-foot">Timah Cycles · Bukit Timah</span>
           <h1 class="t-large">Trek Marlin 7</h1>
           <span class="t-callout" style="color: var(--muted)">Hardtail · 29" wheels · frame M</span>
         </div>
@@ -86,47 +77,37 @@
         <section class="group" aria-labelledby="photos-title">
           <div class="stack">
             <h2 class="t-title" id="photos-title">Photos of this bike</h2>
-            <span class="t-foot">Taken by Loop Cycles on Wed 22 Oct. This exact bike, not a catalogue picture.</span>
+            <span class="t-foot">Taken by Timah Cycles on Wed 22 Oct. This exact bike, not a catalogue picture.</span>
           </div>
           <ul class="photos" id="photos"></ul>
         </section>
 
-        <a class="row" href="#" aria-label="Loop Cycles, bike shop in Bukit Timah. Sets up, delivers and collects this bike.">
-          <span class="thumb"><img src="../assets/loop-cycles-shop.jpg" alt=""></span>
+        <a class="row" href="#" aria-label="Timah Cycles, bike shop in Bukit Timah. Owns this bike and sets it up for you.">
+          <span class="thumb calm"><img src="../assets/timah-cycles-shop.jpg" alt=""></span>
           <span class="body">
             <span class="meta">Bike shop · Bukit Timah</span>
-            <span class="name">Loop Cycles</span>
-            <span class="meta">Sets up, delivers and collects this bike</span>
+            <span class="name">Timah Cycles</span>
+            <span class="meta">Owns this bike and sets it up for you</span>
           </span>
         </a>
 
-        <section class="group" id="setup" aria-labelledby="setup-title">
-          <div class="head">
-            <h2 class="t-title" id="setup-title">Set up for you before delivery</h2>
+        <section class="card group" id="setup" aria-labelledby="setup-title">
+          <div class="stack">
+            <h2 class="t-title" id="setup-title">Set to your fit</h2>
+            <span class="t-foot">Timah Cycles sets this bike before it leaves the shop.</span>
           </div>
-          <div class="head" style="min-height: 0">
-            <span class="t-foot">From your fit: 176 cm, inside leg 81 cm.</span>
-            <a class="btn is-text" href="#" data-goes-to="03-fit-profile">Edit fit</a>
-          </div>
-          <figure class="explainer" id="plate" style="margin: 0">
-            <span class="corner fig">Fig 1</span><span class="corner title">Set-up</span>
-            <div class="fig-bike" id="fig" tabindex="0" role="group" aria-label="Set-up figure for frame M: saddle 72 cm, fork sag 25%, bars raised 1 cm. Tap to play it again."></div>
-            <span class="corner hint" id="fig-hint">Tap to play again</span><span class="corner readout" id="fig-readout" aria-live="polite">Trek Marlin 7 · frame M</span>
-          </figure>
-          <ol class="explain-steps" id="steps">
-            <li data-step="1" tabindex="0"><span class="n">1</span><span><b>Saddle 72 cm</b><span class="d">Set from your 81 cm inside leg. Your knee keeps a slight bend.</span></span></li>
-            <li data-step="2" tabindex="0"><span class="n">2</span><span><b>Fork sag 25%</b><span class="d">Softer for your first ride on dirt.</span></span></li>
-            <li data-step="3" tabindex="0"><span class="n">3</span><span><b>Bars +1 cm</b><span class="d">One spacer under the stem, so you sit a little more upright.</span></span></li>
-          </ol>
           <div class="stats" aria-label="Set-up values">
-            <div class="stat"><span class="v"><span id="v-saddle">72</span><small> cm</small></span><span class="k">Saddle</span></div>
-            <div class="stat"><span class="v"><span id="v-sag">25</span><small>%</small></span><span class="k">Fork sag</span></div>
-            <div class="stat"><span class="v"><span id="v-bars">+1</span><small> cm</small></span><span class="k">Bars</span></div>
+            <div class="stat"><span class="v">72<small> cm</small></span><span class="k">Saddle</span></div>
+            <div class="stat"><span class="v">25<small>%</small></span><span class="k">Fork sag</span></div>
+            <div class="stat"><span class="v">+1<small> cm</small></span><span class="k">Bars</span></div>
           </div>
-          <div class="verdict">
-            <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-truck"/></svg>
-            <span><b>To Chestnut Nature Park, Sat 25 Oct, 7:40.</b> Set up at Loop Cycles before it leaves, so you ride straight away.</span>
-          </div>
+          <a class="row fit-link" href="#" data-goes-to="03-fit-profile">
+            <span class="body">
+              <span class="meta">From your fit profile</span>
+              <span class="name">176 cm · inside leg 81 cm</span>
+            </span>
+            <svg class="icon" aria-hidden="true" style="color: var(--muted)"><use href="../../../../design/icons.svg#i-caret-right"/></svg>
+          </a>
         </section>
 
         <section class="card group" aria-labelledby="price-title">
@@ -154,22 +135,20 @@
     </div>
   </main>
 
-  <script src="../../_shared/gsap.min.js"></script>
   <script src="../../_shared/lead.js"></script>
-  <script src="../../_shared/bike-figure.js"></script>
   <script>
     const $ = (id) => document.getElementById(id);
-    const { BikeFigure, roll, crossFade, still } = Lead;
+    const { roll, crossFade, still } = Lead;
 
     // ---------- dated photos of this bike ----------
     const PHOTOS = [
-      { name: "On the stand", src: "listing-hero.jpg", pos: "center 62%", alt: "This Trek Marlin 7, size M, on the Loop Cycles stand" },
+      { name: "On the stand", src: "listing-hero.jpg", pos: "center 62%", alt: "This Trek Marlin 7, size M, on the Timah Cycles stand" },
       { name: "Drivetrain", src: "listing-gears.jpg", pos: "center", alt: "Rear gears and chain of this bike, close up" },
       { name: "Saddle", src: "listing-saddle.jpg", pos: "center", alt: "Saddle and seat post of this bike, close up" },
     ];
     $("photos").innerHTML = PHOTOS.map((p, i) => `
       <li><button type="button" aria-pressed="${i === 0}" data-i="${i}" aria-label="Show photo: ${p.name}, taken Wed 22 Oct">
-        <img src="../assets/${p.src}" alt="">${p.name}
+        <span class="calm"><img src="../assets/${p.src}" alt=""></span>${p.name}
       </button></li>`).join("");
     $("photos").addEventListener("click", (e) => {
       const b = e.target.closest("button"); if (!b) return;
@@ -178,145 +157,6 @@
       crossFade(hero, () => { hero.src = `../assets/${p.src}`; hero.alt = p.alt; hero.style.objectPosition = p.pos; $("photo-date").textContent = `Wed 22 Oct · ${i + 1}/3`; });
     });
     $("save-bike").addEventListener("click", (e) => { const b = e.currentTarget; b.setAttribute("aria-pressed", String(b.getAttribute("aria-pressed") !== "true")); });
-
-    // ---------- signature moment: his fit, applied to this bike ----------
-    // The figure is the model's diagram (one per model and frame size), not a photo of this listing.
-    // Nothing floats: the saddle height is measured, the O-ring slides to 25% sag, a 1 cm spacer goes under the stem.
-    const fig = new BikeFigure($("fig"));
-    const NS = "http://www.w3.org/2000/svg";
-    const svg = fig.svg;
-    const mk = (tag, attrs, parent) => { const el = document.createElementNS(NS, tag); for (const k in attrs) el.setAttribute(k, attrs[k]); (parent || svg).appendChild(el); return el; };
-    const all = mk("g", { id: "fig-all" }); fig.parts.before(all); all.appendChild(fig.parts);
-
-    // Drawing axes (cm → figure units), the same as lead.js.
-    const pr = (x, z) => [2.0907 * x, 0.5558 * x - 2.0506 * z];
-    const union = (part) => fig.nodes.filter((o) => o.part === part).map((o) => o.el.getBBox())
-      .reduce((a, b) => ({ x: Math.min(a.x, b.x), y: Math.min(a.y, b.y), X: Math.max(a.X, b.x + b.width), Y: Math.max(a.Y, b.y + b.height) }), { x: 1e9, y: 1e9, X: -1e9, Y: -1e9 });
-    const sb = union("saddle");
-    const TOP = [(sb.x + sb.X) / 2, sb.y];                       // top of the saddle
-    const run = pr(7.02 / 24 * 71.523, 22.95 / 24 * 71.523);    // drawn saddle height along the seat tube
-    const BB = [TOP[0] - run[0], TOP[1] - run[1]];              // crank centre
-    const STEER = (() => { const v = pr(0.3746, 0.9272); return v; })(); // 1 cm up the steerer
-    const STEM = [227, 77];                                     // top of the head tube, where spacers sit
-    const FORK = [197, 122];                                    // fork stanchion with the sag ring
-
-    // 1 · saddle height dimension, offset beside the seat tube
-    const v = [TOP[0] - BB[0], TOP[1] - BB[1]], len = Math.hypot(...v), n = [-v[1] / len, v[0] / len], off = 20, tick = 6;
-    const A2 = [BB[0] + n[0] * off, BB[1] + n[1] * off], T2 = [TOP[0] + n[0] * off, TOP[1] + n[1] * off];
-    const dim = mk("g", { "data-fx": "" });
-    mk("path", { class: "fx-ext", d: `M${BB}L${A2}M${TOP}L${T2}` }, dim);
-    const tickA = mk("path", { class: "fx-tick", d: `M${A2[0] - n[0] * tick},${A2[1] - n[1] * tick}L${A2[0] + n[0] * tick},${A2[1] + n[1] * tick}` }, dim);
-    const tickT = mk("path", { class: "fx-tick", d: `M${T2[0] - n[0] * tick},${T2[1] - n[1] * tick}L${T2[0] + n[0] * tick},${T2[1] + n[1] * tick}` }, dim);
-    const dimLine = mk("line", { class: "fx-dim", x1: A2[0], y1: A2[1], x2: A2[0], y2: A2[1] }, dim);
-    const mid = [(A2[0] + T2[0]) / 2 + n[0] * 10, (A2[1] + T2[1]) / 2 + n[1] * 10];
-    const dimText = mk("text", { class: "fx-label", x: mid[0], y: mid[1] }, dim);
-    const dimNum = mk("tspan", {}, dimText); mk("tspan", {}, dimText).textContent = " cm";
-
-    // 3 · the 1 cm spacer, drawn inside the figure so the detail circle shows it too
-    const p = (() => { const l = Math.hypot(STEER[1], STEER[0]); return [-STEER[1] / l, STEER[0] / l]; })(), hw = 3.6;
-    const spacer = mk("polygon", { class: "fx-spacer" }, all);
-    function setSpacer(k) {
-      const a = [STEM[0] - p[0] * hw, STEM[1] - p[1] * hw], b = [STEM[0] + p[0] * hw, STEM[1] + p[1] * hw];
-      const c = [b[0] + STEER[0] * k, b[1] + STEER[1] * k], d = [a[0] + STEER[0] * k, a[1] + STEER[1] * k];
-      spacer.setAttribute("points", [a, b, c, d].map((q) => q.join(",")).join(" "));
-      spacer.style.opacity = k > 0.02 ? 1 : 0;
-      fig.sp.cockpit.x = fig.sp.cockpit.want = k / 16; // the cockpit part moves 16 cm per unit; k cm here
-      fig.place();
-    }
-
-    // detail circle: 4× view of the figure around a target point
-    const C = [104, 60], R = 54, Z = 4;
-    const clip = mk("clipPath", { id: "loupe-clip" }, mk("defs", {}));
-    mk("circle", { cx: C[0], cy: C[1], r: R }, clip);
-    const loupe = mk("g", { "data-fx": "" });
-    const lead = mk("line", { class: "fx-lead" }, loupe);
-    const pin = mk("circle", { class: "fx-pin", r: 3 }, loupe);
-    const lens = mk("g", { "clip-path": "url(#loupe-clip)" }, loupe);
-    mk("circle", { class: "fx-loupe-bg", cx: C[0], cy: C[1], r: R }, lens);
-    const view = mk("use", { href: "#fig-all" }, lens);
-    mk("circle", { class: "fx-loupe-ring", cx: C[0], cy: C[1], r: R }, loupe);
-    const loupeText = mk("text", { class: "fx-loupe-label", x: C[0], y: C[1] + R + 18, "text-anchor": "middle" }, loupe);
-    const target = { x: FORK[0], y: FORK[1] };
-    function aim() {
-      view.setAttribute("transform", `translate(${C[0] - target.x * Z} ${C[1] - target.y * Z}) scale(${Z})`);
-      const dx = target.x - C[0], dy = target.y - C[1], d = Math.hypot(dx, dy);
-      lead.setAttribute("x1", C[0] + dx / d * R); lead.setAttribute("y1", C[1] + dy / d * R);
-      lead.setAttribute("x2", target.x); lead.setAttribute("y2", target.y);
-      pin.setAttribute("cx", target.x); pin.setAttribute("cy", target.y);
-    }
-
-    const STEPS = [
-      { part: "saddle", text: "Saddle 72 cm" },
-      { part: "front", text: "Fork sag 25%" },
-      { part: "cockpit", text: "Bars +1 cm" },
-    ];
-    const lis = [...$("steps").querySelectorAll("li")];
-    function show(i) {
-      fig.focus(i == null ? null : STEPS[i].part);
-      lis.forEach((li, j) => li.setAttribute("aria-current", String(j === i)));
-      $("fig-readout").textContent = i == null ? "Set for you · frame M" : STEPS[i].text;
-    }
-    function done(i) { lis[i].setAttribute("data-done", ""); }
-
-    // Start and end states, so the moment can replay and reduced motion can jump straight to the end.
-    function atStart() {
-      gsap.killTweensOf([dim, loupe, target, dimLine]);
-      dim.style.opacity = 0; loupe.style.opacity = 0;
-      dimLine.setAttribute("x2", A2[0]); dimLine.setAttribute("y2", A2[1]); dimNum.textContent = "0"; delete dimNum.dataset.v;
-      fig.sp.travel.x = fig.sp.travel.want = 0;
-      setSpacer(0);
-      Object.assign(target, { x: FORK[0], y: FORK[1] }); aim();
-      lis.forEach((li) => li.removeAttribute("data-done"));
-      show(null);
-      $("fig-readout").textContent = "Trek Marlin 7 · frame M";
-    }
-    function atEnd() {
-      dim.style.opacity = 1; loupe.style.opacity = 1;
-      dimLine.setAttribute("x2", T2[0]); dimLine.setAttribute("y2", T2[1]); dimNum.textContent = "72"; dimNum.dataset.v = 72;
-      fig.sp.travel.x = fig.sp.travel.want = 1;
-      setSpacer(1);
-      Object.assign(target, { x: STEM[0], y: STEM[1] }); aim();
-      loupeText.textContent = "+1 cm spacer";
-      lis.forEach((li) => li.setAttribute("data-done", ""));
-      show(null);
-    }
-
-    let playing = null;
-    function play() {
-      if (still.matches || !window.gsap) { crossFade($("fig"), atEnd); return; }
-      if (playing) playing.kill();
-      atStart();
-      const ease = "power2.out", line = { k: 0 };
-      playing = gsap.timeline({ onComplete: () => { show(null); playing = null; } })
-        // 1 · saddle: the measurement draws from the crank centre to the saddle top, the number counts up
-        .call(() => show(0), null, 0)
-        .to(dim, { opacity: 1, duration: 0.16 }, 0)
-        .to(line, { k: 1, duration: 0.55, ease, onUpdate: () => {
-          dimLine.setAttribute("x2", A2[0] + (T2[0] - A2[0]) * line.k); dimLine.setAttribute("y2", A2[1] + (T2[1] - A2[1]) * line.k);
-          dimNum.textContent = Math.round(72 * line.k);
-        } }, 0.05)
-        .call(() => done(0), null, 0.6)
-        // 2 · fork: the detail circle opens on the stanchion and the O-ring slides up to 25% sag
-        .call(() => { show(1); loupeText.textContent = "25% sag"; }, null, 0.65)
-        .fromTo(loupe, { opacity: 0 }, { opacity: 1, duration: 0.2 }, 0.65)
-        .call(() => fig.travel(true), null, 0.8)
-        .call(() => done(1), null, 1.1)
-        // 3 · bars: the circle moves to the stem, a 1 cm spacer slides in and the bars rise with it
-        .call(() => { show(2); loupeText.textContent = "+1 cm spacer"; }, null, 1.15)
-        .to(target, { x: STEM[0], y: STEM[1], duration: 0.3, ease: "power2.inOut", onUpdate: aim }, 1.15)
-        .to({ k: 0 }, { k: 1, duration: 0.3, ease: "back.out(1.6)", onUpdate() { setSpacer(this.targets()[0].k); } }, 1.45)
-        .call(() => done(2), null, 1.75);
-    }
-
-    atStart();
-    // Plays once when 40% of the figure is on screen; tap the figure to see it again.
-    const io = new IntersectionObserver((es) => { if (es.some((e) => e.isIntersecting)) { io.disconnect(); play(); } }, { root: $("scroller"), threshold: 0.4 });
-    io.observe($("plate"));
-    $("fig").addEventListener("click", play);
-    $("fig").addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); play(); } });
-    // The rows point at their part without replaying.
-    $("steps").addEventListener("click", (e) => { const li = e.target.closest("li"); if (!li || playing) return; show(lis.indexOf(li)); });
-    $("steps").addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); e.target.click(); } });
 
     // ---------- second moment (HE #1): the total builds up from its three lines ----------
     function buildPrice() {

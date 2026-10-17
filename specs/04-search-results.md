@@ -14,7 +14,7 @@ Link with `data-goes-to="<page-id>"`.
 ## Must show
 - Filters already applied, visible and removable: hardtail · frame M · Sat 25 Oct · delivers to Chestnut
 - Results from shops and private owners, clearly labelled which is which
-- Top result: Trek Marlin 7, size M, Loop Cycles (shop), Bukit Timah, S$38 / day, all-in S$53*
+- Top result: Trek Marlin 7, size M, Timah Cycles (shop), Bukit Timah, S$38 / day, all-in S$53*
 - 2–3 more results (e.g. a private owner's Giant Talon, a shop's Merida Big.Nine) with their own all-in totals*
 - A "Fits you" chip where the frame matches his fit
 - Way to edit his fit (→ 03)

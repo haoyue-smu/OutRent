@@ -180,5 +180,38 @@
     }
   }
 
+  // ---------- links between pages ----------
+  // Pages link by id (data-goes-to="05-listing-detail"). Lead pages open their chosen direction;
+  // other pages open their designer's folder from pages.json once it exists, otherwise a short note says it is not built yet.
+  const CHOSEN = { "01-home": "a", "02-coach-kit": "a", "03-fit-profile": "b", "05-listing-detail": "a", "10-delivery-tracking": "a", "18-storage-map": "a" };
+  const here = location.pathname.match(/^(.*\/work\/)[^/]+\/[^/]+\/direction-[ab]\//);
+  const workRoot = here ? here[1] : null;
+  let pagesJson = null;
+  const pageList = () => pagesJson || (pagesJson = fetch(workRoot + "../pages.json").then((r) => r.json()).catch(() => ({ pages: [] })));
+  function note(text) {
+    let el = document.querySelector(".link-note");
+    if (!el) { el = document.createElement("div"); el.className = "link-note"; el.setAttribute("role", "status"); (document.querySelector(".screen") || document.body).appendChild(el); }
+    el.textContent = text; el.classList.add("is-on");
+    clearTimeout(note.t); note.t = setTimeout(() => el.classList.remove("is-on"), 2200);
+  }
+  async function go(id) {
+    if (id === "previous") { if (history.length > 1) history.back(); return; }
+    if (!workRoot) return;
+    if (CHOSEN[id]) { location.href = `${workRoot}haoyue/${id}/direction-${CHOSEN[id]}/`; return; }
+    const { pages = [] } = await pageList();
+    const p = pages.find((x) => x.id === id);
+    if (!p) { note("This part of the app is not in the prototype."); return; }
+    const url = `${workRoot}${p.designer}/${id}/direction-${p.direction || "a"}/`;
+    // A folder that still holds the starter template counts as not built.
+    const built = await fetch(url + "index.html").then((r) => r.ok && r.text()).then((t) => !!t && !t.includes("Replace this with the page content")).catch(() => false);
+    if (built) location.href = url; else note(`${p.name} is still being designed.`);
+  }
+  document.addEventListener("click", (e) => {
+    const a = e.target.closest("[data-goes-to]");
+    if (!a || a.getAttribute("aria-disabled") === "true") return;
+    e.preventDefault();
+    go(a.getAttribute("data-goes-to"));
+  });
+
   window.Lead = { still, crossFade, roll, states, haptic, Fit, BikeFigure };
 })();

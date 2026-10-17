@@ -155,7 +155,7 @@ States:
 - Write short and plain. Speak to Daniel as "you". Say exactly what happens, e.g. "Choose delivery", not "Continue".
 - Use one idea per line. If a screen needs a paragraph, it needs a figure or a list instead.
 - Use the mock data consistently:
-  - Trek Marlin 7, size M, from Loop Cycles, Bukit Timah.
+  - Trek Marlin 7, size M, from Timah Cycles, Bukit Timah.
   - Chestnut Nature Park, Sat 25 Oct, delivery at 7:40.
   - S$38 / day, S$150 deposit.
   - Height 176 cm, inside leg 81 cm, saddle 72 cm, fork sag 25%, bars +1 cm.

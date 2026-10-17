@@ -93,3 +93,7 @@
 .calm { position: relative; display: block; overflow: hidden; }
 .calm img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center 45%; filter: saturate(.88); }
 .calm::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(47, 82, 70, .04), rgba(47, 82, 70, .10)); pointer-events: none; }
+
+/* Note shown when a link points at a page that is not built yet. */
+.link-note { position: absolute; left: 50%; bottom: 112px; z-index: 30; transform: translate(-50%, 8px); padding: var(--s-2) var(--s-4); border-radius: 999px; background: var(--white); box-shadow: var(--shadow-float); font-size: var(--fs-foot); line-height: var(--lh-foot); color: var(--ink); white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity var(--t-quick) var(--ease-glide), transform var(--t-quick) var(--ease-glide); }
+.link-note.is-on { opacity: 1; transform: translate(-50%, 0); }
