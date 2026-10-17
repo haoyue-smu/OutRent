@@ -46,6 +46,7 @@
         api = a;
         for (const key of a.ORDER) {
           const el = document.getElementById(key), { min, max, label } = a.RANGE[key];
+          el.addEventListener("focus", () => a.show(key));
           document.getElementById(key + "-error").textContent = `Enter your ${label.toLowerCase()} in cm, between ${min} and ${max}.`;
           el.addEventListener("input", () => {
             const digits = el.value.replace(/\D/g, "");

@@ -17,6 +17,10 @@
   .segmented.is-measure b { font-size: var(--fs-callout); font-variant-numeric: tabular-nums; }
   .explainer .ruler:focus-visible { outline: 2px solid var(--sage); outline-offset: -2px; border-radius: var(--r-card) var(--r-card) 0 0; }
   .explainer .ruler .bubble.is-empty { fill: var(--muted); }
+  .explainer .ruler .band { fill: var(--mist); }
+  .explainer .ruler .band.on { fill: var(--sage-tint); }
+  .explainer .ruler .band-t { font-size: 9px; font-weight: 700; fill: var(--fig-lo); letter-spacing: .06em; }
+  .explainer .ruler .band-t.on { fill: var(--sage-dark); }
 </style>
 </head>
 <body>
@@ -43,6 +47,14 @@
     function draw() {
       const { min, max, label } = range(), v = value(), at = dragging && raw != null ? raw : v;
       let s = "";
+      // Height only: the bike's size chart sits under the ticks, so he sees which size his height falls in.
+      if (key === "height") {
+        const fit = v != null ? Lead.Fit.frame(at != null ? Math.round(at) : v) : null;
+        for (const [sz, [a, b]] of Object.entries(FitPage.CHART)) {
+          s += `<rect class="band${sz === fit ? " on" : ""}" x="${x(a)}" y="38" width="${x(b) - x(a)}" height="16" rx="3"/>`;
+          s += `<text class="band-t${sz === fit ? " on" : ""}" x="${(x(a) + x(b)) / 2}" y="35" text-anchor="middle">${sz}</text>`;
+        }
+      }
       for (let c = min; c <= max; c++) {
         const major = c % 5 === 0;
         s += `<line class="${major ? "major" : "minor"}" x1="${x(c)}" x2="${x(c)}" y1="40" y2="${major ? 52 : 47}"/>`;
@@ -66,8 +78,9 @@
       draw();
     }
 
-    function choose(k) {
+    function choose(k, quiet) {
       key = k;
+      if (!quiet) api.show(k);
       document.querySelectorAll("#measure [role=radio]").forEach((b) => b.setAttribute("aria-checked", String(b.dataset.key === k)));
       draw();
     }
@@ -101,6 +114,7 @@
         });
         document.querySelectorAll("#measure [role=radio]").forEach((b) => b.addEventListener("click", () => choose(b.dataset.key)));
       },
+      show(k) { choose(k, true); },
       sync(m, { reset }) { if (reset) choose(api.ORDER[0]); else draw(); },
     });
   </script>
