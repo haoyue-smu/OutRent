@@ -13,7 +13,18 @@
 <link rel="stylesheet" href="../../_shared/lead.css">
 <style>
   .photo-top.is-setup { height: 360px; }
-  .hero-photo { position: absolute; inset: 0; align-items: center; justify-content: center; }
+  .hero-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 30%; }
+  .fit-row { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+  .fit-row .chip { background: var(--sage-tint); color: var(--sage-dark); }
+  .courier { display: flex; align-items: center; gap: var(--s-3); }
+  .courier img { width: 44px; height: 44px; flex: none; border-radius: 50%; object-fit: cover; object-position: 47% 30%; }
+  .courier .t { display: flex; flex-direction: column; }
+  /* Split-flap arrival time: only the digits that change flip. */
+  #eta { display: inline-flex; perspective: 300px; }
+  #eta .ch { display: inline-block; min-width: .58em; text-align: center; transform-origin: 50% 55%; backface-visibility: hidden; }
+  #eta .ch.is-colon { min-width: .28em; }
+  .route.is-late .base { stroke: var(--error); stroke-dasharray: 4 6; opacity: .7; }
+  .route.is-late .stop.is-end { stroke: var(--error); }
   .on-photo { position: absolute; bottom: 50px; z-index: 2; }
   .sheet { gap: var(--s-5); }
 
@@ -76,13 +87,13 @@
   <main class="screen is-white is-frame" data-page="10-delivery-tracking" data-direction="A">
     <div class="scroll">
       <div class="photo-top is-setup">
-        <div class="img-ph is-bleed hero-photo" role="img" aria-label="Photo: this Trek Marlin 7 on the Loop Cycles stand this morning, saddle set to 72 cm, a tape measure on the seat post"></div>
+        <img class="hero-photo" src="../assets/setup-proof.jpg" alt="A Loop Cycles mechanic setting the saddle height on your Trek Marlin 7 this morning">
         <div class="float-top">
           <a class="icon-btn glass" href="#" aria-label="Back" data-goes-to="09-trips">
             <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-arrow-left"/></svg>
           </a>
         </div>
-        <span class="chip glass on-photo" style="left: 20px"><svg class="icon is-sm" aria-hidden="true" style="color: var(--sage)"><use href="../../../../design/icons.svg#i-check-circle"/></svg>Set to your fit · saddle 72 cm</span>
+        <span class="chip glass on-photo" style="left: 20px"><svg class="icon is-sm" aria-hidden="true" style="color: var(--sage)"><use href="../../../../design/icons.svg#i-check-circle"/></svg>Set by Loop Cycles</span>
         <span class="chip glass on-photo num" style="right: 20px">Today 6:52</span>
       </div>
 
@@ -90,6 +101,10 @@
         <ol class="steps" aria-label="Booking progress">
           <li class="is-done">Pick</li><li class="is-done">Fit</li><li aria-current="step">Deliver</li><li>Ride</li><li>Return</li>
         </ol>
+
+        <div class="fit-row" aria-label="Set to your fit">
+          <span class="chip">Saddle 72 cm</span><span class="chip">Fork sag 25%</span><span class="chip">Bars +1 cm</span>
+        </div>
 
         <div class="eta">
           <div class="stack">
@@ -121,7 +136,7 @@
           <span id="ok-note"></span>
         </div>
 
-        <section class="route" aria-label="Where your bike is">
+        <section class="route" id="route" aria-label="Where your bike is">
           <svg viewBox="0 0 353 48" aria-hidden="true">
             <path class="base" id="route-path" d="M14 34 C 90 6, 170 46, 250 22 S 330 12, 339 14"/>
             <g class="drawn">
@@ -136,6 +151,11 @@
             <span style="text-align: right"><b>Chestnut Nature Park</b><br>trailhead</span>
           </div>
         </section>
+
+        <div class="courier">
+          <img src="../assets/courier.jpg" alt="">
+          <span class="t"><b class="t-callout" style="font-weight: 600">Ravi is bringing your bike</b><span class="t-foot">OutRent courier, sage-green polo</span></span>
+        </div>
 
         <section aria-labelledby="status-title" class="group">
           <h2 class="t-title" id="status-title">Status</h2>
@@ -207,7 +227,7 @@
   <script>
     // States: default (on time), #delayed, #waiting (chose to wait), #moved (picked a new time).
     const $ = (id) => document.getElementById(id);
-    const { roll } = Lead;
+    const { crossFade, still } = Lead;
     const STATES = {
       default: { h: 7, m: 40, label: "On its way · arriving", chip: "On time", progress: 0.58, arrive: "7:40" },
       delayed: { h: 7, m: 55, label: "On its way · now arriving", progress: 0.45, arrive: "7:55" },
@@ -225,18 +245,57 @@
       $("route-bike").setAttribute("cx", end.x); $("route-bike").setAttribute("cy", end.y);
     }
 
-    let movedTo = "8:30";
+    // Split-flap: each changed character flips down to the new one, 120 ms per half, staggered.
+    const eta = $("eta");
+    function setEta(text, animate) {
+      const old = eta.dataset.t || "";
+      eta.dataset.t = text;
+      if (!animate || still.matches || old.length !== text.length) {
+        const draw = () => { eta.innerHTML = [...text].map((c) => `<span class="ch${c === ":" ? " is-colon" : ""}">${c}</span>`).join(""); };
+        if (animate && old) crossFade(eta, draw); else draw();
+        return;
+      }
+      const spans = [...eta.children];
+      let k = 0;
+      [...text].forEach((c, i) => {
+        if (old[i] === c) return;
+        const el = spans[i], delay = k++ * 120;
+        const out = el.animate([{ transform: "rotateX(0)" }, { transform: "rotateX(-90deg)" }], { duration: 120, delay, easing: "ease-in", fill: "forwards" });
+        out.onfinish = () => { el.textContent = c; out.cancel(); el.animate([{ transform: "rotateX(90deg)" }, { transform: "rotateX(0)" }], { duration: 140, easing: "cubic-bezier(.34,1.56,.64,1)" }); };
+      });
+    }
+    // The courier dot travels to where the bike is now.
+    let shown = 0;
+    function travel(to, ms) {
+      if (still.matches || !ms) { shown = to; placeBike(to); return; }
+      const from = shown, t0 = performance.now();
+      const step = (t) => { const k = Math.min(1, (t - t0) / ms), e = 1 - Math.pow(1 - k, 3); shown = from + (to - from) * e; placeBike(shown); if (k < 1) requestAnimationFrame(step); };
+      requestAnimationFrame(step);
+    }
+    const rise = (els) => { if (still.matches) return; els.forEach((el, i) => el.animate([{ transform: "translateY(16px)", opacity: 0 }, { transform: "none", opacity: 1 }], { duration: 320, delay: 120 + i * 80, easing: "cubic-bezier(0.32,0.72,0,1)", fill: "backwards" })); };
+
+    let movedTo = "8:30", first = true;
     Lead.states((state) => {
       const s = { ...STATES[state] || STATES.default };
       if (state === "moved") { [s.h, s.m] = movedTo.split(":").map(Number); s.arrive = movedTo; s.note = `<b>Drop-off moved to ${movedTo}.</b> Same place, same price.`; }
-      // Roll the arrival time as minutes since midnight, so 7:55 → 8:15 passes through real times.
-      roll($("eta"), s.h * 60 + s.m, (v) => { const t = Math.round(v); return `${Math.floor(t / 60)}:${String(t % 60).padStart(2, "0")}`; });
+      const text = `${s.h}:${String(s.m).padStart(2, "0")}`;
       $("eta-label").textContent = s.label;
       if (s.chip) $("eta-chip-t").textContent = s.chip;
       $("arrive-t").textContent = `Arriving ${s.arrive}`;
       $("arrive-time").textContent = s.arrive;
       if (s.note) $("ok-note").innerHTML = s.note;
-      placeBike(s.progress);
+      $("route").classList.toggle("is-late", state === "delayed" || state === "waiting");
+      if (first) {
+        // Opening the page: the dot runs out along the route. Opening it delayed: the time was 7:40 until now.
+        first = false;
+        setEta(state === "default" ? text : "7:40", false);
+        travel(s.progress, 900);
+        if (state !== "default") setTimeout(() => setEta(text, true), 650);
+      } else {
+        setEta(text, true);
+        travel(s.progress, 500);
+      }
+      if (state === "delayed") rise([document.querySelector('[data-state="delayed waiting"].chip'), ...document.querySelectorAll(".delay .what, .delay .choices > *")]);
     });
 
     $("wait").addEventListener("click", () => { location.hash = "waiting"; });

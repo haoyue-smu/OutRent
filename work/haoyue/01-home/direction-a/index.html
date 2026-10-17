@@ -12,106 +12,132 @@
 <link rel="stylesheet" href="../../../../design/components.css">
 <link rel="stylesheet" href="../../_shared/lead.css">
 <style>
-  .photo-top.is-home { height: 452px; }
-  .hero-photo { position: absolute; inset: 0; align-items: center; justify-content: center; }
-  /* Logo (DESIGN.md 5a): the lockup on a glass pill, 22 px tall, with more than the dot's diameter clear around it. */
-  .brand { height: 36px; padding: 0 var(--s-3); }
-  .logo { display: block; height: 22px; width: auto; }
-  .logo .lg-line { stroke: var(--sage); }
-  .logo .lg-dot { fill: var(--sage-dark); }
-  .logo .lg-ink { fill: var(--ink); }
-  .logo .lg-sage { fill: var(--sage); }
-  .headline { position: absolute; top: 112px; left: var(--gutter); right: var(--gutter); z-index: 2; margin: 0; font-size: 38px; line-height: 41px; letter-spacing: var(--track-display); }
+  @view-transition { navigation: auto; }
+  ::view-transition-group(kit-photo) { animation-duration: var(--t-slow); animation-timing-function: var(--ease-glide); }
+  @media (prefers-reduced-motion: reduce) { ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation-duration: 160ms !important; } }
 
-  /* Search: one glass capsule, three parts (what, where, when). Each part opens Search. */
-  .search { position: absolute; left: var(--gutter); right: var(--gutter); bottom: 54px; z-index: 2; display: grid; grid-template-columns: 1.3fr 1fr 1fr; align-items: stretch; height: 64px; padding: 0 var(--s-1); border-radius: var(--r-pill); }
-  .search a { display: flex; flex-direction: column; justify-content: center; gap: 2px; min-width: 0; padding: 0 var(--s-3); color: var(--ink); text-decoration: none; border-radius: var(--r-pill); }
-  .search a + a { border-left: 1px solid var(--line); border-radius: 0; }
-  .search .k { display: flex; align-items: center; gap: var(--s-1); font-size: var(--fs-label); line-height: var(--lh-label); color: var(--muted); }
-  .search .v { font-size: var(--fs-callout); line-height: var(--lh-callout); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .search .v.is-empty { font-weight: 400; color: var(--muted); }
+  /* Hero: kayaker framed by leaves, a sage-dark scrim so the white headline reads. */
+  .photo-top.is-home { height: 470px; }
+  .photo-top.is-home::after { display: none; }
+  .hero-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 45%; }
+  .scrim { position: absolute; inset: 0 0 auto; height: 400px; background: linear-gradient(to bottom, rgba(30,38,34,.55) 0%, rgba(47,82,70,.58) 45%, rgba(47,82,70,.40) 72%, rgba(47,82,70,0) 100%); pointer-events: none; }
+  .photo-top .logo { display: block; height: 24px; width: auto; }
+  .hero-copy { position: absolute; top: 112px; left: var(--gutter); right: var(--gutter); z-index: 2; display: flex; flex-direction: column; gap: var(--s-3); color: var(--white); }
+  .hero-copy h1 { margin: 0; font-size: 52px; line-height: 52px; font-weight: 700; letter-spacing: -2px; text-shadow: 0 2px 16px rgba(30,38,34,.35); }
+  .hero-copy p { margin: 0; font-size: var(--fs-body); line-height: var(--lh-body); font-weight: 600; text-shadow: 0 1px 10px rgba(30,38,34,.4); }
 
-  .sheet { gap: var(--s-5); padding-bottom: 132px; }
-  .row .meta { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .job { display: flex; flex-direction: column; gap: var(--s-3); }
-  .row .chev { color: var(--muted); }
-  .store { display: flex; flex-direction: column; gap: var(--s-3); }
-  .store .top { display: flex; align-items: flex-start; gap: var(--s-3); }
-  .store .top .body { flex: 1; display: flex; flex-direction: column; gap: var(--s-1); }
-  .store .tile { width: 48px; height: 48px; flex: none; border-radius: var(--r-thumb); background: var(--white); color: var(--sage-dark); display: flex; align-items: center; justify-content: center; }
-  .store .close { margin: -6px -6px 0 0; border-color: transparent; background: none; }
+  .sheet { gap: var(--s-6); padding-bottom: 132px; }
+  .finder { display: flex; flex-direction: column; gap: var(--s-3); margin-top: -64px; position: relative; z-index: 3; padding: var(--s-3); border-radius: var(--r-card); background: var(--white); box-shadow: var(--shadow-float); }
+  .finder .fields { display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: var(--r-tile); }
+  .finder .fields a { display: flex; flex-direction: column; gap: 2px; padding: 10px 14px; color: var(--ink); text-decoration: none; }
+  .finder .fields .pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-top: 1px solid var(--line); }
+  .finder .fields .pair a + a { border-left: 1px solid var(--line); }
+  .finder .k { font-size: var(--fs-label); line-height: var(--lh-label); color: var(--muted); }
+  .finder .v { font-size: var(--fs-callout); line-height: var(--lh-callout); font-weight: 600; }
+  .finder .v.is-empty { font-weight: 400; color: var(--muted); }
+  .finder .store-copy { margin: 0; font-size: var(--fs-callout); line-height: var(--lh-callout); }
+
+  .cats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--s-2); margin: 0; padding: 0; list-style: none; }
+  .cats a { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; height: 76px; border-radius: var(--r-tile); background: var(--mist); color: var(--ink); text-decoration: none; font-size: var(--fs-foot); font-weight: 600; }
+  .cats a.is-on { background: var(--sage-tint); color: var(--sage-dark); }
+  .cats .icon { width: 22px; height: 22px; margin-bottom: 2px; }
+  .cats small { font-size: 11px; font-weight: 400; color: var(--sage-dark); }
+
+  .kit-card { display: flex; flex-direction: column; border-radius: var(--r-card); border: 1px solid var(--line); overflow: hidden; color: var(--ink); text-decoration: none; }
+  .kit-card img { display: block; width: 100%; height: 132px; object-fit: cover; object-position: center 45%; view-transition-name: kit-photo; }
+  .kit-card .b { display: flex; flex-direction: column; gap: 6px; padding: var(--s-4); }
+  .kit-card .bar { display: flex; align-items: center; gap: var(--s-2); }
+  .kit-card .track { flex: 1; height: 6px; border-radius: 3px; background: var(--sage-tint); overflow: hidden; }
+  .kit-card .track i { display: block; width: 66%; height: 100%; background: var(--sage); border-radius: 3px; }
+
+  .store { display: flex; flex-direction: column; gap: var(--s-3); overflow: hidden; }
+  .store .top { display: flex; align-items: center; gap: var(--s-3); }
+  .store .top img { width: 56px; height: 56px; flex: none; border-radius: var(--r-thumb); object-fit: cover; object-position: center 55%; }
+  .store .top .body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+  .store .close { margin: -6px -6px 0 0; border-color: transparent; background: none; align-self: flex-start; }
   .toast { display: flex; align-items: center; justify-content: space-between; gap: var(--s-3); padding: var(--s-2) var(--s-2) var(--s-2) var(--s-4); border-radius: var(--r-tile); background: var(--mist); font-size: var(--fs-foot); line-height: var(--lh-foot); color: var(--ink); }
+  .group > h2 { margin: 0; }
 </style>
 </head>
 <body>
   <main class="screen is-white is-frame" data-page="01-home" data-direction="A">
     <div class="scroll">
       <div class="photo-top is-home">
-        <div class="img-ph is-bleed hero-photo" role="img" aria-label="Photo: a rider on a forest trail at Chestnut Nature Park, early morning, soft light, quiet foliage in the top 40%"></div>
+        <img class="hero-photo" src="../assets/home-hero.jpg" alt="A kayaker on a calm reservoir in the morning, framed by leaves">
+        <div class="scrim" aria-hidden="true"></div>
         <div class="float-top">
-          <span class="chip glass brand"><svg class="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 22 484 86" role="img" aria-label="OutRent"><g transform="translate(0 21) scale(1.896)"><path d="M5 36 L18 17 L26 28 L32 21 L43 36" fill="none" class="lg-line" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="34" cy="10" r="3.4" class="lg-dot"/></g><g transform="translate(109.0 0)"><path d="M38.50 100.80Q27.60 100.80 19.75 96.20Q11.90 91.60 7.75 83.45Q3.60 75.30 3.60 64.70Q3.60 53.90 7.85 45.70Q12.10 37.50 20 32.95Q27.90 28.40 38.80 28.40Q49.60 28.40 57.40 32.90Q65.20 37.40 69.45 45.50Q73.70 53.60 73.70 64.40Q73.70 75 69.45 83.25Q65.20 91.50 57.35 96.15Q49.50 100.80 38.50 100.80M38.70 87.40Q45.90 87.40 50.40 84.10Q54.90 80.80 56.95 75.60Q59 70.40 59 64.70Q59 60.50 57.85 56.40Q56.70 52.30 54.30 49Q51.90 45.70 48 43.75Q44.10 41.80 38.60 41.80Q31.50 41.80 27 45.05Q22.50 48.30 20.35 53.50Q18.20 58.70 18.20 64.60Q18.20 70.50 20.35 75.70Q22.50 80.90 27.05 84.15Q31.60 87.40 38.70 87.40M103.20 100.70Q91.60 100.70 85.35 94.75Q79.10 88.80 79.10 76.80L79.10 47.30L93.10 47.30L93.10 75.80Q93.10 79.40 94.15 82.15Q95.20 84.90 97.40 86.50Q99.60 88.10 103.20 88.10Q107.10 88.10 109.20 86.40Q111.30 84.70 112.10 81.85Q112.90 79 112.90 75.80L112.90 47.30L126.90 47.30L126.90 76.80Q126.90 89.30 120.65 95Q114.40 100.70 103.20 100.70M163.20 100L157.30 100Q150.70 100 146.50 98.40Q142.30 96.80 140.25 92.95Q138.20 89.10 138.20 82.40L138.20 59.80L130.40 59.80L130.40 47.30L138.20 47.30L138.20 33.20L152.20 33.20L152.20 47.30L163.70 47.30L163.70 59.80L152.20 59.80L152.20 80.40Q152.20 83.70 153.40 85.60Q154.60 87.50 158.80 87.50L163.20 87.50" class="lg-ink"/><path d="M183.70 100L169.40 100L169.40 29.20L197.90 29.20Q203.20 29.20 208.05 30.25Q212.90 31.30 216.80 33.80Q220.70 36.30 222.95 40.75Q225.20 45.20 225.20 52.10Q225.20 57.20 223.50 61.30Q221.80 65.40 218.50 68.30Q215.20 71.20 210.60 72.80L226.30 100L210.20 100L196.40 75.10L183.70 75.10L183.70 100M183.70 42.50L183.70 62.40L196.90 62.40Q200 62.40 202.55 61.85Q205.10 61.30 206.95 60.10Q208.80 58.90 209.85 56.90Q210.90 54.90 210.90 52Q211 48.30 209.35 46.25Q207.70 44.20 204.75 43.35Q201.80 42.50 197.80 42.50M256.90 100.70Q248.60 100.70 242.80 97.40Q237 94.10 233.90 88.05Q230.80 82 230.80 73.90Q230.80 65.70 234 59.55Q237.20 53.40 243.05 49.90Q248.90 46.40 256.90 46.40Q262.90 46.40 267.45 48.40Q272 50.40 275.15 54Q278.30 57.60 279.85 62.35Q281.40 67.10 281.30 72.60Q281.30 74 281.20 75.30Q281.10 76.60 280.80 77.90L244.70 77.90Q245 80.90 246.40 83.40Q247.80 85.90 250.35 87.35Q252.90 88.80 256.70 88.80Q259.20 88.80 261.30 88.25Q263.40 87.70 264.90 86.50Q266.40 85.30 267 83.70L280.80 83.70Q279.50 89.60 275.95 93.40Q272.40 97.20 267.40 98.95Q262.40 100.70 256.90 100.70M245 68.10L267.90 68.10Q267.80 65.40 266.55 63.05Q265.30 60.70 262.85 59.25Q260.40 57.80 256.60 57.80Q252.80 57.80 250.25 59.30Q247.70 60.80 246.45 63.15Q245.20 65.50 245 68.10M300.80 100L286.80 100L286.80 47.30L299.90 47.30L300.60 53.40Q302.80 50.70 305.65 49.15Q308.50 47.60 311.45 47Q314.40 46.40 316.80 46.40Q324.40 46.40 328.65 49.70Q332.90 53 334.75 58.55Q336.60 64.10 336.60 70.90L336.60 100L322.60 100L322.60 72.70Q322.60 70.30 322.20 67.90Q321.80 65.50 320.75 63.50Q319.70 61.50 317.80 60.30Q315.90 59.10 312.80 59.10Q308.80 59.10 306.10 61.10Q303.40 63.10 302.10 66.50Q300.80 69.90 300.80 74M372.70 100L366.80 100Q360.20 100 356 98.40Q351.80 96.80 349.75 92.95Q347.70 89.10 347.70 82.40L347.70 59.80L339.90 59.80L339.90 47.30L347.70 47.30L347.70 33.20L361.70 33.20L361.70 47.30L373.20 47.30L373.20 59.80L361.70 59.80L361.70 80.40Q361.70 83.70 362.90 85.60Q364.10 87.50 368.30 87.50L372.70 87.50" class="lg-sage"/></g></svg></span>
-          <span class="chip glass"><svg class="icon is-sm" aria-hidden="true"><use href="../../../../design/icons.svg#i-calendar-blank"/></svg>Sat 25 Oct</span>
+          <img class="logo" src="../../../../design/brand/outrent-lockup-white.svg" alt="OutRent">
         </div>
-        <h1 class="t-large headline">Ride the trail.<br><span class="t-accent">We bring the bike.</span></h1>
-
-        <nav class="search glass" aria-label="Search gear">
-          <a href="#" data-goes-to="04-search-results">
-            <span class="k"><svg class="icon is-sm" aria-hidden="true"><use href="../../../../design/icons.svg#i-magnifying-glass"/></svg>What</span>
-            <span class="v is-empty">Bike, helmet…</span>
-          </a>
-          <a href="#" data-goes-to="04-search-results">
-            <span class="k">Where</span>
-            <span class="v">Chestnut</span>
-          </a>
-          <a href="#" data-goes-to="04-search-results">
-            <span class="k">When</span>
-            <span class="v num">Sat 25 Oct</span>
-          </a>
-        </nav>
+        <div class="hero-copy">
+          <h1>Outdoor gear,<br>delivered<br>to you.</h1>
+          <p>Bikes, kayaks, tents and more.<br>We bring it and pick it up after.</p>
+        </div>
       </div>
 
       <div class="sheet">
-        <section class="job" aria-labelledby="ride-title">
-          <h2 class="t-label" id="ride-title" style="margin: 0">Ride this weekend</h2>
-          <a class="row" href="#" data-goes-to="02-coach-kit">
-            <span class="img-ph is-thumb thumb" role="img" aria-label="Photo: Coach Aisyah at the Chestnut Nature Park trailhead, smiling, helmet on"></span>
-            <span class="body">
-              <span class="meta">Coach Aisyah · Sat 25 Oct</span>
-              <span class="name">What to rent for Chestnut</span>
+        <section class="finder" aria-label="Find or store gear">
+          <div class="segmented" role="radiogroup" aria-label="What do you want to do?" id="mode">
+            <button type="button" role="radio" aria-checked="true" data-mode="rent">Rent gear</button>
+            <button type="button" role="radio" aria-checked="false" data-mode="store">Store my gear</button>
+          </div>
+          <div data-mode-panel="rent" class="group">
+            <div class="fields">
+              <a href="#" data-goes-to="04-search-results"><span class="k">What do you need?</span><span class="v is-empty">Kayak, bike, tent…</span></a>
+              <div class="pair">
+                <a href="#" data-goes-to="04-search-results"><span class="k">Deliver to</span><span class="v">Chestnut</span></a>
+                <a href="#" data-goes-to="04-search-results"><span class="k">Dates</span><span class="v">Sat 25 Oct</span></a>
+              </div>
+            </div>
+            <a class="btn is-block" href="#" data-goes-to="04-search-results">Search</a>
+          </div>
+          <div data-mode-panel="store" class="group" hidden>
+            <p class="store-copy">We pick it up, store it and bring it back when you need it.</p>
+            <a class="btn is-block" href="#" data-goes-to="16-storage-options">See storage</a>
+          </div>
+        </section>
+
+        <section class="group" aria-labelledby="cat-title">
+          <h2 class="t-title" id="cat-title">Rent by category</h2>
+          <ul class="cats">
+            <li><a href="#" class="is-on" data-goes-to="04-search-results"><svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-bicycle"/></svg>Bikes<small>This weekend</small></a></li>
+            <li><a href="#" data-goes-to="04-search-results"><svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-waves"/></svg>Kayaks</a></li>
+            <li><a href="#" data-goes-to="04-search-results"><svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-tent"/></svg>Camping</a></li>
+            <li><a href="#" data-goes-to="04-search-results"><svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-mountains"/></svg>Climbing</a></li>
+          </ul>
+        </section>
+
+        <section class="group" aria-labelledby="kit-title">
+          <h2 class="t-title" id="kit-title">Kit lists shared with you</h2>
+          <a class="kit-card" href="#" data-goes-to="02-coach-kit">
+            <img src="../assets/group-ride.jpg" alt="">
+            <span class="b">
+              <span class="t-foot" style="color: var(--muted)">From Coach Aisyah · Beginner trail ride</span>
+              <span class="t-title">Sat 25 Oct · Chestnut Nature Park</span>
+              <span class="bar"><span class="track"><i></i></span><span class="t-foot" style="color: var(--sage-dark); font-weight: 600">You have 2 of 3</span></span>
+              <span class="btn is-secondary is-block" style="margin-top: var(--s-1)">See the kit list</span>
             </span>
-            <svg class="icon is-sm chev" aria-hidden="true"><use href="../../../../design/icons.svg#i-caret-right"/></svg>
           </a>
         </section>
 
-        <section class="job" aria-labelledby="own-title">
-          <h2 class="t-label" id="own-title" style="margin: 0">Gear you own</h2>
-
+        <section class="group" aria-labelledby="own-title">
+          <h2 class="t-title" id="own-title">Your gear</h2>
           <div class="card is-filled store" id="store" data-state="default">
             <div class="top">
-              <span class="tile"><svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-backpack"/></svg></span>
+              <img src="../assets/old-bike.jpg" alt="">
               <span class="body">
-                <span class="t-title">Store gear you're not using</span>
-                <span class="t-foot" style="color: var(--ink)">We pick it up, keep it checked and clean, and it can earn rent while it waits.</span>
+                <span class="t-callout" style="font-weight: 600">Your old bike</span>
+                <span class="t-foot" style="color: var(--muted)">Not used for 5 months. Store it and free up the corridor.</span>
               </span>
-              <button type="button" class="icon-btn close" id="dismiss" aria-label="Hide the storage card">
+              <button type="button" class="icon-btn close" id="dismiss" aria-label="Hide this suggestion">
                 <svg class="icon is-sm" aria-hidden="true"><use href="../../../../design/icons.svg#i-x"/></svg>
               </button>
             </div>
-            <a class="btn is-secondary is-block" href="#" data-goes-to="16-storage-options">See storage</a>
+            <a class="btn is-secondary is-block" href="#" data-goes-to="16-storage-options">Store it</a>
           </div>
-
           <div class="toast" data-state="dismissed" role="status" hidden>
             <span>Hidden. Storage is always under My gear.</span>
             <a class="btn is-text" href="#" id="undo">Undo</a>
           </div>
-          <a class="row" href="#" data-goes-to="14-my-equipment" data-state="dismissed" hidden>
-            <span class="thumb"><svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-backpack"/></svg></span>
-            <span class="body">
-              <span class="meta">My gear</span>
-              <span class="name">Your bike, helmet and gloves</span>
-            </span>
-            <svg class="icon is-sm chev" aria-hidden="true"><use href="../../../../design/icons.svg#i-caret-right"/></svg>
-          </a>
         </section>
       </div>
     </div>
@@ -126,19 +152,33 @@
 
   <script src="../../_shared/lead.js"></script>
   <script>
-    // States: default, and #dismissed (storage card hidden). Dismiss and Undo fade (200 ms; 160 ms cross-fade with reduced motion).
-    const job = document.getElementById("store").parentElement;
+    const $ = (id) => document.getElementById(id);
+    const { still, crossFade } = Lead;
+
+    // Rent gear / Store my gear.
+    $("mode").querySelectorAll("[role=radio]").forEach((b) => b.addEventListener("click", () => {
+      $("mode").querySelectorAll("[role=radio]").forEach((x) => x.setAttribute("aria-checked", String(x === b)));
+      const panels = document.querySelectorAll("[data-mode-panel]");
+      crossFade(document.querySelector(".finder"), () => panels.forEach((p) => (p.hidden = p.dataset.modePanel !== b.dataset.mode)));
+    }));
+
+    // States: default, and #dismissed (the storage suggestion collapses; a one-line note takes its place).
     Lead.states();
+    const card = $("store");
     function go(state) {
       const swap = () => { history.replaceState(null, "", state === "default" ? location.pathname : "#" + state); dispatchEvent(new HashChangeEvent("hashchange")); };
-      if (Lead.still.matches || !job.animate) { Lead.crossFade(job, swap); return; }
-      job.animate([{ opacity: 1 }, { opacity: 0, transform: "translateY(8px)" }], { duration: 200, easing: "cubic-bezier(0.4,0,1,1)" }).onfinish = () => {
+      if (still.matches || !card.animate) { crossFade(card.parentElement, swap); return; }
+      if (state === "dismissed") {
+        const h = card.offsetHeight;
+        card.animate([{ height: h + "px", opacity: 1 }, { height: "0px", opacity: 0, paddingTop: 0, paddingBottom: 0 }], { duration: 320, easing: "cubic-bezier(0.32,0.72,0,1)" }).onfinish = swap;
+      } else {
         swap();
-        job.animate([{ opacity: 0, transform: "translateY(8px)" }, { opacity: 1, transform: "none" }], { duration: 200, easing: "cubic-bezier(0.32,0.72,0,1)" });
-      };
+        const h = card.offsetHeight;
+        card.animate([{ height: "0px", opacity: 0 }, { height: h + "px", opacity: 1 }], { duration: 320, easing: "cubic-bezier(0.32,0.72,0,1)" });
+      }
     }
-    document.getElementById("dismiss").addEventListener("click", () => go("dismissed"));
-    document.getElementById("undo").addEventListener("click", (e) => { e.preventDefault(); go("default"); });
+    $("dismiss").addEventListener("click", () => go("dismissed"));
+    $("undo").addEventListener("click", (e) => { e.preventDefault(); go("default"); });
   </script>
 </body>
 </html>

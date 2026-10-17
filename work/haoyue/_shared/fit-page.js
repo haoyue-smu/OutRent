@@ -47,7 +47,6 @@
           <figure class="explainer${ruler ? " has-ruler" : ""}" id="plate" style="margin: 0">
             ${corners}
             <div class="fig-bike" id="fig"></div>
-            <div class="placeholder is-slim">Rider figure (coming)</div>
             <span class="corner hint" id="fig-hint"></span><span class="corner readout" id="fig-readout" aria-live="polite"></span>
           </figure>
           <p class="field-hint" id="input-hint"></p>
@@ -96,6 +95,7 @@
     if (input.before) $("input-before").innerHTML = input.before; else $("input-before").remove();
     $("input-hint").textContent = `${input.instruction} ${COPY.tip}`;
     fig = new BikeFigure($("fig"), { origin: ORIGIN });
+    legLine = insideLeg(fig.svg);
 
     // Flow pages only: show the step progress when he came from search or a listing.
     const from = new URLSearchParams(location.search).get("from");
@@ -132,6 +132,35 @@
     });
   }
 
+  // Inside-leg measurement: a vertical dimension from the floor plate, behind the rear wheel, as tall as his inside leg.
+  // It belongs to him, not to the frame, so it does not scale with S · M · L.
+  let legLine = null;
+  function insideLeg(svg) {
+    const NS = "http://www.w3.org/2000/svg", CM = 2.0506; // figure units per cm, straight up
+    const [ox, oy] = ORIGIN.split(" ").map(Number), x = ox + 2.0907 * 30, y0 = oy + 0.5558 * 30;
+    const g = document.createElementNS(NS, "g");
+    g.setAttribute("class", "leg-dim");
+    g.innerHTML = `<line class="leg-line" x1="${x}" y1="${y0}" x2="${x}" y2="${y0}"/><path class="leg-tick" d=""/><text class="leg-label" x="${x - 10}" y="${y0}" text-anchor="end"></text>`;
+    svg.appendChild(g);
+    const line = g.querySelector(".leg-line"), tick = g.querySelector(".leg-tick"), label = g.querySelector(".leg-label");
+    const state = { cm: 0 };
+    const draw = (cm) => {
+      const y = y0 - cm * CM;
+      line.setAttribute("y2", y);
+      tick.setAttribute("d", `M${x - 6} ${y0}H${x + 6}M${x - 6} ${y}H${x + 6}`);
+      label.setAttribute("y", (y0 + y) / 2 + 6);
+      label.textContent = cm ? `${Math.round(cm)} cm` : "";
+    };
+    return {
+      set(cm, instant) {
+        g.style.opacity = cm == null ? 0 : 1;
+        if (cm == null) return;
+        if (instant || still.matches || !window.gsap) { state.cm = cm; draw(cm); return; }
+        gsap.to(state, { cm, duration: 0.32, ease: "back.out(1.4)", onUpdate: () => draw(state.cm) });
+      },
+    };
+  }
+
   // Controls call this. Editing after saving puts the page back into "edited, not saved yet".
   function set(patch) {
     Object.assign(model, patch);
@@ -146,6 +175,7 @@
 
     // Figure: saddle follows the inside leg; the frame follows the size being shown.
     if (model.leg != null) fig.setSaddle(Fit.saddleRaw(model.leg), { instant });
+    legLine.set(model.leg, instant);
     if (size !== shownSize) {
       shownSize = size;
       if (instant) { fig.scale = Fit.sizes[size].scale; fig.parts.setAttribute("transform", fig.about(fig.scale)); }
