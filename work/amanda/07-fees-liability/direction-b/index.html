@@ -10,35 +10,312 @@
 <link rel="stylesheet" href="../../../../design/tokens.css">
 <link rel="stylesheet" href="../../../../design/components.css">
 <style>
-  /* Page-only layout goes here. Use var(--tokens) only: no hex, rgb or px font sizes outside the scale.
-     A new reusable look = a new component: list it under "Off-system" in DECISIONS.md. */
+  /* Page layout */
 </style>
 </head>
 <body>
   <!-- One phone screen, 393 × 852. Build only inside .screen. -->
   <main class="screen" data-page="07-fees-liability" data-direction="B">
 
+    <!-- Topbar navigation -->
     <div class="topbar">
-      <a class="icon-btn" href="#" aria-label="Back" data-goes-to="previous">
+      <a class="icon-btn" href="#" aria-label="Back to delivery & return" data-goes-to="06-delivery-return">
         <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-arrow-left"/></svg>
       </a>
-      <span class="name">Fees & Liability</span>
-      <span></span>
+      <span class="name">Before you pay</span>
+      <span style="width: var(--touch)"></span>
     </div>
 
-    <div class="content" style="padding-top: var(--s-5)">
-      <h1 class="t-large">Fees & Liability</h1>
-
-      <!-- Image slot example: always a placeholder. Say what the image should show. -->
-      <div class="img-ph" style="height: 180px" role="img" aria-label="Photo: describe the image here"></div>
-
-      <p class="t-body">Replace this with the page content from specs/07-fees-liability.md.</p>
+    <!-- State Switcher pill for testing (default / unagreed error state) -->
+    <div style="padding: var(--s-2) var(--gutter) 0; display: flex; justify-content: center; gap: var(--s-2)">
+      <a href="#default" class="chip is-quiet" style="font-size: 11px; text-decoration: none" data-state-btn="default">Default</a>
+      <a href="#unagreed" class="chip is-quiet" style="font-size: 11px; text-decoration: none" data-state-btn="unagreed">Pay without agreeing</a>
     </div>
 
-    <!-- Links to other pages: use href="#" plus data-goes-to="<page-id>", e.g. data-goes-to="05-listing-detail". -->
+    <!-- MAIN REVIEW CONTENT (Information order: Pay now summary hero first) -->
+    <div class="content" style="padding-top: var(--s-3); padding-bottom: 120px; gap: var(--s-3)">
+
+      <!-- HERO SUMMARY CARD (Information order difference: clear financial overview upfront) -->
+      <div class="card" style="padding: var(--s-4); display: flex; flex-direction: column; gap: var(--s-2)">
+        <span class="t-label">Payment summary</span>
+        <div style="display: flex; justify-content: space-between; align-items: baseline">
+          <div>
+            <h1 class="t-large" style="margin: 0">$145.00</h1>
+            <p class="t-foot" style="margin: 2px 0 0; color: var(--muted)">$95.00 rental total + $50.00 refundable deposit</p>
+          </div>
+          <span class="chip" style="font-size: 11px; height: 22px; padding: 0 8px">All charges</span>
+        </div>
+        <div class="card is-filled" style="padding: var(--s-2) var(--s-3); margin-top: var(--s-1)">
+          <p class="t-foot" style="margin: 0; color: var(--ink)">$50.00 deposit returned after the rack is collected.</p>
+        </div>
+      </div>
+
+      <!-- SECTION 1: YOUR BOOKING WITH DIRECT EDIT TRIGGER -->
+      <div style="display: flex; flex-direction: column; gap: var(--s-2)">
+        <div style="display: flex; justify-content: space-between; align-items: baseline">
+          <h2 class="t-title" style="font-size: 16px">Your booking</h2>
+        </div>
+
+        <div class="card" style="display: flex; flex-direction: column; gap: var(--s-3); padding: var(--s-3)">
+          <!-- Item detail -->
+          <div style="display: flex; justify-content: space-between; align-items: flex-start">
+            <div>
+              <span class="t-label">Rack</span>
+              <p class="t-callout" style="font-weight: 600; margin: 2px 0 0">Thule Tow Bar Rack</p>
+              <p class="t-foot" style="margin: 0; color: var(--muted)">Fri 11–Sun 13 Sep</p>
+            </div>
+            <button type="button" class="btn is-text" data-open-sheet="edit-sheet" style="font-size: 14px; height: 32px">Edit</button>
+          </div>
+          <hr class="divider">
+
+          <!-- Delivery detail -->
+          <div style="display: flex; justify-content: space-between; align-items: flex-start">
+            <div>
+              <span class="t-label">Delivery</span>
+              <p class="t-callout" style="font-weight: 600; margin: 2px 0 0">Blk 118 Pasir Ris St 11</p>
+              <p class="t-foot" style="margin: 0; color: var(--muted)">Fri 11 Sep, 8–9 pm</p>
+            </div>
+            <button type="button" class="btn is-text" data-open-sheet="edit-sheet" style="font-size: 14px; height: 32px">Edit</button>
+          </div>
+          <hr class="divider">
+
+          <!-- Collection detail -->
+          <div style="display: flex; justify-content: space-between; align-items: flex-start">
+            <div>
+              <span class="t-label">Collection</span>
+              <p class="t-callout" style="font-weight: 600; margin: 2px 0 0">Same address</p>
+              <p class="t-foot" style="margin: 0; color: var(--muted)">Sun 13 Sep, 5–7 pm</p>
+            </div>
+            <button type="button" class="btn is-text" data-open-sheet="edit-sheet" style="font-size: 14px; height: 32px">Edit</button>
+          </div>
+        </div>
+        <span class="t-foot" style="color: var(--muted)">Editing keeps your rack and other details</span>
+      </div>
+
+      <!-- SECTION 2: CHARGES BREAKDOWN -->
+      <details class="card" open>
+        <summary>
+          <span>Charges breakdown</span>
+          <svg class="icon is-sm" aria-hidden="true"><use href="../../../../design/icons.svg#i-caret-right"/></svg>
+        </summary>
+        <div style="margin-top: var(--s-2); display: flex; flex-direction: column; gap: 4px; padding-top: var(--s-2); border-top: 1px solid var(--line)">
+          <div style="display: flex; justify-content: space-between" class="t-foot">
+            <span>Rental, 3 days</span>
+            <span class="num">$66.00</span>
+          </div>
+          <div style="display: flex; justify-content: space-between" class="t-foot">
+            <span>Delivery and collection</span>
+            <span class="num">$18.00</span>
+          </div>
+          <div style="display: flex; justify-content: space-between" class="t-foot">
+            <span>Cleaning fee</span>
+            <span class="num">$8.00</span>
+          </div>
+          <div style="display: flex; justify-content: space-between" class="t-foot">
+            <span>Booking fee</span>
+            <span class="num">$3.00</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-top: 4px; padding-top: 4px; border-top: 1px solid var(--line); font-weight: 600" class="t-foot">
+            <span>Rental total</span>
+            <span class="num">$95.00</span>
+          </div>
+          <div style="display: flex; justify-content: space-between" class="t-foot">
+            <span>Refundable deposit</span>
+            <span class="num">$50.00</span>
+          </div>
+        </div>
+      </details>
+
+      <!-- SECTION 3 & 4: SEGMENTED POLICY SWITCHER (Interactive toggle between Damage and Cancellation) -->
+      <div style="display: flex; flex-direction: column; gap: var(--s-2)">
+        <span class="t-label">Policies & liability</span>
+        <div class="segmented" role="radiogroup" aria-label="Policies">
+          <button role="radio" aria-checked="true" id="tab-damage">If something is damaged</button>
+          <button role="radio" aria-checked="false" id="tab-cancellation">Cancellation</button>
+        </div>
+
+        <!-- Damage tab panel -->
+        <div id="panel-damage" class="card" style="padding: 0; overflow: hidden">
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 16px">
+            <span class="t-foot">Scratches and scuffs</span>
+            <span class="t-callout" style="font-weight: 600; color: var(--sage)">No charge</span>
+          </div>
+          <hr class="divider">
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 16px">
+            <span class="t-foot">Bent or broken part</span>
+            <span class="num t-callout" style="font-weight: 600">$40.00 – $90.00</span>
+          </div>
+          <hr class="divider">
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 16px">
+            <span class="t-foot">Lost or not returned</span>
+            <span class="num t-callout" style="font-weight: 600">$220.00 replacement</span>
+          </div>
+        </div>
+
+        <!-- Cancellation tab panel -->
+        <div id="panel-cancellation" class="card is-filled" style="padding: var(--s-3)" hidden>
+          <p class="t-body" style="font-size: 14px; line-height: 20px; margin: 0">
+            Free cancellation up to 24 hours before delivery, with a full refund including the deposit. Later than that, $25.00 is kept (one day's rental and the booking fee).
+          </p>
+        </div>
+      </div>
+
+      <!-- SECTION 5: FULL RENTAL TERMS DISCLOSURE -->
+      <details class="card">
+        <summary>
+          <span>Read full rental terms</span>
+          <svg class="icon is-sm" aria-hidden="true"><use href="../../../../design/icons.svg#i-caret-right"/></svg>
+        </summary>
+        <div style="margin-top: var(--s-2); display: flex; flex-direction: column; gap: var(--s-2)">
+          <p class="t-foot">Equipment must be returned in clean condition. Normal wear and tear is fully covered. Report any pre-existing marks immediately upon delivery.</p>
+        </div>
+      </details>
+
+      <!-- SECTION 6: AGREEMENT CHECKBOX (Fixes HE #3) -->
+      <div class="card" style="padding: var(--s-3); display: flex; flex-direction: column; gap: var(--s-2)">
+        <label class="row" style="cursor: pointer; align-items: flex-start; gap: var(--s-3); min-height: var(--touch)">
+          <input type="checkbox" id="agree-b" style="margin-top: 3px; width: 18px; height: 18px">
+          <span class="t-callout" style="font-weight: 600">I agree to the charges, damage fees and cancellation terms above.</span>
+        </label>
+        <p class="t-foot" style="margin: 0; color: var(--muted)">Tick the box above to confirm and pay.</p>
+
+        <!-- ERROR MESSAGE WHEN UNCHECKED (RECIPES.md §5) -->
+        <div class="field-error" id="agree-error-b" hidden>
+          <svg class="icon is-sm" style="flex: none" aria-hidden="true"><use href="../../../../design/icons.svg#i-warning-circle"/></svg>
+          <span>Tick the box above to agree before paying.</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Action bar with Pay button -->
     <div class="actionbar glass is-single">
-      <a class="btn is-block" href="#" data-goes-to="next">Primary action</a>
+      <button class="btn is-block" id="pay-btn-b" type="button" aria-disabled="true" data-goes-to="08-booking-confirmation">
+        Confirm and pay $145.00
+      </button>
     </div>
+
+    <!-- QUICK EDIT BOTTOM SHEET (RECIPES.md §1) -->
+    <div class="sheet-scrim" data-sheet-scrim="edit-sheet"></div>
+    <section class="bottom-sheet" id="edit-sheet" role="dialog" aria-modal="true" aria-labelledby="edit-sheet-title">
+      <span class="grabber" aria-hidden="true"></span>
+      <div class="sheet-head">
+        <h2 class="t-title" id="edit-sheet-title">Edit booking details</h2>
+        <button class="icon-btn" aria-label="Close" data-close-sheet>
+          <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-x"/></svg>
+        </button>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: var(--s-3)">
+        <div class="card is-filled">
+          <span class="t-label">Rack item</span>
+          <p class="t-callout" style="font-weight: 600; margin-top: 2px">Thule Tow Bar Rack · Fri 11–Sun 13 Sep</p>
+        </div>
+        <div class="card is-filled">
+          <span class="t-label">Delivery</span>
+          <p class="t-callout" style="font-weight: 600; margin-top: 2px">Blk 118 Pasir Ris St 11 · Fri 11 Sep, 8–9 pm</p>
+        </div>
+        <div class="card is-filled">
+          <span class="t-label">Collection</span>
+          <p class="t-callout" style="font-weight: 600; margin-top: 2px">Same address · Sun 13 Sep, 5–7 pm</p>
+        </div>
+      </div>
+
+      <button class="btn is-block" data-close-sheet>Save changes</button>
+    </section>
+
   </main>
+
+  <script>
+    // State switcher using URL hash (RECIPES.md §8)
+    function showState() {
+      const want = location.hash.slice(1) || "default";
+      const agree = document.getElementById("agree-b");
+      const err = document.getElementById("agree-error-b");
+      const pay = document.getElementById("pay-btn-b");
+
+      document.querySelectorAll("[data-state-btn]").forEach((b) => {
+        const active = b.dataset.stateBtn === want;
+        b.classList.toggle("is-quiet", !active);
+        if (active) {
+          b.style.background = "var(--sage-tint)";
+          b.style.color = "var(--sage-dark)";
+          b.style.fontWeight = "600";
+        } else {
+          b.style.background = "var(--white)";
+          b.style.color = "var(--ink)";
+          b.style.fontWeight = "400";
+        }
+      });
+
+      if (want === "unagreed") {
+        agree.checked = false;
+        pay.setAttribute("aria-disabled", "true");
+        err.hidden = false;
+      } else {
+        err.hidden = true;
+      }
+    }
+    window.addEventListener("hashchange", showState);
+    showState();
+
+    // Policy Segmented Switcher
+    const tabDamage = document.getElementById("tab-damage");
+    const tabCancellation = document.getElementById("tab-cancellation");
+    const panelDamage = document.getElementById("panel-damage");
+    const panelCancellation = document.getElementById("panel-cancellation");
+
+    tabDamage?.addEventListener("click", () => {
+      tabDamage.setAttribute("aria-checked", "true");
+      tabCancellation.setAttribute("aria-checked", "false");
+      panelDamage.hidden = false;
+      panelCancellation.hidden = true;
+    });
+
+    tabCancellation?.addEventListener("click", () => {
+      tabDamage.setAttribute("aria-checked", "false");
+      tabCancellation.setAttribute("aria-checked", "true");
+      panelDamage.hidden = true;
+      panelCancellation.hidden = false;
+    });
+
+    // Agree before paying logic (RECIPES.md §5)
+    const agreeB = document.getElementById("agree-b");
+    const payB = document.getElementById("pay-btn-b");
+    const errB = document.getElementById("agree-error-b");
+
+    agreeB.addEventListener("change", () => {
+      payB.setAttribute("aria-disabled", !agreeB.checked);
+      if (agreeB.checked) errB.hidden = true;
+    });
+
+    payB.addEventListener("click", (e) => {
+      if (!agreeB.checked) {
+        e.preventDefault();
+        errB.hidden = false;
+        agreeB.focus();
+      } else {
+        window.location.href = "#paid";
+      }
+    });
+
+    // Bottom sheet controls (RECIPES.md §1)
+    let lastOpener = null;
+    function openSheet(id, opener) {
+      lastOpener = opener;
+      document.getElementById(id).classList.add("is-open");
+      document.querySelector(`[data-sheet-scrim="${id}"]`).classList.add("is-open");
+      document.getElementById(id).querySelector("button, input, select, textarea")?.focus();
+    }
+    function closeSheets() {
+      document.querySelectorAll(".bottom-sheet.is-open, .sheet-scrim.is-open").forEach((el) => el.classList.remove("is-open"));
+      lastOpener?.focus();
+    }
+    document.querySelectorAll("[data-open-sheet]").forEach((btn) => {
+      btn.addEventListener("click", () => openSheet(btn.dataset.openSheet, btn));
+    });
+    document.querySelectorAll("[data-close-sheet], .sheet-scrim").forEach((el) => el.addEventListener("click", closeSheets));
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeSheets(); });
+  </script>
 </body>
 </html>

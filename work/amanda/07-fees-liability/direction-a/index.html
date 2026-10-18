@@ -10,35 +10,235 @@
 <link rel="stylesheet" href="../../../../design/tokens.css">
 <link rel="stylesheet" href="../../../../design/components.css">
 <style>
-  /* Page-only layout goes here. Use var(--tokens) only: no hex, rgb or px font sizes outside the scale.
-     A new reusable look = a new component: list it under "Off-system" in DECISIONS.md. */
+  /* Page layout */
 </style>
 </head>
 <body>
   <!-- One phone screen, 393 × 852. Build only inside .screen. -->
   <main class="screen" data-page="07-fees-liability" data-direction="A">
 
+    <!-- Topbar navigation -->
     <div class="topbar">
-      <a class="icon-btn" href="#" aria-label="Back" data-goes-to="previous">
+      <a class="icon-btn" href="#" aria-label="Back to delivery & return" data-goes-to="06-delivery-return">
         <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-arrow-left"/></svg>
       </a>
-      <span class="name">Fees & Liability</span>
-      <span></span>
+      <span class="name">Before you pay</span>
+      <span style="width: var(--touch)"></span>
     </div>
 
-    <div class="content" style="padding-top: var(--s-5)">
-      <h1 class="t-large">Fees & Liability</h1>
-
-      <!-- Image slot example: always a placeholder. Say what the image should show. -->
-      <div class="img-ph" style="height: 180px" role="img" aria-label="Photo: describe the image here"></div>
-
-      <p class="t-body">Replace this with the page content from specs/07-fees-liability.md.</p>
+    <!-- State Switcher pill for testing (default / unagreed error state) -->
+    <div style="padding: var(--s-2) var(--gutter) 0; display: flex; justify-content: center; gap: var(--s-2)">
+      <a href="#default" class="chip is-quiet" style="font-size: 11px; text-decoration: none" data-state-btn="default">Default</a>
+      <a href="#unagreed" class="chip is-quiet" style="font-size: 11px; text-decoration: none" data-state-btn="unagreed">Pay without agreeing</a>
     </div>
 
-    <!-- Links to other pages: use href="#" plus data-goes-to="<page-id>", e.g. data-goes-to="05-listing-detail". -->
+    <!-- MAIN REVIEW CONTENT (Exact 1:1 match to PDF 2 FIX P4) -->
+    <div class="content" style="padding-top: var(--s-3); padding-bottom: 120px; gap: var(--s-3)">
+
+      <!-- SECTION 1: YOUR BOOKING (Fix cue A) -->
+      <div style="display: flex; flex-direction: column; gap: var(--s-2)">
+        <h1 class="t-title" style="font-size: 16px">Your booking</h1>
+        <div class="card" style="padding: 0; overflow: hidden">
+
+          <!-- Item row -->
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; padding: 12px 16px">
+            <div>
+              <span class="t-foot" style="color: var(--muted); display: block">Rack</span>
+              <p class="t-callout" style="font-weight: 600; margin: 2px 0 0">Thule Tow Bar Rack</p>
+              <p class="t-foot" style="margin: 0; color: var(--muted)">Fri 11–Sun 13 Sep</p>
+            </div>
+            <a href="#" class="btn is-text" style="font-size: 14px; padding: 0 var(--s-2); height: 32px" data-goes-to="06-delivery-return">Edit</a>
+          </div>
+          <hr class="divider">
+
+          <!-- Delivery row -->
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; padding: 12px 16px">
+            <div>
+              <span class="t-foot" style="color: var(--muted); display: block">Delivery</span>
+              <p class="t-callout" style="font-weight: 600; margin: 2px 0 0">Blk 118 Pasir Ris St 11</p>
+              <p class="t-foot" style="margin: 0; color: var(--muted)">Fri 11 Sep, 8–9 pm</p>
+            </div>
+            <a href="#" class="btn is-text" style="font-size: 14px; padding: 0 var(--s-2); height: 32px" data-goes-to="06-delivery-return">Edit</a>
+          </div>
+          <hr class="divider">
+
+          <!-- Collection row -->
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; padding: 12px 16px">
+            <div>
+              <span class="t-foot" style="color: var(--muted); display: block">Collection</span>
+              <p class="t-callout" style="font-weight: 600; margin: 2px 0 0">Same address</p>
+              <p class="t-foot" style="margin: 0; color: var(--muted)">Sun 13 Sep, 5–7 pm</p>
+            </div>
+            <a href="#" class="btn is-text" style="font-size: 14px; padding: 0 var(--s-2); height: 32px" data-goes-to="06-delivery-return">Edit</a>
+          </div>
+        </div>
+        <p class="t-foot" style="margin: 0; color: var(--muted)">Editing keeps your rack and other details</p>
+      </div>
+
+      <!-- SECTION 2: CHARGES (Fixes HE #1) -->
+      <div style="display: flex; flex-direction: column; gap: var(--s-2)">
+        <h2 class="t-title" style="font-size: 16px">Charges</h2>
+        <div class="card" style="padding: 0; overflow: hidden">
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 16px">
+            <span class="t-callout">Rental, 3 days</span>
+            <span class="num t-callout" style="font-weight: 600">$66.00</span>
+          </div>
+          <hr class="divider">
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 16px">
+            <span class="t-callout">Delivery and collection</span>
+            <span class="num t-callout" style="font-weight: 600">$18.00</span>
+          </div>
+          <hr class="divider">
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 16px">
+            <span class="t-callout">Cleaning fee</span>
+            <span class="num t-callout" style="font-weight: 600">$8.00</span>
+          </div>
+          <hr class="divider">
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 16px">
+            <span class="t-callout">Booking fee</span>
+            <span class="num t-callout" style="font-weight: 600">$3.00</span>
+          </div>
+          <hr class="divider">
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 16px; background: var(--mist)">
+            <span class="t-callout" style="font-weight: 600">Rental total</span>
+            <span class="num t-callout" style="font-weight: 600">$95.00</span>
+          </div>
+          <hr class="divider">
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 16px">
+            <span class="t-callout">Refundable deposit</span>
+            <span class="num t-callout" style="font-weight: 600">$50.00</span>
+          </div>
+          <hr class="divider">
+          <div style="display: flex; justify-content: space-between; align-items: baseline; padding: 12px 16px; background: var(--mist)">
+            <span class="t-callout" style="font-weight: 700">Pay now</span>
+            <span class="t-title" style="color: var(--ink); font-weight: 700">$145.00</span>
+          </div>
+        </div>
+        <p class="t-foot" style="margin: 0; color: var(--muted)">$50.00 deposit returned after the rack is collected.</p>
+      </div>
+
+      <!-- SECTION 3: IF SOMETHING IS DAMAGED -->
+      <div style="display: flex; flex-direction: column; gap: var(--s-2)">
+        <h2 class="t-title" style="font-size: 16px">If something is damaged</h2>
+        <div class="card" style="padding: 0; overflow: hidden">
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 16px">
+            <span class="t-foot">Scratches and scuffs</span>
+            <span class="t-callout" style="font-weight: 600; color: var(--sage)">No charge</span>
+          </div>
+          <hr class="divider">
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 16px">
+            <span class="t-foot">Bent or broken part</span>
+            <span class="num t-callout" style="font-weight: 600">$40.00 – $90.00</span>
+          </div>
+          <hr class="divider">
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 16px">
+            <span class="t-foot">Lost or not returned</span>
+            <span class="num t-callout" style="font-weight: 600">$220.00 replacement</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 4: CANCELLATION (Fix cue B) -->
+      <div style="display: flex; flex-direction: column; gap: var(--s-2)">
+        <h2 class="t-title" style="font-size: 16px">Cancellation</h2>
+        <div class="card is-filled" style="padding: var(--s-3)">
+          <p class="t-body" style="font-size: 14px; line-height: 20px; margin: 0">
+            Free cancellation up to 24 hours before delivery, with a full refund including the deposit. Later than that, $25.00 is kept (one day's rental and the booking fee).
+          </p>
+        </div>
+      </div>
+
+      <!-- SECTION 5: FULL RENTAL TERMS DISCLOSURE -->
+      <details class="card">
+        <summary>
+          <span>Read full rental terms</span>
+          <svg class="icon is-sm" aria-hidden="true"><use href="../../../../design/icons.svg#i-caret-right"/></svg>
+        </summary>
+        <div style="margin-top: var(--s-2); display: flex; flex-direction: column; gap: var(--s-2)">
+          <p class="t-foot">Equipment must be returned in reasonable condition. You agree to inspect the equipment upon delivery and report any pre-existing defects immediately via the app.</p>
+          <p class="t-foot">Deposits are unheld within 24 hours of inspection. For full legal terms, see OutRent renter terms.</p>
+        </div>
+      </details>
+
+      <!-- SECTION 6: AGREEMENT CHECKBOX (Fixes HE #3: NOT pre-ticked!) -->
+      <div style="display: flex; flex-direction: column; gap: var(--s-2)">
+        <label class="row" style="cursor: pointer; align-items: flex-start; gap: var(--s-3); min-height: var(--touch)">
+          <input type="checkbox" id="agree" style="margin-top: 3px; width: 18px; height: 18px">
+          <span class="t-callout" style="font-weight: 600">I agree to the charges, damage fees and cancellation terms above.</span>
+        </label>
+        <p class="t-foot" style="margin: 0; color: var(--muted)">Tick the box above to confirm and pay.</p>
+
+        <!-- ERROR MESSAGE WHEN UNCHECKED (RECIPES.md §5 & HE #9) -->
+        <div class="field-error" id="agree-error" hidden>
+          <svg class="icon is-sm" style="flex: none" aria-hidden="true"><use href="../../../../design/icons.svg#i-warning-circle"/></svg>
+          <span>Tick the box above to agree before paying.</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Action bar with Pay button -->
     <div class="actionbar glass is-single">
-      <a class="btn is-block" href="#" data-goes-to="next">Primary action</a>
+      <button class="btn is-block" id="pay-btn" type="button" aria-disabled="true" data-goes-to="08-booking-confirmation">
+        Confirm and pay $145.00
+      </button>
     </div>
+
   </main>
+
+  <script>
+    // State switcher using URL hash (RECIPES.md §8)
+    function showState() {
+      const want = location.hash.slice(1) || "default";
+      const agree = document.getElementById("agree");
+      const err = document.getElementById("agree-error");
+      const pay = document.getElementById("pay-btn");
+
+      document.querySelectorAll("[data-state-btn]").forEach((b) => {
+        const active = b.dataset.stateBtn === want;
+        b.classList.toggle("is-quiet", !active);
+        if (active) {
+          b.style.background = "var(--sage-tint)";
+          b.style.color = "var(--sage-dark)";
+          b.style.fontWeight = "600";
+        } else {
+          b.style.background = "var(--white)";
+          b.style.color = "var(--ink)";
+          b.style.fontWeight = "400";
+        }
+      });
+
+      if (want === "unagreed") {
+        agree.checked = false;
+        pay.setAttribute("aria-disabled", "true");
+        err.hidden = false;
+      } else {
+        err.hidden = true;
+      }
+    }
+    window.addEventListener("hashchange", showState);
+    showState();
+
+    // Agree before paying logic (RECIPES.md §5)
+    const agree = document.getElementById("agree");
+    const pay = document.getElementById("pay-btn");
+    const err = document.getElementById("agree-error");
+
+    agree.addEventListener("change", () => {
+      pay.setAttribute("aria-disabled", !agree.checked);
+      if (agree.checked) err.hidden = true;
+    });
+
+    pay.addEventListener("click", (e) => {
+      if (!agree.checked) {
+        e.preventDefault();
+        err.hidden = false;
+        agree.focus();
+      } else {
+        // Navigate to confirmation page
+        window.location.href = "#paid";
+      }
+    });
+  </script>
 </body>
 </html>

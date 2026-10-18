@@ -5,7 +5,7 @@ Designer: Amanda
 ## My choice
 
 <!-- A or B. Then 2–3 lines on why, in YOUR OWN words (not the AI's). -->
-I choose B. B has a numbered chronological flow that A lacks.
+I choose A. The information in B feels too dense or tightly packed. A is more readable.
 
 ## Image requests
 
