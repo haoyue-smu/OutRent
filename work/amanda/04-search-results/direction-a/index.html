@@ -10,35 +10,224 @@
 <link rel="stylesheet" href="../../../../design/tokens.css">
 <link rel="stylesheet" href="../../../../design/components.css">
 <style>
-  /* Page-only layout goes here. Use var(--tokens) only: no hex, rgb or px font sizes outside the scale.
-     A new reusable look = a new component: list it under "Off-system" in DECISIONS.md. */
+  @view-transition { navigation: auto; }
 </style>
 </head>
 <body>
   <!-- One phone screen, 393 × 852. Build only inside .screen. -->
   <main class="screen" data-page="04-search-results" data-direction="A">
 
+    <!-- Topbar navigation -->
     <div class="topbar">
       <a class="icon-btn" href="#" aria-label="Back" data-goes-to="previous">
         <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-arrow-left"/></svg>
       </a>
-      <span class="name">Search Results</span>
-      <span></span>
+      <span class="name">Mountain bikes</span>
+      <span style="width: var(--touch)"></span>
     </div>
 
-    <div class="content" style="padding-top: var(--s-5)">
-      <h1 class="t-large">Search Results</h1>
-
-      <!-- Image slot example: always a placeholder. Say what the image should show. -->
-      <div class="img-ph" style="height: 180px" role="img" aria-label="Photo: describe the image here"></div>
-
-      <p class="t-body">Replace this with the page content from specs/04-search-results.md.</p>
+    <!-- State Switcher pill for testing (default / loading / empty) -->
+    <div style="padding: var(--s-2) var(--gutter) 0; display: flex; justify-content: center; gap: var(--s-2)">
+      <a href="#default" class="chip is-quiet" style="font-size: 12px; text-decoration: none" data-state-btn="default">Default</a>
+      <a href="#loading" class="chip is-quiet" style="font-size: 12px; text-decoration: none" data-state-btn="loading">Loading</a>
+      <a href="#empty" class="chip is-quiet" style="font-size: 12px; text-decoration: none" data-state-btn="empty">Empty</a>
     </div>
 
-    <!-- Links to other pages: use href="#" plus data-goes-to="<page-id>", e.g. data-goes-to="05-listing-detail". -->
-    <div class="actionbar glass is-single">
-      <a class="btn is-block" href="#" data-goes-to="next">Primary action</a>
-    </div>
+    <!-- DEFAULT STATE: Active listings feed -->
+    <section data-state="default">
+      <div class="content" style="padding-top: var(--s-3); gap: var(--s-3)">
+
+        <!-- Search context line (HE #8 Fix screen) -->
+        <div style="display: flex; justify-content: space-between; align-items: baseline">
+          <p class="t-foot" style="margin: 0">Hardtail · Frame M · Sat 25 Oct · Chestnut</p>
+          <a href="#" class="t-foot t-accent" style="font-weight: 600; text-decoration: none" data-goes-to="03-fit-profile">Edit fit</a>
+        </div>
+
+        <!-- Heading: bikes fit count -->
+        <div>
+          <h1 class="t-title">3 bikes fit your ride</h1>
+        </div>
+
+        <!-- Notice callout box (Matches HE #8 Fix screen) -->
+        <div class="card is-filled" style="padding: var(--s-3) var(--s-4); border-radius: var(--r-card)">
+          <p class="t-foot" style="margin: 0; color: var(--ink)">
+            Totals include delivery and booking fees. A S$150 refundable deposit is held at checkout.
+          </p>
+        </div>
+
+        <!-- Sort by block (Fix screen element A: clear labels, active marked) -->
+        <div style="display: flex; flex-direction: column; gap: var(--s-2)">
+          <span class="t-label" id="sort-label">Sort by</span>
+          <div class="segmented" role="radiogroup" aria-labelledby="sort-label">
+            <button role="radio" aria-checked="true" id="sort-arrival" style="font-weight: 600">Earliest arrival</button>
+            <button role="radio" aria-checked="false" id="sort-price">Lowest total price</button>
+          </div>
+        </div>
+
+        <!-- LISTINGS CONTAINER (Cards with tappable cue C matching Fix screen) -->
+        <div id="listings-feed" style="display: flex; flex-direction: column; gap: var(--s-3)">
+
+          <!-- CARD 1: Trek Marlin 7 (Shop) -->
+          <a href="#" class="card" data-goes-to="05-listing-detail" data-price="53" data-arrival="1" style="display: flex; align-items: center; gap: var(--s-3); text-decoration: none; color: inherit; padding: var(--s-3)">
+            <!-- Left: thumbnail placeholder (with required shared transition) -->
+            <div class="img-ph is-thumb" style="width: 84px; height: 84px; flex: none; view-transition-name: listing-photo" role="img" aria-label="Photo: Trek Marlin 7 hardtail trail bike, side view"></div>
+
+            <!-- Middle: content body -->
+            <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px">
+              <div style="display: flex; align-items: center; gap: 4px; flex-wrap: wrap">
+                <span class="t-label" style="color: var(--sage-dark)">Loop Cycles · Shop</span>
+                <span class="chip" style="height: 20px; font-size: 11px; padding: 0 6px">Fits you · M</span>
+              </div>
+              <h2 class="t-title" style="font-size: 17px; line-height: 22px; margin: 0">Trek Marlin 7</h2>
+              <div style="display: flex; align-items: baseline; gap: 4px">
+                <span class="t-title" style="font-size: 18px; line-height: 22px; color: var(--ink)">S$53 total</span>
+                <span class="t-foot" style="color: var(--muted)">(S$38 / day)</span>
+              </div>
+              <p class="t-foot" style="margin: 0; color: var(--muted)">Incl. delivery and fees</p>
+              <p class="t-foot" style="margin: 0; color: var(--ink); font-weight: 600">Arrives Sat, 25 Oct at 7:40</p>
+            </div>
+
+            <!-- Right: View details cue (Fix screen element C) -->
+            <div style="display: flex; align-items: center; justify-content: center; width: 28px; flex: none; color: var(--muted)">
+              <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-caret-right"/></svg>
+            </div>
+          </a>
+
+          <!-- CARD 2: Giant Talon 2 (Private Owner) -->
+          <a href="#" class="card" data-goes-to="05-listing-detail" data-price="45" data-arrival="2" style="display: flex; align-items: center; gap: var(--s-3); text-decoration: none; color: inherit; padding: var(--s-3)">
+            <div class="img-ph is-thumb" style="width: 84px; height: 84px; flex: none" role="img" aria-label="Photo: Giant Talon 2 mountain bike on trail stand"></div>
+
+            <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px">
+              <div style="display: flex; align-items: center; gap: 4px; flex-wrap: wrap">
+                <span class="t-label" style="color: var(--muted)">Marcus T. · Private</span>
+                <span class="chip" style="height: 20px; font-size: 11px; padding: 0 6px">Fits you · M</span>
+              </div>
+              <h2 class="t-title" style="font-size: 17px; line-height: 22px; margin: 0">Giant Talon 2</h2>
+              <div style="display: flex; align-items: baseline; gap: 4px">
+                <span class="t-title" style="font-size: 18px; line-height: 22px; color: var(--ink)">S$45 total</span>
+                <span class="t-foot" style="color: var(--muted)">(S$30 / day)</span>
+              </div>
+              <p class="t-foot" style="margin: 0; color: var(--muted)">Incl. delivery and fees</p>
+              <p class="t-foot" style="margin: 0; color: var(--ink); font-weight: 600">Arrives Sat, 25 Oct at 7:40</p>
+            </div>
+
+            <div style="display: flex; align-items: center; justify-content: center; width: 28px; flex: none; color: var(--muted)">
+              <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-caret-right"/></svg>
+            </div>
+          </a>
+
+          <!-- CARD 3: Merida Big.Nine 200 (Shop) -->
+          <a href="#" class="card" data-goes-to="05-listing-detail" data-price="50" data-arrival="3" style="display: flex; align-items: center; gap: var(--s-3); text-decoration: none; color: inherit; padding: var(--s-3)">
+            <div class="img-ph is-thumb" style="width: 84px; height: 84px; flex: none" role="img" aria-label="Photo: Merida Big.Nine 200 hardtail cross-country bike"></div>
+
+            <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px">
+              <div style="display: flex; align-items: center; gap: 4px; flex-wrap: wrap">
+                <span class="t-label" style="color: var(--sage-dark)">Coastline Cycles · Shop</span>
+                <span class="chip" style="height: 20px; font-size: 11px; padding: 0 6px">Fits you · M</span>
+              </div>
+              <h2 class="t-title" style="font-size: 17px; line-height: 22px; margin: 0">Merida Big.Nine 200</h2>
+              <div style="display: flex; align-items: baseline; gap: 4px">
+                <span class="t-title" style="font-size: 18px; line-height: 22px; color: var(--ink)">S$50 total</span>
+                <span class="t-foot" style="color: var(--muted)">(S$35 / day)</span>
+              </div>
+              <p class="t-foot" style="margin: 0; color: var(--muted)">Incl. delivery and fees</p>
+              <p class="t-foot" style="margin: 0; color: var(--ink); font-weight: 600">Arrives Sat, 25 Oct at 7:40</p>
+            </div>
+
+            <div style="display: flex; align-items: center; justify-content: center; width: 28px; flex: none; color: var(--muted)">
+              <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-caret-right"/></svg>
+            </div>
+          </a>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- LOADING STATE -->
+    <section data-state="loading" hidden>
+      <div class="content" style="padding-top: var(--s-6); align-items: center; text-align: center; gap: var(--s-4)">
+        <div style="width: 54px; height: 54px; border-radius: var(--r-pill); background: var(--sage-tint); display: flex; align-items: center; justify-content: center">
+          <svg class="icon t-accent" aria-hidden="true"><use href="../../../../design/icons.svg#i-bicycle"/></svg>
+        </div>
+        <div>
+          <h2 class="t-title">Checking bike availability…</h2>
+          <p class="t-foot" style="margin-top: var(--s-1)">Matching size M hardtails at Chestnut for Sat 25 Oct</p>
+        </div>
+        <div class="card" style="width: 100%; height: 100px; opacity: 0.6; display: flex; align-items: center; justify-content: center">
+          <span class="t-foot">Calculating all-in totals…</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- EMPTY STATE -->
+    <section data-state="empty" hidden>
+      <div class="content" style="padding-top: var(--s-6); align-items: center; text-align: center; gap: var(--s-4)">
+        <div style="width: 54px; height: 54px; border-radius: var(--r-pill); background: var(--error-tint); display: flex; align-items: center; justify-content: center">
+          <svg class="icon" style="color: var(--error)" aria-hidden="true"><use href="../../../../design/icons.svg#i-warning-circle"/></svg>
+        </div>
+        <div>
+          <h2 class="t-title">No bikes found for these filters</h2>
+          <p class="t-body" style="margin-top: var(--s-2); font-size: 15px">No hardtail bikes in frame size M are available for delivery to Chestnut on Sat 25 Oct.</p>
+        </div>
+        <div class="card" style="width: 100%; text-align: left; padding: var(--s-3) var(--s-4)">
+          <p class="t-callout" style="font-weight: 600; margin: 0">Try relaxing your filters:</p>
+          <p class="t-foot" style="margin-top: 4px">• Relax bike type to all mountain bikes</p>
+          <p class="t-foot" style="margin-top: 2px">• Adjust delivery time to Sunday 26 Oct</p>
+        </div>
+        <a class="btn is-block" href="#default">Reset filters</a>
+      </div>
+    </section>
+
   </main>
+
+  <script>
+    // State switcher using URL hash (RECIPES.md §8)
+    function showState() {
+      const want = location.hash.slice(1) || "default";
+      document.querySelectorAll("[data-state]").forEach((s) => {
+        s.hidden = s.dataset.state !== want;
+      });
+      document.querySelectorAll("[data-state-btn]").forEach((b) => {
+        const active = b.dataset.stateBtn === want;
+        b.classList.toggle("is-quiet", !active);
+        if (active) {
+          b.style.background = "var(--sage-tint)";
+          b.style.color = "var(--sage-dark)";
+          b.style.fontWeight = "600";
+        } else {
+          b.style.background = "var(--white)";
+          b.style.color = "var(--ink)";
+          b.style.fontWeight = "400";
+        }
+      });
+    }
+    window.addEventListener("hashchange", showState);
+    showState();
+
+    // Sort by switching (Earliest arrival vs Lowest total price)
+    const btnArrival = document.getElementById("sort-arrival");
+    const btnPrice = document.getElementById("sort-price");
+    const feed = document.getElementById("listings-feed");
+
+    function setSort(sortBy) {
+      const isArrival = sortBy === "arrival";
+      btnArrival.setAttribute("aria-checked", isArrival);
+      btnPrice.setAttribute("aria-checked", !isArrival);
+
+      const cards = [...feed.querySelectorAll(".card")];
+      cards.sort((a, b) => {
+        if (isArrival) {
+          return Number(a.dataset.arrival) - Number(b.dataset.arrival);
+        } else {
+          return Number(a.dataset.price) - Number(b.dataset.price);
+        }
+      });
+      cards.forEach((c) => feed.appendChild(c));
+    }
+
+    btnArrival?.addEventListener("click", () => setSort("arrival"));
+    btnPrice?.addEventListener("click", () => setSort("price"));
+  </script>
 </body>
 </html>
