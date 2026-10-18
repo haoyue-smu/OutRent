@@ -10,35 +10,245 @@
 <link rel="stylesheet" href="../../../../design/tokens.css">
 <link rel="stylesheet" href="../../../../design/components.css">
 <style>
-  /* Page-only layout goes here. Use var(--tokens) only: no hex, rgb or px font sizes outside the scale.
-     A new reusable look = a new component: list it under "Off-system" in DECISIONS.md. */
+  /* Page layout */
 </style>
 </head>
 <body>
   <!-- One phone screen, 393 × 852. Build only inside .screen. -->
   <main class="screen" data-page="06-delivery-return" data-direction="B">
 
+    <!-- Topbar navigation -->
     <div class="topbar">
       <a class="icon-btn" href="#" aria-label="Back" data-goes-to="previous">
         <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-arrow-left"/></svg>
       </a>
-      <span class="name">Delivery & Return</span>
-      <span></span>
+      <span class="name">Book collection</span>
+      <span style="width: var(--touch)"></span>
     </div>
 
-    <div class="content" style="padding-top: var(--s-5)">
-      <h1 class="t-large">Delivery & Return</h1>
-
-      <!-- Image slot example: always a placeholder. Say what the image should show. -->
-      <div class="img-ph" style="height: 180px" role="img" aria-label="Photo: describe the image here"></div>
-
-      <p class="t-body">Replace this with the page content from specs/06-delivery-return.md.</p>
+    <!-- State Switcher pill for testing (default / time-unavailable / no-collection-time) -->
+    <div style="padding: var(--s-2) var(--gutter) 0; display: flex; justify-content: center; gap: var(--s-2)">
+      <a href="#default" class="chip is-quiet" style="font-size: 11px; text-decoration: none" data-state-btn="default">Default</a>
+      <a href="#time-unavailable" class="chip is-quiet" style="font-size: 11px; text-decoration: none" data-state-btn="time-unavailable">Unavailable</a>
+      <a href="#no-collection-time" class="chip is-quiet" style="font-size: 11px; text-decoration: none" data-state-btn="no-collection-time">No time set</a>
     </div>
 
-    <!-- Links to other pages: use href="#" plus data-goes-to="<page-id>", e.g. data-goes-to="05-listing-detail". -->
-    <div class="actionbar glass is-single">
-      <a class="btn is-block" href="#" data-goes-to="next">Primary action</a>
+    <!-- Step progress (RECIPES.md §4: flow pages only) -->
+    <div style="padding: var(--s-3) var(--gutter) 0">
+      <ol class="steps" aria-label="Booking progress">
+        <li class="is-done">Pick</li>
+        <li class="is-done">Fit</li>
+        <li aria-current="step">Deliver</li>
+        <li>Ride</li>
+        <li>Return</li>
+      </ol>
     </div>
+
+    <!-- DEFAULT STATE: Interactive Connected Timeline using exact PDF 06.1 text -->
+    <section data-state="default">
+      <div class="content" style="padding-top: var(--s-3); padding-bottom: 120px; gap: var(--s-3)">
+
+        <!-- EQUIPMENT SUMMARY HEADER CARD -->
+        <div class="card" style="display: flex; justify-content: space-between; align-items: center; padding: var(--s-3) var(--s-4)">
+          <div>
+            <span class="t-label">Equipment</span>
+            <p class="t-title" style="font-size: 18px; margin: 2px 0 0">Old road bike</p>
+          </div>
+          <button type="button" class="chip is-quiet" data-open-sheet="photo-sheet" style="cursor: pointer; font-weight: 600">
+            <span>Photos</span>
+            <span class="t-accent">+ Add &gt;</span>
+          </button>
+        </div>
+
+        <!-- 3-TRIP CONNECTED TIMELINE CARD -->
+        <div class="card" style="padding: var(--s-4); display: flex; flex-direction: column; gap: var(--s-3)">
+          <div style="display: flex; justify-content: space-between; align-items: center">
+            <span class="t-label">Schedule 3 trips</span>
+            <span class="chip" style="font-size: 11px; height: 22px; padding: 0 8px">All included</span>
+          </div>
+
+          <!-- TRIP 1: COLLECTION -->
+          <div style="display: flex; gap: var(--s-3); align-items: flex-start">
+            <div style="display: flex; flex-direction: column; align-items: center">
+              <div style="width: 28px; height: 28px; border-radius: var(--r-pill); background: var(--sage); color: var(--white); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700">1</div>
+              <div style="width: 2px; height: 50px; background: var(--line); margin: 4px 0"></div>
+            </div>
+            <div style="flex: 1">
+              <div style="display: flex; justify-content: space-between; align-items: baseline">
+                <p class="t-callout" style="font-weight: 700; margin: 0">Collect from</p>
+                <span class="t-label" style="color: var(--sage)">Tonight, 8–10 pm</span>
+              </div>
+              <p class="t-body" style="font-size: 15px; margin: 2px 0 0">Blk 118 Pasir Ris St 11</p>
+              <p class="t-foot" style="margin: 0; color: var(--muted)">Destination: OutRent Hub, Kaki Bukit</p>
+            </div>
+          </div>
+
+          <!-- TRIP 2: DELIVERY FOR SATURDAY'S RIDE -->
+          <div style="display: flex; gap: var(--s-3); align-items: flex-start">
+            <div style="display: flex; flex-direction: column; align-items: center">
+              <div style="width: 28px; height: 28px; border-radius: var(--r-pill); background: var(--sage); color: var(--white); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700">2</div>
+              <div style="width: 2px; height: 50px; background: var(--line); margin: 4px 0"></div>
+            </div>
+            <div style="flex: 1">
+              <div style="display: flex; justify-content: space-between; align-items: baseline">
+                <p class="t-callout" style="font-weight: 700; margin: 0">Delivery for Saturday's ride</p>
+                <span class="t-label" style="color: var(--sage)">Sat, 12 Sep, 7–8 am</span>
+              </div>
+              <p class="t-body" style="font-size: 15px; margin: 2px 0 0">East Coast Park, Carpark C1</p>
+              <p class="t-foot" style="margin: 0; color: var(--muted)">Delivered assembled to your spot</p>
+            </div>
+          </div>
+
+          <!-- TRIP 3: RETURN AFTER YOUR RIDE (Fix cue A) -->
+          <div style="display: flex; gap: var(--s-3); align-items: flex-start">
+            <div style="width: 28px; height: 28px; border-radius: var(--r-pill); background: var(--sage-tint); color: var(--sage-dark); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700">3</div>
+            <div style="flex: 1">
+              <div style="display: flex; justify-content: space-between; align-items: baseline">
+                <p class="t-callout" style="font-weight: 700; margin: 0">Return after your ride</p>
+                <span class="t-label" style="color: var(--sage)">Sat, 12 Sep, 5–7 pm</span>
+              </div>
+              <p class="t-body" style="font-size: 15px; margin: 2px 0 0">Same spot, Carpark C1 &gt;</p>
+              <p class="t-foot" style="margin: 0; color: var(--muted)">Destination: OutRent Hub, Kaki Bukit</p>
+              <p class="t-foot" style="margin: 4px 0 0; color: var(--sage); font-weight: 600">Booked together with your delivery. No extra charge.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- CHARGES ACCORDION / TABLE CARD (Fix cue B) -->
+        <div class="card" style="padding: var(--s-3); display: flex; flex-direction: column; gap: 4px">
+          <span class="t-label" style="margin-bottom: 2px">Charges</span>
+          <div style="display: flex; justify-content: space-between" class="t-foot">
+            <span>Collection</span>
+            <span class="num">$12.00</span>
+          </div>
+          <div style="display: flex; justify-content: space-between" class="t-foot">
+            <span>Delivery</span>
+            <span class="num">$12.00</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; color: var(--sage)" class="t-foot">
+            <span>Return collection</span>
+            <span style="font-weight: 600">Included</span>
+          </div>
+          <div style="display: flex; justify-content: space-between" class="t-foot">
+            <span>Storage, first month</span>
+            <span class="num">$18.00</span>
+          </div>
+          <div class="divider" style="margin: var(--s-1) 0"></div>
+          <div style="display: flex; justify-content: space-between; align-items: baseline">
+            <span class="t-callout" style="font-weight: 700">Total</span>
+            <span class="t-title" style="color: var(--ink)">$42.00</span>
+          </div>
+        </div>
+
+        <!-- NOTICE BOX (Fix cue C) -->
+        <div class="card is-filled" style="padding: var(--s-3) var(--s-4); border-radius: var(--r-card)">
+          <p class="t-foot" style="margin: 0; color: var(--ink); line-height: 20px">
+            You are booking 3 trips: collection tonight, delivery Sat 7–8 am, and return Sat 5–7 pm.
+          </p>
+        </div>
+
+      </div>
+
+      <!-- Action bar with Confirm trips button -->
+      <div class="actionbar glass is-single">
+        <a class="btn is-block" href="#" data-goes-to="07-fees-liability">Confirm trips</a>
+      </div>
+    </section>
+
+    <!-- STATE 2: TIME SLOT NOT AVAILABLE -->
+    <section data-state="time-unavailable" hidden>
+      <div class="content" style="padding-top: var(--s-5); align-items: center; text-align: center; gap: var(--s-4)">
+        <div style="width: 54px; height: 54px; border-radius: var(--r-pill); background: var(--error-tint); display: flex; align-items: center; justify-content: center">
+          <svg class="icon" style="color: var(--error)" aria-hidden="true"><use href="../../../../design/icons.svg#i-warning-circle"/></svg>
+        </div>
+        <div>
+          <h2 class="t-title">Tonight slot is fully booked</h2>
+          <p class="t-body" style="font-size: 15px; margin-top: var(--s-2)">Collection for Tonight, 8–10 pm in Pasir Ris is currently filled.</p>
+        </div>
+        <div class="card" style="width: 100%; text-align: left; padding: var(--s-3) var(--s-4)">
+          <span class="t-label">Next available slot</span>
+          <p class="t-callout" style="margin-top: 4px; font-weight: 600">• Tomorrow morning, 8–10 am</p>
+        </div>
+        <a class="btn is-block" href="#default">Switch to 8–10 am</a>
+      </div>
+    </section>
+
+    <!-- STATE 3: NO COLLECTION TIME CHOSEN YET -->
+    <section data-state="no-collection-time" hidden>
+      <div class="content" style="padding-top: var(--s-5); gap: var(--s-4)">
+        <div class="field-error">
+          <svg class="icon is-sm" style="flex: none" aria-hidden="true"><use href="../../../../design/icons.svg#i-warning-circle"/></svg>
+          <div>
+            <b>Collection time not selected</b>
+            <p style="margin: 2px 0 0">Please select a collection time before confirming your trips.</p>
+          </div>
+        </div>
+        <a class="btn is-block" href="#default">Select Tonight, 8–10 pm</a>
+      </div>
+    </section>
+
+    <!-- PHOTO BOTTOM SHEET (RECIPES.md §1) -->
+    <div class="sheet-scrim" data-sheet-scrim="photo-sheet"></div>
+    <section class="bottom-sheet" id="photo-sheet" role="dialog" aria-modal="true" aria-labelledby="photo-sheet-title">
+      <span class="grabber" aria-hidden="true"></span>
+      <div class="sheet-head">
+        <h2 class="t-title" id="photo-sheet-title">Equipment photos</h2>
+        <button class="icon-btn" aria-label="Close" data-close-sheet>
+          <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-x"/></svg>
+        </button>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: var(--s-3)">
+        <div class="img-ph" style="height: 180px" role="img" aria-label="Photo: Old road bike, side view"></div>
+        <p class="t-foot">Add clear photos of the frame and components before handover.</p>
+      </div>
+
+      <button class="btn is-block" data-close-sheet>Save photos</button>
+    </section>
+
   </main>
+
+  <script>
+    // State switcher using URL hash (RECIPES.md §8)
+    function showState() {
+      const want = location.hash.slice(1) || "default";
+      document.querySelectorAll("[data-state]").forEach((s) => {
+        s.hidden = s.dataset.state !== want;
+      });
+      document.querySelectorAll("[data-state-btn]").forEach((b) => {
+        const active = b.dataset.stateBtn === want;
+        b.classList.toggle("is-quiet", !active);
+        if (active) {
+          b.style.background = "var(--sage-tint)";
+          b.style.color = "var(--sage-dark)";
+          b.style.fontWeight = "600";
+        } else {
+          b.style.background = "var(--white)";
+          b.style.color = "var(--ink)";
+          b.style.fontWeight = "400";
+        }
+      });
+    }
+    window.addEventListener("hashchange", showState);
+    showState();
+
+    // Bottom sheet controls (RECIPES.md §1)
+    let lastOpener = null;
+    function openSheet(id, opener) {
+      lastOpener = opener;
+      document.getElementById(id).classList.add("is-open");
+      document.querySelector(`[data-sheet-scrim="${id}"]`).classList.add("is-open");
+      document.getElementById(id).querySelector("button, input, select, textarea")?.focus();
+    }
+    function closeSheets() {
+      document.querySelectorAll(".bottom-sheet.is-open, .sheet-scrim.is-open").forEach((el) => el.classList.remove("is-open"));
+      lastOpener?.focus();
+    }
+    document.querySelectorAll("[data-open-sheet]").forEach((btn) => {
+      btn.addEventListener("click", () => openSheet(btn.dataset.openSheet, btn));
+    });
+    document.querySelectorAll("[data-close-sheet], .sheet-scrim").forEach((el) => el.addEventListener("click", closeSheets));
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeSheets(); });
+  </script>
 </body>
 </html>
