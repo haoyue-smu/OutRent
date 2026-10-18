@@ -13,24 +13,24 @@ I choose A. The information in B feels too dense or tightly packed. A is more co
 
 | Where | What it should show |
 |---|---|
-| Photo sheet (Photos > Add) | Old road bike, side view |
+| Photo sheet (Photos > Add) | Trek Marlin 7 mountain bike in matte emerald, side view |
 
 ## Notes
 
 <!-- Optional. Anything off-system, questions about the spec, ideas for the team lead. -->
 
-- Both directions adhere strictly to the exact text in PDF 06.1 (FIX P12 · full round trip shown):
-  - Equipment: Old road bike
+- Both directions use the 3-trip chronological layout from the HE evaluation (FIX P12 · full round trip shown) with the project mock data from DESIGN.md §8:
+  - Equipment: Trek Marlin 7 (Size M)
   - Photos: + Add >
-  - Collect from: Blk 118 Pasir Ris St 11
-  - Collection time: Tonight, 8–10 pm
+  - Collect from: Loop Cycles, Bukit Timah
+  - Collection time: Fri 24 Oct, 8–10 pm
   - Destination: OutRent Hub, Kaki Bukit
-  - Delivery for Saturday's ride: East Coast Park, Carpark C1 (Sat, 12 Sep, 7–8 am)
-  - Return after your ride: Same spot, Carpark C1 > (Sat, 12 Sep, 5–7 pm) to OutRent Hub, Kaki Bukit ("Booked together with your delivery. No extra charge.")
-  - Charges: Collection $12.00, Delivery $12.00, Return collection Included, Storage, first month $18.00, Total $42.00
-  - Notice callout: "You are booking 3 trips: collection tonight, delivery Sat 7–8 am, and return Sat 5–7 pm."
+  - Delivery for Saturday's ride: Chestnut Nature Park, Carpark (Sat 25 Oct, 7:40 am)
+  - Return after your ride: Same spot, Carpark > (Sat 25 Oct, 11:30 am–12:00 pm) to Loop Cycles, Bukit Timah ("Booked together with your delivery. No extra charge.")
+  - Charges: Bike day rental S$38.00, Collection S$6.00, Delivery S$6.00, Return collection Included, Platform service fee S$3.00, Total S$53.00
+  - Notice callout: "You are booking 3 trips: collection Fri 8–10 pm, delivery Sat 7:40 am, and return Sat 11:30 am–12:00 pm."
   - Button: "Confirm trips"
-- Direction A uses the grouped card table structure matching the PDF 06.1 screenshot layout 1:1.
-- Direction B organizes the exact same content into a connected milestone timeline card with a modal photo sheet.
+- Direction A uses the grouped card table structure matching the PDF 06.1 layout.
+- Direction B organizes the content into a connected milestone timeline card with a modal photo sheet.
 - Both directions include state handling for `#default`, `#time-unavailable`, and `#no-collection-time` per RECIPES.md §8.
 - Button links directly to `07-fees-liability`.
