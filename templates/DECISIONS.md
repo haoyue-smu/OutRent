@@ -16,4 +16,4 @@ Designer: {{PERSON}}
 
 ## Notes
 
-<!-- Optional. Anything off-system, questions about the spec, ideas for the team lead. -->
+<!-- Optional. Anything off-system, questions about the spec, ideas for Haoyue. -->

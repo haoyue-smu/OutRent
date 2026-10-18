@@ -33,7 +33,7 @@ for prefix in /opt/homebrew /usr/local; do
     break
   fi
 done
-have brew || { echo "Homebrew did not install. Screenshot this window and send it to the team lead."; exit 1; }
+have brew || { echo "Homebrew did not install. Screenshot this window and send it to Haoyue."; exit 1; }
 
 # 2. Command-line tools -------------------------------------------------------
 install_formula() {
@@ -77,4 +77,4 @@ printf "  npm   %s\n" "$(npm --version 2>/dev/null || echo 'missing')"
 printf "  gh    %s\n" "$(gh --version 2>/dev/null | head -n1 || echo 'missing')"
 echo
 echo "Next: close this Terminal window, open a new one, and follow START-HERE.md from step A5."
-echo "If any line above says 'missing', screenshot this window and send it to the team lead."
+echo "If any line above says 'missing', screenshot this window and send it to Haoyue."

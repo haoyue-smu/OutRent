@@ -1,6 +1,6 @@
 # 03 Fit Profile
 
-**Designer:** Team lead  ·  **Where:** Profile → Fit (also from 02, 04, 05)
+**Designer:** Haoyue  ·  **Where:** Profile → Fit (also from 02, 04, 05)
 
 ## Purpose
 Daniel's body measurements, saved once and reused for every bike.

@@ -1,6 +1,6 @@
 # 05 Listing Detail
 
-**Designer:** Team lead  ·  **Where:** Search Results → a bike
+**Designer:** Haoyue  ·  **Where:** Search Results → a bike
 
 ## Purpose
 Daniel checks this exact bike: dated photos, the set-up made for him, who supplies it, the all-in price.

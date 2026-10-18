@@ -140,7 +140,7 @@ Only for a length the person sets (height, inside leg). Drag or use arrow keys; 
 ```html
 <figure class="explainer has-ruler" style="margin: 0">
   <svg class="ruler" viewBox="0 0 353 64" data-min="60" data-max="95" data-value="81" data-unit="cm" aria-label="Inside leg"></svg>
-  <div class="placeholder">Explainer figure · supplied by the team lead</div>
+  <div class="placeholder">Explainer figure · supplied by Haoyue</div>
   <span class="corner hint">Drag the ruler</span><span class="corner readout" id="leg-readout">81 cm</span>
 </figure>
 ```

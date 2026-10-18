@@ -42,7 +42,7 @@ foreach ($app in $apps) {
     Say "Installing $($app.Label)..."
     winget install --id $app.Id --exact --silent --accept-package-agreements --accept-source-agreements
     if ($LASTEXITCODE -ne 0 -and $LASTEXITCODE -ne -1978335189) {
-      Write-Host "  Could not install $($app.Label). Screenshot this window and send it to the team lead." -ForegroundColor Yellow
+      Write-Host "  Could not install $($app.Label). Screenshot this window and send it to Haoyue." -ForegroundColor Yellow
     }
   }
 }

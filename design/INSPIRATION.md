@@ -46,4 +46,4 @@ Add "mobbin" or "dribbble" to a search to get screenshots instead of articles.
 - Busy screens: more than one main action, long paragraphs, walls of chips
 - Hidden costs or pre-ticked boxes (these were Iter1 problems)
 - Gradients and heavy shadows
-- Stock photos or AI images in your page: use `.img-ph` placeholders, the team lead adds images later
+- Stock photos or AI images in your page: use `.img-ph` placeholders, Haoyue adds images later

@@ -1,6 +1,6 @@
 # 02 Coach's Kit
 
-**Designer:** Team lead  ·  **Where:** Home → coach card
+**Designer:** Haoyue  ·  **Where:** Home → coach card
 
 ## Purpose
 Coach Aisyah's advice for Daniel's first Chestnut ride: what to rent, and which of his own gear is fine. The coach recommends; she does not rent anything out.

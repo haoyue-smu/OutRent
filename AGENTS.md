@@ -1,6 +1,6 @@
 # AGENTS.md — read this before doing anything
 
-You are helping a member of IS211 team G14T3 design pages for **OutRent**, an outdoor-gear rental app. The prototype is a mobile web app made of plain HTML and CSS. Every page must look like it belongs to one product, so you work **inside a fixed design system** that the team lead owns.
+You are helping a member of IS211 team G14T3 design pages for **OutRent**, an outdoor-gear rental app. The prototype is a mobile web app made of plain HTML and CSS. Every page must look like it belongs to one product, so you work **inside a fixed design system** that Haoyue owns.
 
 The person you are helping may be in Year 1 and new to Git and code. Explain each step in plain words, one step at a time. Never assume they know a command.
 
@@ -51,13 +51,13 @@ Build each version as one `index.html`, starting from the template that `npm run
 
 **Open (this is your design):** layout, grouping, order, which components you use, how many steps, what is shown first, small interactions (sheets, tabs, toggles, expand/collapse), microcopy.
 
-**Propose (allowed, but the checker warns):** a new component, a different radius or shadow, a gradient, a custom SVG drawing. Do it only if the library truly has nothing that works. Add one line on why under **"Notes"** in DECISIONS.md. The lead decides whether it joins the system.
+**Propose (allowed, but the checker warns):** a new component, a different radius or shadow, a gradient, a custom SVG drawing. Do it only if the library truly has nothing that works. Add one line on why under **"Notes"** in DECISIONS.md. Haoyue decides whether it joins the system.
 
 Light theme only. Low contrast, calm colours, no bright highlights, no dark mode.
 
 ## 4. Images: placeholders only
 
-Do not generate, download, screenshot or paste any image. The team lead makes and manages every image.
+Do not generate, download, screenshot or paste any image. Haoyue makes and manages every image.
 
 Wherever a photo belongs, put a placeholder:
 
@@ -75,7 +75,7 @@ Pages are built by different people, so link by page id, not by file path:
 <a href="#" data-goes-to="05-listing-detail">View bike</a>
 ```
 
-Page ids are in `pages.json`. The lead wires them together later.
+Page ids are in `pages.json`. Haoyue wires them together later.
 
 ## 6. Motion and accessibility
 
@@ -117,7 +117,7 @@ git commit -m "<page-id>: first version"
 git push -u origin work/<name>
 ```
 
-Push only to `work/<name>`; never push to `main` (it is protected anyway). No pull request is needed: when the page is done, the person tells the team lead. If `git pull` or `git push` reports a merge conflict or any Git error, resolve it for them, keeping their own work, and explain in one line what happened. If they downloaded a zip instead, zip their `work/<name>/` folder after `npm run check` passes and they send that.
+Push only to `work/<name>`; never push to `main` (it is protected anyway). No pull request is needed: when the page is done, the person tells Haoyue. If `git pull` or `git push` reports a merge conflict or any Git error, resolve it for them, keeping their own work, and explain in one line what happened. If they downloaded a zip instead, zip their `work/<name>/` folder after `npm run check` passes and they send that.
 
 ## 10. Do not touch
 

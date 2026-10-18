@@ -125,7 +125,7 @@ Built by team G14T3 for IS211 Interaction Design and Prototyping at Singapore Ma
 
 | Designer | Pages |
 |---|---|
-| Haoyue (lead) | 01 Home · 02 Coach's Kit · 03 Fit Profile · 05 Listing Detail · 10 Delivery Tracking · 18 Storage Map · design system |
+| Haoyue | 01 Home · 02 Coach's Kit · 03 Fit Profile · 05 Listing Detail · 10 Delivery Tracking · 18 Storage Map · design system |
 | Amanda | 04 Search Results · 06 Delivery & Return · 07 Fees & Liability |
 | Harwin | 08 Booking Confirmation |
 | Kai Jun | 09 Trips · 13 Weekly Ride |

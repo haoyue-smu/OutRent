@@ -21,7 +21,7 @@ const COMPONENT_CLASSES = new Set([...readFileSync(join(ROOT, "design", "compone
 
 const issues = []; // { file, level: "error" | "warn", msg }
 let lenient = false; // work/haoyue (lead pages): hero pages may break rules on purpose, so errors become warnings
-const add = (file, level, msg) => issues.push(lenient && level === "error" ? { file: relative(ROOT, file).split(sep).join("/"), level: "warn", msg: "(lead exception) " + msg } :{ file: relative(ROOT, file).split(sep).join("/"), level, msg });
+const add = (file, level, msg) => issues.push(lenient && level === "error" ? { file: relative(ROOT, file).split(sep).join("/"), level: "warn", msg: "(Haoyue's page) " + msg } :{ file: relative(ROOT, file).split(sep).join("/"), level, msg });
 const lineOf = (text, index) => text.slice(0, index).split("\n").length;
 
 function cssBlocks(html) {
@@ -121,7 +121,7 @@ function checkPageFolder(dir) {
   const walk = (p) => statSync(p).isDirectory() ? readdirSync(p).flatMap((c) => walk(join(p, c))) : [p];
   for (const f of walk(dir)) {
     if (f.endsWith(".css")) checkCss(f, readFileSync(f, "utf8"), readFileSync(f, "utf8"), 0);
-    if (/\.(png|jpe?g|webp|gif|avif|heic)$/i.test(f)) add(f, "error", `image file in your folder. Images are managed by the team lead; use .img-ph and list it under Image requests.`);
+    if (/\.(png|jpe?g|webp|gif|avif|heic)$/i.test(f)) add(f, "error", `image file in your folder. Images are managed by Haoyue; use .img-ph and list it under Image requests.`);
     if (/node_modules|package\.json$/.test(f)) add(f, "error", `no packages or frameworks in work folders.`);
   }
 }
