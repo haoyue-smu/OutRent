@@ -5,7 +5,7 @@ Designer: Amanda
 ## My choice
 
 <!-- A or B. Then 2–3 lines on why, in YOUR OWN words (not the AI's). -->
-I choose B. B has the All, Bike shops, and Private filter that A doesn't have. B is also more detailed and has pill-shaped containers for labels that make information stand out.
+I choose A. A is less cluttered and more comfortable to look at. The reader's attention is naturally directed to the bike options further down the screen.
 
 ## Image requests
 

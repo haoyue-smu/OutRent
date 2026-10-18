@@ -5,7 +5,7 @@ Designer: Amanda
 ## My choice
 
 <!-- A or B. Then 2–3 lines on why, in YOUR OWN words (not the AI's). -->
-I choose A, the layout is simpler and easier to read.
+I choose A, the layout is simpler and easier to read. Important charges are not greyed out like in B.
 
 ## Image requests
 
