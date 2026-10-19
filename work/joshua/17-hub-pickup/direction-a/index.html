@@ -3,42 +3,448 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Hub Pickup · Direction A</title>
+<title>Hub pickup · OutRent</title>
 <!-- Do not change these four lines. They load the design system. -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;600;700&display=swap">
 <link rel="stylesheet" href="../../../../design/tokens.css">
 <link rel="stylesheet" href="../../../../design/components.css">
+<link rel="icon" href="../../../../design/brand/favicon.svg">
 <style>
-  /* Page-only layout goes here. Use var(--tokens) only: no hex, rgb or px font sizes outside the scale.
-     A new reusable look = a new component: list it under "Off-system" in DECISIONS.md. */
+  .screen[data-page="17-hub-pickup"] {
+    width: min(393px, 100%);
+    height: min(852px, 100dvh);
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  #scroller {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: none;
+  }
+  #scroller::-webkit-scrollbar { display: none; }
+  .topbar {
+    padding-bottom: var(--s-2);
+  }
+  .content {
+    padding-top: var(--s-3);
+    gap: var(--s-4);
+  }
+  #intro { display: flex; flex-direction: column; gap: var(--s-1); }
+  .segmented { position: relative; isolation: isolate; }
+  .segmented::before {
+    content: "";
+    position: absolute;
+    z-index: 0;
+    top: 4px;
+    bottom: 4px;
+    left: 4px;
+    width: calc((100% - 12px) / 2);
+    border-radius: var(--r-tile);
+    background: var(--sage-tint);
+    transform: translateX(0);
+  }
+  .segmented[data-selected="rack"]::before { transform: translateX(calc(100% + 4px)); }
+  .segmented button { position: relative; z-index: 1; }
+  .segmented button[aria-checked="true"] { background: transparent; }
+  @media (prefers-reduced-motion: no-preference) {
+    .segmented::before { transition: transform var(--t-base) var(--ease-glide); }
+    #method-panel > *,
+    #return-card > * { animation: detail-arrive var(--t-quick) var(--ease-glide) both; }
+    #method-panel > :nth-child(n + 2),
+    #return-card > :nth-child(n + 2) { animation-delay: 40ms; }
+    #confirmed:not([hidden]) > * { animation: confirmation-arrive var(--t-base) var(--ease-glide) both; }
+    #confirmed:not([hidden]) > :nth-child(n + 2) { animation-delay: 50ms; }
+    @keyframes detail-arrive { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes confirmation-arrive { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  }
+  #method-panel,
+  #return-card,
+  #confirmed-summary { display: flex; flex-direction: column; gap: var(--s-3); }
+  #method-panel > header { display: flex; align-items: flex-start; gap: var(--s-3); }
+  #method-panel > header > span:first-child,
+  #confirmed-mark {
+    width: var(--touch);
+    height: var(--touch);
+    border-radius: var(--r-pill);
+    background: var(--sage-tint);
+    color: var(--sage-dark);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+  }
+  #method-panel header > span:last-child { display: flex; flex-direction: column; gap: var(--s-1); }
+  #method-panel .row,
+  #return-card .row { min-height: var(--touch); }
+  #method-panel .row .icon,
+  #return-card .row .icon { color: var(--sage); }
+  #method-panel .divider { margin-left: 36px; }
+  #rack-action { margin-top: var(--s-1); }
+  .rack-choices { display: flex; flex-direction: column; gap: var(--s-1); }
+  .rack-choice {
+    width: 100%;
+    min-height: 72px;
+    padding: var(--s-2) var(--s-3);
+    border: 0;
+    border-radius: var(--r-tile);
+    background: transparent;
+    text-align: left;
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  .rack-choice > .icon { flex: none; color: var(--sage); }
+  .rack-choice .check { flex: none; color: var(--sage-dark); visibility: hidden; }
+  .rack-choice[aria-pressed="true"],
+  .rack-choice:active { background: var(--sage-tint); }
+  .rack-choice[aria-pressed="true"] .check { visibility: visible; }
+  @media (hover: hover) and (pointer: fine) {
+    .rack-choice:not([aria-pressed="true"]):hover { background: var(--mist); }
+  }
+  #return-card { background: var(--sage-tint); border-color: transparent; gap: 0; }
+  #return-card > header,
+  #return-card .row {
+    display: grid;
+    grid-template-columns: 32px minmax(0, 1fr);
+    align-items: center;
+    column-gap: var(--s-3);
+  }
+  #return-card > header > span:first-child {
+    width: 32px;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--sage-dark);
+  }
+  #return-card header > span:last-child { display: flex; flex-direction: column; gap: var(--s-1); }
+  #return-card > header { padding-bottom: var(--s-3); }
+  #return-card .row { padding: var(--s-3) 0; }
+  #return-card .row > .icon { justify-self: center; }
+  #return-card .divider { margin-left: 44px; }
+  #return-card .chip { background: var(--white); }
+  #confirmed { padding-top: var(--s-6); text-align: center; align-items: center; }
+  #confirmed-mark { width: 64px; height: 64px; }
+  #confirmed-mark .icon { width: 32px; height: 32px; }
+  #confirmed .t-body { color: var(--muted); }
+  #confirmed-summary { width: 100%; text-align: left; margin-top: var(--s-2); }
+  .actionbar .price b { font-size: var(--fs-callout); line-height: var(--lh-callout); }
+  .actionbar .price small { margin-top: 2px; }
+  @media (max-width: 360px) {
+    .content { padding-left: var(--s-4); padding-right: var(--s-4); }
+    .actionbar { left: var(--s-2); right: var(--s-2); }
+    .actionbar .btn { padding-left: var(--s-4); padding-right: var(--s-4); }
+  }
 </style>
 </head>
 <body>
-  <!-- One phone screen, 393 × 852. Build only inside .screen. -->
   <main class="screen" data-page="17-hub-pickup" data-direction="A">
+    <div id="scroller">
+      <div class="topbar">
+        <a class="icon-btn" href="#" aria-label="Back to storage options" data-goes-to="16-storage-options">
+          <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-arrow-left"/></svg>
+        </a>
+        <span class="name">Hub pickup</span>
+        <span></span>
+      </div>
 
-    <div class="topbar">
-      <a class="icon-btn" href="#" aria-label="Back" data-goes-to="previous">
-        <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-arrow-left"/></svg>
-      </a>
-      <span class="name">Hub Pickup</span>
-      <span></span>
+      <section class="content" data-state="choice">
+        <header id="intro">
+          <span class="t-label">Pickup method</span>
+          <h1 class="t-large">How should we collect your bike?</h1>
+        </header>
+
+        <div class="segmented" role="radiogroup" aria-label="How your bike gets to the Hub" data-selected="home">
+          <button type="button" role="radio" aria-checked="true" data-method="home">Home Collection</button>
+          <button type="button" role="radio" aria-checked="false" data-method="rack">Public Rack</button>
+        </div>
+
+        <section class="card" id="method-panel" aria-live="polite"></section>
+        <section class="card" id="return-card" aria-live="polite"></section>
+      </section>
+
+      <section class="content" id="confirmed" data-state="confirmed" hidden>
+        <span id="confirmed-mark" aria-hidden="true">
+          <svg class="icon"><use href="../../../../design/icons.svg#i-check-circle"/></svg>
+        </span>
+        <span class="t-label">Pickup confirmed</span>
+        <h1 class="t-large" id="confirmed-title" tabindex="-1">Your bike’s route is set.</h1>
+        <p class="t-body" id="confirmed-description"></p>
+
+        <section class="card" id="confirmed-summary"></section>
+      </section>
     </div>
 
-    <div class="content" style="padding-top: var(--s-5)">
-      <h1 class="t-large">Hub Pickup</h1>
-
-      <!-- Image slot example: always a placeholder. Say what the image should show. -->
-      <div class="img-ph" style="height: 180px" role="img" aria-label="Photo: describe the image here"></div>
-
-      <p class="t-body">Replace this with the page content from specs/17-hub-pickup.md.</p>
+    <div class="actionbar glass" id="choice-actions">
+      <span class="price"><b id="action-title">Home · 5–7 pm</b><small id="action-note">Return home · within 2 days</small></span>
+      <a class="btn" id="confirm" href="#confirmed" aria-disabled="false">Confirm</a>
     </div>
 
-    <!-- Links to other pages: use href="#" plus data-goes-to="<page-id>", e.g. data-goes-to="05-listing-detail". -->
-    <div class="actionbar glass is-single">
-      <a class="btn is-block" href="#" data-goes-to="next">Primary action</a>
+    <div class="actionbar glass is-single" id="confirmed-actions" hidden>
+      <a class="btn is-block" href="#" data-goes-to="15-equipment-detail">View bike details</a>
     </div>
+
+    <div class="sheet-scrim" id="rack-scrim" aria-hidden="true"></div>
+    <section class="bottom-sheet" id="rack-sheet" role="dialog" aria-modal="true" aria-labelledby="rack-sheet-title" aria-hidden="true" inert>
+      <span class="grabber" aria-hidden="true"></span>
+      <div class="sheet-head">
+        <h2 class="t-title" id="rack-sheet-title">Choose a public rack</h2>
+        <button class="icon-btn" type="button" id="close-rack-sheet" aria-label="Close rack list">
+          <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-x"/></svg>
+        </button>
+      </div>
+      <div class="rack-choices" aria-label="Nearby racks, distances from your location">
+        <button class="row rack-choice" type="button" data-rack="a" aria-pressed="false">
+          <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-map-pin"/></svg>
+          <span class="body"><span class="name">Rack A · Blk 118</span><span class="meta">Nearest · 300 m away</span></span>
+          <svg class="icon is-sm check" aria-hidden="true"><use href="../../../../design/icons.svg#i-check-circle"/></svg>
+        </button>
+        <button class="row rack-choice" type="button" data-rack="b" aria-pressed="false">
+          <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-map-pin"/></svg>
+          <span class="body"><span class="name">Rack B · Park entrance</span><span class="meta">Covered · 450 m away</span></span>
+          <svg class="icon is-sm check" aria-hidden="true"><use href="../../../../design/icons.svg#i-check-circle"/></svg>
+        </button>
+        <button class="row rack-choice" type="button" data-rack="c" aria-pressed="false">
+          <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-map-pin"/></svg>
+          <span class="body"><span class="name">Rack C · MRT exit</span><span class="meta">Cycle path · 600 m away</span></span>
+          <svg class="icon is-sm check" aria-hidden="true"><use href="../../../../design/icons.svg#i-check-circle"/></svg>
+        </button>
+      </div>
+    </section>
   </main>
+
+<script>
+const panel = document.getElementById("method-panel");
+const returnCard = document.getElementById("return-card");
+const confirmLink = document.getElementById("confirm");
+const actionTitle = document.getElementById("action-title");
+const actionNote = document.getElementById("action-note");
+const choiceActions = document.getElementById("choice-actions");
+const confirmedActions = document.getElementById("confirmed-actions");
+const confirmedDescription = document.getElementById("confirmed-description");
+const confirmedSummary = document.getElementById("confirmed-summary");
+const confirmedTitle = document.getElementById("confirmed-title");
+const scroller = document.getElementById("scroller");
+const rackSheet = document.getElementById("rack-sheet");
+const rackScrim = document.getElementById("rack-scrim");
+const closeRackButton = document.getElementById("close-rack-sheet");
+const rackChoices = [...document.querySelectorAll("[data-rack]")];
+const radios = [...document.querySelectorAll('[data-method]')];
+const methodSwitch = document.querySelector(".segmented");
+let selectedMethod = "home";
+let selectedRack = "a";
+let focusRackActionAfterRender = false;
+
+const racks = {
+  a: { short: "Rack A", name: "Rack A · Blk 118", distance: "300 m away" },
+  b: { short: "Rack B", name: "Rack B · Park entrance", distance: "450 m away" },
+  c: { short: "Rack C", name: "Rack C · MRT exit", distance: "600 m away" }
+};
+
+const homePanel = `
+  <header>
+    <span><svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-house"/></svg></span>
+    <span><span class="t-title">Home Collection</span><span class="t-foot">Collected from your home</span></span>
+  </header>
+  <hr class="divider">
+  <div class="row">
+    <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-clock"/></svg>
+    <span class="body"><span class="meta">Collection window</span><span class="name num">5–7 pm</span></span>
+  </div>`;
+
+const confirmedPlan = (method, rack) => method === "home" ? `
+  <div class="row">
+    <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-house"/></svg>
+    <span class="body"><span class="meta">Collection from</span><span class="name">Your home</span></span>
+  </div>
+  <hr class="divider">
+  <div class="row">
+    <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-clock"/></svg>
+    <span class="body"><span class="meta">Collection window</span><span class="name num">5–7 pm</span></span>
+  </div>
+  <hr class="divider">
+  <div class="row">
+    <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-bicycle"/></svg>
+    <span class="body"><span class="meta">Return to your home · included</span><span class="name">Within 2 days</span></span>
+  </div>` : `
+  <div class="row">
+    <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-map-pin"/></svg>
+    <span class="body"><span class="meta">Drop-off</span><span class="name">${racks[rack].name}</span></span>
+  </div>
+  <hr class="divider">
+  <div class="row">
+    <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-truck"/></svg>
+    <span class="body"><span class="meta">Pooled courier run</span><span class="name num">Sat 25 Oct · 8:30 am</span></span>
+  </div>
+  <hr class="divider">
+  <div class="row">
+    <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-clock"/></svg>
+    <span class="body"><span class="meta">Return to ${racks[rack].short} · included in total</span><span class="name num">Next pooled run · 8–10 am</span></span>
+  </div>`;
+
+const rackPanel = (rack) => `
+  <header>
+    <span><svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-map-pin"/></svg></span>
+    <span><span class="t-title">${rack ? racks[rack].name : "Nearby public rack"}</span><span class="t-foot">${rack ? racks[rack].distance : "Drop off before pickup"}</span></span>
+  </header>
+  <hr class="divider">
+  <div class="row">
+    <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-truck"/></svg>
+    <span class="body"><span class="meta">Courier pickup</span><span class="name num">Sat 25 Oct · 8:30 am</span></span>
+  </div>
+  <button class="btn is-secondary is-block" id="rack-action" type="button">${rack ? "Change rack" : "Choose a rack"}</button>`;
+
+const returnPlan = (method, rack) => method === "home" ? `
+  <header>
+    <span><svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-bicycle"/></svg></span>
+    <span><span class="t-title">Your Bike’s Return</span><span class="t-foot">Included in your total</span></span>
+  </header>
+  <hr class="divider">
+  <div class="row">
+    <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-house"/></svg>
+    <span class="body"><span class="meta">Returns to</span><span class="name">Your home</span></span>
+  </div>
+  <hr class="divider">
+  <div class="row">
+    <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-clock"/></svg>
+    <span class="body"><span class="meta">Return timing</span><span class="name">Within 2 days</span></span>
+  </div>` : `
+  <header>
+    <span><svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-bicycle"/></svg></span>
+    <span><span class="t-title">Your Bike’s Return</span><span class="t-foot">Included in your total</span></span>
+  </header>
+  <hr class="divider">
+  <div class="row">
+    <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-map-pin"/></svg>
+    <span class="body"><span class="meta">Returns to</span><span class="name">${rack ? racks[rack].name : "Your chosen rack"}</span></span>
+  </div>
+  <hr class="divider">
+  <div class="row">
+    <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-clock"/></svg>
+    <span class="body"><span class="meta">Return window</span><span class="name num">8–10 am</span><span class="meta">Within 24 hours</span></span>
+  </div>`;
+
+function render() {
+  const state = location.hash.slice(1) || "home";
+  const confirmed = state === "confirmed";
+  if (rackSheet.classList.contains("is-open")) closeRackSheet(false);
+  document.querySelectorAll("[data-state]").forEach((section) => {
+    section.hidden = section.dataset.state !== (confirmed ? "confirmed" : "choice");
+  });
+  choiceActions.hidden = confirmed;
+  confirmedActions.hidden = !confirmed;
+  if (confirmed) {
+    confirmedDescription.textContent = selectedMethod === "home"
+      ? "We’ll collect your bike from home during the 5–7 pm window and notify you at each handoff."
+      : "Drop it at the rack before the pooled courier arrives. We’ll notify you at every handoff.";
+    confirmedSummary.innerHTML = confirmedPlan(selectedMethod, selectedRack);
+    scroller.scrollTop = 0;
+    confirmedTitle.focus({ preventScroll: true });
+    return;
+  }
+
+  const method = state.startsWith("rack") ? "rack" : "home";
+  selectedMethod = method;
+  const requestedRack = state === "rack-chosen" ? "a" : state.startsWith("rack-") ? state.slice(5) : "";
+  const rack = Object.hasOwn(racks, requestedRack) ? requestedRack : "";
+  if (rack) selectedRack = rack;
+  radios.forEach((radio) => {
+    const selected = radio.dataset.method === method;
+    radio.setAttribute("aria-checked", String(selected));
+    radio.tabIndex = selected ? 0 : -1;
+  });
+  methodSwitch.dataset.selected = method;
+  panel.innerHTML = method === "home" ? homePanel : rackPanel(rack);
+  returnCard.innerHTML = returnPlan(method, rack);
+  const canConfirm = method === "home" || Boolean(rack);
+  confirmLink.setAttribute("aria-disabled", String(!canConfirm));
+  confirmLink.href = canConfirm ? "#confirmed" : "#rack";
+  actionTitle.textContent = method === "home" ? "Home · 5–7 pm" : rack ? `${racks[rack].short} · Sat 8:30 am` : "Choose your rack";
+  actionNote.textContent = method === "home" ? "Return home · within 2 days" : rack ? `Return to ${racks[rack].short} · 8–10 am` : "Return to rack · 8–10 am";
+  if (focusRackActionAfterRender) {
+    focusRackActionAfterRender = false;
+    document.getElementById("rack-action")?.focus({ preventScroll: true });
+  }
+}
+
+function openRackSheet() {
+  if (rackSheet.classList.contains("is-open")) return;
+  const selected = location.hash === "#rack-chosen" ? "a" : location.hash.startsWith("#rack-") ? location.hash.slice(6) : "";
+  rackChoices.forEach((choice) => choice.setAttribute("aria-pressed", String(choice.dataset.rack === selected)));
+  rackSheet.inert = false;
+  rackSheet.setAttribute("aria-hidden", "false");
+  rackSheet.classList.add("is-open");
+  rackScrim.classList.add("is-open");
+  scroller.inert = true;
+  choiceActions.inert = true;
+  (rackChoices.find((choice) => choice.dataset.rack === selected) || closeRackButton).focus();
+}
+
+function closeRackSheet(restoreFocus = true) {
+  if (!rackSheet.classList.contains("is-open")) return;
+  rackSheet.classList.remove("is-open");
+  rackScrim.classList.remove("is-open");
+  rackSheet.inert = true;
+  rackSheet.setAttribute("aria-hidden", "true");
+  scroller.inert = false;
+  choiceActions.inert = false;
+  if (restoreFocus) document.getElementById("rack-action")?.focus();
+}
+
+panel.addEventListener("click", (event) => {
+  if (event.target.closest("#rack-action")) openRackSheet();
+});
+rackChoices.forEach((choice) => choice.addEventListener("click", () => {
+  const nextHash = choice.getAttribute("aria-pressed") === "true" ? "rack" : `rack-${choice.dataset.rack}`;
+  focusRackActionAfterRender = true;
+  closeRackSheet(false);
+  location.hash = nextHash;
+}));
+closeRackButton.addEventListener("click", () => closeRackSheet());
+rackScrim.addEventListener("click", () => closeRackSheet());
+rackSheet.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") {
+    event.preventDefault();
+    closeRackSheet();
+  }
+  if (event.key !== "Tab") return;
+  const focusables = [closeRackButton, ...rackChoices];
+  if (event.shiftKey && document.activeElement === focusables[0]) {
+    event.preventDefault();
+    focusables.at(-1).focus();
+  } else if (!event.shiftKey && document.activeElement === focusables.at(-1)) {
+    event.preventDefault();
+    focusables[0].focus();
+  }
+});
+
+radios.forEach((radio) => radio.addEventListener("click", () => {
+  location.hash = radio.dataset.method;
+}));
+methodSwitch.addEventListener("keydown", (event) => {
+  if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
+  event.preventDefault();
+  const current = radios.findIndex((radio) => radio.getAttribute("aria-checked") === "true");
+  const next = event.key === "Home" ? 0 : event.key === "End" ? radios.length - 1
+    : (current + (event.key === "ArrowRight" ? 1 : -1) + radios.length) % radios.length;
+  location.hash = radios[next].dataset.method;
+  radios[next].focus();
+});
+confirmLink.addEventListener("click", (event) => {
+  if (confirmLink.getAttribute("aria-disabled") === "true") {
+    event.preventDefault();
+    openRackSheet();
+  }
+});
+addEventListener("hashchange", render);
+render();
+</script>
 </body>
 </html>

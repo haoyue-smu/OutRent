@@ -3,42 +3,1004 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Hub Pickup · Direction B</title>
+<title>Hub pickup · OutRent</title>
 <!-- Do not change these four lines. They load the design system. -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;600;700&display=swap">
 <link rel="stylesheet" href="../../../../design/tokens.css">
 <link rel="stylesheet" href="../../../../design/components.css">
+<link rel="icon" href="../../../../design/brand/favicon.svg">
 <style>
-  /* Page-only layout goes here. Use var(--tokens) only: no hex, rgb or px font sizes outside the scale.
-     A new reusable look = a new component: list it under "Off-system" in DECISIONS.md. */
+  .screen[data-page="17-hub-pickup"] {
+    width: min(393px, 100%);
+    height: min(852px, 100dvh);
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  #scroller {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: none;
+  }
+  #scroller::-webkit-scrollbar { display: none; }
+  .topbar { padding-bottom: var(--s-2); }
+  .content { padding-top: var(--s-3); gap: var(--s-4); }
+  #intro { display: flex; flex-direction: column; gap: var(--s-1); }
+  .segmented { position: relative; isolation: isolate; }
+  .segmented::before {
+    content: "";
+    position: absolute;
+    z-index: 0;
+    top: 4px;
+    bottom: 4px;
+    left: 4px;
+    width: calc((100% - 12px) / 2);
+    border-radius: var(--r-tile);
+    background: var(--sage-tint);
+    transform: translateX(0);
+  }
+  .segmented[data-selected="rack"]::before { transform: translateX(calc(100% + 4px)); }
+  .segmented button { position: relative; z-index: 1; }
+  .segmented button[aria-checked="true"] { background: transparent; }
+  #home-panel,
+  #return-card,
+  #confirmed-summary { display: flex; flex-direction: column; gap: var(--s-3); }
+  #home-panel > header { display: flex; align-items: flex-start; gap: var(--s-3); }
+  #home-panel > header > span:first-child,
+  #confirmed-mark {
+    width: var(--touch);
+    height: var(--touch);
+    border-radius: var(--r-pill);
+    background: var(--sage-tint);
+    color: var(--sage-dark);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+  }
+  #home-panel header > span:last-child { display: flex; flex-direction: column; gap: var(--s-1); }
+  #rack-picker { display: flex; flex-direction: column; gap: var(--s-3); }
+  .map-head { display: flex; align-items: end; justify-content: space-between; gap: var(--s-3); }
+  .map-head > span:first-child { display: flex; flex-direction: column; gap: var(--s-1); }
+  .map-view {
+    min-width: var(--touch);
+    min-height: var(--touch);
+    padding: 0 var(--s-3);
+    border: 0;
+    border-radius: var(--r-pill);
+    background: var(--white);
+    color: var(--sage);
+    font-size: var(--fs-callout);
+    line-height: var(--lh-callout);
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .map {
+    position: relative;
+    height: 228px;
+    overflow: hidden;
+    border-radius: var(--r-card);
+    background: #edf0f2;
+    border: 1px solid var(--line);
+  }
+  .map-placeholder { height: 228px; }
+  .map.is-expanded {
+    position: fixed;
+    top: var(--preview-top);
+    left: var(--preview-left);
+    z-index: 50;
+    width: var(--preview-width);
+    height: var(--preview-height);
+    border-color: transparent;
+    box-shadow: 0 18px 44px #1e2e3b38;
+  }
+  .map.is-expanded.is-ready {
+    top: var(--phone-top);
+    left: var(--phone-left);
+    width: var(--phone-width);
+    height: var(--phone-height);
+    border-radius: 0;
+    box-shadow: none;
+  }
+  .map-backdrop {
+    position: fixed;
+    top: var(--phone-top);
+    left: var(--phone-left);
+    width: var(--phone-width);
+    height: var(--phone-height);
+    z-index: 49;
+    background: #1e2e3b30;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .map-backdrop.is-visible { opacity: 1; }
+  .map-canvas { position: absolute; inset: 0; overflow: hidden; }
+  .map.is-expanded .map-canvas { cursor: grab; touch-action: none; }
+  .map-canvas.is-dragging { cursor: grabbing; }
+  .map-canvas:focus-visible { outline: 2px solid #4285f4; outline-offset: -2px; }
+  .map-scene {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 900px;
+    height: 1700px;
+    transform-origin: top left;
+    transform: translate3d(var(--pan-x, -150px), var(--pan-y, -260px), 0) scale(var(--map-zoom, .72));
+  }
+  .map-art { display: block; width: 100%; height: 100%; overflow: visible; }
+  .location-dot {
+    position: absolute;
+    left: 405px;
+    top: 525px;
+    width: 26px;
+    height: 26px;
+    border: 4px solid #fff;
+    border-radius: 50%;
+    background: #4285f4;
+    box-shadow: 0 0 0 18px #4285f426, 0 2px 8px #33557755;
+    pointer-events: none;
+  }
+  .map-recenter {
+    position: absolute;
+    z-index: 8;
+    right: 12px;
+    bottom: 12px;
+    width: 48px;
+    height: 48px;
+    display: none;
+    place-items: center;
+    padding: 0;
+    border: 1px solid #d8e0e6;
+    border-radius: 15px;
+    background: #fff;
+    color: #3979d6;
+    box-shadow: 0 3px 12px #233b4d29;
+    cursor: pointer;
+  }
+  .map-recenter:focus-visible { outline: 2px solid #4285f4; outline-offset: 2px; }
+  .map-recenter svg { width: 25px; height: 25px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+  .map.is-expanded .map-recenter { display: grid; right: 16px; bottom: 112px; opacity: 0; visibility: hidden; pointer-events: none; transform: translateY(10px) scale(.92); }
+  .map.is-expanded.is-ready .map-recenter { opacity: 1; visibility: visible; pointer-events: auto; transform: none; }
+  .map.is-returning .map-recenter { opacity: 0; visibility: hidden; transform: translateY(8px); pointer-events: none; }
+  .map-pin {
+    position: absolute;
+    z-index: 2;
+    width: 64px;
+    height: 64px;
+    padding: 0;
+    border: 0;
+    border-radius: var(--r-pill);
+    background: transparent;
+    color: var(--sage-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+  .pin-shape {
+    width: 44px;
+    height: 44px;
+    border-radius: var(--r-pill) var(--r-pill) var(--r-pill) 4px;
+    background: var(--sage);
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: rotate(-45deg) scale(1);
+  }
+  .pin-letter {
+    transform: rotate(45deg);
+    font-size: var(--fs-title);
+    line-height: var(--lh-title);
+    font-weight: 700;
+  }
+  .map-pin:focus-visible,
+  .map-pin.is-preview,
+  .map-pin[aria-pressed="true"] { z-index: 5; }
+  .map-pin:focus-visible .pin-shape,
+  .map-pin.is-preview .pin-shape { transform: rotate(-45deg) scale(1.18); }
+  .map-pin[aria-pressed="true"] .pin-shape {
+    background: var(--sage-dark);
+    box-shadow: 0 0 0 4px var(--white), 0 0 0 6px var(--sage-dark);
+    transform: rotate(-45deg) scale(1.2);
+  }
+  .pin-a { left: 270px; top: 490px; }
+  .pin-b { left: 465px; top: 590px; }
+  .pin-c { left: 530px; top: 480px; }
+  .fullscreen-map {
+    position: fixed;
+    top: var(--phone-top);
+    left: var(--phone-left);
+    width: var(--phone-width);
+    height: var(--phone-height);
+    z-index: 51;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .fullscreen-map.is-open { opacity: 1; }
+  .fullscreen-map-head {
+    position: absolute;
+    z-index: 2;
+    top: max(var(--top-safe), env(safe-area-inset-top));
+    right: var(--s-4);
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--r-pill);
+    background: var(--white);
+    box-shadow: var(--shadow-float);
+    pointer-events: auto;
+  }
+  .fullscreen-map-head > span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .fullscreen-map-racks {
+    position: absolute;
+    z-index: 2;
+    left: var(--s-4);
+    right: var(--s-4);
+    bottom: max(var(--s-4), env(safe-area-inset-bottom));
+    display: flex;
+    gap: var(--s-2);
+    overflow-x: auto;
+    padding: 2px;
+    scrollbar-width: none;
+    pointer-events: auto;
+  }
+  .fullscreen-map-racks::-webkit-scrollbar { display: none; }
+  .fullscreen-rack {
+    flex: 0 0 152px;
+    min-height: 72px;
+    border: 2px solid var(--white);
+    border-radius: var(--r-card);
+    background: var(--white);
+    box-shadow: var(--shadow-float);
+    padding: var(--s-2);
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    cursor: pointer;
+  }
+  .fullscreen-rack:focus-visible { background: var(--sage-tint); transform: translateY(-2px); }
+  .fullscreen-rack[aria-pressed="true"] { border-color: var(--sage); }
+  .fullscreen-rack .name { font-size: var(--fs-callout); line-height: var(--lh-callout); font-weight: 600; }
+  .fullscreen-rack .meta { font-size: var(--fs-foot); line-height: var(--lh-foot); color: var(--muted); }
+  .rack-list {
+    margin: 0;
+    padding: 0;
+    border: 1px solid var(--line);
+    border-radius: var(--r-card);
+    background: var(--white);
+    overflow: hidden;
+  }
+  .rack-option {
+    width: 100%;
+    min-height: 56px;
+    padding: var(--s-2) var(--s-3);
+    border: 0;
+    border-bottom: 1px solid var(--line);
+    background: var(--white);
+    display: grid;
+    grid-template-columns: 32px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: var(--s-3);
+    text-align: left;
+    cursor: pointer;
+  }
+  .rack-option:last-child { border-bottom: 0; }
+  .rack-option:focus-visible { background: var(--mist); }
+  .rack-option[aria-pressed="true"] { position: relative; background: var(--mist); }
+  .rack-option[aria-pressed="true"]::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: var(--s-2);
+    bottom: var(--s-2);
+    width: 4px;
+    border-radius: 0 var(--r-pill) var(--r-pill) 0;
+    background: var(--sage);
+  }
+  .rack-option > .icon { color: var(--sage); }
+  .rack-option .body { display: flex; flex-direction: column; min-width: 0; }
+  .rack-option .name { font-size: var(--fs-callout); line-height: var(--lh-callout); font-weight: 600; }
+  .rack-option .meta { color: var(--muted); font-size: var(--fs-foot); line-height: var(--lh-foot); }
+  .rack-option .distance { color: var(--muted); font-size: var(--fs-foot); line-height: var(--lh-foot); white-space: nowrap; }
+  #return-card { background: var(--sage-tint); border-color: transparent; gap: 0; }
+  #return-card > header,
+  #return-card .row {
+    display: grid;
+    grid-template-columns: 32px minmax(0, 1fr);
+    align-items: center;
+    column-gap: var(--s-3);
+  }
+  #return-card > header > span:first-child {
+    width: 32px;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--sage-dark);
+  }
+  #return-card header > span:last-child { display: flex; flex-direction: column; gap: var(--s-1); }
+  #return-card > header { padding-bottom: var(--s-3); }
+  #return-card .row { min-height: var(--touch); padding: var(--s-3) 0; }
+  #return-card .row > .icon { justify-self: center; color: var(--sage); }
+  #return-card .divider { margin-left: 44px; }
+  #confirmed { padding-top: var(--s-6); text-align: center; align-items: center; }
+  #confirmed-mark { width: 64px; height: 64px; }
+  #confirmed-mark .icon { width: 32px; height: 32px; }
+  #confirmed .t-body { color: var(--muted); }
+  #confirmed-summary { width: 100%; text-align: left; margin-top: var(--s-2); }
+  .actionbar .price b { font-size: var(--fs-callout); line-height: var(--lh-callout); }
+  .actionbar .price small { margin-top: 2px; }
+  @media (hover: hover) and (pointer: fine) {
+    .map-recenter:hover { background: #f3f7ff; }
+    .map-pin:hover { z-index: 5; }
+    .map-pin:hover .pin-shape { transform: rotate(-45deg) scale(1.18); }
+    .fullscreen-rack:hover { background: var(--sage-tint); transform: translateY(-2px); }
+    .rack-option:hover { background: var(--mist); }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .segmented::before { transition: transform var(--t-base) var(--ease-glide); }
+    .pin-shape { transition: transform var(--t-quick) var(--ease-glide); }
+    #rack-picker:not([hidden]) .map:not(.is-expanded):not(.has-opened) { animation: map-arrive var(--t-base) var(--ease-glide) both; }
+    #rack-picker:not([hidden]) .map-pin { animation: pin-arrive var(--t-base) var(--ease-glide) both; }
+    #rack-picker:not([hidden]) .pin-b { animation-delay: 40ms; }
+    #rack-picker:not([hidden]) .pin-c { animation-delay: 80ms; }
+    .map.is-expanded { transition: top var(--t-slow) var(--ease-glide), left var(--t-slow) var(--ease-glide), width var(--t-slow) var(--ease-glide), height var(--t-slow) var(--ease-glide), border-radius var(--t-slow) var(--ease-glide), box-shadow var(--t-base) var(--ease-glide); }
+    .map-recenter { transition: opacity var(--t-base) var(--ease-glide), transform var(--t-base) var(--ease-glide), background var(--t-quick) var(--ease-glide); }
+    .map-scene.is-recentering { transition: transform 440ms var(--ease-glide); }
+    .map-scene.is-opening { transition: transform var(--t-slow) var(--ease-glide); }
+    .map-scene.is-following { transition: transform var(--t-slow) var(--ease-glide); }
+    .map.is-recentering .location-dot { animation: location-pulse 680ms var(--ease-glide) both; }
+    .map-backdrop { transition: opacity var(--t-base) var(--ease-glide); }
+    .fullscreen-map { transition: opacity var(--t-quick) var(--ease-glide); }
+    .rack-option { transition: transform var(--t-quick) var(--ease-glide); }
+    .fullscreen-rack { transition: background-color var(--t-quick) var(--ease-glide), transform var(--t-quick) var(--ease-glide); }
+    .rack-option:focus-visible { transform: translateX(4px); }
+    #return-card > * { animation: detail-arrive var(--t-quick) var(--ease-glide) both; }
+    #return-card > :nth-child(n + 2) { animation-delay: 40ms; }
+    @keyframes map-arrive { from { opacity: 0; transform: scale(.98); } to { opacity: 1; transform: scale(1); } }
+    @keyframes location-pulse { 0% { box-shadow: 0 0 0 0 #4285f444, 0 2px 8px #33557755; } 65% { box-shadow: 0 0 0 27px #4285f41c, 0 2px 8px #33557755; } 100% { box-shadow: 0 0 0 18px #4285f426, 0 2px 8px #33557755; } }
+    @keyframes pin-arrive { from { opacity: 0; transform: translateY(-12px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes detail-arrive { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+  }
+  @media (prefers-reduced-motion: no-preference) and (hover: hover) and (pointer: fine) {
+    .rack-option:hover { transform: translateX(4px); }
+  }
+  @media (max-width: 360px) {
+    .content { padding-left: var(--s-4); padding-right: var(--s-4); }
+    .actionbar { left: var(--s-2); right: var(--s-2); }
+    .actionbar .btn { padding-left: var(--s-4); padding-right: var(--s-4); }
+  }
 </style>
 </head>
 <body>
-  <!-- One phone screen, 393 × 852. Build only inside .screen. -->
   <main class="screen" data-page="17-hub-pickup" data-direction="B">
+    <div id="scroller">
+      <div class="topbar">
+        <a class="icon-btn" href="#" aria-label="Back to storage options" data-goes-to="16-storage-options">
+          <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-arrow-left"/></svg>
+        </a>
+        <span class="name">Hub pickup</span>
+        <span></span>
+      </div>
 
-    <div class="topbar">
-      <a class="icon-btn" href="#" aria-label="Back" data-goes-to="previous">
-        <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-arrow-left"/></svg>
-      </a>
-      <span class="name">Hub Pickup</span>
-      <span></span>
+      <section class="content" data-state="choice">
+        <header id="intro">
+          <span class="t-label">Pickup method</span>
+          <h1 class="t-large">How should we collect your bike?</h1>
+        </header>
+
+        <div class="segmented" role="radiogroup" aria-label="How your bike gets to the Hub" data-selected="home">
+          <button type="button" role="radio" aria-checked="true" data-method="home">Home Collection</button>
+          <button type="button" role="radio" aria-checked="false" data-method="rack">Public Rack</button>
+        </div>
+
+        <section class="card" id="home-panel" aria-live="polite"></section>
+
+        <section id="rack-picker" aria-labelledby="map-title" hidden>
+          <header class="map-head">
+            <span><span class="t-title" id="map-title">Choose a rack</span><span class="t-foot">3 nearby racks</span></span>
+            <button class="map-view" type="button" id="view-map" aria-haspopup="dialog">View map</button>
+          </header>
+          <div class="map" role="group" aria-label="Map showing three nearby public racks, roads and paths">
+            <div class="map-canvas" tabindex="-1" aria-label="Map preview with three nearby racks">
+              <div class="map-scene">
+                <svg class="map-art" viewBox="0 0 900 1700" aria-hidden="true" focusable="false">
+                  <rect width="900" height="1700" fill="#edf0f2"/>
+                  <rect x="0" y="-240" width="900" height="240" fill="#edf0f2"/>
+                  <path d="M512 -240 L900 -240 L900 0 L492 0Z" fill="#dcebd7"/>
+                  <g fill="#dfe3e7" stroke="#d1d7dd" stroke-width="2" stroke-linejoin="round">
+                    <path d="M26 -210l132-10 21 85-127 18z"/><path d="M224 -202l120 4 19 77-137 16z"/>
+                    <path d="M32 -85l138-13 12 68-148 10z"/><path d="M230 -86l117 8 20 68-139-9z"/>
+                  </g>
+                  <path d="M-40 -123 C148 -133 322 -107 458 -126 S742 -147 940 -122" fill="none" stroke="#cfd6dc" stroke-width="17"/>
+                  <path d="M-40 -123 C148 -133 322 -107 458 -126 S742 -147 940 -122" fill="none" stroke="#fff" stroke-width="13"/>
+                  <path d="M492 0 Q463 133 493 244 C515 335 453 391 468 501 C489 648 426 768 446 879 C478 1056 416 1172 434 1290 Q472 1471 419 1700 L900 1700 L900 0Z" fill="#dcebd7"/>
+                  <path d="M544 101 Q622 153 625 275 T594 432 Q556 514 585 620 T551 785 Q572 852 536 913" fill="none" stroke="#cfe4c6" stroke-width="42" stroke-linecap="round"/>
+                  <path d="M738 -80 C659 144 716 307 661 473 C603 636 682 785 624 965 C568 1143 658 1338 604 1540 C580 1622 595 1690 617 1770" fill="none" stroke="#b9ddea" stroke-width="94" stroke-linecap="round"/>
+                  <g fill="#dfe3e7" stroke="#d1d7dd" stroke-width="2" stroke-linejoin="round">
+                    <path d="M26 31l123-8 8 31 23 10-13 77-109 8-30-22z"/><path d="M227 20l43 11 12-12 67 14 16 58-17 62-122-18z"/><path d="M55 217l78-12 14 15 41-9 12 83-150 15z"/>
+                    <path d="M249 222l40 2 7 23 62-5 12 81-122-6z"/><path d="M29 390l52-14 17 12 70-18 16 33-11 75-130 15z"/><path d="M228 391l58 4 13 14 57-5 15 92-134 18-21-35z"/>
+                    <path d="M47 554l46-4 21-12 64 4 15 83-47 3-18 18-69 5z"/><path d="M218 555l40-13 20 9 78-10 7 89-55 7-13 16-78-4z"/>
+                    <path d="M38 726l74-19 20 13 53-6 7 106-144 8z"/><path d="M253 731l48-12 18 11 40-13 20 107-126 33z"/>
+                    <path d="M48 931l75-13 17 14 54-11 11 94-151 11z"/><path d="M243 938l49 4 16 18 56-7-13 101-127-16z"/>
+                    <path d="M33 1131l56-17 25 9 60-15 30 115-162 20z"/><path d="M244 1138l48-7 19 12 70-13 17 118-149 13z"/>
+                    <path d="M32 1358l47-17 18 5 80-20 22 107-153 35z"/><path d="M237 1359l52 6 14-11 72 15-12 97-140-12z"/>
+                    <path d="M58 1532l54-13 22 6 80-12 15 109-172 16z"/><path d="M273 1525l47-8 24 11 43-13 16 113-129 6z"/>
+                    <path d="M793 169l32-5 10 10 35-6 19 72-89 15z"/><path d="M778 480l43-10 20 9 37-8 13 87-85 20z"/><path d="M782 847l38-7 19 10 39-12 14 103-110 9z"/>
+                  </g>
+                  <g fill="#e9e8e4" stroke="#d8d7d2" stroke-width="2" stroke-linejoin="round">
+                    <path d="M82 64l49-5 13 19-8 35-51 5-10-19z"/><path d="M264 65l61 4 8 43-72-5z"/>
+                    <path d="M77 411l63-16 11 51-70 12z"/><path d="M256 422l80 5 9 47-86 2z"/>
+                    <path d="M83 576l65-9 9 51-64 8z"/><path d="M263 567l62-5 10 48-68 10z"/>
+                    <path d="M68 752l81-10 6 51-84 10z"/><path d="M276 758l62-14 11 58-67 17z"/>
+                  </g>
+                  <g fill="none" stroke="#cfd6dc" stroke-width="17" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M48 42 C18 135 17 260 44 390"/><path d="M165 58 C183 109 174 155 163 217"/><path d="M113 488 Q95 520 77 554"/>
+                    <path d="M236 251 C225 281 229 341 240 391"/><path d="M92 658 Q61 690 49 727"/><path d="M284 657 Q307 683 301 721"/>
+                    <path d="M91 1026 Q72 1070 68 1126"/><path d="M287 1059 Q268 1090 264 1134"/>
+                  </g>
+                  <g fill="none" stroke="#fff" stroke-width="12" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M48 42 C18 135 17 260 44 390"/><path d="M165 58 C183 109 174 155 163 217"/><path d="M113 488 Q95 520 77 554"/>
+                    <path d="M236 251 C225 281 229 341 240 391"/><path d="M92 658 Q61 690 49 727"/><path d="M284 657 Q307 683 301 721"/>
+                    <path d="M91 1026 Q72 1070 68 1126"/><path d="M287 1059 Q268 1090 264 1134"/>
+                  </g>
+                  <g fill="none" stroke="#cfd6dc" stroke-width="12" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M63 514 C112 503 160 498 204 511 Q233 526 233 553"/>
+                    <path d="M102 651 Q160 629 207 644 C252 659 294 661 347 645"/>
+                    <path d="M34 834 Q92 850 151 843 C208 838 244 811 301 821"/>
+                    <path d="M222 397 Q251 366 296 370 C329 373 350 389 381 408"/>
+                    <path d="M735 388 Q782 413 820 403 C852 394 871 365 902 360"/>
+                  </g>
+                  <g fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M63 514 C112 503 160 498 204 511 Q233 526 233 553"/>
+                    <path d="M102 651 Q160 629 207 644 C252 659 294 661 347 645"/>
+                    <path d="M34 834 Q92 850 151 843 C208 838 244 811 301 821"/>
+                    <path d="M222 397 Q251 366 296 370 C329 373 350 389 381 408"/>
+                    <path d="M735 388 Q782 413 820 403 C852 394 871 365 902 360"/>
+                  </g>
+                  <g fill="none" stroke="#cfd6dc" stroke-width="17" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M-50 177 C115 170 194 185 425 213 S760 187 955 154"/>
+                    <path d="M-30 347 C140 356 310 367 455 345 S745 321 950 350"/>
+                    <path d="M-35 690 C110 673 260 675 390 703 S710 729 945 693"/>
+                    <path d="M-40 876 C140 863 250 885 430 870 S730 867 945 883"/>
+                    <path d="M-50 1085 C125 1082 280 1085 435 1065 S700 1049 940 1084"/>
+                    <path d="M-50 1290 C130 1282 300 1310 430 1284 S735 1264 940 1306"/>
+                    <path d="M-50 1490 C140 1485 290 1502 440 1481 S735 1458 940 1492"/>
+                    <path d="M204 -35 C199 205 207 360 199 531 S200 850 212 1033 S209 1430 230 1750"/>
+                    <path d="M397 -40 C383 171 397 322 393 503 S411 890 409 1095 S407 1440 426 1750"/>
+                    <path d="M813 -40 C807 210 790 357 796 539 S805 850 798 1054 S802 1460 810 1750"/>
+                  </g>
+                  <g fill="none" stroke="#ffffff" stroke-width="13" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M-50 177 C115 170 194 185 425 213 S760 187 955 154"/>
+                    <path d="M-30 347 C140 356 310 367 455 345 S745 321 950 350"/>
+                    <path d="M-35 690 C110 673 260 675 390 703 S710 729 945 693"/>
+                    <path d="M-40 876 C140 863 250 885 430 870 S730 867 945 883"/>
+                    <path d="M-50 1085 C125 1082 280 1085 435 1065 S700 1049 940 1084"/>
+                    <path d="M-50 1290 C130 1282 300 1310 430 1284 S735 1264 940 1306"/>
+                    <path d="M-50 1490 C140 1485 290 1502 440 1481 S735 1458 940 1492"/>
+                    <path d="M204 -35 C199 205 207 360 199 531 S200 850 212 1033 S209 1430 230 1750"/>
+                    <path d="M397 -40 C383 171 397 322 393 503 S411 890 409 1095 S407 1440 426 1750"/>
+                    <path d="M813 -40 C807 210 790 357 796 539 S805 850 798 1054 S802 1460 810 1750"/>
+                  </g>
+                  <path d="M-70 286 C135 294 199 415 369 476 C505 527 625 524 970 464" fill="none" stroke="#ffffff" stroke-width="39" stroke-linecap="round"/>
+                  <path d="M-70 286 C135 294 199 415 369 476 C505 527 625 524 970 464" fill="none" stroke="#f5e8c9" stroke-width="33" stroke-linecap="round"/>
+                  <path d="M324 -70 C323 146 333 308 343 500 C350 685 353 820 382 1010 C403 1225 385 1450 409 1770" fill="none" stroke="#ffffff" stroke-width="36" stroke-linecap="round"/>
+                  <path d="M324 -70 C323 146 333 308 343 500 C350 685 353 820 382 1010 C403 1225 385 1450 409 1770" fill="none" stroke="#f5e8c9" stroke-width="30" stroke-linecap="round"/>
+                  <path d="M418 585 C518 582 603 571 690 559" fill="none" stroke="#ffffff" stroke-width="23" stroke-linecap="round"/>
+                  <path d="M418 585 C518 582 603 571 690 559" fill="none" stroke="#f5f7f8" stroke-width="17" stroke-linecap="round"/>
+                  <path d="M474 115 C493 310 506 410 531 536 C559 684 540 813 531 990 C520 1210 535 1460 512 1715" fill="none" stroke="#b8d2ae" stroke-width="7" stroke-linecap="round"/>
+                  <path d="M474 115 C493 310 506 410 531 536 C559 684 540 813 531 990 C520 1210 535 1460 512 1715" fill="none" stroke="#f8fbf7" stroke-width="4" stroke-linecap="round"/>
+                  <path d="M578 252 C539 304 521 364 548 421 Q571 455 556 503 M521 623 Q486 688 519 744 C557 809 503 858 477 925" fill="none" stroke="#b8d2ae" stroke-width="6" stroke-linecap="round"/>
+                  <path d="M578 252 C539 304 521 364 548 421 Q571 455 556 503 M521 623 Q486 688 519 744 C557 809 503 858 477 925" fill="none" stroke="#f8fbf7" stroke-width="3" stroke-linecap="round"/>
+                </svg>
+                <span class="location-dot" aria-hidden="true"></span>
+                <button class="map-pin pin-a" type="button" aria-label="Rack A at Block 118" aria-pressed="false" data-map-rack="a">
+                  <span class="pin-shape"><span class="pin-letter" aria-hidden="true">A</span></span>
+                </button>
+                <button class="map-pin pin-b" type="button" aria-label="Rack B at the park entrance" aria-pressed="false" data-map-rack="b">
+                  <span class="pin-shape"><span class="pin-letter" aria-hidden="true">B</span></span>
+                </button>
+                <button class="map-pin pin-c" type="button" aria-label="Rack C at the MRT exit" aria-pressed="false" data-map-rack="c">
+                  <span class="pin-shape"><span class="pin-letter" aria-hidden="true">C</span></span>
+                </button>
+              </div>
+            </div>
+            <button class="map-recenter" id="recenter-map" type="button" aria-label="Center map on your location" title="Center on your location">
+              <svg viewBox="0 0 28 28" aria-hidden="true"><circle cx="14" cy="14" r="6"/><path d="M14 2v5M14 21v5M2 14h5M21 14h5"/></svg>
+            </button>
+          </div>
+          <div class="rack-list" role="group" aria-label="Available public racks, distances from your location">
+            <button class="rack-option" type="button" aria-pressed="false" data-rack-choice="a">
+              <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-map-pin"/></svg>
+              <span class="body"><span class="name">Rack A · Blk 118</span><span class="meta">Nearest</span></span>
+              <span class="distance num">300 m</span>
+            </button>
+            <button class="rack-option" type="button" aria-pressed="false" data-rack-choice="b">
+              <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-map-pin"/></svg>
+              <span class="body"><span class="name">Rack B · Park entrance</span><span class="meta">Covered</span></span>
+              <span class="distance num">450 m</span>
+            </button>
+            <button class="rack-option" type="button" aria-pressed="false" data-rack-choice="c">
+              <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-map-pin"/></svg>
+              <span class="body"><span class="name">Rack C · MRT exit</span><span class="meta">Cycle path</span></span>
+              <span class="distance num">600 m</span>
+            </button>
+          </div>
+        </section>
+
+        <section class="card" id="return-card" aria-live="polite"></section>
+      </section>
+
+      <section class="content" id="confirmed" data-state="confirmed" hidden>
+        <span id="confirmed-mark" aria-hidden="true">
+          <svg class="icon"><use href="../../../../design/icons.svg#i-check-circle"/></svg>
+        </span>
+        <span class="t-label">Pickup confirmed</span>
+        <h1 class="t-large" id="confirmed-title" tabindex="-1">Your bike’s route is set.</h1>
+        <p class="t-body" id="confirmed-description"></p>
+
+        <section class="card" id="confirmed-summary"></section>
+      </section>
     </div>
 
-    <div class="content" style="padding-top: var(--s-5)">
-      <h1 class="t-large">Hub Pickup</h1>
-
-      <!-- Image slot example: always a placeholder. Say what the image should show. -->
-      <div class="img-ph" style="height: 180px" role="img" aria-label="Photo: describe the image here"></div>
-
-      <p class="t-body">Replace this with the page content from specs/17-hub-pickup.md.</p>
+    <div class="actionbar glass" id="choice-actions">
+      <span class="price"><b id="action-title">Home · 5–7 pm</b><small id="action-note">Return home · within 2 days</small></span>
+      <a class="btn" id="confirm" href="#confirmed" aria-disabled="false">Confirm</a>
     </div>
 
-    <!-- Links to other pages: use href="#" plus data-goes-to="<page-id>", e.g. data-goes-to="05-listing-detail". -->
-    <div class="actionbar glass is-single">
-      <a class="btn is-block" href="#" data-goes-to="next">Primary action</a>
+    <div class="actionbar glass is-single" id="confirmed-actions" hidden>
+      <a class="btn is-block" href="#" data-goes-to="15-equipment-detail">View bike details</a>
     </div>
+
+    <div class="map-backdrop" id="map-backdrop" aria-hidden="true"></div>
+    <section class="fullscreen-map" id="full-map" role="dialog" aria-labelledby="full-map-title" aria-hidden="true" inert>
+      <div class="fullscreen-map-head">
+        <span><span class="t-title" id="full-map-title">Nearby racks</span><span class="t-foot">Drag to explore · scroll to zoom</span></span>
+        <button class="icon-btn" type="button" id="close-map" aria-label="Close map">
+          <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-x"/></svg>
+        </button>
+      </div>
+      <div class="fullscreen-map-racks" aria-label="Choose a public rack, distances from your location">
+        <button class="fullscreen-rack" type="button" aria-pressed="false" data-full-rack="a"><span class="name">A · Blk 118</span><span class="meta">300 m · nearest</span></button>
+        <button class="fullscreen-rack" type="button" aria-pressed="false" data-full-rack="b"><span class="name">B · Park entrance</span><span class="meta">450 m · covered</span></button>
+        <button class="fullscreen-rack" type="button" aria-pressed="false" data-full-rack="c"><span class="name">C · MRT exit</span><span class="meta">600 m · cycle path</span></button>
+      </div>
+    </section>
   </main>
+
+<script>
+const homePanel = document.getElementById("home-panel");
+const rackPicker = document.getElementById("rack-picker");
+const returnCard = document.getElementById("return-card");
+const confirmLink = document.getElementById("confirm");
+const actionTitle = document.getElementById("action-title");
+const actionNote = document.getElementById("action-note");
+const choiceActions = document.getElementById("choice-actions");
+const confirmedActions = document.getElementById("confirmed-actions");
+const confirmedDescription = document.getElementById("confirmed-description");
+const confirmedSummary = document.getElementById("confirmed-summary");
+const confirmedTitle = document.getElementById("confirmed-title");
+const scroller = document.getElementById("scroller");
+const radios = [...document.querySelectorAll("[data-method]")];
+const pins = [...document.querySelectorAll("[data-map-rack]")];
+const rackOptions = [...document.querySelectorAll("[data-rack-choice]")];
+const fullRackOptions = [...document.querySelectorAll("[data-full-rack]")];
+const methodSwitch = document.querySelector(".segmented");
+const viewMapButton = document.getElementById("view-map");
+const fullMap = document.getElementById("full-map");
+const closeMapButton = document.getElementById("close-map");
+const mapBackdrop = document.getElementById("map-backdrop");
+const recenterButton = document.getElementById("recenter-map");
+const mapElement = rackPicker.querySelector(".map");
+const mapCanvas = mapElement.querySelector(".map-canvas");
+const mapScene = mapElement.querySelector(".map-scene");
+const phoneScreen = document.querySelector(".screen");
+const mapPlaceholder = document.createElement("div");
+mapPlaceholder.className = "map-placeholder";
+let mapReturnTimer;
+let mapCloseTimer;
+let mapOpenTimer;
+let mapControlsTimer;
+let mapPulseTimer;
+let mapAnchorTimer;
+let mapPanX = -150;
+let mapPanY = -260;
+let mapZoom = .72;
+let mapAnchorPanYMax = 0;
+let mapDrag = null;
+let mapPreviewState = null;
+let selectedMethod = "home";
+let selectedRack = "a";
+
+function updateMapScene(width = mapElement.clientWidth, height = mapElement.clientHeight) {
+  mapPanX = Math.min(0, Math.max(width - 900 * mapZoom, mapPanX));
+  const maxPanY = mapElement.classList.contains("is-expanded") ? mapAnchorPanYMax : 0;
+  mapPanY = Math.min(maxPanY, Math.max(height - 1700 * mapZoom, mapPanY));
+  mapScene.style.setProperty("--pan-x", `${mapPanX}px`);
+  mapScene.style.setProperty("--pan-y", `${mapPanY}px`);
+  mapScene.style.setProperty("--map-zoom", mapZoom);
+}
+
+function centerMapAt(width, height) {
+  mapPanX = width / 2 - 418 * mapZoom;
+  mapPanY = height / 2 - 538 * mapZoom;
+  updateMapScene(width, height);
+}
+
+function recenterMap() {
+  if (mapElement.classList.contains("is-returning")) return;
+  clearTimeout(mapPulseTimer);
+  mapScene.classList.remove("is-following");
+  mapScene.classList.add("is-recentering");
+  mapElement.classList.remove("is-recentering");
+  void mapElement.offsetWidth;
+  mapElement.classList.add("is-recentering");
+  centerMapAt(mapElement.clientWidth, mapElement.clientHeight);
+  mapPulseTimer = setTimeout(() => {
+    mapScene.classList.remove("is-recentering");
+    mapElement.classList.remove("is-recentering");
+  }, matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 680);
+}
+
+function zoomMap(nextZoom, clientX, clientY) {
+  const next = Math.max(.6, Math.min(1.6, nextZoom));
+  const bounds = mapElement.getBoundingClientRect();
+  const x = clientX - bounds.left;
+  const y = clientY - bounds.top;
+  mapPanX = x - (x - mapPanX) * next / mapZoom;
+  mapPanY = y - (y - mapPanY) * next / mapZoom;
+  mapZoom = next;
+  updateMapScene();
+}
+
+const racks = {
+  a: { short: "Rack A", name: "Rack A · Blk 118", distance: "300 m away" },
+  b: { short: "Rack B", name: "Rack B · Park entrance", distance: "450 m away" },
+  c: { short: "Rack C", name: "Rack C · MRT exit", distance: "600 m away" }
+};
+
+homePanel.innerHTML = `
+  <header>
+    <span><svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-house"/></svg></span>
+    <span><span class="t-title">Home Collection</span><span class="t-foot">Collected from your home</span></span>
+  </header>
+  <hr class="divider">
+  <div class="row">
+    <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-clock"/></svg>
+    <span class="body"><span class="meta">Collection window</span><span class="name num">5–7 pm</span></span>
+  </div>`;
+
+const confirmedPlan = (method, rack) => method === "home" ? `
+  <div class="row">
+    <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-house"/></svg>
+    <span class="body"><span class="meta">Collection from</span><span class="name">Your home</span></span>
+  </div>
+  <hr class="divider">
+  <div class="row">
+    <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-clock"/></svg>
+    <span class="body"><span class="meta">Collection window</span><span class="name num">5–7 pm</span></span>
+  </div>
+  <hr class="divider">
+  <div class="row">
+    <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-bicycle"/></svg>
+    <span class="body"><span class="meta">Return to your home · included</span><span class="name">Within 2 days</span></span>
+  </div>` : `
+  <div class="row">
+    <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-map-pin"/></svg>
+    <span class="body"><span class="meta">Drop-off</span><span class="name">${racks[rack].name}</span></span>
+  </div>
+  <hr class="divider">
+  <div class="row">
+    <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-truck"/></svg>
+    <span class="body"><span class="meta">Courier pickup</span><span class="name num">Sat 25 Oct · 8:30 am</span></span>
+  </div>
+  <hr class="divider">
+  <div class="row">
+    <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-clock"/></svg>
+    <span class="body"><span class="meta">Return to ${racks[rack].short} · included</span><span class="name num">8–10 am · within 24 hours</span></span>
+  </div>`;
+
+const returnPlan = (method, rack) => `
+  <header>
+    <span><svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-bicycle"/></svg></span>
+    <span><span class="t-title">Your Bike’s Return</span><span class="t-foot">Included in your total</span></span>
+  </header>
+  <hr class="divider">
+  <div class="row">
+    <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-${method === "home" ? "house" : "map-pin"}"/></svg>
+    <span class="body"><span class="meta">Returns to</span><span class="name">${method === "home" ? "Your home" : rack ? racks[rack].short : "Your chosen rack"}</span></span>
+  </div>
+  <hr class="divider">
+  <div class="row">
+    <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-clock"/></svg>
+    <span class="body"><span class="meta">${method === "home" ? "Return timing" : "Return window"}</span><span class="name ${method === "home" ? "" : "num"}">${method === "home" ? "Within 2 days" : "8–10 am"}</span>${method === "home" ? "" : `<span class="meta">Within 24 hours</span>`}</span>
+  </div>`;
+
+function render() {
+  const state = location.hash.slice(1) || "home";
+  const confirmed = state === "confirmed";
+  document.querySelectorAll("[data-state]").forEach((section) => {
+    section.hidden = section.dataset.state !== (confirmed ? "confirmed" : "choice");
+  });
+  choiceActions.hidden = confirmed;
+  confirmedActions.hidden = !confirmed;
+  if (confirmed) {
+    confirmedDescription.textContent = selectedMethod === "home"
+      ? "We’ll collect your bike from home during the 5–7 pm window and notify you at each handoff."
+      : "Drop it at the rack before the courier arrives. We’ll notify you at each handoff.";
+    confirmedSummary.innerHTML = confirmedPlan(selectedMethod, selectedRack);
+    scroller.scrollTop = 0;
+    confirmedTitle.focus({ preventScroll: true });
+    return;
+  }
+
+  const method = state.startsWith("rack") ? "rack" : "home";
+  const requestedRack = state.startsWith("rack-") ? state.slice(5) : "";
+  const rack = Object.hasOwn(racks, requestedRack) ? requestedRack : "";
+  selectedMethod = method;
+  if (rack) selectedRack = rack;
+  radios.forEach((radio) => {
+    const selected = radio.dataset.method === method;
+    radio.setAttribute("aria-checked", String(selected));
+    radio.tabIndex = selected ? 0 : -1;
+  });
+  pins.forEach((pin) => pin.setAttribute("aria-pressed", String(pin.dataset.mapRack === rack)));
+  rackOptions.forEach((option) => option.setAttribute("aria-pressed", String(option.dataset.rackChoice === rack)));
+  fullRackOptions.forEach((option) => option.setAttribute("aria-pressed", String(option.dataset.fullRack === rack)));
+  methodSwitch.dataset.selected = method;
+  homePanel.hidden = method !== "home";
+  rackPicker.hidden = method !== "rack";
+  returnCard.innerHTML = returnPlan(method, rack);
+  const canConfirm = method === "home" || Boolean(rack);
+  confirmLink.setAttribute("aria-disabled", String(!canConfirm));
+  confirmLink.href = canConfirm ? "#confirmed" : "#rack";
+  actionTitle.textContent = method === "home" ? "Home · 5–7 pm" : rack ? `${racks[rack].short} · Sat 8:30 am` : "Choose a rack";
+  actionNote.textContent = method === "home" ? "Return home · within 2 days" : rack ? `Return to ${racks[rack].short} · 8–10 am` : "Return to chosen rack · 8–10 am";
+}
+
+function openMap() {
+  if (mapElement.classList.contains("is-expanded")) return;
+  clearTimeout(mapOpenTimer);
+  clearTimeout(mapControlsTimer);
+  clearTimeout(mapReturnTimer);
+  clearTimeout(mapCloseTimer);
+  clearTimeout(mapPulseTimer);
+  clearTimeout(mapAnchorTimer);
+  mapScene.classList.remove("is-recentering", "is-following");
+  mapElement.classList.remove("is-recentering");
+  mapElement.classList.add("has-opened");
+  const preview = mapElement.getBoundingClientRect();
+  const locationRect = mapElement.querySelector(".location-dot").getBoundingClientRect();
+  const locationX = locationRect.left + locationRect.width / 2;
+  const locationY = locationRect.top + locationRect.height / 2;
+  const phone = phoneScreen.getBoundingClientRect();
+  mapPreviewState = {
+    panX: mapPanX,
+    panY: mapPanY,
+    zoom: mapZoom,
+    locationX,
+    locationY,
+    width: preview.width,
+    height: preview.height
+  };
+  const anchoredPanX = locationX - phone.left - 418 * mapZoom;
+  const anchoredPanY = locationY - phone.top - 538 * mapZoom;
+  mapAnchorPanYMax = Math.max(0, anchoredPanY);
+  for (const target of [mapElement, fullMap, mapBackdrop]) {
+    target.style.setProperty("--phone-top", `${phone.top}px`);
+    target.style.setProperty("--phone-left", `${phone.left}px`);
+    target.style.setProperty("--phone-width", `${phone.width}px`);
+    target.style.setProperty("--phone-height", `${phone.height}px`);
+  }
+  mapElement.style.setProperty("--preview-top", `${preview.top}px`);
+  mapElement.style.setProperty("--preview-left", `${preview.left}px`);
+  mapElement.style.setProperty("--preview-width", `${preview.width}px`);
+  mapElement.style.setProperty("--preview-height", `${preview.height}px`);
+  mapElement.before(mapPlaceholder);
+  phoneScreen.appendChild(mapElement);
+  mapElement.classList.add("is-expanded");
+  mapBackdrop.classList.add("is-visible");
+  fullMap.setAttribute("aria-hidden", "false");
+  fullMap.inert = false;
+  scroller.inert = true;
+  choiceActions.inert = true;
+  document.body.style.overflow = "hidden";
+  mapCanvas.tabIndex = 0;
+  mapCanvas.setAttribute("aria-label", "Map: drag to explore, scroll to zoom, or use arrow keys and plus and minus");
+  updateMapScene();
+  const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  mapOpenTimer = setTimeout(() => {
+    mapScene.classList.add("is-opening");
+    mapElement.classList.add("is-ready");
+    mapPanX = anchoredPanX;
+    mapPanY = anchoredPanY;
+    updateMapScene(phone.width, phone.height);
+  }, reduceMotion ? 0 : 32);
+  mapAnchorTimer = setTimeout(() => {
+    mapScene.classList.remove("is-opening");
+  }, reduceMotion ? 0 : 600);
+  mapControlsTimer = setTimeout(() => {
+    fullMap.classList.add("is-open");
+    closeMapButton.focus();
+  }, reduceMotion ? 0 : 380);
+}
+
+function closeMap() {
+  if (!mapElement.classList.contains("is-ready") || mapElement.classList.contains("is-returning")) return;
+  const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const preview = mapPreviewState;
+  clearTimeout(mapControlsTimer);
+  clearTimeout(mapPulseTimer);
+  clearTimeout(mapAnchorTimer);
+  mapScene.classList.remove("is-opening");
+  mapElement.classList.add("is-returning");
+  fullMap.classList.remove("is-open");
+  fullMap.setAttribute("aria-hidden", "true");
+  fullMap.inert = true;
+  mapScene.classList.remove("is-following");
+  mapScene.classList.add("is-recentering");
+  mapElement.classList.add("is-recentering");
+  const frame = mapElement.getBoundingClientRect();
+  const returnPanX = preview.locationX - frame.left - 418 * preview.zoom;
+  const returnPanY = preview.locationY - frame.top - 538 * preview.zoom;
+  const needsReturn = Math.abs(mapPanX - returnPanX) > .5 || Math.abs(mapPanY - returnPanY) > .5 || Math.abs(mapZoom - preview.zoom) > .001;
+  mapZoom = preview.zoom;
+  mapPanX = returnPanX;
+  mapPanY = returnPanY;
+  updateMapScene();
+  mapReturnTimer = setTimeout(() => {
+    mapElement.classList.remove("is-ready");
+    mapScene.classList.remove("is-recentering");
+    mapScene.classList.add("is-following");
+    mapPanX = preview.panX;
+    mapPanY = preview.panY;
+    updateMapScene(preview.width, preview.height);
+    mapBackdrop.classList.remove("is-visible");
+    mapCloseTimer = setTimeout(() => {
+      mapPlaceholder.replaceWith(mapElement);
+      mapElement.classList.remove("is-expanded", "is-returning", "is-recentering");
+      mapScene.classList.remove("is-following");
+      mapAnchorPanYMax = 0;
+      mapPreviewState = null;
+      mapCanvas.tabIndex = -1;
+      mapCanvas.setAttribute("aria-label", "Map preview with three nearby racks");
+      document.body.style.overflow = "";
+      scroller.inert = false;
+      choiceActions.inert = false;
+      updateMapScene();
+      viewMapButton.focus();
+    }, reduceMotion ? 0 : 560);
+  }, reduceMotion || !needsReturn ? 0 : 460);
+}
+
+mapCanvas.addEventListener("pointerdown", (event) => {
+  if (!mapElement.classList.contains("is-ready") || mapElement.classList.contains("is-returning") || event.target.closest(".map-pin")) return;
+  mapDrag = { id: event.pointerId, x: event.clientX, y: event.clientY, panX: mapPanX, panY: mapPanY };
+  mapCanvas.setPointerCapture(event.pointerId);
+  mapCanvas.classList.add("is-dragging");
+  event.preventDefault();
+});
+mapCanvas.addEventListener("pointermove", (event) => {
+  if (!mapDrag || mapDrag.id !== event.pointerId) return;
+  mapPanX = mapDrag.panX + event.clientX - mapDrag.x;
+  mapPanY = mapDrag.panY + event.clientY - mapDrag.y;
+  updateMapScene();
+});
+function endMapDrag(event) {
+  if (!mapDrag || mapDrag.id !== event.pointerId) return;
+  mapDrag = null;
+  mapCanvas.classList.remove("is-dragging");
+}
+mapCanvas.addEventListener("pointerup", endMapDrag);
+mapCanvas.addEventListener("pointercancel", endMapDrag);
+mapCanvas.addEventListener("wheel", (event) => {
+  if (!mapElement.classList.contains("is-ready") || mapElement.classList.contains("is-returning")) return;
+  event.preventDefault();
+  zoomMap(mapZoom - event.deltaY * .001, event.clientX, event.clientY);
+}, { passive: false });
+mapCanvas.addEventListener("keydown", (event) => {
+  if (!mapElement.classList.contains("is-ready") || mapElement.classList.contains("is-returning")) return;
+  const move = { ArrowLeft: [40, 0], ArrowRight: [-40, 0], ArrowUp: [0, 40], ArrowDown: [0, -40] }[event.key];
+  if (move) {
+    event.preventDefault();
+    mapPanX += move[0];
+    mapPanY += move[1];
+    updateMapScene();
+  } else if (event.key === "+" || event.key === "=") {
+    event.preventDefault();
+    const rect = mapElement.getBoundingClientRect();
+    zoomMap(mapZoom + .1, rect.left + rect.width / 2, rect.top + rect.height / 2);
+  } else if (event.key === "-") {
+    event.preventDefault();
+    const rect = mapElement.getBoundingClientRect();
+    zoomMap(mapZoom - .1, rect.left + rect.width / 2, rect.top + rect.height / 2);
+  }
+});
+
+radios.forEach((radio) => radio.addEventListener("click", () => {
+  location.hash = radio.dataset.method;
+}));
+methodSwitch.addEventListener("keydown", (event) => {
+  if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
+  event.preventDefault();
+  const current = radios.findIndex((radio) => radio.getAttribute("aria-checked") === "true");
+  const next = event.key === "Home" ? 0 : event.key === "End" ? radios.length - 1
+    : (current + (event.key === "ArrowRight" ? 1 : -1) + radios.length) % radios.length;
+  location.hash = radios[next].dataset.method;
+  radios[next].focus();
+});
+function toggleRack(rack) {
+  location.hash = location.hash === `#rack-${rack}` ? "rack" : `rack-${rack}`;
+}
+pins.forEach((pin) => pin.addEventListener("click", () => {
+  toggleRack(pin.dataset.mapRack);
+}));
+viewMapButton.addEventListener("click", openMap);
+recenterButton.addEventListener("click", recenterMap);
+closeMapButton.addEventListener("click", closeMap);
+fullRackOptions.forEach((option) => option.addEventListener("click", () => {
+  toggleRack(option.dataset.fullRack);
+}));
+fullRackOptions.forEach((option) => {
+  const pin = document.querySelector(`[data-map-rack="${option.dataset.fullRack}"]`);
+  option.addEventListener("pointerenter", () => pin?.classList.add("is-preview"));
+  option.addEventListener("pointerleave", () => pin?.classList.remove("is-preview"));
+  option.addEventListener("focus", () => pin?.classList.add("is-preview"));
+  option.addEventListener("blur", () => pin?.classList.remove("is-preview"));
+});
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && mapElement.classList.contains("is-ready")) closeMap();
+  if (event.key !== "Tab" || !mapElement.classList.contains("is-ready") || mapElement.classList.contains("is-returning")) return;
+  const focusables = [closeMapButton, ...fullRackOptions, mapCanvas, ...pins, recenterButton];
+  const first = focusables[0];
+  const last = focusables[focusables.length - 1];
+  if (event.shiftKey && document.activeElement === first) {
+    event.preventDefault();
+    last.focus();
+  } else if (!event.shiftKey && document.activeElement === last) {
+    event.preventDefault();
+    first.focus();
+  } else if (!focusables.includes(document.activeElement)) {
+    event.preventDefault();
+    first.focus();
+  }
+});
+rackOptions.forEach((option) => {
+  const showPin = () => document.querySelector(`[data-map-rack="${option.dataset.rackChoice}"]`)?.classList.add("is-preview");
+  const hidePin = () => document.querySelector(`[data-map-rack="${option.dataset.rackChoice}"]`)?.classList.remove("is-preview");
+  option.addEventListener("pointerenter", showPin);
+  option.addEventListener("pointerleave", hidePin);
+  option.addEventListener("focus", showPin);
+  option.addEventListener("blur", hidePin);
+  option.addEventListener("click", () => {
+    toggleRack(option.dataset.rackChoice);
+  });
+});
+confirmLink.addEventListener("click", (event) => {
+  if (confirmLink.getAttribute("aria-disabled") === "true") event.preventDefault();
+});
+addEventListener("hashchange", render);
+render();
+if (new URLSearchParams(location.search).get("view") === "map") {
+  location.hash = "rack";
+  render();
+  requestAnimationFrame(openMap);
+}
+</script>
 </body>
 </html>
