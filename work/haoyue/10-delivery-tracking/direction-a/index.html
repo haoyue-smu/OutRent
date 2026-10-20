@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Delivery Tracking · Direction A</title>
+<link rel="icon" type="image/svg+xml" href="../../../../design/brand/favicon.svg">
+<!-- Do not change these four lines. They load the design system. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="../../../../design/tokens.css">
+<link rel="stylesheet" href="../../../../design/components.css">
+<link rel="stylesheet" href="../../_shared/lead.css">
+<style>
+  .photo-top.is-setup { height: 360px; }
+  .hero-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 30%; }
+  .fit-row { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+  .fit-row .chip { background: var(--sage-tint); color: var(--sage-dark); }
+  .courier { display: flex; align-items: center; gap: var(--s-3); }
+  .courier img { width: 44px; height: 44px; flex: none; border-radius: 50%; object-fit: cover; object-position: 47% 30%; }
+  .courier .t { display: flex; flex-direction: column; }
+  /* Split-flap arrival time: only the digits that change flip. */
+  #eta { display: inline-flex; perspective: 300px; }
+  #eta .ch { display: inline-block; min-width: .58em; text-align: center; transform-origin: 50% 55%; backface-visibility: hidden; }
+  #eta .ch.is-colon { min-width: .28em; }
+  .route.is-late .base { stroke: var(--error); stroke-dasharray: 4 6; opacity: .7; }
+  .route.is-late .stop.is-end { stroke: var(--error); }
+  .on-photo { position: absolute; bottom: 50px; z-index: 2; }
+  .sheet { gap: var(--s-5); }
+
+  /* Arrival time: the one big number on the screen. */
+  .eta { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--s-3); }
+  .eta .t-display { margin: 0; }
+
+  /* Route strip: where the bike is between Timah Cycles and the trailhead. */
+  .route { display: flex; flex-direction: column; gap: var(--s-1); }
+  .route svg { display: block; width: 100%; height: auto; overflow: visible; }
+  .route .base { fill: none; stroke: var(--line); stroke-width: 3; stroke-linecap: round; stroke-dasharray: 2 7; }
+  .route .done { fill: none; stroke: var(--sage); stroke-width: 3; stroke-linecap: round; }
+  .route .stop { fill: var(--white); stroke: var(--sage); stroke-width: 2.5; }
+  .route .stop.is-end { stroke: var(--muted); }
+  .route .bike { fill: var(--sage); stroke: var(--white); stroke-width: 3; }
+  .route .ends { display: flex; justify-content: space-between; gap: var(--s-3); font-size: var(--fs-foot); line-height: var(--lh-foot); color: var(--muted); }
+  .route .ends b { color: var(--ink); font-weight: 600; }
+
+  /* Status timeline. */
+  .timeline { display: flex; flex-direction: column; margin: 0; padding: 0; list-style: none; }
+  .timeline li { position: relative; display: flex; gap: var(--s-3); padding-bottom: var(--s-4); }
+  .timeline li:last-child { padding-bottom: 0; }
+  .timeline li::before { content: ""; position: absolute; left: 12px; top: 26px; bottom: 0; width: 2px; background: var(--line); }
+  .timeline li:last-child::before { display: none; }
+  .timeline li.is-done::before { background: var(--sage); }
+  .timeline .dot { flex: none; width: 26px; height: 26px; border-radius: var(--r-pill); border: 1.5px solid var(--line); background: var(--white); color: var(--white); display: flex; align-items: center; justify-content: center; z-index: 1; }
+  .timeline .is-done .dot { background: var(--sage); border-color: var(--sage); }
+  .timeline [aria-current="step"] .dot { border-color: var(--sage); }
+  .timeline [aria-current="step"] .dot::after { content: ""; width: 10px; height: 10px; border-radius: var(--r-pill); background: var(--sage); }
+  .timeline .txt { display: flex; flex-direction: column; gap: 2px; padding-top: 2px; }
+  .timeline .txt b { font-size: var(--fs-callout); line-height: var(--lh-callout); }
+  .timeline .txt .t-foot { margin: 0; }
+  .timeline .time { margin-left: auto; padding-top: 2px; font-size: var(--fs-foot); line-height: var(--lh-foot); color: var(--muted); font-variant-numeric: tabular-nums; }
+  .timeline [aria-current="step"] .time { color: var(--ink); font-weight: 600; }
+
+  .delay { display: flex; flex-direction: column; gap: var(--s-3); }
+  .delay .what { display: flex; gap: var(--s-2); align-items: flex-start; }
+  .delay .what .icon { color: var(--ink); flex: none; }
+  .delay .choices { display: flex; flex-direction: column; gap: var(--s-2); }
+  .slots { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-2); }
+  .slots button { height: var(--touch); border: 1px solid var(--line); border-radius: var(--r-pill); background: var(--white); font-size: var(--fs-callout); font-variant-numeric: tabular-nums; cursor: pointer; }
+  .slots button[aria-pressed="true"] { border: 1.5px solid var(--sage); background: var(--sage-tint); color: var(--sage-dark); font-weight: 600; }
+  .lines { display: flex; flex-direction: column; gap: var(--s-2); margin: 0; }
+  .lines div { display: flex; justify-content: space-between; gap: var(--s-3); font-size: var(--fs-callout); line-height: var(--lh-callout); }
+  .lines dt { color: var(--muted); }
+  .lines dd { margin: 0; font-variant-numeric: tabular-nums; }
+
+  /* Small moments: the step progress and the route draw on (clip-path and transform only). */
+  @media (prefers-reduced-motion: no-preference) {
+    .steps li.is-done::before, .steps li[aria-current="step"]::before { transform-origin: left center; animation: draw-on var(--t-slow) var(--ease-glide) both; }
+    .steps li:nth-child(2)::before { animation-delay: 80ms; }
+    .steps li:nth-child(3)::before { animation-delay: 160ms; }
+    .route .drawn { animation: route-on var(--t-slow) var(--ease-glide) 200ms both; }
+  }
+  @keyframes draw-on { from { transform: scaleX(0); } }
+  @keyframes route-on { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+</style>
+</head>
+<body>
+  <main class="screen is-white is-frame" data-page="10-delivery-tracking" data-direction="A">
+    <div class="scroll">
+      <div class="photo-top is-setup">
+        <img class="hero-photo" src="../assets/setup-proof.jpg" alt="A Timah Cycles mechanic setting the saddle height on your Trek Marlin 7 this morning">
+        <div class="float-top">
+          <a class="icon-btn glass" href="#" aria-label="Back" data-goes-to="09-trips">
+            <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-arrow-left"/></svg>
+          </a>
+        </div>
+        <span class="chip glass on-photo" style="left: 20px"><svg class="icon is-sm" aria-hidden="true" style="color: var(--sage)"><use href="../../../../design/icons.svg#i-check-circle"/></svg>Set by Timah Cycles</span>
+        <span class="chip glass on-photo num" style="right: 20px">Today 6:52</span>
+      </div>
+
+      <div class="sheet">
+        <ol class="steps" aria-label="Booking progress">
+          <li class="is-done">Pick</li><li class="is-done">Fit</li><li aria-current="step">Deliver</li><li>Ride</li><li>Return</li>
+        </ol>
+
+        <div class="fit-row" aria-label="Set to your fit">
+          <span class="chip">Saddle 72 cm</span><span class="chip">Fork sag 25%</span><span class="chip">Bars +1 cm</span>
+        </div>
+
+        <div class="eta">
+          <div class="stack">
+            <span class="t-foot" id="eta-label">On its way · arriving</span>
+            <p class="t-display"><span id="eta">7:40</span></p>
+          </div>
+          <span class="chip" id="eta-chip" data-state="default moved"><svg class="icon is-sm" aria-hidden="true"><use href="../../../../design/icons.svg#i-clock"/></svg><span id="eta-chip-t">On time</span></span>
+          <span class="chip is-quiet" data-state="delayed waiting" hidden><svg class="icon is-sm" aria-hidden="true"><use href="../../../../design/icons.svg#i-clock"/></svg>15 min late</span>
+        </div>
+
+        <!-- Delayed: what happened, what happens now, and his three choices. -->
+        <section class="card delay" data-state="delayed" aria-labelledby="delay-title" hidden>
+          <div class="what">
+            <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-warning-circle"/></svg>
+            <div class="stack">
+              <h2 class="t-title" id="delay-title" style="margin: 0">Running 15 min late · now 7:55</h2>
+              <span class="t-foot" style="color: var(--ink)">The courier is held up on the way. Your bike is still set to your fit, and nothing extra is charged.</span>
+            </div>
+          </div>
+          <div class="choices">
+            <button type="button" class="btn is-secondary is-block" id="wait">Wait, meet at 7:55</button>
+            <button type="button" class="btn is-secondary is-block" data-open-sheet="move">Change drop-off time</button>
+            <button type="button" class="btn is-text" data-open-sheet="cancel">Cancel free of charge</button>
+          </div>
+        </section>
+
+        <div class="card is-filled verdict" data-state="waiting moved" role="status" hidden>
+          <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-check-circle"/></svg>
+          <span id="ok-note"></span>
+        </div>
+
+        <section class="route" id="route" aria-label="Where your bike is">
+          <svg viewBox="0 0 353 48" aria-hidden="true">
+            <path class="base" id="route-path" d="M14 34 C 90 6, 170 46, 250 22 S 330 12, 339 14"/>
+            <g class="drawn">
+              <path class="done" id="route-done" d=""/>
+              <circle class="stop" cx="14" cy="34" r="7"/>
+              <circle class="bike" id="route-bike" r="8"/>
+            </g>
+            <circle class="stop is-end" cx="339" cy="14" r="7"/>
+          </svg>
+          <div class="ends">
+            <span><b>Timah Cycles</b><br>left 7:05</span>
+            <span style="text-align: right"><b>Chestnut Nature Park</b><br>trailhead</span>
+          </div>
+        </section>
+
+        <div class="courier">
+          <img src="../assets/courier.jpg" alt="">
+          <span class="t"><b class="t-callout" style="font-weight: 600">Ravi is bringing your bike</b><span class="t-foot">OutRent courier, sage-green polo</span></span>
+        </div>
+
+        <section aria-labelledby="status-title" class="group">
+          <h2 class="t-title" id="status-title">Status</h2>
+          <ol class="timeline">
+            <li class="is-done">
+              <span class="dot"><svg class="icon is-sm" aria-hidden="true"><use href="../../../../design/icons.svg#i-check-circle"/></svg></span>
+              <span class="txt"><b>Set to your fit</b><span class="t-foot">Saddle 72 cm, fork sag 25%, bars +1 cm. Photo above.</span></span>
+              <span class="time">6:52</span>
+            </li>
+            <li aria-current="step">
+              <span class="dot"></span>
+              <span class="txt"><b>On its way</b><span class="t-foot">Left Timah Cycles, Bukit Timah.</span></span>
+              <span class="time">7:05</span>
+            </li>
+            <li>
+              <span class="dot"></span>
+              <span class="txt"><b id="arrive-t">Arriving 7:40</b><span class="t-foot">At the Chestnut Nature Park trailhead. Check the bike with the courier before you ride.</span></span>
+              <span class="time" id="arrive-time">7:40</span>
+            </li>
+          </ol>
+        </section>
+      </div>
+    </div>
+
+    <div class="actionbar glass is-single">
+      <a class="btn is-block" href="#" data-goes-to="11-handover-check">Bike has arrived</a>
+    </div>
+
+    <!-- Change drop-off time -->
+    <div class="sheet-scrim" data-sheet-scrim="move"></div>
+    <section class="bottom-sheet" id="move" role="dialog" aria-modal="true" aria-labelledby="move-title">
+      <span class="grabber" aria-hidden="true"></span>
+      <div class="sheet-head">
+        <h2 class="t-title" id="move-title">New drop-off time</h2>
+        <button type="button" class="icon-btn" aria-label="Close" data-close-sheet>
+          <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-x"/></svg>
+        </button>
+      </div>
+      <span class="t-foot">Sat 25 Oct, Chestnut Nature Park trailhead. Same price.</span>
+      <div class="slots" role="group" aria-label="Drop-off times">
+        <button type="button" aria-pressed="false">8:15</button>
+        <button type="button" aria-pressed="true">8:30</button>
+        <button type="button" aria-pressed="false">9:00</button>
+      </div>
+      <button type="button" class="btn is-block" id="move-confirm">Move drop-off to 8:30</button>
+    </section>
+
+    <!-- Cancel free of charge -->
+    <div class="sheet-scrim" data-sheet-scrim="cancel"></div>
+    <section class="bottom-sheet" id="cancel" role="dialog" aria-modal="true" aria-labelledby="cancel-title">
+      <span class="grabber" aria-hidden="true"></span>
+      <div class="sheet-head">
+        <h2 class="t-title" id="cancel-title">Cancel this booking?</h2>
+        <button type="button" class="icon-btn" aria-label="Close" data-close-sheet>
+          <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-x"/></svg>
+        </button>
+      </div>
+      <span class="t-foot" style="color: var(--ink)">The delay is on us, so cancelling costs nothing.</span>
+      <dl class="lines">
+        <div><dt>Paid back to your card</dt><dd>S$53</dd></div>
+        <div><dt>Deposit hold released</dt><dd>S$150</dd></div>
+      </dl>
+      <button type="button" class="btn is-block" data-close-sheet data-goes-to="09-trips">Cancel booking</button>
+      <button type="button" class="btn is-text" data-close-sheet>Keep the booking</button>
+    </section>
+  </main>
+
+  <script src="../../_shared/lead.js"></script>
+  <script>
+    // States: default (on time), #delayed, #waiting (chose to wait), #moved (picked a new time).
+    const $ = (id) => document.getElementById(id);
+    const { crossFade, still } = Lead;
+    const STATES = {
+      default: { h: 7, m: 40, label: "On its way · arriving", chip: "On time", progress: 0.58, arrive: "7:40" },
+      delayed: { h: 7, m: 55, label: "On its way · now arriving", progress: 0.45, arrive: "7:55" },
+      waiting: { h: 7, m: 55, label: "On its way · now arriving", progress: 0.45, arrive: "7:55", note: "<b>Meeting at 7:55.</b> We'll tell you here if it changes." },
+      moved: { h: 8, m: 30, label: "Drop-off moved · arriving", chip: "New time", progress: 0.45, arrive: "8:30", note: "<b>Drop-off moved to 8:30.</b> Same place, same price." },
+    };
+
+    // Route: the sage line follows the path up to where the bike is now.
+    const path = $("route-path"), total = path.getTotalLength();
+    function placeBike(p) {
+      const pts = [];
+      for (let i = 0; i <= 40; i++) { const q = path.getPointAtLength(total * p * i / 40); pts.push(`${q.x.toFixed(1)} ${q.y.toFixed(1)}`); }
+      $("route-done").setAttribute("d", "M" + pts.join(" L"));
+      const end = path.getPointAtLength(total * p);
+      $("route-bike").setAttribute("cx", end.x); $("route-bike").setAttribute("cy", end.y);
+    }
+
+    // Split-flap: each changed character flips down to the new one, 120 ms per half, staggered.
+    const eta = $("eta");
+    function setEta(text, animate) {
+      const old = eta.dataset.t || "";
+      eta.dataset.t = text;
+      if (!animate || still.matches || old.length !== text.length) {
+        const draw = () => { eta.innerHTML = [...text].map((c) => `<span class="ch${c === ":" ? " is-colon" : ""}">${c}</span>`).join(""); };
+        if (animate && old) crossFade(eta, draw); else draw();
+        return;
+      }
+      const spans = [...eta.children];
+      let k = 0;
+      [...text].forEach((c, i) => {
+        if (old[i] === c) return;
+        const el = spans[i], delay = k++ * 120;
+        const out = el.animate([{ transform: "rotateX(0)" }, { transform: "rotateX(-90deg)" }], { duration: 120, delay, easing: "ease-in", fill: "forwards" });
+        out.onfinish = () => { el.textContent = c; out.cancel(); el.animate([{ transform: "rotateX(90deg)" }, { transform: "rotateX(0)" }], { duration: 140, easing: "cubic-bezier(.34,1.56,.64,1)" }); };
+      });
+    }
+    // The courier dot travels to where the bike is now.
+    let shown = 0;
+    function travel(to, ms) {
+      if (still.matches || !ms) { shown = to; placeBike(to); return; }
+      const from = shown, t0 = performance.now();
+      const step = (t) => { const k = Math.min(1, (t - t0) / ms), e = 1 - Math.pow(1 - k, 3); shown = from + (to - from) * e; placeBike(shown); if (k < 1) requestAnimationFrame(step); };
+      requestAnimationFrame(step);
+    }
+    const rise = (els) => { if (still.matches) return; els.forEach((el, i) => el.animate([{ transform: "translateY(16px)", opacity: 0 }, { transform: "none", opacity: 1 }], { duration: 320, delay: 120 + i * 80, easing: "cubic-bezier(0.32,0.72,0,1)", fill: "backwards" })); };
+
+    let movedTo = "8:30", first = true;
+    Lead.states((state) => {
+      const s = { ...STATES[state] || STATES.default };
+      if (state === "moved") { [s.h, s.m] = movedTo.split(":").map(Number); s.arrive = movedTo; s.note = `<b>Drop-off moved to ${movedTo}.</b> Same place, same price.`; }
+      const text = `${s.h}:${String(s.m).padStart(2, "0")}`;
+      $("eta-label").textContent = s.label;
+      if (s.chip) $("eta-chip-t").textContent = s.chip;
+      $("arrive-t").textContent = `Arriving ${s.arrive}`;
+      $("arrive-time").textContent = s.arrive;
+      if (s.note) $("ok-note").innerHTML = s.note;
+      $("route").classList.toggle("is-late", state === "delayed" || state === "waiting");
+      if (first) {
+        // Opening the page: the dot runs out along the route. Opening it delayed: the time was 7:40 until now.
+        first = false;
+        setEta(state === "default" ? text : "7:40", false);
+        travel(s.progress, 900);
+        if (state !== "default") setTimeout(() => setEta(text, true), 650);
+      } else {
+        setEta(text, true);
+        travel(s.progress, 500);
+      }
+      if (state === "delayed") rise([document.querySelector('[data-state="delayed waiting"].chip'), ...document.querySelectorAll(".delay .what, .delay .choices > *")]);
+    });
+
+    $("wait").addEventListener("click", () => { location.hash = "waiting"; });
+
+    // Bottom sheets (RECIPES §1).
+    let lastOpener = null;
+    function openSheet(id, opener) {
+      lastOpener = opener;
+      $(id).classList.add("is-open");
+      document.querySelector(`[data-sheet-scrim="${id}"]`).classList.add("is-open");
+      $(id).querySelector("button, input, select, textarea").focus();
+    }
+    function closeSheets() {
+      document.querySelectorAll(".bottom-sheet.is-open, .sheet-scrim.is-open").forEach((el) => el.classList.remove("is-open"));
+      lastOpener?.focus();
+    }
+    document.querySelectorAll("[data-open-sheet]").forEach((b) => b.addEventListener("click", () => openSheet(b.dataset.openSheet, b)));
+    document.querySelectorAll("[data-close-sheet], .sheet-scrim").forEach((el) => el.addEventListener("click", closeSheets));
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeSheets(); });
+
+    document.querySelectorAll(".slots button").forEach((b) => b.addEventListener("click", () => {
+      document.querySelectorAll(".slots button").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+      movedTo = b.textContent;
+      $("move-confirm").textContent = `Move drop-off to ${movedTo}`;
+    }));
+    $("move-confirm").addEventListener("click", () => { closeSheets(); location.hash = "moved"; });
+  </script>
+</body>
+</html>

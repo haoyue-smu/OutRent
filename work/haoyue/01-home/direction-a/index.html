@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Home · Direction A</title>
+<link rel="icon" type="image/svg+xml" href="../../../../design/brand/favicon.svg">
+<!-- Do not change these four lines. They load the design system. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="../../../../design/tokens.css">
+<link rel="stylesheet" href="../../../../design/components.css">
+<link rel="stylesheet" href="../../_shared/lead.css">
+<style>
+  @view-transition { navigation: auto; }
+  ::view-transition-group(kit-photo) { animation-duration: var(--t-slow); animation-timing-function: var(--ease-glide); }
+  @media (prefers-reduced-motion: reduce) { ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation-duration: 160ms !important; } }
+
+  /* Hero: kayaker framed by leaves, a sage-dark scrim so the white headline reads. */
+  .photo-top.is-home { height: 470px; }
+  .photo-top.is-home::after { display: none; }
+  .hero-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 45%; }
+  .scrim { position: absolute; inset: 0 0 auto; height: 400px; background: linear-gradient(to bottom, rgba(30,38,34,.55) 0%, rgba(47,82,70,.58) 45%, rgba(47,82,70,.40) 72%, rgba(47,82,70,0) 100%); pointer-events: none; }
+  .photo-top .logo { display: block; height: 24px; width: auto; }
+  .hero-copy { position: absolute; top: 112px; left: var(--gutter); right: var(--gutter); z-index: 2; display: flex; flex-direction: column; gap: var(--s-3); color: var(--white); }
+  .hero-copy h1 { margin: 0; font-size: 52px; line-height: 52px; font-weight: 700; letter-spacing: -2px; text-shadow: 0 2px 16px rgba(30,38,34,.35); }
+  .hero-copy p { margin: 0; font-size: var(--fs-body); line-height: var(--lh-body); font-weight: 600; text-shadow: 0 1px 10px rgba(30,38,34,.4); }
+
+  .sheet { gap: var(--s-6); padding-bottom: 132px; }
+  .finder { display: flex; flex-direction: column; gap: var(--s-3); margin-top: -64px; position: relative; z-index: 3; padding: var(--s-3); border-radius: var(--r-card); background: var(--white); box-shadow: var(--shadow-float); }
+  .finder .fields { display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: var(--r-tile); }
+  .finder .fields a { display: flex; flex-direction: column; gap: 2px; padding: 10px 14px; color: var(--ink); text-decoration: none; }
+  .finder .fields .pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-top: 1px solid var(--line); }
+  .finder .fields .pair a + a { border-left: 1px solid var(--line); }
+  .finder .k { font-size: var(--fs-label); line-height: var(--lh-label); color: var(--muted); }
+  .finder .v { font-size: var(--fs-callout); line-height: var(--lh-callout); font-weight: 600; }
+  .finder .v.is-empty { font-weight: 400; color: var(--muted); }
+  .finder .store-copy { margin: 0; font-size: var(--fs-callout); line-height: var(--lh-callout); }
+
+  .cats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--s-2); margin: 0; padding: 0; list-style: none; }
+  .cats a { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; height: 72px; border-radius: var(--r-tile); background: var(--mist); color: var(--ink); text-decoration: none; font-size: var(--fs-foot); font-weight: 600; }
+  .cats .icon { width: 22px; height: 22px; margin-bottom: 2px; }
+
+  .kit-card { display: flex; flex-direction: column; border-radius: var(--r-card); border: 1px solid var(--line); overflow: hidden; color: var(--ink); text-decoration: none; }
+  .kit-card .calm { height: 132px; view-transition-name: kit-photo; }
+  .kit-card .b { display: flex; flex-direction: column; gap: 6px; padding: var(--s-4); }
+  .kit-card .bar { display: flex; align-items: center; gap: var(--s-2); }
+  .kit-card .track { flex: 1; height: 6px; border-radius: 3px; background: var(--sage-tint); overflow: hidden; }
+  .kit-card .track i { display: block; width: 66%; height: 100%; background: var(--sage); border-radius: 3px; }
+
+  .store { display: flex; flex-direction: column; gap: var(--s-3); overflow: hidden; }
+  .store .top { display: flex; align-items: center; gap: var(--s-3); }
+  .store .top img { width: 56px; height: 56px; flex: none; border-radius: var(--r-thumb); object-fit: cover; object-position: center 55%; }
+  .store .top .body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+  .store .close { margin: -6px -6px 0 0; border-color: transparent; background: none; align-self: flex-start; }
+  .toast { display: flex; align-items: center; justify-content: space-between; gap: var(--s-3); padding: var(--s-2) var(--s-2) var(--s-2) var(--s-4); border-radius: var(--r-tile); background: var(--mist); font-size: var(--fs-foot); line-height: var(--lh-foot); color: var(--ink); }
+  .group > h2 { margin: 0; }
+</style>
+</head>
+<body>
+  <main class="screen is-white is-frame" data-page="01-home" data-direction="A">
+    <div class="scroll">
+      <div class="photo-top is-home">
+        <img class="hero-photo" src="../assets/home-hero.jpg" alt="A kayaker on a calm reservoir in the morning, framed by leaves">
+        <div class="scrim" aria-hidden="true"></div>
+        <div class="float-top">
+          <img class="logo" src="../../../../design/brand/outrent-lockup-white.svg" alt="OutRent">
+        </div>
+        <div class="hero-copy">
+          <h1>Outdoor gear,<br>delivered<br>to you.</h1>
+          <p>Bikes, kayaks, tents and more.<br>We bring it and pick it up after.</p>
+        </div>
+      </div>
+
+      <div class="sheet">
+        <section class="finder" aria-label="Find or store gear">
+          <div class="segmented" role="radiogroup" aria-label="What do you want to do?" id="mode">
+            <button type="button" role="radio" aria-checked="true" data-mode="rent">Rent gear</button>
+            <button type="button" role="radio" aria-checked="false" data-mode="store">Store my gear</button>
+          </div>
+          <div data-mode-panel="rent" class="group">
+            <div class="fields">
+              <a href="#" data-goes-to="04-search-results"><span class="k">What do you need?</span><span class="v is-empty">Kayak, bike, tent…</span></a>
+              <div class="pair">
+                <a href="#" data-goes-to="04-search-results"><span class="k">Deliver to</span><span class="v">Chestnut</span></a>
+                <a href="#" data-goes-to="04-search-results"><span class="k">Dates</span><span class="v">Sat 25 Oct</span></a>
+              </div>
+            </div>
+            <a class="btn is-block" href="#" data-goes-to="04-search-results">Search</a>
+          </div>
+          <div data-mode-panel="store" class="group" hidden>
+            <p class="store-copy">We pick it up, store it and bring it back when you need it.</p>
+            <a class="btn is-block" href="#" data-goes-to="16-storage-options">See storage</a>
+          </div>
+        </section>
+
+        <section class="group" aria-labelledby="cat-title">
+          <h2 class="t-title" id="cat-title">Rent by category</h2>
+          <ul class="cats">
+            <li><a href="#" data-goes-to="04-search-results"><svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-bicycle"/></svg>Bikes</a></li>
+            <li><a href="#" data-goes-to="04-search-results"><svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-waves"/></svg>Kayaks</a></li>
+            <li><a href="#" data-goes-to="04-search-results"><svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-tent"/></svg>Camping</a></li>
+            <li><a href="#" data-goes-to="04-search-results"><svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-mountains"/></svg>Climbing</a></li>
+          </ul>
+        </section>
+
+        <section class="group" aria-labelledby="kit-title">
+          <h2 class="t-title" id="kit-title">Kit lists shared with you</h2>
+          <a class="kit-card" href="#" data-goes-to="02-coach-kit">
+            <span class="calm"><img src="../assets/group-ride.jpg" alt=""></span>
+            <span class="b">
+              <span class="t-foot" style="color: var(--muted)">From Coach Aisyah · Beginner trail ride</span>
+              <span class="t-title">Sat 25 Oct · Chestnut Nature Park</span>
+              <span class="bar"><span class="track"><i></i></span><span class="t-foot" style="color: var(--sage-dark); font-weight: 600">You have 2 of 3</span></span>
+              <span class="btn is-secondary is-block" style="margin-top: var(--s-1)">See the kit list</span>
+            </span>
+          </a>
+        </section>
+
+        <section class="group" aria-labelledby="own-title">
+          <h2 class="t-title" id="own-title">Your gear</h2>
+          <div class="card is-filled store" id="store" data-state="default">
+            <div class="top">
+              <img src="../assets/old-bike.jpg" alt="">
+              <span class="body">
+                <span class="t-callout" style="font-weight: 600">Your old bike</span>
+                <span class="t-foot" style="color: var(--muted)">Not used for 5 months. Store it and free up the corridor.</span>
+              </span>
+              <button type="button" class="icon-btn close" id="dismiss" aria-label="Hide this suggestion">
+                <svg class="icon is-sm" aria-hidden="true"><use href="../../../../design/icons.svg#i-x"/></svg>
+              </button>
+            </div>
+            <a class="btn is-secondary is-block" href="#" data-goes-to="16-storage-options">Store it</a>
+          </div>
+          <div class="toast" data-state="dismissed" role="status" hidden>
+            <span>Hidden. Storage is always under My gear.</span>
+            <a class="btn is-text" href="#" id="undo">Undo</a>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <nav class="tabbar glass" aria-label="Main">
+      <a href="#" aria-current="page"><svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-house-fill"/></svg><span class="label">Home</span></a>
+      <a href="#" aria-label="Trips" data-goes-to="09-trips"><svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-calendar-blank"/></svg><span class="label">Trips</span></a>
+      <a href="#" aria-label="My gear" data-goes-to="14-my-equipment"><svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-backpack"/></svg><span class="label">My gear</span></a>
+      <a href="#" aria-label="Profile" data-goes-to="profile"><svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-user"/></svg><span class="label">Profile</span></a>
+    </nav>
+  </main>
+
+  <script src="../../_shared/lead.js"></script>
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const { still, crossFade } = Lead;
+
+    // Rent gear / Store my gear.
+    $("mode").querySelectorAll("[role=radio]").forEach((b) => b.addEventListener("click", () => {
+      $("mode").querySelectorAll("[role=radio]").forEach((x) => x.setAttribute("aria-checked", String(x === b)));
+      const panels = document.querySelectorAll("[data-mode-panel]");
+      crossFade(document.querySelector(".finder"), () => panels.forEach((p) => (p.hidden = p.dataset.modePanel !== b.dataset.mode)));
+    }));
+
+    // States: default, and #dismissed (the storage suggestion collapses; a one-line note takes its place).
+    Lead.states();
+    const card = $("store");
+    function go(state) {
+      const swap = () => { history.replaceState(null, "", state === "default" ? location.pathname : "#" + state); dispatchEvent(new HashChangeEvent("hashchange")); };
+      if (still.matches || !card.animate) { crossFade(card.parentElement, swap); return; }
+      if (state === "dismissed") {
+        const h = card.offsetHeight;
+        card.animate([{ height: h + "px", opacity: 1 }, { height: "0px", opacity: 0, paddingTop: 0, paddingBottom: 0 }], { duration: 320, easing: "cubic-bezier(0.32,0.72,0,1)" }).onfinish = swap;
+      } else {
+        swap();
+        const h = card.offsetHeight;
+        card.animate([{ height: "0px", opacity: 0 }, { height: h + "px", opacity: 1 }], { duration: 320, easing: "cubic-bezier(0.32,0.72,0,1)" });
+      }
+    }
+    $("dismiss").addEventListener("click", () => go("dismissed"));
+    $("undo").addEventListener("click", (e) => { e.preventDefault(); go("default"); });
+  </script>
+</body>
+</html>

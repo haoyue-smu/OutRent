@@ -1,6 +1,6 @@
 # 12 Rental Summary
 
-**Designer:** Minh  ·  **Where:** Trips → past trip (after collection)
+**Designer:** Minh Tuan  ·  **Where:** Trips → past trip (after collection)
 
 ## Purpose
 The ride is done: the bike is back, condition on return is recorded, the deposit is coming back.
@@ -26,5 +26,5 @@ Link with `data-goes-to="<page-id>"`.
 ## Iter1 problem this page fixes
 HE #13. Make the fix obvious: a tester should notice it without being told.
 
-## Room for A and B
-Everything above must be on the page. How it is ordered, grouped and interacted with is yours. A and B must differ in structure, information order or interaction pattern.
+## Room for your design
+Everything above must be on the page. How it is ordered, grouped and interacted with is yours. A second version is optional; if you build one, it must differ in structure, information order or interaction pattern.

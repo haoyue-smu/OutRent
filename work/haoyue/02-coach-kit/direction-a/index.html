@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Coach's Kit · Direction A</title>
+<link rel="icon" type="image/svg+xml" href="../../../../design/brand/favicon.svg">
+<!-- Do not change these four lines. They load the design system. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="../../../../design/tokens.css">
+<link rel="stylesheet" href="../../../../design/components.css">
+<link rel="stylesheet" href="../../_shared/lead.css">
+<style>
+  @view-transition { navigation: auto; }
+  ::view-transition-group(kit-photo), ::view-transition-group(fit-chip) { animation-duration: var(--t-slow); animation-timing-function: var(--ease-glide); }
+  @media (prefers-reduced-motion: reduce) { ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation-duration: 160ms !important; } }
+  .kit-photo { height: 112px; border-radius: var(--r-card); view-transition-name: kit-photo; }
+  .coach { display: flex; align-items: center; gap: var(--s-3); }
+  .coach img { width: 48px; height: 48px; flex: none; border-radius: 50%; object-fit: cover; object-position: center 25%; }
+  .coach .body { display: flex; flex-direction: column; }
+  .tally { margin: var(--s-1) 0 0; font-size: var(--fs-callout); line-height: var(--lh-callout); color: var(--sage-dark); font-weight: 600; font-variant-numeric: tabular-nums; }
+
+  /* The kit list: three groups. Each row is where its card lands. */
+  .kit { display: flex; flex-direction: column; gap: var(--s-2); }
+  .kit h2 { margin: 0; }
+  .item { display: flex; align-items: center; gap: var(--s-3); padding: 10px var(--s-3); border-radius: var(--r-tile); background: var(--white); }
+  .item img { width: 52px; height: 52px; flex: none; border-radius: var(--r-thumb); background: var(--mist); object-fit: contain; padding: 4px; box-sizing: border-box; }
+  .item .txt { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+  .item b { font-size: 16px; line-height: 21px; font-weight: 600; }
+  .item .have { color: var(--sage); flex: none; }
+  .item.is-rent { border: 1.5px dashed var(--sage); background: var(--mist); }
+  .item.is-rent img { background: var(--white); }
+  .item.is-out { background: none; border: 1px dashed var(--line); }
+  .item.is-out b { color: var(--muted); }
+  .item.is-out img { opacity: .5; }
+  .size { flex: none; display: flex; flex-direction: column; align-items: flex-end; text-align: right; }
+  .size b { color: var(--sage-dark); }
+  .size > span { font-size: var(--fs-label); line-height: var(--lh-label); color: var(--muted); }
+  .item.is-waiting { opacity: 0; }
+  .skipline { margin: 0; padding: 0 var(--s-1); font-size: var(--fs-foot); line-height: var(--lh-foot); color: var(--muted); }
+  .item.mini { display: inline; padding: 0; background: none; border-radius: 0; text-decoration: line-through; text-decoration-color: var(--fig-lo); }
+  .note { display: flex; gap: var(--s-3); align-items: flex-start; padding: var(--s-3) var(--s-4); border-radius: var(--r-tile); background: var(--mist); }
+  .note img { width: 32px; height: 32px; flex: none; border-radius: 50%; object-fit: cover; object-position: center 25%; }
+  .note p { margin: 0; font-size: var(--fs-callout); line-height: var(--lh-callout); }
+  .note small { display: block; margin-top: 2px; font-size: var(--fs-foot); color: var(--muted); }
+  .links { display: flex; flex-wrap: wrap; gap: 0 var(--s-2); margin: calc(var(--s-1) * -1) 0 0; }
+  .pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-2); }
+  .field input { width: 3.2ch; }
+  @supports (field-sizing: content) { .field input { width: auto; field-sizing: content; min-width: 1.2ch; } }
+  .ask { display: flex; flex-direction: column; gap: var(--s-3); }
+  #primary[aria-disabled="true"] { opacity: .5; pointer-events: none; }
+  #primary { transition: opacity var(--t-base) var(--ease-glide); }
+  .fit-chip { view-transition-name: fit-chip; }
+
+  /* Signature moment: the coach's items are dealt as cards, checked against My gear, and each flies to its row. */
+  .deal { position: fixed; inset: 0; z-index: 30; pointer-events: none; }
+  .deal::before { content: ""; position: absolute; inset: 0; background: var(--backdrop); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); transition: opacity var(--t-base) var(--ease-glide); }
+  .deal.is-done::before { opacity: 0; }
+  .card-deal { position: absolute; left: 50%; top: 50%; width: 220px; margin: -120px 0 0 -110px; padding: var(--s-4); border-radius: var(--r-card); background: var(--white); box-shadow: var(--shadow-float); display: flex; flex-direction: column; align-items: center; gap: var(--s-2); transform-origin: 50% 50%; will-change: transform, opacity; box-sizing: border-box; }
+  .card-deal img { width: 100%; height: 130px; object-fit: contain; }
+  .card-deal b { font-size: var(--fs-body); line-height: var(--lh-body); text-align: center; }
+  .card-deal .res { height: 28px; padding: 0 12px; border-radius: var(--r-pill); display: inline-flex; align-items: center; gap: 6px; font-size: var(--fs-foot); font-weight: 600; color: var(--muted); background: var(--mist); }
+  .card-deal .res .icon { width: 18px; height: 18px; }
+  .card-deal.is-have .res { background: var(--sage-tint); color: var(--sage-dark); }
+  .card-deal.is-out img { opacity: .45; }
+  .card-deal.is-out b { color: var(--muted); }
+  .card-deal.is-rent { border: 1.5px dashed var(--sage); background: var(--mist); box-shadow: none; }
+  .card-deal.is-rent .res { background: var(--white); color: var(--sage-dark); }
+  .deal-title { position: absolute; left: 50%; transform: translateX(-50%); top: calc(50% - 232px); display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; padding: 14px 22px 12px; border-radius: var(--r-card); background: var(--white); box-shadow: var(--shadow-float); white-space: nowrap; }
+  .deal-title b { font-size: var(--fs-title); line-height: var(--lh-title); letter-spacing: var(--track-title); }
+  .deal-title span { font-size: var(--fs-foot); line-height: var(--lh-foot); color: var(--sage-dark); font-weight: 600; font-variant-numeric: tabular-nums; }
+  .deal-dots { display: flex; gap: 6px; }
+  .deal-dots i { width: 8px; height: 8px; border-radius: 4px; background: var(--line); transition: background-color var(--t-quick), width var(--t-base) var(--ease-glide); }
+  .deal-dots i.on { background: var(--sage); width: 18px; }
+  .skip { position: absolute; left: 0; right: 0; top: calc(50% + 150px); text-align: center; font-size: var(--fs-label); letter-spacing: var(--track-label); text-transform: uppercase; color: var(--muted); }
+  .deal .skip { color: var(--white); }
+</style>
+</head>
+<body>
+  <main class="screen is-frame" data-page="02-coach-kit" data-direction="A">
+    <div class="scroll" id="scroller">
+      <div class="topbar">
+        <a class="icon-btn" href="#" aria-label="Back" data-goes-to="01-home">
+          <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-arrow-left"/></svg>
+        </a>
+        <span class="name">Coach's kit</span>
+        <span></span>
+      </div>
+
+      <div class="content" style="padding-top: var(--s-4)">
+        <span class="calm kit-photo"><img src="../assets/group-ride.jpg" alt="A small group riding a forest trail"></span>
+        <div class="coach">
+          <img src="../assets/coach-aisyah.jpg" alt="Coach Aisyah">
+          <span class="body">
+            <span class="t-callout" style="font-weight: 600">Coach Aisyah</span>
+            <span class="t-foot">Recommends kit. She does not rent anything out.</span>
+          </span>
+        </div>
+
+        <div>
+          <p class="t-label" style="margin: 0 0 var(--s-1)">First trail ride · Sat 25 Oct</p>
+          <h1 class="t-large">Your kit for Chestnut Nature Park</h1>
+          <p class="tally" aria-live="polite">You have <span id="have-n">2</span> of 3</p>
+        </div>
+
+        <section class="kit" aria-labelledby="rent-title">
+          <h2 class="t-label" id="rent-title">To rent</h2>
+          <div class="item is-rent" data-item="bike">
+            <img src="../assets/kit-hardtail.webp" alt="">
+            <span class="txt"><b>Hardtail mountain bike</b></span>
+            <span class="size" id="size-box"><b class="fit-chip">Size <span id="frame">M</span></b><span id="size-range">fits 165–177 cm</span></span>
+          </div>
+          <div class="links" data-state="default saved">
+            <a class="btn is-text" href="#" data-goes-to="03-fit-profile">See your sizes</a>
+          </div>
+          <div class="card is-filled verdict" data-state="saved" role="status" hidden>
+            <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-check-circle"/></svg>
+            <span><b>Saved to your fit.</b> Every bike now shows whether it fits you.</span>
+          </div>
+          <!-- No fit saved yet: ask for height and inside leg before naming a size. -->
+          <div class="card ask" data-state="nofit" hidden>
+            <div class="stack">
+              <h3 class="t-title" style="margin: 0">Which size fits you?</h3>
+              <span class="t-foot">Add your height and inside leg. We save them to your fit, so every bike shows its size for you.</span>
+            </div>
+            <div class="pair">
+              <label class="field" id="f-height">Height
+                <span class="value"><input id="height" inputmode="numeric" autocomplete="off" maxlength="3" placeholder="—" aria-describedby="fit-error"><span class="unit">cm</span></span>
+              </label>
+              <label class="field" id="f-leg">Inside leg
+                <span class="value"><input id="leg" inputmode="numeric" autocomplete="off" maxlength="2" placeholder="—" aria-describedby="fit-error"><span class="unit">cm</span></span>
+              </label>
+            </div>
+            <p class="field-hint">Height: standing, without shoes. Inside leg: in socks, floor to crotch.</p>
+            <p class="field-error" id="fit-error" hidden></p>
+          </div>
+        </section>
+
+        <section class="kit" aria-labelledby="have-title">
+          <h2 class="t-label" id="have-title">Already have</h2>
+          <div class="item" data-item="helmet">
+            <img src="../assets/kit-road-helmet.webp" alt="">
+            <span class="txt"><b>Road helmet</b></span>
+            <svg class="icon have" role="img" aria-label="In My gear"><use href="../../../../design/icons.svg#i-check-circle"/></svg>
+          </div>
+          <div class="item" data-item="gloves">
+            <img src="../assets/kit-gloves.webp" alt="">
+            <span class="txt"><b>Gloves</b></span>
+            <svg class="icon have" role="img" aria-label="In My gear"><use href="../../../../design/icons.svg#i-check-circle"/></svg>
+          </div>
+          <p class="skipline">Not needed: <span class="item mini" data-item="fullface">full-face helmet</span></p>
+          <div class="links">
+            <a class="btn is-text" href="#" data-goes-to="14-my-equipment">See My gear</a>
+          </div>
+        </section>
+
+
+        <div class="note">
+          <img src="../assets/coach-aisyah.jpg" alt="">
+          <p>“Your road helmet is fine here. Chestnut's loops have no steep downhill.”<small>Coach Aisyah</small></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="actionbar glass is-single">
+      <a class="btn is-block" href="#" id="primary" data-goes-to="04-search-results">Find a bike in size M</a>
+    </div>
+  </main>
+
+  <script src="../../_shared/lead.js"></script>
+  <script>
+    // States: default (fit saved: size M), #nofit (ask for height and inside leg first), #saved (just added from here).
+    const $ = (id) => document.getElementById(id);
+    const { Fit, crossFade, roll, still } = Lead;
+    const DANIEL = { height: 176, leg: 81 };
+    const RANGE = { S: "155–165", M: "165–177", L: "177–188" }; // Trek Marlin 7 size chart, cm
+    const fit = { height: null, leg: null };
+    const stateNow = () => location.hash.slice(1) || "default";
+
+    function setPrimary(state) {
+      const btn = $("primary");
+      const size = state === "nofit" ? null : $("frame").textContent;
+      if (state === "nofit") {
+        btn.textContent = "Show my size";
+        btn.removeAttribute("data-goes-to");
+      } else {
+        btn.innerHTML = `<span>Find a bike in <span class="fit-chip">size ${size}</span></span>`;
+        btn.setAttribute("data-goes-to", "04-search-results");
+      }
+      $("frame").textContent = size || "?";
+      $("size-range").textContent = size ? `fits ${RANGE[size]} cm` : "from your fit";
+    }
+
+    // ---------- signature moment: deal, check, sort ----------
+    // The bike is the one that matters, so it is checked last and stays in view longest.
+    const ORDER = [
+      { id: "helmet", name: "Road helmet", img: "kit-road-helmet.webp", kind: "have" },
+      { id: "gloves", name: "Gloves", img: "kit-gloves.webp", kind: "have" },
+      { id: "fullface", name: "Full-face helmet", img: "kit-fullface-helmet.webp", kind: "out" },
+      { id: "bike", name: "Hardtail mountain bike", img: "kit-hardtail.webp", kind: "rent" },
+    ];
+    const RESULT = {
+      have: () => `<svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-check-circle"/></svg>In My gear`,
+      out: () => "Not needed",
+      rent: () => `To rent · size ${$("frame").textContent}`,
+    };
+    const rows = Object.fromEntries([...document.querySelectorAll(".item")].map((r) => [r.dataset.item, r]));
+    let deal = null, timers = [], played = false;
+
+    function finish() {
+      timers.forEach(clearTimeout); timers = [];
+      if (deal) { deal.remove(); deal = null; }
+      Object.values(rows).forEach((r) => r.classList.remove("is-waiting"));
+      const have = $("have-n"); have.textContent = "2"; have.dataset.v = 2;
+      $("primary").removeAttribute("aria-disabled");
+    }
+
+    function play() {
+      played = true;
+      if (still.matches || !document.body.animate) { finish(); return; }
+      const ease = "cubic-bezier(0.32,0.72,0,1)";
+      Object.values(rows).forEach((r) => r.classList.add("is-waiting"));
+      const have = $("have-n"); have.textContent = "0"; have.dataset.v = 0;
+      $("primary").setAttribute("aria-disabled", "true");
+      $("scroller").scrollTop = 0;
+
+      deal = document.createElement("div");
+      deal.className = "deal";
+      deal.setAttribute("aria-hidden", "true");
+      deal.innerHTML = ORDER.map((o, i) => `
+        <div class="card-deal" data-id="${o.id}" style="z-index:${10 - i}">
+          <img src="../assets/${o.img}" alt=""><b>${o.name}</b><span class="res">Checking My gear…</span>
+        </div>`).join("") + `<div class="deal-title"><b>Checking Coach Aisyah's list</b><span id="deal-n">against My gear</span><span class="deal-dots"><i></i><i></i><i></i><i></i></span></div><span class="skip">Tap to skip</span>`;
+      document.body.appendChild(deal);
+      const cards = [...deal.querySelectorAll(".card-deal")];
+      const stack = (j) => `translateY(${j * 10}px) scale(${1 - j * 0.04})`;
+
+      // 1 · deal: the stack rises from below
+      cards.forEach((c, i) => {
+        c.style.transform = stack(i);
+        c.animate([{ transform: "translateY(110vh)" }, { transform: stack(i) }], { duration: 520, delay: i * 70, easing: ease, fill: "backwards" });
+      });
+
+      // 2 · each card shows its result, then flies to its row
+      let t = 720, n = 0;
+      cards.forEach((c, i) => {
+        const o = ORDER[i];
+        timers.push(setTimeout(() => {
+          c.classList.add("is-" + o.kind);
+          const res = c.querySelector(".res");
+          res.innerHTML = RESULT[o.kind]();
+          res.animate([{ transform: "scale(.6)", opacity: 0 }, { transform: "scale(1.08)", opacity: 1 }, { transform: "none" }], { duration: 320, easing: "ease-out" });
+          if (deal) deal.querySelectorAll(".deal-dots i").forEach((d, j) => d.classList.toggle("on", j <= i));
+        }, t));
+        const hold = o.kind === "rent" ? 1000 : 640;
+        timers.push(setTimeout(() => {
+          const row = rows[o.id], a = c.getBoundingClientRect(), b = row.getBoundingClientRect();
+          const dx = b.left + b.width / 2 - (a.left + a.width / 2), dy = b.top + b.height / 2 - (a.top + a.height / 2);
+          // one uniform scale (no squashing): the card shrinks to the row's height and fades as it arrives
+          const k = b.height / a.height;
+          const fly = c.animate([{ transform: c.style.transform, opacity: 1 }, { transform: `translate(${dx}px, ${dy}px) scale(${k})`, opacity: 1, offset: 0.7 }, { transform: `translate(${dx}px, ${dy}px) scale(${k})`, opacity: 0 }], { duration: 520, easing: ease, fill: "forwards" });
+          // the rest of the stack moves up one place
+          cards.slice(i + 1).forEach((d, j) => d.animate([{ transform: d.style.transform }, { transform: stack(j) }], { duration: 260, easing: ease, fill: "forwards" }).onfinish = () => { d.style.transform = stack(j); });
+          fly.onfinish = () => {
+            c.remove();
+            row.classList.remove("is-waiting");
+            row.animate([{ transform: "scale(.96)", opacity: .4 }, { transform: "scale(1.015)", opacity: 1 }, { transform: "none" }], { duration: 300, easing: "ease-out" });
+            if (o.kind === "have") roll(have, ++n);
+          };
+        }, t + hold));
+        t += hold + 380;
+      });
+      timers.push(setTimeout(() => { if (deal) deal.classList.add("is-done"); }, t + 120));
+      timers.push(setTimeout(finish, t + 460));
+    }
+    // Tap anywhere during the deal to skip to the result.
+    addEventListener("pointerdown", () => { if (deal) finish(); }, true);
+
+    let lastState = null;
+    Lead.states((state) => {
+      if (state === "nofit") { fit.height = fit.leg = null; $("height").value = $("leg").value = ""; $("fit-error").hidden = true; }
+      else if (state === "default") $("frame").textContent = Fit.frame(DANIEL.height);
+      setPrimary(state);
+      // The deal plays once, when the page opens. A link that only touches the address bar does not replay it.
+      if (!played) play();
+      else if (lastState === "nofit" && state === "saved") crossFade($("size-box"), () => {});
+      lastState = state;
+    });
+
+    // Ask for the fit: same ranges as Fit Profile (03).
+    for (const key of ["height", "leg"]) {
+      $(key).addEventListener("input", () => {
+        const el = $(key), digits = el.value.replace(/\D/g, "");
+        if (digits !== el.value) el.value = digits;
+        const { min, max } = Fit.range[key], n = Number(digits);
+        fit[key] = digits !== "" && n >= min && n <= max ? n : null;
+        const judge = digits.length >= String(max).length;
+        $("f-" + key).classList.toggle("is-error", fit[key] == null && judge);
+        if (fit[key] != null || !judge) $("fit-error").hidden = true;
+        if (key === "height" && fit.height != null && fit.leg == null) $("leg").focus();
+      });
+    }
+    $("primary").addEventListener("click", (e) => {
+      if (stateNow() !== "nofit") return; // otherwise: Find a bike
+      e.preventDefault();
+      const missing = ["height", "leg"].filter((k) => fit[k] == null);
+      if (missing.length) {
+        const { min, max, label } = Fit.range[missing[0]];
+        $("fit-error").textContent = `Add your ${label.toLowerCase()} in cm, between ${min} and ${max}.`;
+        $("fit-error").hidden = false;
+        $(missing[0]).focus();
+        return;
+      }
+      $("frame").textContent = Fit.frame(fit.height);
+      location.hash = "saved";
+    });
+  </script>
+</body>
+</html>

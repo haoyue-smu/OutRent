@@ -20,8 +20,8 @@ const NAMED_COLOURS = /\b(white|black|red|green|blue|yellow|orange|purple|pink|g
 const COMPONENT_CLASSES = new Set([...readFileSync(join(ROOT, "design", "components.css"), "utf8").matchAll(/\.([a-zA-Z][\w-]*)/g)].map((m) => m[1]));
 
 const issues = []; // { file, level: "error" | "warn", msg }
-let lenient = false; // work/lead: hero pages may break rules on purpose, so errors become warnings
-const add = (file, level, msg) => issues.push(lenient && level === "error" ? { file: relative(ROOT, file).split(sep).join("/"), level: "warn", msg: "(lead exception) " + msg } :{ file: relative(ROOT, file).split(sep).join("/"), level, msg });
+let lenient = false; // work/haoyue (lead pages): hero pages may break rules on purpose, so errors become warnings
+const add = (file, level, msg) => issues.push(lenient && level === "error" ? { file: relative(ROOT, file).split(sep).join("/"), level: "warn", msg: "(Haoyue's page) " + msg } :{ file: relative(ROOT, file).split(sep).join("/"), level, msg });
 const lineOf = (text, index) => text.slice(0, index).split("\n").length;
 
 function cssBlocks(html) {
@@ -96,27 +96,32 @@ function checkDecisions(file, text) {
   for (const t of ["My choice", "Image requests"]) {
     if (!text.includes("## " + t)) add(file, "error", `section "## ${t}" is missing. Copy it back from templates/DECISIONS.md.`);
   }
-  if (!section("My choice")) add(file, "warn", `"My choice" is empty. Write A or B and why, in your own words.`);
+  return section("My choice");
 }
+const isStarter = (html) => html.includes("Replace this with the page content");
 
 function checkPageFolder(dir) {
   const [person, pageId] = relative(join(ROOT, "work"), dir).split(sep);
-  lenient = person === "lead";
+  lenient = person === "haoyue";
   if (!people.includes(person)) add(dir, "error", `"${person}" is not a team member folder. Use your name from pages.json.`);
   if (!pages.some((p) => p.id === pageId)) add(dir, "error", `"${pageId}" is not a page id. See pages.json (e.g. 04-search-results).`);
   const decPath = join(dir, "DECISIONS.md");
   const decisions = existsSync(decPath) ? readFileSync(decPath, "utf8") : "";
   if (!decisions) add(dir, "error", `DECISIONS.md is missing. Run: npm run new -- ${person} ${pageId}`);
-  else checkDecisions(decPath, decisions);
-  for (const d of ["direction-a", "direction-b"]) {
-    const f = join(dir, d, "index.html");
-    if (!existsSync(f)) { add(dir, "warn", `${d}/index.html is not there yet.`); continue; }
-    checkHtml(f, readFileSync(f, "utf8"), decisions);
+  const choice = decisions ? checkDecisions(decPath, decisions) : "";
+  // direction-a is the page. direction-b is optional: only a second, clearly different idea goes there.
+  const fa = join(dir, "direction-a", "index.html");
+  if (!existsSync(fa)) add(dir, "warn", `direction-a/index.html is not there yet.`);
+  else checkHtml(fa, readFileSync(fa, "utf8"), decisions);
+  const fb = join(dir, "direction-b", "index.html");
+  if (existsSync(fb) && !isStarter(readFileSync(fb, "utf8"))) {
+    checkHtml(fb, readFileSync(fb, "utf8"), decisions);
+    if (!choice) add(decPath, "warn", `you built a second idea in direction-b, so "My choice" needs which one you kept and why, in your own words.`);
   }
   const walk = (p) => statSync(p).isDirectory() ? readdirSync(p).flatMap((c) => walk(join(p, c))) : [p];
   for (const f of walk(dir)) {
     if (f.endsWith(".css")) checkCss(f, readFileSync(f, "utf8"), readFileSync(f, "utf8"), 0);
-    if (/\.(png|jpe?g|webp|gif|avif|heic)$/i.test(f)) add(f, "error", `image file in your folder. Images are managed by the team lead; use .img-ph and list it under Image requests.`);
+    if (/\.(png|jpe?g|webp|gif|avif|heic)$/i.test(f)) add(f, "error", `image file in your folder. Images are managed by Haoyue; use .img-ph and list it under Image requests.`);
     if (/node_modules|package\.json$/.test(f)) add(f, "error", `no packages or frameworks in work folders.`);
   }
 }

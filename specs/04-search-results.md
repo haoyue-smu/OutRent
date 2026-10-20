@@ -14,7 +14,7 @@ Link with `data-goes-to="<page-id>"`.
 ## Must show
 - Filters already applied, visible and removable: hardtail · frame M · Sat 25 Oct · delivers to Chestnut
 - Results from shops and private owners, clearly labelled which is which
-- Top result: Trek Marlin 7, size M, Loop Cycles (shop), Bukit Timah, S$38 / day, all-in S$53*
+- Top result: Trek Marlin 7, size M, Timah Cycles (shop), Bukit Timah, S$38 / day, all-in S$53*
 - 2–3 more results (e.g. a private owner's Giant Talon, a shop's Merida Big.Nine) with their own all-in totals*
 - A "Fits you" chip where the frame matches his fit
 - Way to edit his fit (→ 03)
@@ -29,5 +29,5 @@ The photo on the Trek Marlin 7 card must have `style="view-transition-name: list
 ## Iter1 problem this page fixes
 HE #1 (total excluded charges), HE #8. Make the fix obvious: a tester should notice it without being told.
 
-## Room for A and B
-Everything above must be on the page. How it is ordered, grouped and interacted with is yours. A and B must differ in structure, information order or interaction pattern.
+## Room for your design
+Everything above must be on the page. How it is ordered, grouped and interacted with is yours. A second version is optional; if you build one, it must differ in structure, information order or interaction pattern.

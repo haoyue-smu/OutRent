@@ -1,6 +1,6 @@
 # 18 Storage Map
 
-**Designer:** Team lead  ·  **Where:** Hub Pickup → "Choose a rack"
+**Designer:** Haoyue  ·  **Where:** Hub Pickup → "Choose a rack"
 
 ## Purpose
 Daniel picks a public rack near him that has space.

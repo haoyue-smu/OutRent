@@ -4,7 +4,7 @@ Designer: {{PERSON}}
 
 ## My choice
 
-<!-- A or B. Then 2–3 lines on why, in YOUR OWN words (not the AI's). -->
+<!-- Only if you also built a second idea in direction-b: which one you kept and why, 2–3 lines in YOUR OWN words (not the AI's). Otherwise leave empty. -->
 
 ## Image requests
 
@@ -16,4 +16,4 @@ Designer: {{PERSON}}
 
 ## Notes
 
-<!-- Optional. Anything off-system, questions about the spec, ideas for the team lead. -->
+<!-- Optional. Anything off-system, questions about the spec, ideas for Haoyue. -->

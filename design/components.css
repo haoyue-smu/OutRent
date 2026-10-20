@@ -133,7 +133,7 @@ img { max-width: 100%; display: block; }
 .stat .v small { font-size: 14px; font-weight: 600; letter-spacing: 0; }
 .stat .k { font-size: var(--fs-label); line-height: var(--lh-label); color: var(--muted); }
 
-/* ---------- image placeholder (all images are placeholders until the lead swaps them in) ---------- */
+/* ---------- image placeholder (all images are placeholders until Haoyue swaps them in) ---------- */
 .img-ph {
   position: relative; display: flex; align-items: flex-end; overflow: hidden;
   border-radius: var(--r-card); min-height: 120px;
@@ -203,7 +203,7 @@ img { max-width: 100%; display: block; }
 .steps li[aria-current="step"] { color: var(--ink); font-weight: 600; }
 ol.steps { margin: 0; padding: 0; }
 
-/* ---------- explainer card (figures supplied by the lead) ---------- */
+/* ---------- explainer card (figures supplied by Haoyue) ---------- */
 .explainer { position: relative; border-radius: var(--r-card); background: var(--mist); padding: 34px var(--s-2); min-height: 220px; overflow: hidden; }
 .explainer.has-ruler { padding-top: 64px; }
 /* On a mist page the plate turns white; the figure's paper must follow (figure paper = var(--white)). */

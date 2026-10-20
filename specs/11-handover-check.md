@@ -1,6 +1,6 @@
 # 11 Handover Check
 
-**Designer:** Minh  ·  **Where:** Delivery Tracking → bike arrived
+**Designer:** Minh Tuan  ·  **Where:** Delivery Tracking → bike arrived
 
 ## Purpose
 Before riding, Daniel and the courier agree on the bike's condition, so he isn't blamed for old damage.
@@ -26,5 +26,5 @@ Link with `data-goes-to="<page-id>"`.
 ## Iter1 problem this page fixes
 HE #11, #12, #13, #16. Make the fix obvious: a tester should notice it without being told.
 
-## Room for A and B
-Everything above must be on the page. How it is ordered, grouped and interacted with is yours. A and B must differ in structure, information order or interaction pattern.
+## Room for your design
+Everything above must be on the page. How it is ordered, grouped and interacted with is yours. A second version is optional; if you build one, it must differ in structure, information order or interaction pattern.

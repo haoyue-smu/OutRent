@@ -1,6 +1,6 @@
 # OutRent design system: Trail Glass
 
-Version 0.2 · 16 Oct 2026 · Owner: team lead. Agents: read this file fully before building or changing any page.
+Version 0.2 · 16 Oct 2026 · Owner: Haoyue. Agents: read this file fully before building or changing any page.
 
 ## 1. Direction
 
@@ -10,7 +10,7 @@ The prototype is a mobile web app. Design and build at 393 × 852 only (iPhone 1
 
 ## 2. Colour scheme
 
-These are the only colours allowed. If a colour is not in this table, do not use it. To add one, ask the team lead; it is recorded here before anyone uses it.
+These are the only colours allowed. If a colour is not in this table, do not use it. To add one, ask Haoyue; it is recorded here before anyone uses it.
 
 | Token | Hex | Use |
 |---|---|---|
@@ -78,10 +78,28 @@ There are two kinds of image, and they never mix inside one card.
 - Give it an `aria-label` that says what the image should show, e.g. `"Photo: this Trek Marlin 7 on a trail, side view"`.
 - List each slot under "Image requests" in your DECISIONS.md: page, slot name, size, what it shows.
 
-The team lead generates and manages every image, and swaps them in when the final page is built.
-2. **Explainer figures are explanation.** They are isometric line figures that show how something fits or works. They always sit on the explainer plate (section 7) and only use the explainer figure greys plus `--sage` for the selected part. Figures are supplied by the team lead. On your pages, show the explainer plate with a placeholder naming the figure.
+Haoyue generates and manages every image, and swaps them in when the final page is built.
+2. **Explainer figures are explanation.** They are isometric line figures that show how something fits or works. They always sit on the explainer plate (section 7) and only use the explainer figure greys plus `--sage` for the selected part. Figures are supplied by Haoyue. On your pages, show the explainer plate with a placeholder naming the figure.
 
 Icons are Phosphor, regular weight, 20–24 px. Use the fill weight only for a selected tab. Do not use emoji.
+
+## 5a. Logo
+
+The files are in `design/brand/`. Use them as they are.
+
+| File | Use it |
+|---|---|
+| `outrent-lockup.svg` | Mark + name on light surfaces: white, `--mist`, and glass pills or bars |
+| `outrent-lockup-white.svg` | Mark + name directly on `--sage` or on a photo |
+| `outrent-mark.svg` / `outrent-mark-white.svg` | The mark alone, where there is no room for the lockup at 20 px tall or more |
+| `outrent-wordmark.svg` / `outrent-wordmark-white.svg` | The name alone, only where the mark is already shown nearby |
+| `favicon.svg` | The browser tab: `<link rel="icon" href="../../../../design/brand/favicon.svg">` |
+| `app-icon.svg` | Home-screen and store icon (1024 × 1024) |
+
+Rules:
+- The lockup is at least 20 px tall. Smaller than that, use the mark alone.
+- Keep clear space around it equal to the dot's diameter, on every side.
+- Never recolour, stretch, rotate, outline, add shadows or other effects, or set "OutRent" in type yourself.
 
 ## 6. Layout patterns
 
@@ -137,7 +155,7 @@ States:
 - Write short and plain. Speak to Daniel as "you". Say exactly what happens, e.g. "Choose delivery", not "Continue".
 - Use one idea per line. If a screen needs a paragraph, it needs a figure or a list instead.
 - Use the mock data consistently:
-  - Trek Marlin 7, size M, from Loop Cycles, Bukit Timah.
+  - Trek Marlin 7, size M, from Timah Cycles, Bukit Timah.
   - Chestnut Nature Park, Sat 25 Oct, delivery at 7:40.
   - S$38 / day, S$150 deposit.
   - Height 176 cm, inside leg 81 cm, saddle 72 cm, fork sag 25%, bars +1 cm.
@@ -169,7 +187,7 @@ Rules:
 - Animate only transform, opacity and clip-path.
 - With `prefers-reduced-motion`, use a 160 ms cross-fade instead.
 
-Hero moments (reserved for the lead's pages):
+Hero moments (reserved for Haoyue's pages):
 
 1. Size swap on Fit.
 2. Exploded setup on Listing.
@@ -189,7 +207,7 @@ Small moments anyone may use:
 - The mock data in section 8.
 - The 393 frame, 44 px targets and contrast minimums.
 
-**Open.** This is where your two directions should differ:
+**Open.** This is your design:
 - Page structure: scroll, steps, tabs or sheet.
 - Information order.
 - Which components you use and how you combine them.
@@ -205,9 +223,9 @@ Small moments anyone may use:
 
 New colours or type sizes are never built. Suggest them under "Notes" instead.
 
-**Rules for your two directions:**
-- Directions A and B must differ in at least one of these: structure, information order or interaction pattern. Say which one in a sentence.
-- Rule-breaking hero moments belong to the lead's pages only.
+**Rules:**
+- A second version (direction-b) is optional. If you build one, it must differ in structure, information order or interaction pattern. Say which one in a sentence.
+- Rule-breaking hero moments belong to Haoyue's pages only.
 
 ## 11. Do not
 

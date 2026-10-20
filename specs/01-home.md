@@ -1,6 +1,6 @@
 # 01 Home
 
-**Designer:** Team lead  ·  **Where:** Home tab (app start)
+**Designer:** Haoyue  ·  **Where:** Home tab (app start)
 
 ## Purpose
 Starting point. OutRent is for **bulky sports equipment** of every kind (bikes, kayaks, SUPs, camping and climbing gear), not only bikes. Home shows that range, what matters to Daniel this week, and the two jobs the app does: rent big gear delivered to where you use it, and look after gear you own.

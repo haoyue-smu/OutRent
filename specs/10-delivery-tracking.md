@@ -1,6 +1,6 @@
 # 10 Delivery Tracking
 
-**Designer:** Team lead  ·  **Where:** Trips → today's trip, or Booking Confirmation
+**Designer:** Haoyue  ·  **Where:** Trips → today's trip, or Booking Confirmation
 
 ## Purpose
 Daniel follows the bike from set-up to the trailhead.

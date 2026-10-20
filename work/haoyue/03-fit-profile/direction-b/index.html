@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fit Profile · Direction B</title>
+<link rel="icon" type="image/svg+xml" href="../../../../design/brand/favicon.svg">
+<!-- Do not change these four lines. They load the design system. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="../../../../design/tokens.css">
+<link rel="stylesheet" href="../../../../design/components.css">
+<link rel="stylesheet" href="../../_shared/lead.css">
+<style>
+  /* B's input control only: a switch above the figure and a ruler on its top edge. The rest is _shared/fit-page.js. */
+  .segmented.is-measure button { height: 52px; display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 18px; }
+  .segmented.is-measure b { font-size: var(--fs-callout); font-variant-numeric: tabular-nums; }
+  .explainer .ruler:focus-visible { outline: 2px solid var(--sage); outline-offset: -2px; border-radius: var(--r-card) var(--r-card) 0 0; }
+  .explainer .ruler .bubble.is-empty { fill: var(--muted); }
+  .explainer .ruler .band { fill: var(--mist); }
+  .explainer .ruler .band.on { fill: var(--sage-tint); }
+  .explainer .ruler .band-t { font-size: 9px; font-weight: 700; fill: var(--fig-lo); letter-spacing: .06em; }
+  .explainer .ruler .band-t.on { fill: var(--sage-dark); }
+</style>
+</head>
+<body>
+  <!-- One phone screen, 393 × 852. The shared page is rendered into it by _shared/fit-page.js. -->
+  <main class="screen is-frame" data-page="03-fit-profile" data-direction="B"></main>
+
+  <script src="../../_shared/gsap.min.js"></script>
+  <script src="../../_shared/lead.js"></script>
+  <script src="../../_shared/bike-figure.js"></script>
+  <script src="../../_shared/fit-page.js"></script>
+  <script>
+    // B: one ruler on the plate's top edge sets height or inside leg; the switch above picks which.
+    // Ticks every 1 cm, labels every 5, snaps to whole cm, arrow keys step 1 cm, light haptic per cm.
+    // Like A, it asks height first and moves on to inside leg when that is still empty.
+    const NS = "http://www.w3.org/2000/svg", W = 353, L = 22, R = W - 22;
+    let api, ruler, key = "height", raw = null, dragging = false;
+
+    const range = () => api.RANGE[key];
+    const x = (v) => L + (v - range().min) * (R - L) / (range().max - range().min);
+    const toValue = (e) => { const r = ruler.getBoundingClientRect(); const px = (e.clientX - r.left) * (W / r.width); return range().min + (px - L) * (range().max - range().min) / (R - L); };
+    const clamp = (v) => Math.max(range().min, Math.min(range().max, v));
+    const value = () => api.model[key];
+
+    function draw() {
+      const { min, max, label } = range(), v = value(), at = dragging && raw != null ? raw : v;
+      let s = "";
+      // Height only: the bike's size chart sits under the ticks, so he sees which size his height falls in.
+      if (key === "height") {
+        const fit = v != null ? Lead.Fit.frame(at != null ? Math.round(at) : v) : null;
+        for (const [sz, [a, b]] of Object.entries(FitPage.CHART)) {
+          s += `<rect class="band${sz === fit ? " on" : ""}" x="${x(a)}" y="38" width="${x(b) - x(a)}" height="16" rx="3"/>`;
+          s += `<text class="band-t${sz === fit ? " on" : ""}" x="${(x(a) + x(b)) / 2}" y="35" text-anchor="middle">${sz}</text>`;
+        }
+      }
+      for (let c = min; c <= max; c++) {
+        const major = c % 5 === 0;
+        s += `<line class="${major ? "major" : "minor"}" x1="${x(c)}" x2="${x(c)}" y1="40" y2="${major ? 52 : 47}"/>`;
+        if (major) s += `<text x="${x(c)}" y="62" text-anchor="middle"${v != null && Math.abs(c - v) < 3 ? ' class="on"' : ""}>${c}</text>`;
+      }
+      const px = at != null ? x(at) : x((min + max) / 2), bw = 56, bx = Math.max(2, Math.min(W - bw - 2, px - bw / 2));
+      if (at != null) s += `<line class="needle" x1="${px}" x2="${px}" y1="30" y2="54"/>`;
+      s += `<rect class="bubble${v == null ? " is-empty" : ""}" x="${bx}" y="6" width="${bw}" height="24" rx="12"/>`;
+      s += `<text class="bubble-t" x="${bx + bw / 2}" y="22" text-anchor="middle">${v != null ? v + " cm" : "Drag"}</text>`;
+      ruler.innerHTML = s;
+      ruler.setAttribute("aria-label", `${label} in centimetres`);
+      ruler.setAttribute("aria-valuemin", min); ruler.setAttribute("aria-valuemax", max);
+      if (v != null) { ruler.setAttribute("aria-valuenow", v); ruler.setAttribute("aria-valuetext", `${v} cm`); }
+      else { ruler.removeAttribute("aria-valuenow"); ruler.setAttribute("aria-valuetext", "Not set"); }
+      for (const k of api.ORDER) document.getElementById("m-" + k).textContent = api.model[k] != null ? api.model[k] + " cm" : "—";
+    }
+
+    function setValue(v) {
+      const cm = Math.round(clamp(v));
+      if (cm !== value()) { Lead.haptic(); api.set({ [key]: cm }); }
+      draw();
+    }
+
+    function choose(k, quiet) {
+      key = k;
+      if (!quiet) api.show(k);
+      document.querySelectorAll("#measure [role=radio]").forEach((b) => b.setAttribute("aria-checked", String(b.dataset.key === k)));
+      draw();
+    }
+
+    FitPage.init({
+      ruler: true,
+      instruction: "Drag the ruler or use the arrow keys.",
+      before: `<div class="segmented is-measure" role="radiogroup" aria-label="What the ruler sets" id="measure">
+          <button type="button" role="radio" aria-checked="true" data-key="height"><span>Height</span><b id="m-height">—</b></button>
+          <button type="button" role="radio" aria-checked="false" data-key="leg"><span>Inside leg</span><b id="m-leg">—</b></button>
+        </div>`,
+      mount(a) {
+        api = a;
+        a.plate.insertAdjacentHTML("afterbegin", `<svg class="ruler" id="ruler" viewBox="0 0 353 64" tabindex="0" role="slider"></svg>`);
+        ruler = document.getElementById("ruler");
+        let was = null;
+        ruler.addEventListener("pointerdown", (e) => { dragging = true; was = value(); ruler.setPointerCapture(e.pointerId); raw = clamp(toValue(e)); setValue(raw); });
+        ruler.addEventListener("pointermove", (e) => { if (!dragging) return; raw = clamp(toValue(e)); setValue(raw); });
+        const release = () => {
+          if (!dragging) return;
+          dragging = false; raw = null; draw();
+          if (was == null) { const after = a.next(key); if (after) choose(after); }
+        };
+        ruler.addEventListener("pointerup", release);
+        ruler.addEventListener("pointercancel", release);
+        ruler.addEventListener("keydown", (e) => {
+          const d = { ArrowRight: 1, ArrowUp: 1, ArrowLeft: -1, ArrowDown: -1, PageUp: 5, PageDown: -5 }[e.key];
+          if (!d) return;
+          e.preventDefault();
+          setValue(value() == null ? (range().min + range().max) / 2 : value() + d);
+        });
+        document.querySelectorAll("#measure [role=radio]").forEach((b) => b.addEventListener("click", () => choose(b.dataset.key)));
+      },
+      show(k) { choose(k, true); },
+      sync(m, { reset }) { if (reset) choose(api.ORDER[0]); else draw(); },
+    });
+  </script>
+</body>
+</html>

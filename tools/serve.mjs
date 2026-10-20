@@ -9,24 +9,26 @@ const PORT = Number(process.env.PORT) || 5173;
 const TYPES = { ".html": "text/html; charset=utf-8", ".css": "text/css", ".js": "text/javascript", ".mjs": "text/javascript", ".svg": "image/svg+xml", ".png": "image/png", ".jpg": "image/jpeg", ".webp": "image/webp", ".json": "application/json", ".md": "text/plain; charset=utf-8" };
 
 function home() {
-  const { pages } = JSON.parse(readFileSync(join(ROOT, "pages.json"), "utf8"));
-  const rows = [];
+  const { pages, names = {} } = JSON.parse(readFileSync(join(ROOT, "pages.json"), "utf8"));
+  const rows = []; // [page id, html], sorted by page id below
   const workDir = join(ROOT, "work");
   const people = existsSync(workDir) ? readdirSync(workDir).filter((d) => statSync(join(workDir, d)).isDirectory()) : [];
   for (const person of people) {
     for (const pid of readdirSync(join(workDir, person))) {
       const p = pages.find((x) => x.id === pid);
       if (!p) continue;
-      const links = ["a", "b"].filter((d) => existsSync(join(workDir, person, pid, "direction-" + d, "index.html")))
+      const built = (d) => { const f = join(workDir, person, pid, "direction-" + d, "index.html"); return existsSync(f) && (d === "a" || !readFileSync(f, "utf8").includes("Replace this with the page content")); };
+      const links = ["a", "b"].filter(built)
         .map((d) => `<a href="/work/${person}/${pid}/direction-${d}/">Direction ${d.toUpperCase()}</a>`).join(" · ");
-      rows.push(`<li><b>${pid}</b> ${p.name} <small>(${person})</small> — ${links} · <a href="/work/${person}/${pid}/DECISIONS.md">DECISIONS.md</a></li>`);
+      rows.push([pid, `<li><b>${pid}</b> ${p.name} <small>(${names[person] || person})</small> — ${links} · <a href="/work/${person}/${pid}/DECISIONS.md">DECISIONS.md</a></li>`]);
     }
   }
+  rows.sort((a, b) => a[0].localeCompare(b[0]));
   return `<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>OutRent preview</title>
 <style>body{font:16px/1.5 system-ui,sans-serif;max-width:720px;margin:40px auto;padding:0 16px;color:#1E2622;background:#F2F4F1}a{color:#3E6A5A}li{margin:6px 0}small{color:#5C6863}</style>
 <h1>OutRent preview</h1>
 <p><a href="/design/components.html"><b>Component library</b></a>: every colour, type style and component you may use. · <a href="/design/recipes.html"><b>Recipes</b></a>: live versions of RECIPES.md.</p>
-<h2>Work in progress</h2><ul>${rows.join("") || "<li>Nothing yet. Run <code>npm run new -- &lt;name&gt; &lt;page-id&gt;</code>.</li>"}</ul>`;
+<h2>Work in progress</h2><ul>${rows.map((r) => r[1]).join("") || "<li>Nothing yet. Run <code>npm run new -- &lt;name&gt; &lt;page-id&gt;</code>.</li>"}</ul>`;
 }
 
 const server = createServer((req, res) => {
