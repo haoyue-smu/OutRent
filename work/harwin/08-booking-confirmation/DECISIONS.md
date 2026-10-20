@@ -10,7 +10,7 @@ Designer: Harwin
 
 | Where | What it should show | Rough size |
 |---|---|---|
-| Direction A, Your trail day card | This Trek Marlin 7, size M, side view; the actual rental bike from Timah Cycles | 64 × 64 px |
+| Direction A, Your trail day card | Replace the placeholder with a photo of the booked Trek Marlin 7. Show the entire bike from the side, centred against a clean, neutral background. Keep both wheels and the frame visible without cropping. The booked bike is size M, from Timah Cycles. | 64 × 64 px |
 
 ## Notes
 
