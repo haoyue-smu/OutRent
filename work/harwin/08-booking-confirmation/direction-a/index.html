@@ -3,41 +3,175 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Booking Confirmation · Direction A</title>
+<title>Booking confirmed · OutRent</title>
 <!-- Do not change these four lines. They load the design system. -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;600;700&display=swap">
 <link rel="stylesheet" href="../../../../design/tokens.css">
 <link rel="stylesheet" href="../../../../design/components.css">
 <style>
-  /* Page-only layout goes here. Use var(--tokens) only: no hex, rgb or px font sizes outside the scale.
-     A new reusable look = a new component: list it under "Off-system" in DECISIONS.md. */
+  /* Compose shared components; keep the frame fluid down to 360 px. */
+  .screen { width: min(393px, 100%); min-height: max(852px, 100svh); }
+  .content { padding-top: var(--s-6); padding-bottom: 132px; gap: var(--s-6); }
+  p { margin: 0; }
+  .stack { display: flex; flex-direction: column; gap: var(--s-3); }
+  .stack.is-close { gap: var(--s-1); }
+  .between { display: flex; align-items: center; justify-content: space-between; gap: var(--s-3); }
+  .receipt { display: flex; flex-direction: column; gap: var(--s-3); }
+  .receipt h1 { margin: 0; }
+  .receipt .unit { margin-left: var(--s-2); }
+  .payment-note { display: flex; flex-direction: column; gap: var(--s-1); }
+  .payment-details { margin-top: var(--s-1); }
+  .payment-lines { margin: var(--s-3) 0 0; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--s-3); }
+  .payment-lines dd { margin: 0; text-align: right; font-variant-numeric: tabular-nums; }
+  .payment-lines .total { padding-top: var(--s-3); border-top: 1px solid var(--line); font-weight: 600; }
+  .payment-details > p { margin-top: var(--s-4); }
+  .section-head { min-height: var(--touch); }
+  .booking { display: flex; flex-direction: column; gap: var(--s-4); }
+  .booking .img-ph { width: 64px; height: 64px; flex: none; }
+  .schedule { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-4); margin: 0; }
+  .schedule > div { display: flex; flex-direction: column; gap: var(--s-1); }
+  .schedule > div + div { padding-left: var(--s-4); border-left: 1px solid var(--line); }
+  .schedule dd { margin: 0; }
+  .meeting { display: flex; align-items: flex-start; gap: var(--s-2); }
+  .meeting > .icon { color: var(--sage); margin-top: var(--s-1); }
+  .timeline { margin: 0; padding: 0; list-style: none; }
+  .timeline li { position: relative; display: grid; grid-template-columns: 32px minmax(0, 1fr); gap: var(--s-3); padding-bottom: var(--s-5); }
+  .timeline li:last-child { padding-bottom: 0; }
+  .timeline li:not(:last-child)::before { content: ""; position: absolute; top: 32px; bottom: 0; left: 16px; width: 1px; background: var(--line); }
+  .timeline .chip { justify-self: center; }
+  .timeline b { display: block; font-weight: 600; }
+  .timeline p { margin-top: var(--s-1); }
+  .saved { border-top: 1px solid var(--line); padding-top: var(--s-4); }
+  .saved strong { font-weight: 600; }
+  .change .stack { padding-top: var(--s-3); }
+  .change .btn { align-self: flex-start; }
+  /* Shared capsule, with a solid surface because this page has no photo beneath it. */
+  .actionbar {
+    position: fixed;
+    left: max(12px, calc((100vw - 393px) / 2 + 12px));
+    right: max(12px, calc((100vw - 393px) / 2 + 12px));
+    background: var(--white);
+    border: 1px solid var(--line);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .content details.card > summary .icon { transition: none; }
+  }
 </style>
 </head>
 <body>
-  <!-- One phone screen, 393 × 852. Build only inside .screen. -->
-  <main class="screen" data-page="08-booking-confirmation" data-direction="A">
-
-    <div class="topbar">
-      <a class="icon-btn" href="#" aria-label="Back" data-goes-to="previous">
-        <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-arrow-left"/></svg>
+  <main class="screen is-white" data-page="08-booking-confirmation" data-direction="A">
+    <header class="topbar">
+      <span aria-hidden="true"></span>
+      <span class="name">Booking confirmed</span>
+      <a class="icon-btn" href="#" aria-label="Close confirmation and go home" data-goes-to="01-home">
+        <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-x"/></svg>
       </a>
-      <span class="name">Booking Confirmation</span>
-      <span></span>
+    </header>
+
+    <div class="content">
+      <section class="receipt" aria-labelledby="paid-title">
+        <div class="between">
+          <h1 class="t-display" id="paid-title">S$53<span class="unit">paid</span></h1>
+          <span class="chip"><svg class="icon is-sm" aria-hidden="true"><use href="../../../../design/icons.svg#i-check-circle"/></svg>Confirmed</span>
+        </div>
+        <p class="t-title">All set. See you outside.</p>
+        <div class="payment-note">
+          <p class="t-callout"><strong class="num">S$150 deposit held</strong></p>
+          <p class="t-foot">Held, not charged. Separate from your S$53 payment.</p>
+        </div>
+        <details class="card is-filled payment-details">
+          <summary class="t-callout">Payment details
+            <svg class="icon is-sm" aria-hidden="true"><use href="../../../../design/icons.svg#i-caret-right"/></svg>
+          </summary>
+          <dl class="payment-lines t-callout">
+            <dt>Bike rental · 1 day</dt><dd>S$38</dd>
+            <dt>Delivery &amp; collection</dt><dd>S$12</dd>
+            <dt>Service fee</dt><dd>S$3</dd>
+            <dt class="total">Total paid</dt><dd class="total">S$53</dd>
+          </dl>
+          <p class="t-foot">Your S$150 deposit is a separate hold.</p>
+        </details>
+      </section>
+
+      <section aria-labelledby="ride-title">
+        <div class="between section-head">
+          <h2 class="t-title" id="ride-title">Your trail day</h2>
+          <a class="btn is-text" href="#" data-goes-to="09-trips" aria-label="View your booking in Trips">View trip
+            <svg class="icon is-sm" aria-hidden="true"><use href="../../../../design/icons.svg#i-caret-right"/></svg>
+          </a>
+        </div>
+        <div class="card booking">
+          <div class="row">
+            <div class="img-ph is-thumb" role="img" aria-label="Photo: this Trek Marlin 7, size M, from Timah Cycles, side view"></div>
+            <div class="body">
+              <span class="name">Trek Marlin 7</span>
+              <span class="meta">Size M · Timah Cycles</span>
+              <span class="meta">Bukit Timah</span>
+            </div>
+          </div>
+          <hr class="divider">
+          <dl class="schedule">
+            <div><dt class="t-foot">Ride date</dt><dd class="t-title">Sat 25 Oct</dd></div>
+            <div><dt class="t-foot">Drop-off</dt><dd class="t-title num">7:40 am</dd></div>
+          </dl>
+          <div class="meeting">
+            <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-map-pin"/></svg>
+            <div class="stack is-close">
+              <strong class="t-callout">Chestnut Nature Park</strong>
+              <p class="t-foot">Meet at the trailhead.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="stack" aria-labelledby="next-title">
+        <div class="stack is-close">
+          <h2 class="t-title" id="next-title">From here to the trail</h2>
+          <p class="t-foot">Three steps. We’ll take care of the first two.</p>
+        </div>
+        <ol class="timeline">
+          <li>
+            <span class="chip" aria-hidden="true">1</span>
+            <div><b class="t-callout">Set to your fit</b><p class="t-foot">Timah Cycles prepares your bike.</p></div>
+          </li>
+          <li>
+            <span class="chip is-quiet" aria-hidden="true">2</span>
+            <div><b class="t-callout">On its way to you</b><p class="t-foot">Track your delivery to Chestnut.</p></div>
+          </li>
+          <li>
+            <span class="chip is-quiet" aria-hidden="true">3</span>
+            <div><b class="t-callout">Check it together, then ride</b><p class="t-foot">A handover check at the trailhead.</p></div>
+          </li>
+        </ol>
+      </section>
+
+      <a class="row saved" href="#" data-goes-to="09-trips" aria-label="Find this booking in your Trips tab">
+        <span class="thumb"><svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-calendar-blank"/></svg></span>
+        <span class="body"><strong class="t-callout">It’s saved in your Trips tab</strong><span class="meta">Your booking and delivery, in one place.</span></span>
+        <svg class="icon is-sm" aria-hidden="true"><use href="../../../../design/icons.svg#i-caret-right"/></svg>
+      </a>
+
+      <details class="card change" open>
+        <summary class="t-callout">Need to change or cancel?
+          <svg class="icon is-sm" aria-hidden="true"><use href="../../../../design/icons.svg#i-caret-right"/></svg>
+        </summary>
+        <div class="stack">
+          <p class="t-callout">Changes and cancellations close when your bike starts being transported.</p>
+          <p class="t-callout"><strong class="num">Cancellation fee: S$7.60</strong></p>
+          <p class="t-foot">20% of your S$38 rental fee. Open your booking in Trips to change or cancel before transport starts.</p>
+          <a class="btn is-text" href="#" data-goes-to="09-trips" aria-label="Manage or cancel this booking in Trips">Manage in Trips
+            <svg class="icon is-sm" aria-hidden="true"><use href="../../../../design/icons.svg#i-caret-right"/></svg>
+          </a>
+        </div>
+      </details>
     </div>
 
-    <div class="content" style="padding-top: var(--s-5)">
-      <h1 class="t-large">Booking Confirmation</h1>
-
-      <!-- Image slot example: always a placeholder. Say what the image should show. -->
-      <div class="img-ph" style="height: 180px" role="img" aria-label="Photo: describe the image here"></div>
-
-      <p class="t-body">Replace this with the page content from specs/08-booking-confirmation.md.</p>
-    </div>
-
-    <!-- Links to other pages: use href="#" plus data-goes-to="<page-id>", e.g. data-goes-to="05-listing-detail". -->
-    <div class="actionbar glass is-single">
-      <a class="btn is-block" href="#" data-goes-to="next">Primary action</a>
+    <div class="actionbar is-single">
+      <a class="btn is-block" href="#" data-goes-to="10-delivery-tracking" aria-label="Track delivery of your Trek Marlin 7">
+        <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-truck"/></svg>
+        Track delivery
+      </a>
     </div>
   </main>
 </body>
