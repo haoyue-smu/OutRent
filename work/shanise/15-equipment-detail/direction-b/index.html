@@ -10,35 +10,41 @@
 <link rel="stylesheet" href="../../../../design/tokens.css">
 <link rel="stylesheet" href="../../../../design/components.css">
 <style>
-  /* Page-only layout goes here. Use var(--tokens) only: no hex, rgb or px font sizes outside the scale.
-     A new reusable look = a new component: list it under "Off-system" in DECISIONS.md. */
-</style>
-</head>
-<body>
-  <!-- One phone screen, 393 × 852. Build only inside .screen. -->
-  <main class="screen" data-page="15-equipment-detail" data-direction="B">
-
-    <div class="topbar">
-      <a class="icon-btn" href="#" aria-label="Back" data-goes-to="previous">
-        <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-arrow-left"/></svg>
-      </a>
-      <span class="name">Equipment Detail</span>
-      <span></span>
-    </div>
-
-    <div class="content" style="padding-top: var(--s-5)">
-      <h1 class="t-large">Equipment Detail</h1>
-
-      <!-- Image slot example: always a placeholder. Say what the image should show. -->
-      <div class="img-ph" style="height: 180px" role="img" aria-label="Photo: describe the image here"></div>
-
-      <p class="t-body">Replace this with the page content from specs/15-equipment-detail.md.</p>
-    </div>
-
-    <!-- Links to other pages: use href="#" plus data-goes-to="<page-id>", e.g. data-goes-to="05-listing-detail". -->
-    <div class="actionbar glass is-single">
-      <a class="btn is-block" href="#" data-goes-to="next">Primary action</a>
-    </div>
-  </main>
-</body>
-</html>
+.screen { width:min(393px,100%); }
+.detail-content { padding:var(--s-6) var(--gutter) var(--s-10); display:flex; flex-direction:column; gap:var(--s-6); }
+.group { display:flex; flex-direction:column; gap:var(--s-3); }
+.line { display:flex; align-items:center; justify-content:space-between; gap:var(--s-3); }
+.line > :last-child { text-align:right; }
+p { margin:0; }
+.hero { height:384px; position:relative; }
+.hero > .img-ph { height:100%; }
+.hero .float-top { z-index:2; }
+.photo-pair { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:var(--s-3); }
+.photo-pair .img-ph { height:132px; }
+.img-ph::after { display:none; }
+.detail-sheet { padding-bottom:var(--s-10); }
+.status-first { padding-top:var(--s-6); }
+.item-thumb { width:80px; height:80px; flex:none; }
+#terms-list { margin:0; padding-left:var(--s-5); display:flex; flex-direction:column; gap:var(--s-2); }
+#agreement { display:flex; align-items:center; gap:var(--s-3); min-height:var(--touch); }
+#agreement input { width:24px; height:24px; accent-color:var(--sage); flex:none; }
+#rental-status { color:var(--sage-dark); }
+#confirm-area { scroll-margin-top:var(--s-5); }
+@media (prefers-reduced-motion: reduce) { .bottom-sheet { transition:none; } }
+</style></head><body><main class="screen is-white" data-page="15-equipment-detail" data-direction="B"><div id="page-body"><div class="topbar"><a class="icon-btn" href="#" data-goes-to="14-my-equipment" aria-label="Back to My equipment"><svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-arrow-left"/></svg></a><span class="name">Equipment detail</span><span></span></div><div class="detail-content status-first"><div class="group"><span class="t-label" data-location>At home</span><h1 class="t-large">Old bike</h1></div><section class="group" id="home"><p class="t-callout">Last used 5 months ago</p><div class="card is-filled group"><h2 class="t-title">Make some room at home</h2><p class="t-callout">Store your old bike at the Hub. It stays ready for when you need it.</p></div><div class="img-ph " role="img" aria-label="Photo: Daniel’s old road bike, full side view"></div><a class="btn is-block" href="#" data-goes-to="16-storage-options" aria-label="Store it">Store it</a></section><div class="group" id="hub" hidden><section class="card group" aria-labelledby="rental-title"><div class="line"><h2 class="t-title" id="rental-title">Rent it out</h2><span class="chip" id="rental-badge">Off</span></div><p class="t-callout">Let your old bike earn while it is stored.</p><p class="t-foot">Your earnings per rental: S$20 (estimate).</p><p class="t-callout" id="rental-status" role="status">Your bike is not available to rent.</p><button class="btn is-secondary is-block" id="rental-control" role="switch" aria-checked="false" aria-label="Rent it out while stored">Review rental arrangement</button></section><section class="group" aria-labelledby="storage-title"><h2 class="t-title" id="storage-title">Your storage</h2><div class="line t-callout"><span>Stored since</span><b>11 Sep</b></div><hr class="divider"><div class="line t-callout"><span>Monthly cost</span><b class="num">S$18 / month</b></div></section><details class="card group"><summary aria-label="View condition photos">Condition photos<svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-caret-right"/></svg></summary><div class="photo-pair"><div class="img-ph " role="img" aria-label="Photo: old road bike at Hub intake, full side view"></div><div class="img-ph " role="img" aria-label="Photo: old road bike frame and drivetrain condition at Hub intake"></div></div><p class="t-foot">Hub intake condition record</p></details></div><section class="card group" id="confirm-area" aria-labelledby="terms-title" hidden><h2 class="t-title" id="terms-title">Review before renting</h2><p class="t-callout">Before your bike becomes available:</p><ul id="terms-list" class="t-callout"><li>The Hub manages handover and cleaning.</li><li>The Hub handles damage claims and repairs.</li><li>You do not need to meet the renter.</li><li>You allow your stored bike to be offered for rental.</li></ul><div class="card is-filled group"><b class="t-callout">Your earnings per rental</b><p class="t-callout">S$20 per rental (estimate)</p><p class="t-foot">Prototype estimate. Final earnings depend on the agreed rental rate.</p></div><label id="agreement" class="t-callout"><input type="checkbox" id="agree" aria-label="I agree to the rental arrangement">I agree to this rental arrangement.</label><button class="btn is-block" id="confirm" aria-label="Confirm and enable rentals" disabled>Confirm and enable rentals</button><button class="btn is-text is-block" data-cancel aria-label="Cancel rental setup">Cancel</button></section></div></div></main><script>
+const isModal=false;
+const panel=document.getElementById('confirm-area'), agree=document.getElementById('agree'), confirmButton=document.getElementById('confirm'), toggle=document.getElementById('rental-control');
+let renting=false;
+function setRenting(on) { renting=on; toggle.setAttribute('aria-checked',String(on)); toggle.textContent=on?'Turn off rentals':'Review rental arrangement'; document.getElementById('rental-badge').textContent=on?'On':'Off'; document.getElementById('rental-status').textContent=on?'Your bike is available to rent.':'Your bike is not available to rent.'; }
+function closeTerms() { agree.checked=false; confirmButton.disabled=true; if(isModal) { panel.classList.remove('is-open'); document.getElementById('scrim').classList.remove('is-open'); panel.inert=true; document.getElementById('page-body').inert=false; document.body.style.overflow=''; } else {panel.hidden=true;toggle.hidden=false;} toggle.focus(); }
+function openTerms() { agree.checked=false; confirmButton.disabled=true; if(isModal) {panel.inert=false; document.getElementById('page-body').inert=true; panel.classList.add('is-open'); document.getElementById('scrim').classList.add('is-open'); document.body.style.overflow='hidden';panel.querySelector('button').focus();} else {panel.hidden=false;toggle.hidden=true; panel.scrollIntoView({block:'start'});agree.focus();} }
+toggle.addEventListener('click',()=>{if(renting)setRenting(false);else openTerms();});
+document.querySelectorAll('[data-cancel]').forEach(b=>b.addEventListener('click',closeTerms));
+document.getElementById('scrim')?.addEventListener('click',closeTerms);
+// Provisional prototype estimate approved for demonstration.
+agree.addEventListener('change',()=>{confirmButton.disabled=!agree.checked;});
+confirmButton.addEventListener('click',()=>{if(!agree.checked||confirmButton.disabled)return;setRenting(true);closeTerms();});
+document.addEventListener('keydown',e=>{const open=isModal?panel.classList.contains('is-open'):!panel.hidden;if(!open)return;if(e.key==='Escape')closeTerms();if(isModal&&e.key==='Tab'){const controls=[...panel.querySelectorAll('button:not(:disabled),input')];const first=controls[0],last=controls.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}}});
+function showState(){ const state=location.hash.slice(1);const atHub=state==='hub'||state==='renting';document.getElementById('home').hidden=atHub;document.getElementById('hub').hidden=!atHub;document.querySelectorAll('[data-location]').forEach(x=>x.textContent=atHub?'At the Hub':'At home');setRenting(state==='renting'); }
+addEventListener('hashchange',()=>{closeTerms();showState();});showState();
+</script></body></html>

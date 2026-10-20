@@ -10,35 +10,91 @@
 <link rel="stylesheet" href="../../../../design/tokens.css">
 <link rel="stylesheet" href="../../../../design/components.css">
 <style>
-  /* Page-only layout goes here. Use var(--tokens) only: no hex, rgb or px font sizes outside the scale.
-     A new reusable look = a new component: list it under "Off-system" in DECISIONS.md. */
+.tabbar { background:var(--white); border:1px solid var(--line); }
+.screen { width: min(393px, 100%); }
+#page-content { padding-top: var(--top-safe); gap: var(--s-6); }
+.section-heading > .btn { height:var(--touch); padding:0 var(--s-3); font-size:var(--fs-callout); flex:none; }
+#heading, .section-heading { display:flex; align-items:center; justify-content:space-between; gap:var(--s-3); }
+.stack { display:flex; flex-direction:column; gap:var(--s-3); }
+#equipment-list .thumb, #hub-list .thumb { width:80px; height:80px; }
+#equipment-list { display:flex; flex-direction:column; gap:var(--s-4); }
+#idle-note { margin-top:var(--s-2); padding:var(--s-2) var(--s-3); flex-direction:row; align-items:center; justify-content:space-between; gap:var(--s-2); }
+#idle-note .btn { font-size:var(--fs-callout); flex:none; gap:var(--s-1); }
+#idle-note .icon { width:16px; height:16px; }
+#idle-note p, #hub-empty p, #empty-view p { margin:0; }
+#item-form { display:flex; flex-direction:column; gap:var(--s-4); }
+#item-form input, #item-form select { width:100%; min-height:var(--touch); border:0; background:var(--white); color:var(--ink); font-size:var(--fs-callout); font-weight:400; letter-spacing:0; }
+#photo-slot { height:120px; }
+#photo-slot::after { display:none; }
+#photo-name { overflow-wrap:anywhere; }
+#item-form #item-photo { font-size:var(--fs-foot); }
+#saved-message { margin:0; color:var(--sage-dark); }
+#empty-view { padding-block:var(--s-8); }
+@media (prefers-reduced-motion: reduce) {
+.bottom-sheet { transition:none; }
+}
 </style>
-</head>
-<body>
-  <!-- One phone screen, 393 × 852. Build only inside .screen. -->
-  <main class="screen" data-page="14-my-equipment" data-direction="A">
+</head><body>
+<main class="screen is-white" data-page="14-my-equipment" data-direction="A">
+<div id="page-body">
+<div class="content" id="page-content">
+<header class="stack"><div id="heading"><h1 class="t-large">My equipment</h1></div><p class="t-callout" style="margin:0;color:var(--muted)">Your kit, all in one place.</p></header>
+<p class="t-callout" id="saved-message" role="status" hidden></p>
+<div id="populated-view" class="stack">
+<section class="stack" aria-labelledby="home-title"><div class="section-heading"><h2 class="t-title" id="home-title">At home</h2><button class="btn is-secondary" aria-label="Add item" data-open-sheet="add-item">Add item</button><span id="home-count" hidden>3 items</span></div>
+<div id="equipment-list"><a class="row" href="#" data-goes-to="15-equipment-detail"><span class="thumb img-ph is-thumb" role="img" aria-label="Photo: road cycling helmet, front and side view"></span><span class="body"><span class="name">Road helmet</span></span><svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-caret-right"/></svg></a><a class="row" href="#" data-goes-to="15-equipment-detail"><span class="thumb img-ph is-thumb" role="img" aria-label="Photo: pair of cycling gloves"></span><span class="body"><span class="name">Gloves</span></span><svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-caret-right"/></svg></a><a class="row" href="#" data-goes-to="15-equipment-detail"><span class="thumb img-ph is-thumb" role="img" aria-label="Photo: Daniel’s old bike, full side view"></span><span class="body"><span class="name">Old bike</span><span class="meta">Last used 5 months ago</span></span><svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-caret-right"/></svg></a></div>
+<aside class="card is-filled stack" id="idle-note"><p class="t-foot">Unused for 5 months?</p><a class="btn is-text" href="#" data-goes-to="15-equipment-detail">View storage options <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-caret-right"/></svg></a></aside></section>
+<section class="stack" id="hub-section" aria-labelledby="hub-title" hidden><h2 class="t-title" id="hub-title">At the Hub</h2><div id="hub-list" class="stack"></div><div class="card stack" id="hub-empty"><p class="t-callout">You have no equipment stored at the Hub.</p><p class="t-foot">Your stored items will appear here.</p></div></section>
 
-    <div class="topbar">
-      <a class="icon-btn" href="#" aria-label="Back" data-goes-to="previous">
-        <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-arrow-left"/></svg>
-      </a>
-      <span class="name">My Equipment</span>
-      <span></span>
-    </div>
-
-    <div class="content" style="padding-top: var(--s-5)">
-      <h1 class="t-large">My Equipment</h1>
-
-      <!-- Image slot example: always a placeholder. Say what the image should show. -->
-      <div class="img-ph" style="height: 180px" role="img" aria-label="Photo: describe the image here"></div>
-
-      <p class="t-body">Replace this with the page content from specs/14-my-equipment.md.</p>
-    </div>
-
-    <!-- Links to other pages: use href="#" plus data-goes-to="<page-id>", e.g. data-goes-to="05-listing-detail". -->
-    <div class="actionbar glass is-single">
-      <a class="btn is-block" href="#" data-goes-to="next">Primary action</a>
-    </div>
-  </main>
-</body>
-</html>
+</div>
+<section id="empty-view" class="stack" hidden><span class="thumb"><svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-backpack"/></svg></span><h2 class="t-title">Start with the kit you own</h2><p class="t-body">Add your equipment so you can check what you have before your next ride.</p><button class="btn is-block" data-open-sheet="add-item">Add your first item</button></section>
+</div>
+<nav class="tabbar" aria-label="Main">
+<a href="#" aria-label="Home" data-goes-to="01-home"><svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-house"/></svg></a>
+<a href="#" aria-label="Trips" data-goes-to="09-trips"><svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-calendar-blank"/></svg></a>
+<a href="#" aria-current="page" aria-label="My gear"><svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-backpack-fill"/></svg><span class="label">My gear</span></a>
+<a href="#" aria-label="Profile" data-goes-to="profile"><svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-user"/></svg></a>
+</nav>
+</div>
+<div class="sheet-scrim" data-sheet-scrim="add-item"></div>
+<section class="bottom-sheet" id="add-item" role="dialog" aria-modal="true" aria-labelledby="add-item-title" inert>
+<span class="grabber" aria-hidden="true"></span>
+<div class="sheet-head"><h2 class="t-title" id="add-item-title">Add an item</h2><button class="icon-btn" aria-label="Close Add item" data-close-sheet><svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-x"/></svg></button></div>
+<form id="item-form">
+<label class="field">Item type<select name="type" aria-label="Item type"><option>Bike</option><option>Helmet</option><option>Gloves</option><option>Other equipment</option></select></label>
+<label class="field">Item name<input name="name" aria-label="Item name" placeholder="e.g. Road helmet" required maxlength="60"></label>
+<div class="img-ph" id="photo-slot" role="img" aria-label="Photo: the equipment being added, clearly showing the whole item"></div>
+<label class="field" for="item-photo"><span id="photo-action">Add photo</span><input id="item-photo" name="photo" type="file" accept="image/*" aria-describedby="photo-name"></label>
+<p class="t-foot" id="photo-name" role="status" hidden></p>
+<label class="field">Where it is<select name="location" aria-label="Where it is"><option value="home">At home</option><option value="hub">At the Hub</option></select></label>
+<button class="btn is-block" type="submit">Save item</button>
+</form>
+</section>
+</main>
+<script>
+const sheet = document.getElementById('add-item'), scrim = document.querySelector('.sheet-scrim'), body = document.getElementById('page-body'), form = document.getElementById('item-form');
+let opener, empty = false, homeCount = 3;
+function openSheet(button) { opener = button; sheet.inert = false; body.inert = true; sheet.classList.add('is-open'); scrim.classList.add('is-open'); document.body.style.overflow = 'hidden'; sheet.querySelector('button').focus(); }
+function closeSheet() { sheet.classList.remove('is-open'); scrim.classList.remove('is-open'); sheet.inert = true; body.inert = false; document.body.style.overflow = ''; form.reset(); resetPhoto(); opener?.focus(); }
+function resetPhoto() { document.getElementById('photo-action').textContent = 'Add photo'; document.getElementById('photo-name').textContent = ''; document.getElementById('photo-name').hidden = true; }
+document.getElementById('item-photo').addEventListener('change', e => { const file = e.target.files[0]; if (!file) { resetPhoto(); return; } document.getElementById('photo-action').textContent = 'Replace photo'; const label = document.getElementById('photo-name'); label.textContent = file.name; label.hidden = false; });
+document.querySelectorAll('[data-open-sheet]').forEach(b => b.addEventListener('click', () => openSheet(b)));
+document.querySelector('[data-close-sheet]').addEventListener('click', closeSheet); scrim.addEventListener('click', closeSheet);
+document.addEventListener('keydown', e => { if (sheet.inert) return; if (e.key === 'Escape') closeSheet(); if (e.key === 'Tab') { const controls = [...sheet.querySelectorAll('button,input,select')]; const first = controls[0], last = controls.at(-1); if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); } else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); } } });
+function addItem(name, type, location) {
+ if (empty) { document.getElementById('equipment-list').replaceChildren(); homeCount = 0; document.getElementById('idle-note').hidden = true; empty = false; }
+ document.getElementById('empty-view').hidden = true; document.getElementById('populated-view').hidden = false;
+ const row = document.createElement('a'); row.className = 'row'; row.href = '#'; row.dataset.goesTo = '15-equipment-detail';
+ const thumb = document.createElement('span'); thumb.className = 'thumb img-ph is-thumb'; thumb.setAttribute('role', 'img'); thumb.setAttribute('aria-label', 'Photo: ' + name);
+ const content = document.createElement('span'); content.className = 'body'; const title = document.createElement('span'); title.className = 'name'; title.textContent = name; const meta = document.createElement('span'); meta.className = 'meta'; meta.textContent = type + ' · Just added'; content.append(title); row.append(thumb, content);
+ document.getElementById(location === 'home' ? 'equipment-list' : 'hub-list').append(row);
+ if (location === 'home') homeCount++; else { document.getElementById('hub-empty').hidden = true; document.getElementById('hub-section').hidden = false; }
+ document.getElementById('home-count').textContent = homeCount + (homeCount === 1 ? ' item' : ' items');
+ const message = document.getElementById('saved-message'); message.textContent = name + ' added ' + (location === 'home' ? 'at home.' : 'at the Hub.'); message.hidden = false;
+}
+form.addEventListener('submit', e => { e.preventDefault(); const name = form.elements.name.value.trim(); if (!name) { form.elements.name.setCustomValidity('Enter an item name.'); form.elements.name.reportValidity(); return; } addItem(name, form.elements.type.value, form.elements.location.value); closeSheet(); });
+form.elements.name.addEventListener('input', () => form.elements.name.setCustomValidity(''));
+function showState() { closeSheet(); const state = location.hash.slice(1); empty = state === 'empty'; document.getElementById('empty-view').hidden = !empty; document.getElementById('populated-view').hidden = empty; if (state === 'add-item') openSheet(document.querySelector('[data-open-sheet]')); if (state === 'item-added' && !document.querySelector('[data-demo-added]')) { addItem('Spare helmet', 'Helmet', 'home'); document.getElementById('equipment-list').lastElementChild.dataset.demoAdded = 'true'; } }
+addEventListener('hashchange', () => location.reload()); showState();
+</script>
+</body></html>
