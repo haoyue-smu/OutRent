@@ -4,7 +4,6 @@ Designer: Kaijun
 
 ## My choice
 
-<!-- A or B. Then 2–3 lines on why, in YOUR OWN words (not the AI's). -->
 
 ## Image requests
 
@@ -12,8 +11,10 @@ Designer: Kaijun
 
 | Where | What it should show |
 |---|---|
-| | |
+| Today's ride thumbnail | Photo: Trek Marlin 7 trail bike on a dirt path, side view |
 
 ## Notes
 
-<!-- Optional. Anything off-system, questions about the spec, ideas for the team lead. -->
+<!-- Optional. Anything off-system, questions about the spec, ideas for Haoyue. -->
+This page keeps the shared system: cards, rows, chips, and the tab bar, with the active trip first so the recurring ride fix is obvious without extra guidance.
+Direction A/B selection and rationale are left for Kaijun to write in their own words.

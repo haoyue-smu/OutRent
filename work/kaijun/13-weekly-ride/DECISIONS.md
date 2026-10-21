@@ -12,8 +12,10 @@ Designer: Kaijun
 
 | Where | What it should show |
 |---|---|
-| | |
+| Hero image | Photo: Trek Marlin 7 bike ready at Chestnut Nature Park trailhead, wide side view |
 
 ## Notes
 
-<!-- Optional. Anything off-system, questions about the spec, ideas for the team lead. -->
+<!-- Optional. Anything off-system, questions about the spec, ideas for Haoyue. -->
+This version keeps the recurring-rental fix obvious by putting the active Saturday setup and the skip/pause/stop choices directly in view, without hiding billing behind a second step.
+Direction A/B selection and rationale are left for Kaijun to write in their own words.

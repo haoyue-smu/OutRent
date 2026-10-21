@@ -10,35 +10,132 @@
 <link rel="stylesheet" href="../../../../design/tokens.css">
 <link rel="stylesheet" href="../../../../design/components.css">
 <style>
-  /* Page-only layout goes here. Use var(--tokens) only: no hex, rgb or px font sizes outside the scale.
-     A new reusable look = a new component: list it under "Off-system" in DECISIONS.md. */
+  main.screen { background: var(--white); padding-bottom: 110px; }
+  .content section.card,
+  .content .row,
+  nav.tabbar {
+    border: 1px solid var(--line);
+  }
+  .content .row {
+    border-radius: var(--r-card);
+    padding: 0 var(--s-3);
+    background: var(--white);
+  }
+  .past-list { display: flex; flex-direction: column; gap: 0; }
+  .past-list .row {
+    border-radius: 0;
+    border-left: 0;
+    border-right: 0;
+    border-top: 0;
+    padding: 0 var(--s-3);
+    min-height: 68px;
+  }
+  .past-list .row:first-child {
+    border-top: 0;
+  }
+  .past-list .row + .row {
+    border-top: 1px solid var(--line);
+  }
 </style>
 </head>
 <body>
-  <!-- One phone screen, 393 × 852. Build only inside .screen. -->
   <main class="screen" data-page="09-trips" data-direction="A">
+    <div class="content" style="padding-top: var(--s-5); gap: var(--s-4);">
+      <header style="display:flex; flex-direction:column; gap: var(--s-2);">
+        <span class="t-label">Your rides</span>
+        <h1 class="t-large" style="margin:0;">Trips</h1>
+      </header>
 
-    <div class="topbar">
-      <a class="icon-btn" href="#" aria-label="Back" data-goes-to="previous">
-        <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-arrow-left"/></svg>
+      <section class="card" style="display:flex; gap: var(--s-4); align-items:center; padding: var(--s-4);">
+        <div class="img-ph" role="img" aria-label="Photo: Trek Marlin 7 trail bike on a dirt path, side view" style="width: 104px; height: 104px; min-height: 0; border-radius: var(--r-thumb); flex: none;"></div>
+        <div style="display:flex; flex-direction:column; gap: var(--s-2); flex:1; min-width:0;">
+          <span class="t-label" style="color: var(--muted);">Today</span>
+          <h2 class="t-title" style="margin:0;">Trek Marlin 7</h2>
+          <span class="t-foot" style="color: var(--muted);">Sat 25 Oct · Chestnut Nature Park</span>
+          <span class="chip" style="width: fit-content;">Being set to your fit</span>
+        </div>
+      </section>
+
+      <a class="row" href="#" data-goes-to="10-delivery-tracking" style="padding: 0 var(--s-2); min-height: 48px; border-radius: var(--r-card);">
+        <span class="thumb" style="width: 42px; height: 42px; border-radius: var(--r-thumb); background: var(--sage-tint); color: var(--sage-dark);">
+          <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-map-pin"/></svg>
+        </span>
+        <span class="body" style="gap: 2px;">
+          <span class="meta">Live status</span>
+          <span class="name" style="font-size: 16px; line-height: 20px;">View delivery tracking</span>
+        </span>
+        <svg class="icon is-sm" aria-hidden="true" style="color: var(--muted);"><use href="../../../../design/icons.svg#i-caret-right"/></svg>
       </a>
-      <span class="name">Trips</span>
-      <span></span>
+
+      <section class="card" style="display:flex; flex-direction:column; gap: var(--s-4);">
+        <div style="display:flex; align-items:flex-start; justify-content:space-between; gap: var(--s-2);">
+          <div style="display:flex; flex-direction:column; gap: var(--s-2);">
+            <span class="t-label">Weekly ride</span>
+            <h2 class="t-title" style="margin:0;">Every Saturday</h2>
+          </div>
+          <span class="chip is-quiet" style="margin-top: 2px;">Next: Sat 1 Nov</span>
+        </div>
+
+        <div style="display:flex; flex-direction:column; gap: var(--s-2);">
+          <span class="t-callout" style="font-weight: 600; color: var(--ink);">Chestnut Nature Park · 7:40</span>
+          <span class="t-foot" style="color: var(--muted);">Skip or pause any ride before Friday night.</span>
+        </div>
+
+        <div style="display:flex; gap: var(--s-2);">
+          <a class="btn is-secondary" href="#" data-goes-to="13-weekly-ride">View ride</a>
+          <a class="btn is-text" href="#" data-goes-to="13-weekly-ride">Pause</a>
+        </div>
+      </section>
+
+      <section class="card" style="display:flex; flex-direction:column; gap: var(--s-3);">
+        <div style="display:flex; justify-content:space-between; align-items:center; gap: var(--s-2);">
+          <span class="t-label">Past trips</span>
+          <a href="#" data-goes-to="12-rental-summary" style="text-decoration:none; color: var(--sage); font-size: 14px; font-weight: 600; line-height: 18px;">See all</a>
+        </div>
+
+        <div class="past-list">
+          <a class="row" href="#" data-goes-to="12-rental-summary" style="padding: 0 var(--s-3); min-height: 68px;">
+            <span class="thumb" style="background: var(--mist); color: var(--ink);">
+              <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-calendar-blank"/></svg>
+            </span>
+            <span class="body">
+              <span class="meta">Sat 18 Oct</span>
+              <span class="name">Trek Marlin 7</span>
+            </span>
+            <span class="t-foot" style="white-space: nowrap; color: var(--muted);">S$38 total</span>
+          </a>
+          <a class="row" href="#" data-goes-to="12-rental-summary" style="padding: 0 var(--s-3); min-height: 68px;">
+            <span class="thumb" style="background: var(--mist); color: var(--ink);">
+              <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-calendar-blank"/></svg>
+            </span>
+            <span class="body">
+              <span class="meta">Sun 6 Oct</span>
+              <span class="name">Trek Checkpoint SL</span>
+            </span>
+            <span class="t-foot" style="white-space: nowrap; color: var(--muted);">S$52 total</span>
+          </a>
+        </div>
+      </section>
     </div>
 
-    <div class="content" style="padding-top: var(--s-5)">
-      <h1 class="t-large">Trips</h1>
-
-      <!-- Image slot example: always a placeholder. Say what the image should show. -->
-      <div class="img-ph" style="height: 180px" role="img" aria-label="Photo: describe the image here"></div>
-
-      <p class="t-body">Replace this with the page content from specs/09-trips.md.</p>
-    </div>
-
-    <!-- Links to other pages: use href="#" plus data-goes-to="<page-id>", e.g. data-goes-to="05-listing-detail". -->
-    <div class="actionbar glass is-single">
-      <a class="btn is-block" href="#" data-goes-to="next">Primary action</a>
-    </div>
+    <nav class="tabbar glass" aria-label="Main navigation">
+      <a href="#" data-goes-to="01-home" aria-label="Home">
+        <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-house-fill"/></svg>
+        <span class="label">Home</span>
+      </a>
+      <a href="#" data-goes-to="09-trips" aria-current="page" aria-label="Trips">
+        <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-calendar-blank"/></svg>
+        <span class="label">Trips</span>
+      </a>
+      <a href="#" data-goes-to="14-my-equipment" aria-label="My gear">
+        <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-backpack"/></svg>
+        <span class="label">My gear</span>
+      </a>
+      <a href="#" aria-label="Profile">
+        <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-user"/></svg>
+        <span class="label">Profile</span>
+      </a>
+    </nav>
   </main>
 </body>
 </html>

@@ -10,35 +10,176 @@
 <link rel="stylesheet" href="../../../../design/tokens.css">
 <link rel="stylesheet" href="../../../../design/components.css">
 <style>
-  /* Page-only layout goes here. Use var(--tokens) only: no hex, rgb or px font sizes outside the scale.
-     A new reusable look = a new component: list it under "Off-system" in DECISIONS.md. */
+  .screen { background: var(--white); }
+  .stack { display: flex; flex-direction: column; gap: var(--s-4); }
+  .mini-label { font-size: var(--fs-label); line-height: var(--lh-label); letter-spacing: var(--track-label); text-transform: uppercase; color: var(--muted); }
+  .hero { display: flex; flex-direction: column; gap: var(--s-3); }
+  .bike-card { display: flex; align-items: center; gap: var(--s-4); padding: var(--s-4); border: 1px solid var(--line); background: var(--white); border-radius: var(--r-card); }
+  .bike-card .meta { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+  .ride-row { display: flex; align-items: center; gap: var(--s-3); padding: 10px 0; }
+  .ride-row .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--sage); flex: none; }
+  .schedule { display: grid; grid-template-columns: 1fr auto; gap: var(--s-3) var(--s-4); }
+  .date-chip { display: inline-flex; align-items: center; justify-content: center; min-width: 86px; height: 30px; border: 1px solid var(--line); border-radius: var(--r-pill); background: var(--white); color: var(--ink); font-size: 13px; font-weight: 600; }
+  .charge-list { display: flex; flex-direction: column; gap: var(--s-3); }
+  .charge-item { display: flex; justify-content: space-between; align-items: flex-start; gap: var(--s-3); }
+  .charge-item strong { display: block; font-size: 16px; line-height: 21px; }
+  .charge-item span { display: block; font-size: 13px; line-height: 18px; color: var(--muted); }
+  .action-stack { display: flex; flex-direction: column; gap: var(--s-2); }
+  .choice { display: flex; align-items: center; justify-content: space-between; gap: var(--s-3); padding: 12px 14px; border-radius: var(--r-tile); border: 1px solid var(--line); background: var(--white); }
+  .choice .label { display: flex; flex-direction: column; gap: 2px; }
+  .choice .charge { font-size: 13px; line-height: 18px; color: var(--muted); }
+  .choice .btn { height: 38px; padding: 0 14px; font-size: 14px; }
+  .choice.is-active { border-color: var(--sage); }
 </style>
 </head>
 <body>
-  <!-- One phone screen, 393 × 852. Build only inside .screen. -->
   <main class="screen" data-page="13-weekly-ride" data-direction="A">
-
     <div class="topbar">
-      <a class="icon-btn" href="#" aria-label="Back" data-goes-to="previous">
+      <a class="icon-btn" href="#" aria-label="Back to trips" data-goes-to="09-trips">
         <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-arrow-left"/></svg>
       </a>
-      <span class="name">Weekly Ride</span>
+      <span class="name">Weekly ride</span>
       <span></span>
     </div>
 
-    <div class="content" style="padding-top: var(--s-5)">
-      <h1 class="t-large">Weekly Ride</h1>
+    <div class="content" style="padding-top: var(--s-5);">
+      <div class="stack">
+        <div class="hero">
+          <span class="mini-label">Recurring rental</span>
+          <h1 class="t-large" style="margin:0;">Every Saturday</h1>
+        </div>
 
-      <!-- Image slot example: always a placeholder. Say what the image should show. -->
-      <div class="img-ph" style="height: 180px" role="img" aria-label="Photo: describe the image here"></div>
+        <div class="img-ph" role="img" aria-label="Photo: Trek Marlin 7 bike ready at Chestnut Nature Park trailhead, wide view" style="height: 184px; min-height: 184px;"></div>
 
-      <p class="t-body">Replace this with the page content from specs/13-weekly-ride.md.</p>
+        <section class="card" style="display:flex; flex-direction:column; gap: var(--s-4);">
+          <div class="bike-card">
+            <div class="img-ph is-thumb" role="img" aria-label="Photo: Trek Marlin 7 bike close-up, side view" style="width: 72px; height: 72px; min-height: 0; border-radius: var(--r-thumb); flex: none;"></div>
+            <div class="meta">
+              <span class="t-label" style="color: var(--muted);">Active</span>
+              <span class="t-title" style="margin:0;">Trek Marlin 7</span>
+              <span class="t-foot" style="color: var(--muted);">Size M · set to your fit</span>
+            </div>
+          </div>
+
+          <div class="schedule">
+            <div>
+              <div class="t-foot" style="color: var(--muted);">Pickup</div>
+              <div class="t-body" style="font-weight: 600;">Chestnut trailhead</div>
+            </div>
+            <div class="date-chip">Sat 7:40</div>
+
+            <div>
+              <div class="t-foot" style="color: var(--muted);">After ride</div>
+              <div class="t-body" style="font-weight: 600;">Collection window</div>
+            </div>
+            <div class="date-chip">15:30–18:00</div>
+          </div>
+        </section>
+
+        <section class="card" style="display:flex; flex-direction:column; gap: var(--s-3);">
+          <div class="ride-row">
+            <span class="dot"></span>
+            <span class="t-title" style="margin:0;">Cost and billing</span>
+          </div>
+
+          <div class="charge-list">
+            <div class="charge-item">
+              <div>
+                <strong>Per ride</strong>
+                <span>Charged Friday before the ride</span>
+              </div>
+              <strong style="font-variant-numeric: tabular-nums;">S$38</strong>
+            </div>
+          </div>
+        </section>
+
+        <section class="card" style="display:flex; flex-direction:column; gap: var(--s-3);">
+          <div class="ride-row">
+            <span class="dot"></span>
+            <span class="t-title" style="margin:0;">Next three rides</span>
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap: var(--s-2);">
+            <div class="choice">
+              <div class="label">
+                <strong class="t-callout">Sat 25 Oct</strong>
+                <span class="charge">Chestnut trailhead · 7:40</span>
+              </div>
+              <span class="chip is-quiet" style="font-weight: 600;">Booked</span>
+            </div>
+            <div class="choice">
+              <div class="label">
+                <strong class="t-callout">Sat 1 Nov</strong>
+                <span class="charge">Chestnut trailhead · 7:40</span>
+              </div>
+              <span class="chip is-quiet" style="font-weight: 600;">Booked</span>
+            </div>
+            <div class="choice">
+              <div class="label">
+                <strong class="t-callout">Sat 8 Nov</strong>
+                <span class="charge">Chestnut trailhead · 7:40</span>
+              </div>
+              <span class="chip is-quiet" style="font-weight: 600;">Booked</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="card" style="display:flex; flex-direction:column; gap: var(--s-3);">
+          <div class="ride-row">
+            <span class="dot"></span>
+            <span class="t-title" style="margin:0;">Choose this week</span>
+          </div>
+
+          <div class="action-stack">
+            <div class="choice" data-action-box data-active-title="This week skipped" data-active-copy="No charge. Ride resumes next Saturday." data-active-button="Unskip" data-active-label="Unskip this week">
+              <div class="label">
+                <strong class="t-callout" data-action-title aria-live="polite">Skip this week</strong>
+                <span class="charge" data-action-copy>No charge. Ride resumes next Saturday.</span>
+              </div>
+              <button class="btn is-secondary" type="button" aria-label="Skip this week" data-action-button data-idle-label="Skip this week">Skip</button>
+            </div>
+            <div class="choice" data-action-box data-active-title="Ride paused" data-active-copy="No charge while paused. Resume to book future rides." data-active-button="Resume" data-active-label="Resume weekly ride">
+              <div class="label">
+                <strong class="t-callout" data-action-title aria-live="polite">Pause</strong>
+                <span class="charge" data-action-copy>No charge for the next ride.</span>
+              </div>
+              <button class="btn is-secondary" type="button" aria-label="Pause weekly ride" data-action-button data-idle-label="Pause weekly ride">Pause</button>
+            </div>
+            <div class="choice" data-action-box data-active-title="Ride stopped" data-active-copy="Your weekly ride has stopped. Continue to book Saturdays again." data-active-button="Continue" data-active-label="Continue weekly ride">
+              <div class="label">
+                <strong class="t-callout" data-action-title aria-live="polite">Stop</strong>
+                <span class="charge" data-action-copy>Your recurring ride ends after this week.</span>
+              </div>
+              <button class="btn is-secondary" type="button" aria-label="Stop weekly ride" data-action-button data-idle-label="Stop weekly ride">Stop</button>
+            </div>
+          </div>
+        </section>
+      </div>
     </div>
 
-    <!-- Links to other pages: use href="#" plus data-goes-to="<page-id>", e.g. data-goes-to="05-listing-detail". -->
     <div class="actionbar glass is-single">
-      <a class="btn is-block" href="#" data-goes-to="next">Primary action</a>
+      <a class="btn is-block" href="#" data-goes-to="09-trips" aria-label="Return to trips">Back to trips</a>
     </div>
   </main>
+  <script>
+    document.querySelectorAll("[data-action-box]").forEach((box) => {
+      const button = box.querySelector("[data-action-button]");
+      const title = box.querySelector("[data-action-title]");
+      const copy = box.querySelector("[data-action-copy]");
+      const idleTitle = title.textContent;
+      const idleCopy = copy.textContent;
+      const idleButton = button.textContent;
+
+      button.addEventListener("click", () => {
+        const active = box.dataset.active !== "true";
+        box.dataset.active = String(active);
+        box.classList.toggle("is-active", active);
+        title.textContent = active ? box.dataset.activeTitle : idleTitle;
+        copy.textContent = active ? box.dataset.activeCopy : idleCopy;
+        button.textContent = active ? box.dataset.activeButton : idleButton;
+        button.setAttribute("aria-label", active ? box.dataset.activeLabel : button.dataset.idleLabel);
+      });
+    });
+  </script>
 </body>
 </html>
