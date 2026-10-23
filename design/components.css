@@ -10,7 +10,7 @@ body {
   font-size: var(--fs-body);
   line-height: var(--lh-body);
   color: var(--ink);
-  background: var(--mist);
+  background: var(--paper);
   -webkit-font-smoothing: antialiased;
 }
 button, input, select, textarea { font: inherit; color: inherit; }
@@ -24,7 +24,7 @@ img { max-width: 100%; display: block; }
   min-height: 852px;
   margin: 0 auto;
   overflow: hidden;
-  background: var(--mist);
+  background: var(--paper);
 }
 .screen.is-white { background: var(--white); }
 .content { padding: var(--top-safe) var(--gutter) 120px; display: flex; flex-direction: column; gap: var(--s-4); }
@@ -83,6 +83,8 @@ img { max-width: 100%; display: block; }
   font-size: 14px; font-weight: 600; white-space: nowrap;
 }
 .chip.glass { color: var(--ink); box-shadow: none; }
+.chip.is-money, .pill.is-money { background: var(--clay-tint); color: var(--clay-dark); }
+.stat.is-money .v { color: var(--clay); }
 .chip.is-quiet { background: var(--white); color: var(--ink); border: 1px solid var(--line); font-weight: 400; }
 
 /* ---------- fields ---------- */
@@ -125,10 +127,10 @@ img { max-width: 100%; display: block; }
 .divider { height: 1px; background: var(--line); border: 0; margin: 0; }
 
 .card { background: var(--white); border-radius: var(--r-card); border: 1px solid var(--line); padding: var(--s-4); }
-.card.is-filled { background: var(--mist); border-color: transparent; }
+.card.is-filled { background: var(--paper); border-color: transparent; }
 
 .stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-2); }
-.stat { display: flex; flex-direction: column; padding: var(--s-3); border-radius: var(--r-tile); background: var(--mist); }
+.stat { display: flex; flex-direction: column; padding: var(--s-3); border-radius: var(--r-tile); background: var(--paper); }
 .stat .v { font-size: 24px; line-height: 28px; font-weight: 700; letter-spacing: var(--track-large); font-variant-numeric: tabular-nums; }
 .stat .v small { font-size: 14px; font-weight: 600; letter-spacing: 0; }
 .stat .k { font-size: var(--fs-label); line-height: var(--lh-label); color: var(--muted); }
@@ -204,7 +206,7 @@ img { max-width: 100%; display: block; }
 ol.steps { margin: 0; padding: 0; }
 
 /* ---------- explainer card (figures supplied by Haoyue) ---------- */
-.explainer { position: relative; border-radius: var(--r-card); background: var(--mist); padding: 34px var(--s-2); min-height: 220px; overflow: hidden; }
+.explainer { position: relative; border-radius: var(--r-card); background: var(--paper); padding: 34px var(--s-2); min-height: 220px; overflow: hidden; }
 .explainer.has-ruler { padding-top: 64px; }
 /* On a mist page the plate turns white; the figure's paper must follow (figure paper = var(--white)). */
 .screen:not(.is-white) .explainer { background: var(--white); }
@@ -223,7 +225,7 @@ ol.steps { margin: 0; padding: 0; }
 .explainer .readout { bottom: 12px; right: 16px; font-size: var(--fs-foot); font-weight: 700; color: var(--ink); font-variant-numeric: tabular-nums; }
 .explainer .placeholder { display: flex; align-items: center; justify-content: center; min-height: 150px; border-radius: var(--r-tile); border: 1px solid var(--line); color: var(--muted); font-size: var(--fs-foot); text-align: center; padding: var(--s-4); }
 .explain-steps { display: flex; flex-direction: column; gap: var(--s-2); margin: 0; padding: 0; }
-.explain-steps li { list-style: none; display: flex; gap: var(--s-3); align-items: flex-start; padding: 10px var(--s-3); border-radius: var(--r-tile); background: var(--mist); }
+.explain-steps li { list-style: none; display: flex; gap: var(--s-3); align-items: flex-start; padding: 10px var(--s-3); border-radius: var(--r-tile); background: var(--paper); }
 .explain-steps .n { flex: none; width: 26px; height: 26px; border-radius: 13px; border: 1.5px solid var(--sage); color: var(--sage); background: var(--white); display: flex; align-items: center; justify-content: center; font-size: var(--fs-foot); font-weight: 700; }
 .explain-steps li[aria-current="true"] { background: var(--sage-tint); }
 .explain-steps li[aria-current="true"] .n { background: var(--sage); color: var(--white); }
