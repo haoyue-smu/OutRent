@@ -3,6 +3,13 @@ import lockup from '@design/brand/outrent-lockup.svg?raw'
 import { GoTo } from '../../shell/Link'
 import { Icon } from '../../shell/Icon'
 import { TabBar } from '../../shell/TabBar'
+import { Photo } from '../../shell/Photo'
+import heroTrail from '@photos/01-home/assets/01-home-hero-trail.webp'
+import bike from '@photos/01-home/assets/01-home-bike.webp'
+import coachAisyah from '@photos/01-home/assets/01-home-coach-aisyah.webp'
+import trailheadUnload from '@photos/01-home/assets/01-home-trailhead-unload.webp'
+import coachGroup from '@photos/01-home/assets/01-home-coach-group.webp'
+import timahCycles from '@photos/01-home/assets/01-home-timah-cycles.webp'
 import './home.css'
 
 // Which frame of the board to show. Change this one value to see each state.
@@ -18,7 +25,7 @@ const FRAME = 'default' as Frame
 
 // ---------- mock data (MOCK-DATA v1.2, mock clock Fri 24 Oct 19:00) ----------
 type Notice = { id: string; icon: string; text: string; when: string; page: string; unseen: boolean }
-type Thread = { id: string; name: string; preview: string; about: string; when: string; photo: string; page: string; unread: boolean }
+type Thread = { id: string; name: string; preview: string; about: string; when: string; photo: string; alt: string; page: string; unread: boolean }
 
 const NOTICES: Notice[] = [
   { id: 'idle', icon: 'warehouse', text: 'Giant Escape 3 · not used since 24 May', when: 'Mon 19 Oct, 10:00', page: '14-my-equipment', unseen: true },
@@ -26,7 +33,7 @@ const NOTICES: Notice[] = [
   { id: 'confirmed', icon: 'check-circle', text: 'Booking OR-10482 confirmed', when: 'Thu 22 Oct, 09:12', page: '08-booking-confirmation', unseen: false },
 ]
 const THREADS: Thread[] = [
-  { id: 'timah', name: 'Timah Cycles', preview: 'Flat pedals are fitted. Clipless available on request.', about: 'Shop · about OR-10482', when: 'Thu 17:22', photo: 'Photo: Timah Cycles shopfront, Bukit Timah', page: '10-delivery-tracking', unread: false },
+  { id: 'timah', name: 'Timah Cycles', preview: 'Flat pedals are fitted. Clipless available on request.', about: 'Shop · about OR-10482', when: 'Thu 17:22', photo: timahCycles, alt: 'Timah Cycles shopfront, Bukit Timah', page: '10-delivery-tracking', unread: false },
 ]
 
 const isNotices = FRAME.startsWith('notifications')
@@ -58,11 +65,9 @@ export default function Home() {
     <>
       <main className="screen" key="home">
         <div className={`photo-top home-top${hasBooking ? '' : ' is-short'}`}>
-          <div
-            className="img-ph is-bleed"
-            role="img"
-            aria-label={hasBooking ? 'Photo: Chestnut Nature Park trail in morning light' : 'Photo: rider unloading a bike at a trailhead'}
-          />
+          {hasBooking
+            ? <Photo src={heroTrail} alt="Chestnut Nature Park trail in morning light" />
+            : <Photo src={trailheadUnload} alt="Rider unloading a bike at a trailhead" />}
           <div className="float-top">
             <h1 className="chip glass home-brand" dangerouslySetInnerHTML={{ __html: lockup }} />
             <div className="home-actions">
@@ -130,7 +135,7 @@ function WithBooking() {
         </div>
         <hr className="divider" />
         <span className="home-item">
-          <div className="img-ph is-thumb" role="img" aria-label="Photo: this Trek Marlin 7, side view" />
+          <Photo src={bike} alt="This Trek Marlin 7, side view" className="home-thumb" />
           <span className="home-stack">
             <span className="t-callout home-strong">Trek Marlin 7 · size M</span>
             <span className="t-foot">Chestnut trailhead carpark</span>
@@ -141,7 +146,7 @@ function WithBooking() {
       <SearchField />
       <div className="home-rows">
         <GoTo page="02-coach-kit" className="row">
-          <span className="thumb"><div className="img-ph is-thumb" role="img" aria-label="Photo: Coach Aisyah, portrait" /></span>
+          <span className="thumb"><Photo src={coachAisyah} alt="Coach Aisyah, portrait" /></span>
           <span className="body">
             <span className="meta">Kit list by Coach Aisyah</span>
             <span className="name">First ride at Chestnut</span>
@@ -166,7 +171,7 @@ function NoBookings() {
       <section className="home-section">
         <div className="home-section-head"><h2 className="t-title">Start here</h2></div>
         <GoTo page="02-coach-kit" className="card home-kit">
-          <div className="img-ph is-thumb" role="img" aria-label="Photo: Coach Aisyah with her Saturday group" />
+          <Photo src={coachGroup} alt="Coach Aisyah with her Saturday group" className="home-thumb" />
           <span className="home-stack">
             <span className="t-foot">Kit list by Coach Aisyah</span>
             <span className="t-callout home-strong">First ride at Chestnut</span>
@@ -259,7 +264,7 @@ function Messages({ threads, onBack }: { threads: Thread[]; onBack: () => void }
         <div className="card home-list">
           {threads.map((t) => (
             <GoTo key={t.id} page={t.page} className="home-entry is-thread">
-              <div className="img-ph is-thumb home-avatar" role="img" aria-label={t.photo} />
+              <Photo src={t.photo} alt={t.alt} className="home-avatar" />
               <span className="home-stack">
                 <span className="t-callout home-strong">{t.name}</span>
                 <span className={`t-foot home-preview${t.unread ? ' is-unread' : ''}`}>{t.preview}</span>
