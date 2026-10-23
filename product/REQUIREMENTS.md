@@ -550,5 +550,5 @@ States: report form, submitted.
 Raised here, answered by the PO window, folded into the next version:
 
 1. E9-5 (general report a problem) is Could: confirm whether it stays in scope for the final build.
-2. MOCK-DATA.md is a proposed extension to DESIGN.md section 8 and needs Haoyue's approval before the design window starts.
+2. Resolved 23 Oct 2026: MOCK-DATA.md is approved. Consistency is the standard; value changes go through the PO window.
 3. HE tag numbers are copied from team/sitemap.html; verify against the Iter1 HE document before they appear in any course deliverable.

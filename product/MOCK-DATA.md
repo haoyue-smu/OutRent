@@ -1,6 +1,6 @@
 # OutRent mock data and seeded world
 
-Version 1.0 · 23 Oct 2026 · Owner: Haoyue. Status: **proposed extension to DESIGN.md section 8**. Haoyue approves this file before any window uses it; once approved, it is the single source for every value, name, date and starting state in the prototype. DESIGN.md section 8 values are repeated here unchanged and stay locked.
+Version 1.0 · 23 Oct 2026 · Owner: Haoyue. Status: **approved 23 Oct 2026 as the extension to DESIGN.md section 8** (consistency is the standard: a value may change, but it must change everywhere at once, through the PO window). This file is the single source for every value, name, date and starting state in the prototype. DESIGN.md section 8 values are repeated here unchanged and stay locked.
 
 Rules:
 
