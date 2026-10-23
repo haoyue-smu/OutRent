@@ -1,8 +1,10 @@
 # OutRent mock data and seeded world
 
-Version 1.1 · 23 Oct 2026 · Owner: Haoyue. Status: **approved as the extension to DESIGN.md section 8** (consistency is the standard: a value may change, but it must change everywhere at once, through the PO window). This file is the single source for every value, name, date and starting state in the prototype. DESIGN.md section 8 values are repeated here unchanged and stay locked.
+Version 1.2 · 23 Oct 2026 · Owner: Haoyue. Status: **approved as the extension to DESIGN.md section 8** (consistency is the standard: a value may change, but it must change everywhere at once, through the PO window). This file is the single source for every value, name, date and starting state in the prototype. DESIGN.md section 8 values are repeated here unchanged and stay locked.
 
 v1.1 answers DESIGN-GAPS-v1.0 from the design window. Changed: supplier corrected to Timah Cycles per DESIGN.md §8 (v1.0 had an outdated name); SEED-RIDE added to §4; slots, listing facts and fulfilment timeline added to §4; §3 notes on inside leg and plain-language labels; §5 kit wear line; §7 no-reviews item; §9 transfer costs and corrected rack locations; VS-1 supplier facts; FD-RECURRING weekly price.
+
+v1.2 answers DESIGN-GAPS-v1.1. Changed: §7 star values and two more Marlin 7 reviews; §8 deposit-release notification; VS-1 Scott Aspect 950 not set to fit; VS-2 stage times; VS-5 rewritten (the rental is returned at the rack, with its terms); VS-6 return slots; FD-RECURRING charging, deposit, pause and stop; new FD-NEW-ITEM, FD-RENT-OUT, FD-MESSAGE. Where an example in review/feedback/wording-rules.md quotes a value, this file wins.
 
 Rules:
 
@@ -123,10 +125,13 @@ The idle prompt (idea 9) targets the Giant Escape 3. Rent-out suggestion if stor
 
 The "item with no reviews yet" state uses Marcus T.'s Scott Aspect 950: the owner has 9 reviews, the item has none.
 
-Sample review texts (attributed, dated):
-- Wei Lin, Sep 2026, on the Marlin 7: "Saddle was already at my height when it arrived. Rode straight off."
-- Priya, Aug 2026, on Timah Cycles: "Collection was on time and the deposit came back the same evening."
-- Jun Hao, Jul 2026, on Marcus T.: "Bike as described, handover took a while."
+Sample review texts (attributed, dated, with stars). A review list shows these; it need not show as many as the count.
+- On the Marlin 7 (the review-list state):
+  - Farhan, Oct 2026, 5 stars: "Delivered to the carpark on time and set up for my height."
+  - Wei Lin, Sep 2026, 5 stars: "Saddle was already at my height when it arrived. Rode straight off."
+  - Mei Ling, Sep 2026, 4 stars: "Good bike. The brakes needed a small adjustment at handover."
+- Priya, Aug 2026, 5 stars, on Timah Cycles: "Collection was on time and the deposit came back the same evening."
+- Jun Hao, Jul 2026, 4 stars, on Marcus T.: "Bike as described, handover took a while."
 
 ## 8. SEED-MESSAGES and SEED-NOTIFS
 
@@ -141,6 +146,8 @@ Notifications at "now":
 | Thu 22 Oct 09:12 | Booking OR-10482 confirmed | Booking detail | Seen |
 | Thu 22 Oct 17:22 | New message from Timah Cycles | Thread | Seen |
 | Mon 19 Oct 10:00 | Giant Escape 3 not used since 24 May | Equipment detail | **Unseen** |
+
+Later in the flow: one "Rental closed, S$150 deposit released" notification at Sat 14:05, when the deposit release shows; it leads to the closed summary. The 13:30 collection does not notify separately (the booking shows it as collected).
 
 ## 9. SEED-STORAGE and SEED-TRIPS
 
@@ -164,16 +171,26 @@ Each variant is the seeded world plus the change below. A story that depends on 
 
 - **VS-1 Supplier cancellation** (hard-scenario entry). Fri 24 Oct 20:10: Timah Cycles cancels OR-10482, reason "bike damaged in the shop today". S$50 refunded, deposit hold released at once. Replacement search within the remaining time, ride starts Sat 8:00:
   - Rodalink (shop, Bukit Panjang), Trek Marlin 6, size M: S$34 / day + S$12 delivery = **S$46 all-in**, can deliver Sat 7:40, set to fit included.
-  - Marcus T. (private owner, Yishun; member since Mar 2026, usually replies within 2 h), Scott Aspect 950, size M: S$30 / day + S$15 pooled delivery = **S$45 all-in**, earliest delivery Sat 8:30, after the ride starts.
-- **VS-2 Delivery delay.** Sat 7:12: courier held up, new arrival 8:05 (+25 min). Collection unchanged. Daniel can see the new time, message the shop, or cancel under the booking's terms.
+  - Marcus T. (private owner, Yishun; member since Mar 2026, usually replies within 2 h), Scott Aspect 950, size M: S$30 / day + S$15 pooled delivery = **S$45 all-in**, earliest delivery Sat 8:30, after the ride starts. Not set to fit: Marcus T. offers no set-up, and the result says so (this is the "cannot be set to fit" case for E2-4).
+- **VS-2 Delivery delay.** Sat 7:12: courier held up, new arrival 8:05 (+25 min). Stage times: set to fit and leaves the shop unchanged (Fri 17:30–18:10, Sat 7:05); arriving from 7:55; delivered 8:05. Collection unchanged. Daniel can see the new time, message the shop, or cancel under the booking's terms.
 - **VS-3 Payment declined.** The Visa payment fails with "Card declined by the bank". PayNow remains available. No charge was made.
 - **VS-4 Empty search.** Query: kayak, Sat 25 Oct, delivery to Chestnut. Zero results. True alternatives in the data: 3 kayaks free on Sun 26 Oct; 2 kayaks available Sat as pickup-only.
-- **VS-5 Early end, rack return** (rain variant of the hard scenario). The ride ends 11:05 at the Zhenghua Park side. The old bike goes back via the storage map: Rack A (200 m) full, Rack C (650 m) has space (section 9 data).
-- **VS-6 Old bike stored.** Alternate "now": Wed 29 Oct 10:00. Giant Escape 3 at the Hub since Tue 28 Oct, intake record complete (dated photos, condition "good, chain worn"), storage S$18 / month running, rent-out: not yet opted in.
+- **VS-5 Early end, rack return** (rain variant). Sat 25 Oct: rain ends the ride at 11:05 at the Zhenghua Park side, far from the 13:30 trailhead collection. The bike returned is the **rental, Trek Marlin 7 (OR-10482)**; the Giant Escape 3 is at home that day. Rack A (200 m) is full, Rack C (650 m) has space (section 9 data). Rack-return terms:
+  - No extra charge; the S$12 delivery and collection already covers it.
+  - It replaces the 13:30 trailhead collection.
+  - Dropped at Rack C 11:20; the reserved spot holds until 13:20; Timah Cycles' courier collects from the rack at 12:30.
+  - The return check happens at that collection, against the handover record. The deposit release still shows at Sat 14:05.
+- **VS-6 Old bike stored.** Alternate "now": Wed 29 Oct 10:00. Giant Escape 3 at the Hub since Tue 28 Oct, intake record complete (dated photos, condition "good, chain worn"), storage S$18 / month running, rent-out: not yet opted in. Return slots from this "now": earliest pooled run Fri 31 Oct morning (free, 2 days' notice); next-day home return Thu 30 Oct, 5–7 pm (S$8).
 
 ## 11. Flow-created data (FD)
 
 Values a flow produces, so later screens agree:
 
 - **FD-RECURRING**: weekly ride created from the closed OR-10482. Every Sat, delivery 7:40 Chestnut trailhead carpark, collection 13:30, **S$45 / ride** (10% below the one-off S$50), skip or pause until Thu 20:00 each week. First occurrence Sat 1 Nov.
+  - Money: nothing is charged at setup. Each ride is charged S$45 at its skip deadline (Thu 20:00), and the S$150 deposit is held for that ride at the same point and released after that ride's return check.
+  - Skip: the next ride only; free before its Thu 20:00 deadline.
+  - Pause and stop: apply from the next Saturday whose deadline has not passed (at setup, Sat 1 Nov) and charge nothing. If that Saturday's deadline has passed, that ride goes ahead and is charged S$45, and the pause or stop applies from the Saturday after. A pause lasts until Daniel resumes; it does not end on its own.
 - **FD-STORAGE-BOOKING**: storage pickup for the Giant Escape 3, home collection S$10, Tue 28 Oct 5–7 pm, leads to VS-6.
+- **FD-NEW-ITEM** (E7-2): Daniel adds a track pump, type accessory, kept in the corridor. Last used: none recorded yet.
+- **FD-RENT-OUT** (E8-6): on opting in, earnings to date S$0; nothing has been rented yet.
+- **FD-MESSAGE** (E9-1, in VS-2): Sat 7:14, Daniel to Timah Cycles: "The ride starts at 8:00. Can the bike still make it by then?"

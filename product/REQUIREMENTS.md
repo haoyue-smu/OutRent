@@ -1,6 +1,6 @@
 # OutRent product requirements (Iter2 prototype)
 
-Version 1.1 · 23 Oct 2026 · Product owner window. Consumed by the UX design window and the implementation window.
+Version 1.2 · 23 Oct 2026 · Product owner window. Consumed by the UX design window and the implementation window.
 
 ## 0. How to use this document
 
@@ -45,6 +45,7 @@ The design and implementation windows do not add features and do not change requ
 |---|---|---|
 | 1.0 | 23 Oct 2026 | First issue |
 | 1.1 | 23 Oct 2026 | Answers DESIGN-GAPS-v1.0 (per-item responses: project doc product/PO-ANSWERS-v1.1.md). Changed stories: E0-2, E1-3, E5-8, E6-1, E6-2. §0 gains the "Labels are copy" rule. MOCK-DATA.md is also at 1.1: supplier corrected to Timah Cycles per DESIGN.md §8, plus the values the gaps asked for. |
+| 1.2 | 23 Oct 2026 | Answers DESIGN-GAPS-v1.1 (per-item responses: project doc product/PO-ANSWERS-v1.2.md). Changed stories: E2-3, E2-4, E3-3, E3-4, E6-1, E6-3, E8-7, E8-8, E9-3, E9-5. VS-5 now returns the rental, not the old bike. MOCK-DATA.md is also at 1.2. |
 
 ## 3. Won't build
 
@@ -144,7 +145,7 @@ States: results list, single result anatomy.
 ### E2-3 Refine · Should
 Seed: none
 As Daniel, I want to narrow results, so a long list becomes a choice.
-1. Results can be narrowed by at least: equipment subtype, size or fit match, supplier type, price. `[D+B]`
+1. Results can be narrowed by at least: equipment subtype, size or fit match, supplier type, price. Price narrows on the all-in total, not the day rate; the form of the price control is the designer's call. `[D+B]`
 2. Active refinements are visible and removable. `[D+B]`
 States: refinements active, refinements cleared.
 
@@ -153,7 +154,7 @@ States: refinements active, refinements cleared.
 As a renter with a saved fit, Daniel wants to see which results fit him, so fit is a filter, not a surprise.
 1. When a fit profile exists, each result indicates whether this item can be set to Daniel's fit. `[D]`
 2. The indication leads to what it means (frame M, set to saddle 72 cm). `[B]`
-States: fit match present, no-profile variant (results still work, invite to add fit exists).
+States: fit match present, cannot be set to fit (the Scott Aspect 950, MOCK-DATA VS-1), no-profile variant (results still work, invite to add fit exists).
 
 ### E2-5 Coach's kit as a curated entry · Must
 `B2` `Idea 4` · Seed: SEED-KIT, SEED-EQUIPMENT
@@ -191,7 +192,7 @@ States: within listing default.
 As a renter, Daniel wants to know who stands behind the item, so trust has an object.
 1. The supplier is named, typed (shop or private owner) and located. `[D]`
 2. The supplier's rating and review count are visible and lead to their reviews. `[D+B]`
-States: shop supplier, private-owner supplier.
+States: shop supplier, private-owner supplier. The private-owner state is the supplier identity block for Marcus T., not a full listing. Listing-level ACs (E3-1, E3-2, E3-5, E3-6, E3-7) bind to the seeded unit, the Trek Marlin 7; any other unit's listing shows only the values MOCK-DATA gives for it, and sections without values are left out, not drawn as placeholders.
 
 ### E3-4 Reviews and ratings · Should
 Seed: SEED-REVIEWS
@@ -199,7 +200,7 @@ As a first-time renter, Daniel wants other renters' experience, so he is not the
 1. Item and supplier each show a rating, a count and a distribution, not only an average. `[D]`
 2. Individual reviews are readable: text, reviewer, date (MOCK-DATA.md section 7). `[D]`
 3. Reviews are reachable from results, listing and supplier identity. `[B]`
-States: review list, item with no reviews yet.
+States: review list (drawn on the Trek Marlin 7, MOCK-DATA §7), item with no reviews yet (the review block for the Scott Aspect 950, not a full listing). A review list shows the seeded texts; it need not show as many texts as the count.
 
 ### E3-5 The price before the flow · Must
 `HE #1 #11 #17` · Seed: SEED-BOOKING
@@ -370,7 +371,8 @@ States: offer within closed summary.
 `B1` `Idea 3` · Seed: FD-RECURRING
 As a weekly rider, Daniel wants a standing arrangement, so logistics stop being a weekly task.
 1. Setup shows what will recur: every Sat, delivery 7:40 Chestnut trailhead, collection 13:30, S$45 / ride (below the one-off S$50), first occurrence Sat 1 Nov. `[D]`
-2. Confirming creates the weekly ride; it appears in trips. `[B]`
+2. Setup states when money moves: nothing is charged at setup; each ride is charged S$45 at its skip deadline (Thu 20:00), and the S$150 deposit is held for each ride at that point and released after that ride's return check (MOCK-DATA FD-RECURRING). `[D]`
+3. Confirming creates the weekly ride; it appears in trips. `[B]`
 States: setup review, created.
 
 ### E6-2 The weekly ride, visible · Must
@@ -382,7 +384,7 @@ States: default.
 ### E6-3 Skip, pause, stop · Must
 `Idea 3` · Seed: FD-RECURRING
 As a person with a life, Daniel wants out for a week or forever, without a call, so commitment stays reversible.
-1. Daniel can skip the next occurrence, pause the series, or stop it; each states its effect before confirming (which Saturday is affected, what is charged: nothing for a skip before Thu 20:00). `[D+B]`
+1. Daniel can skip the next occurrence, pause the series, or stop it; each states its effect before confirming: which Saturday it applies from, what is charged, and for a pause, that it lasts until Daniel resumes (effects in MOCK-DATA FD-RECURRING). `[D+B]`
 2. After each action, the weekly ride's page and trips reflect it. `[D]`
 States: skip confirm, paused series, stopped series.
 
@@ -473,18 +475,19 @@ As an owner who would list "if the money covered the trouble", Daniel wants rent
 States: terms review, opted in.
 
 ### E8-7 The storage map · Must
-`B3` `Idea 7` `HE #15` · Seed: SEED-STORAGE map
-As an owner returning a bike in the field, Daniel wants nearby public racks with live facts, so a rack is a plan, not a hope.
+`B1` `B3` `Idea 7` `HE #15` · Seed: SEED-STORAGE map, VS-5
+As a rider returning a bike in the field, Daniel wants nearby public racks with live facts, so a rack is a plan, not a hope.
 1. The map shows racks with: spaces (12 / 12 full at Rack A, 4 of 10 free at Rack C), distance, and when each count was updated. `[D]`
 2. Whether choosing a rack reserves a spot, and for how long (2 h), is stated. `[D]`
 States: map default.
 
 ### E8-8 The full rack is not the end · Must
-`B3` `Idea 7` · Seed: VS-5
-As a rider caught by rain far from the booked pickup, Daniel wants the next nearest rack offered when the first is full, so idea 7 works precisely when it is needed.
+`B1` `B3` `Idea 7` · Seed: VS-5
+As a rider caught by rain far from the booked collection point, Daniel wants to return the rented bike at the next nearest rack when the first is full, so idea 7 works precisely when it is needed. The bike in VS-5 is the rental (Trek Marlin 7, OR-10482), not the Giant Escape 3.
 1. With Rack A full, the map offers Rack C (650 m, 4 free) as the alternative; choosing it reserves the spot. `[D+B]`
-2. After the drop, the bike's record shows it at Rack C awaiting the pooled pickup, and the original pickup reads as replaced. `[D]`
-States: full-rack with alternative, dropped-at-rack status.
+2. Before the drop is confirmed, the rack-return terms are shown: no extra charge, the 13:30 trailhead collection is replaced, and the return check happens when the supplier's courier collects from the rack (MOCK-DATA VS-5). `[D]`
+3. After the drop, the booking shows the bike at Rack C awaiting collection, and the 13:30 trailhead collection reads as replaced. The close (E5-7) follows from the courier's check. `[D]`
+States: full-rack with alternative, rack-return terms, dropped-at-rack status.
 
 ### E8-9 Bring it back · Should
 `B3` · Seed: VS-6
@@ -512,7 +515,7 @@ States: list with unread, list all read, empty list, thread with reply.
 ### E9-3 The notification catalogue · Must
 Seed: SEED-NOTIFS, VS-1, VS-2
 As a user, Daniel wants events to reach him and lead somewhere, so the app can start conversations, not only answer them.
-1. These events produce notifications, each leading to its subject: booking confirmed → booking detail; supplier cancellation → cancellation notice (E4-7); delivery delay → tracking (E5-4); collection done and deposit released → closed summary; idle item → item detail (E7-4); new message → thread. `[D+B]`
+1. These events produce notifications, each leading to its subject: booking confirmed → booking detail; supplier cancellation → cancellation notice (E4-7); delivery delay → tracking (E5-4); collection done and deposit released → closed summary (one notification, sent when the deposit release shows; the collection itself does not notify separately); idle item → item detail (E7-4); new message → thread. `[D+B]`
 2. No notification is a dead end; every one opens the thing it is about. `[B]`
 States: one drawn example per notification type.
 
@@ -526,7 +529,7 @@ States: with unseen, all seen, empty.
 Seed: none
 As a user outside the handover moment, Daniel wants a general way to report a problem with a booking or an item, so trouble has a door anywhere.
 1. From a booking or item detail, a report names its subject and reaches a submitted state. `[D+B]`
-States: report form, submitted.
+States: report form, submitted. Both reuse the E5-6 states; no separate comps. In scope for the final build as this reuse.
 
 ## E10 · Cross-cutting
 
@@ -554,7 +557,9 @@ States: report form, submitted.
 
 Raised here, answered by the PO window, folded into the next version:
 
-1. E9-5 (general report a problem) is Could: confirm whether it stays in scope for the final build.
+1. Resolved in v1.2: E9-5 stays in scope as a reuse of the E5-6 report form and submitted state.
 2. Resolved 23 Oct 2026: MOCK-DATA.md is approved. Consistency is the standard; value changes go through the PO window.
 3. HE tag numbers are copied from team/sitemap.html; verify against the Iter1 HE document before they appear in any course deliverable.
-4. v1.1: the design window's DESIGN-GAPS-v1.0 items are all answered; the per-item responses are in the project doc product/PO-ANSWERS-v1.1.md. The gaps doc cited a file review/feedback/wording-rules.md that is not in the repo; its substance is covered by the "Labels are copy" rule in section 0.
+4. v1.1: the design window's DESIGN-GAPS-v1.0 items are all answered; the per-item responses are in the project doc product/PO-ANSWERS-v1.1.md. The gaps doc cited a file review/feedback/wording-rules.md that is not in the repo; its substance is covered by the "Labels are copy" rule in section 0. (It is now in the project; see 5.)
+5. v1.2: DESIGN-GAPS-v1.1 is answered in product/PO-ANSWERS-v1.2.md. Where an example in review/feedback/wording-rules.md quotes a value, MOCK-DATA.md wins; the rules govern form, not values.
+6. Not yet raised by the design window, no value set: the deposit for the Rodalink replacement booking (E4-8 AC4 runs it through E4-3). Raise by story ID if the replacement's cost review is drawn.
