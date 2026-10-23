@@ -1,6 +1,6 @@
 # Inbox · Build (Claude Code)
 
-Last updated 23 Oct 19:58 by the management chat.
+Last updated 23 Oct 20:05 by the management chat.
 
 ## Open task: 02 Coach's Kit baseline
 
@@ -11,7 +11,7 @@ Source: the Design artifact https://claude.ai/artifact/8h22yujNoYT7h9mVumf6De (r
 - app/src/pages/02-coach-kit/, registered in app/src/pages/index.ts.
 - Every frame on the Frames page is a real state behind one mock-state const at the top of the file.
 - Classes from design/components.css, tokens from design/tokens.css; the board's proposed components go in a page CSS file, tokens only.
-- Links between pages with <GoTo page="…">. Coach Aisyah's photo: reuse work/haoyue/01-home/assets/01-home-coach-aisyah.webp through the Photo component. Other photos stay .img-ph with the board's aria-label; images for this page come later.
+- Links between pages with <GoTo page="…">. Both photos on this page reuse 01 Home images through the Photo component: "Coach Aisyah, portrait" → work/haoyue/01-home/assets/01-home-coach-aisyah.webp; "a mountain bike with front suspension, side view" → work/haoyue/01-home/assets/01-home-bike.webp. No new images for 02.
 - npm run check: 0 errors.
 
 Commit on branch build/02-coach-kit and push. Do not merge. No AI attribution. In the commit message: what was built, and any board element you could not build.
