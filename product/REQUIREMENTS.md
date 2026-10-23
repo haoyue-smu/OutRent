@@ -1,6 +1,6 @@
 # OutRent product requirements (Iter2 prototype)
 
-Version 1.0 · 23 Oct 2026 · Product owner window. Consumed by the UX design window and the implementation window.
+Version 1.1 · 23 Oct 2026 · Product owner window. Consumed by the UX design window and the implementation window.
 
 ## 0. How to use this document
 
@@ -9,6 +9,8 @@ Read in this order: this section, then DESIGN.md (visual law, locked), then MOCK
 **What this document is.** The product requirements for OutRent, written as if for a real app, verified against a clickable prototype. It says what the user must be able to do and what they must see. It never says how a screen looks, which components express a requirement, or how information is arranged. That is the designer's call, within DESIGN.md.
 
 **The one boundary rule.** A requirement states an outcome or required information. A design decision states a presentation. Example of the line: "Daniel can confirm that no charges exist beyond those listed" is a requirement. "Fees that do not apply are shown as S$0 rows" is a design decision and does not belong here. When an AC in this file reads like the second kind, treat it as a defect and raise it.
+
+**Labels are copy.** Lowercase names in this file (trips, my gear, the storage map) name concepts, not surface labels. What a tab, page or value is called on screen is copy and therefore the designer's call under DESIGN.md section 10 ("Trips" may be labelled "Bookings"; "fork sag 25%" may be labelled in plain words). The named information itself must still be present, and one surface uses one label consistently.
 
 **Simulated behaviour convention.** All system behaviour is simulated. A requirement on system behaviour is met when the prototype presents a consistent, believable account of it happening. ACs therefore use observable verbs only: shows, displays, leads to, updates to, reflects. "The deposit is released" is met when the screens after return show the deposit released, with the same amount everywhere.
 
@@ -42,6 +44,7 @@ The design and implementation windows do not add features and do not change requ
 | Version | Date | Changed |
 |---|---|---|
 | 1.0 | 23 Oct 2026 | First issue |
+| 1.1 | 23 Oct 2026 | Answers DESIGN-GAPS-v1.0 (per-item responses: project doc product/PO-ANSWERS-v1.1.md). Changed stories: E0-2, E1-3, E5-8, E6-1, E6-2. §0 gains the "Labels are copy" rule. MOCK-DATA.md is also at 1.1: supplier corrected to Timah Cycles per DESIGN.md §8, plus the values the gaps asked for. |
 
 ## 3. Won't build
 
@@ -74,9 +77,10 @@ States: default (upcoming booking present), no-bookings variant (nothing upcomin
 ### E0-2 Root navigation · Must
 Seed: none
 As a user, Daniel wants the app's main areas reachable from anywhere at root level, so he always knows where he is.
-1. The root areas (home, explore/search, trips, my gear) are each reachable from any other root area in one action. `[B]`
+1. The root areas are the ones DESIGN.md section 6 fixes for the tab bar (currently home, trips, my gear, profile); each is reachable from any other root area in one action. `[B]`
 2. The current area is identifiable. `[D]`
 3. Flow pages (booking, payment, tracking) leave root navigation behind and provide a way back. `[D+B]`
+4. Conversations (E9-2) and the notification centre (E9-4) are each reachable from a root area; which one is the designer's call. `[B]`
 States: each root area selected.
 
 ### E0-3 Storage is discoverable without renting · Must
@@ -105,11 +109,12 @@ States: default.
 ### E1-3 Create and edit the fit profile · Must
 `B2` `Idea 6` · Seed: SEED-FIT
 As a renter who has been given ill-fitting gear before, Daniel wants to record his measurements once, so every rental is prepared for his body.
-1. Daniel enters height 176 cm and inside leg 81 cm; the profile then shows the derived set-up: saddle 72 cm, frame M, fork sag 25%, bars +1 cm. `[D+B]`
-2. Skill level is part of the profile (MOCK-DATA.md section 3). `[D]`
-3. Editing a measurement updates the derived values. `[B]`
-4. The profile states, in plain terms, what suppliers do with it: equipment is set to these values before delivery. `[D]`
-States: empty (first entry), filled, editing.
+1. Daniel enters height (176 cm, required); inside leg (81 cm) is optional. With both, the profile shows the full derived set-up: saddle 72 cm, frame M, fork sag 25%, bars +1 cm. `[D+B]`
+2. With height only, the profile shows frame M and states that adding inside leg makes the saddle value exact (MOCK-DATA.md section 3). `[D]`
+3. Skill level is part of the profile (MOCK-DATA.md section 3). `[D]`
+4. Editing a measurement updates the derived values. `[B]`
+5. The profile states, in plain terms, what suppliers do with it: equipment is set to these values before delivery. `[D]`
+States: empty (first entry), height only, filled, editing.
 
 ### E1-4 One profile, reused everywhere · Must
 `B2` `Idea 6` · Seed: SEED-FIT
@@ -355,7 +360,7 @@ States: awaiting collection, collected, closed summary.
 ### E5-8 From one ride to every Saturday · Must
 `B1` `Idea 3` · Seed: SEED-BOOKING, FD-RECURRING
 As a rider who liked it, Daniel wants to repeat the exact arrangement weekly, so the second time costs one decision.
-1. The closed rental offers repeating it every Saturday with the same delivery, collection and cost. `[D]`
+1. The closed rental offers repeating it every Saturday with the same delivery and collection, at the weekly price (S$45 / ride, below the one-off S$50). `[D]`
 2. Accepting leads into E6-1 with everything pre-filled from this rental. `[B]`
 States: offer within closed summary.
 
@@ -364,14 +369,14 @@ States: offer within closed summary.
 ### E6-1 Set up the weekly ride · Must
 `B1` `Idea 3` · Seed: FD-RECURRING
 As a weekly rider, Daniel wants a standing arrangement, so logistics stop being a weekly task.
-1. Setup shows what will recur: every Sat, delivery 7:40 Chestnut trailhead, collection 13:30, S$50 / ride, first occurrence Sat 1 Nov. `[D]`
+1. Setup shows what will recur: every Sat, delivery 7:40 Chestnut trailhead, collection 13:30, S$45 / ride (below the one-off S$50), first occurrence Sat 1 Nov. `[D]`
 2. Confirming creates the weekly ride; it appears in trips. `[B]`
 States: setup review, created.
 
 ### E6-2 The weekly ride, visible · Must
 `Idea 3` `HE #4` · Seed: FD-RECURRING
 As a subscriber, Daniel wants the standing arrangement inspectable, so recurring never means opaque.
-1. The weekly ride's page shows: day, drop-off time and place, collection, cost per ride, the next occurrence, and the skip deadline (Thu 20:00). `[D]`
+1. The weekly ride's page shows: day, drop-off time and place, collection, cost per ride (S$45 / ride), the next occurrence, and the skip deadline (Thu 20:00). `[D]`
 States: default.
 
 ### E6-3 Skip, pause, stop · Must
@@ -552,3 +557,4 @@ Raised here, answered by the PO window, folded into the next version:
 1. E9-5 (general report a problem) is Could: confirm whether it stays in scope for the final build.
 2. Resolved 23 Oct 2026: MOCK-DATA.md is approved. Consistency is the standard; value changes go through the PO window.
 3. HE tag numbers are copied from team/sitemap.html; verify against the Iter1 HE document before they appear in any course deliverable.
+4. v1.1: the design window's DESIGN-GAPS-v1.0 items are all answered; the per-item responses are in the project doc product/PO-ANSWERS-v1.1.md. The gaps doc cited a file review/feedback/wording-rules.md that is not in the repo; its substance is covered by the "Labels are copy" rule in section 0.
