@@ -181,7 +181,7 @@ img { max-width: 100%; display: block; }
   color: var(--ink); text-decoration: none; font-size: 14px; font-weight: 600;
   transition: background-color var(--t-quick) var(--ease-glide);
 }
-.tabbar a .label { display: none; }
+.tabbar a .label { display: none; white-space: nowrap; }
 .tabbar a[aria-current="page"] { background: var(--sage-tint); color: var(--sage-dark); padding: 0 var(--s-4); }
 .tabbar a[aria-current="page"] .label { display: inline; }
 
