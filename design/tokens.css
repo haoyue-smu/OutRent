@@ -1,4 +1,4 @@
-/* OutRent design tokens · Trail Glass · v0.1
+/* OutRent design tokens · Trail Glass · v0.3
    The only values pages may use. Source of truth: design/DESIGN.md.
    Load once per page, before components.css:
    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;600;700&display=swap"> */
@@ -10,8 +10,12 @@
   --sage-tint: #E3ECE7;
   --ink: #1E2622;
   --muted: #5C6863;
-  --mist: #F2F4F1;
-  --line: #DDE2DE;
+  --clay: #B5603F;
+  --clay-dark: #8E4A30;
+  --clay-tint: #F4E6DF;
+  --paper: #F4F1E8;
+  --mist: var(--paper); /* v0.2 name, kept one release as an alias */
+  --line: #E3DFD3;
   --white: #FFFFFF;
   --error: #B0473B;
   --error-tint: #F6E4E1;

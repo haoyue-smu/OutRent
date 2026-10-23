@@ -2,6 +2,7 @@
 //   npm run check                 check everything in work/
 //   npm run check -- work/amanda  check one folder
 //   node tools/check.mjs --staged (used by the pre-commit hook)
+//   npm run check -- --app        check the React app in app/src (the Build window's code)
 // ✗ = error (must fix, blocks commit)   ! = warning (allowed if explained in DECISIONS.md)
 import { execSync } from "node:child_process";
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
@@ -126,6 +127,36 @@ function checkPageFolder(dir) {
   }
 }
 
+
+// ---------- React app (app/src) ----------
+// The same design rules, applied to .css and .tsx files. Inline style={{…}} objects are read as CSS-ish text.
+function checkAppFile(file) {
+  const text = readFileSync(file, "utf8");
+  if (file.endsWith(".css")) { checkCss(file, text, text, 0); return; }
+  if (/\.(png|jpe?g|webp|gif|avif|heic)$/i.test(file)) { add(file, "error", `image file in app/src. Images are managed by Haoyue; use .img-ph and list it in the page's HANDOFF.`); return; }
+  if (!/\.(tsx|ts|jsx|js)$/.test(file)) return;
+  for (const m of text.matchAll(/<(img|picture|video|iframe)\b/gi)) add(file, "error", `line ${lineOf(text, m.index)}: <${m[1]}> found. Images must be <div className="img-ph" role="img" aria-label="Photo: …">.`);
+  for (const m of text.matchAll(/\s(fill|stroke|stopColor)=["{]+(#[0-9a-fA-F]{3,8}|rgb[^"}]*|[a-z]+)["}]+/g)) {
+    if (/^(none|currentColor|transparent)$/i.test(m[2])) continue;
+    add(file, "error", `line ${lineOf(text, m.index)}: ${m[1]}="${m[2]}" in an SVG. Use currentColor or a token through CSS.`);
+  }
+  if (/lorem ipsum/i.test(text)) add(file, "error", `lorem ipsum found. Use the mock data from MOCK-DATA.md.`);
+  if (/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/u.test(text)) add(file, "error", `emoji found. Use Phosphor icons instead.`);
+  for (const m of text.matchAll(/style=\{\{([\s\S]*?)\}\}/g)) {
+    const css = m[1].replace(/([a-zA-Z]+)\s*:\s*(["'])([^"']*)\2/g, (_, k, __, v) => k.replace(/[A-Z]/g, (c) => "-" + c.toLowerCase()) + ": " + v + ";");
+    checkCss(file, css, text, m.index);
+  }
+  for (const m of text.matchAll(/\b(#[0-9a-fA-F]{6}|#[0-9a-fA-F]{3})\b/g)) if (!/^#[0-9a-fA-F]{3,8}$/.test(m[1]) || /color|background|fill|stroke/i.test(text.slice(Math.max(0, m.index - 40), m.index))) add(file, "error", `line ${lineOf(text, m.index)}: colour ${m[1]} written directly. Use a token (var(--sage) …).`);
+}
+function checkApp() {
+  const src = join(ROOT, "app", "src");
+  if (!existsSync(src)) return 0;
+  const walk = (p) => statSync(p).isDirectory() ? readdirSync(p).flatMap((c) => walk(join(p, c))) : [p];
+  const files = walk(src).filter((f) => !/\/design\//.test(f.split(sep).join("/")));
+  for (const f of files) checkAppFile(f);
+  return files.length;
+}
+
 // ---------- which folders to check ----------
 let targets = [];
 const workRoot = join(ROOT, "work");
@@ -162,6 +193,8 @@ if (STAGED) {
 }
 for (const t of targets) checkPageFolder(t);
 lenient = false;
+const APP = args.includes("--app") || (!STAGED && !args.includes("--pr") && !args.filter((a) => !a.startsWith("--")).length);
+const appFiles = APP ? checkApp() : 0;
 
 // ---------- report ----------
 const errors = issues.filter((i) => i.level === "error");
@@ -172,7 +205,7 @@ for (const [file, list] of byFile) {
   console.log("\n" + file);
   for (const i of list) console.log(`  ${i.level === "error" ? "✗" : "!"} ${i.msg}`);
 }
-console.log(`\n${targets.length} page folder(s) checked: ${errors.length} error(s), ${warns.length} warning(s).`);
+console.log(`\n${targets.length} page folder(s)${appFiles ? ` and ${appFiles} app file(s)` : ""} checked: ${errors.length} error(s), ${warns.length} warning(s).`);
 if (errors.length) console.log("Fix every ✗ before committing or sending your folder. Warnings (!) are allowed if DECISIONS.md explains them.");
 else console.log(warns.length ? "No errors. Check the warnings are explained in DECISIONS.md." : "All clear ✓");
 process.exit(errors.length ? 1 : 0);

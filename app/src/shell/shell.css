@@ -1,0 +1,9 @@
+/* App shell: centres one 393 × 852 phone frame on a paper background.
+   Everything inside .screen is the prototype; the shell itself is not part of the design. */
+html, body, #root { height: 100%; margin: 0; }
+body { background: var(--paper); font-family: var(--font); color: var(--ink); -webkit-font-smoothing: antialiased; }
+.frame { width: 393px; height: 852px; margin: 0 auto; position: relative; overflow: hidden; background: var(--paper); }
+@media (min-height: 900px) { .frame { margin-top: 24px; border-radius: var(--r-sheet); box-shadow: var(--shadow-float); } }
+.frame > .screen { width: 393px; height: 852px; overflow-y: auto; overflow-x: hidden; }
+.frame-empty { padding: var(--top-safe) var(--gutter) 0; }
+.frame-empty .t-foot { color: var(--muted); }

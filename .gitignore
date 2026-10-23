@@ -3,3 +3,5 @@ node_modules/
 Thumbs.db
 *.zip
 .vscode/
+app/node_modules/
+app/dist/
