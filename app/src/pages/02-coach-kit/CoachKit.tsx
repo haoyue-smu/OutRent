@@ -3,6 +3,7 @@ import { GoTo } from '../../shell/Link'
 import { Icon } from '../../shell/Icon'
 import { Photo } from '../../shell/Photo'
 import coachAisyah from '@photos/01-home/assets/01-home-coach-aisyah.webp'
+import bike from '@photos/01-home/assets/01-home-bike.webp'
 import './kit.css'
 
 // Which frame of the board to show. Change this one value to see each state.
@@ -61,7 +62,7 @@ export default function CoachKit() {
 
         <div className="card">
           <div className="kit-rent">
-            <div className="img-ph" role="img" aria-label="Photo: a mountain bike with front suspension, side view" />
+            <Photo src={bike} alt="A mountain bike with front suspension, side view" className="kit-bike" />
             <div className="kit-stack is-gap">
               <span className="t-label">Rent</span>
               <span className="t-title">Mountain bike, front suspension</span>

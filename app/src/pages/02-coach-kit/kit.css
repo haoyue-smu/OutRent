@@ -18,7 +18,7 @@
 .kit-strong { font-weight: 600; }
 
 .kit-rent { display: flex; flex-direction: column; gap: var(--s-4); }
-.kit-rent .img-ph { height: 132px; min-height: 0; }
+.kit-rent .kit-bike { width: 100%; height: 132px; border-radius: var(--r-card); object-fit: cover; display: block; }
 .kit-size { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--s-3); }
 .kit-fit { display: flex; align-items: center; gap: var(--s-1); padding-bottom: var(--s-1); }
 .kit-actions { display: flex; flex-direction: column; gap: var(--s-1); }
