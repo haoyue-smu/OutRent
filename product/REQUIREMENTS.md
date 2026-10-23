@@ -1,6 +1,6 @@
 # OutRent product requirements (Iter2 prototype)
 
-Version 1.2 · 23 Oct 2026 · Product owner window. Consumed by the UX design window and the implementation window.
+Version 1.3 · 23 Oct 2026 · Product owner window. Consumed by the UX design window and the implementation window.
 
 ## 0. How to use this document
 
@@ -46,6 +46,7 @@ The design and implementation windows do not add features and do not change requ
 | 1.0 | 23 Oct 2026 | First issue |
 | 1.1 | 23 Oct 2026 | Answers DESIGN-GAPS-v1.0 (per-item responses: project doc product/PO-ANSWERS-v1.1.md). Changed stories: E0-2, E1-3, E5-8, E6-1, E6-2. §0 gains the "Labels are copy" rule. MOCK-DATA.md is also at 1.1: supplier corrected to Timah Cycles per DESIGN.md §8, plus the values the gaps asked for. |
 | 1.2 | 23 Oct 2026 | Answers DESIGN-GAPS-v1.1 (per-item responses: project doc product/PO-ANSWERS-v1.2.md). Changed stories: E2-3, E2-4, E3-3, E3-4, E6-1, E6-3, E8-7, E8-8, E9-3, E9-5. VS-5 now returns the rental, not the old bike. MOCK-DATA.md is also at 1.2. |
+| 1.3 | 23 Oct 2026 | Answers inbox tasks of 23 Oct 20:05 (product/PO-ANSWERS-v1.3.md). Changed story: E5-1. Daniel is a first-time renter; SEED-TRIPS removed from MOCK-DATA.md, also at 1.3. |
 
 ## 3. Won't build
 
@@ -304,12 +305,12 @@ States: payment declined.
 ## E5 · Rental management and fulfilment
 
 ### E5-1 Trips in one place · Must
-`HE #4` · Seed: SEED-BOOKING, SEED-TRIPS
+`HE #4` · Seed: SEED-BOOKING
 As a user, Daniel wants current, upcoming and past rentals together, so the rental has a home after booking.
 1. Trips shows the upcoming booking, any active rental, the weekly ride when it exists (FD-RECURRING) and past trips. `[D]`
 2. Each entry leads to its detail. `[B]`
-3. Past trips show their closed outcome: amount, deposit returned. `[D]`
-States: default, empty (no trips ever), with recurring present.
+3. Past trips show their closed outcome: amount, deposit returned. Daniel has no past trips at the mock clock (first-time renter); the first past trip is OR-10482 once it closes (E5-7 AC3). `[D]`
+States: default (upcoming OR-10482, no past trips), with past trip (OR-10482 closed), with recurring present, empty (no trips ever).
 
 ### E5-2 Booking detail · Must
 Seed: SEED-BOOKING

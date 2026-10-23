@@ -1,10 +1,12 @@
 # OutRent mock data and seeded world
 
-Version 1.2 · 23 Oct 2026 · Owner: Haoyue. Status: **approved as the extension to DESIGN.md section 8** (consistency is the standard: a value may change, but it must change everywhere at once, through the PO window). This file is the single source for every value, name, date and starting state in the prototype. DESIGN.md section 8 values are repeated here unchanged and stay locked.
+Version 1.3 · 23 Oct 2026 · Owner: Haoyue. Status: **approved as the extension to DESIGN.md section 8** (consistency is the standard: a value may change, but it must change everywhere at once, through the PO window). This file is the single source for every value, name, date and starting state in the prototype. DESIGN.md section 8 values are repeated here unchanged and stay locked.
 
 v1.1 answers DESIGN-GAPS-v1.0 from the design window. Changed: supplier corrected to Timah Cycles per DESIGN.md §8 (v1.0 had an outdated name); SEED-RIDE added to §4; slots, listing facts and fulfilment timeline added to §4; §3 notes on inside leg and plain-language labels; §5 kit wear line; §7 no-reviews item; §9 transfer costs and corrected rack locations; VS-1 supplier facts; FD-RECURRING weekly price.
 
 v1.2 answers DESIGN-GAPS-v1.1. Changed: §7 star values and two more Marlin 7 reviews; §8 deposit-release notification; VS-1 Scott Aspect 950 not set to fit; VS-2 stage times; VS-5 rewritten (the rental is returned at the rack, with its terms); VS-6 return slots; FD-RECURRING charging, deposit, pause and stop; new FD-NEW-ITEM, FD-RENT-OUT, FD-MESSAGE. Where an example in review/feedback/wording-rules.md quotes a value, this file wins.
+
+v1.3 (product/PO-ANSWERS-v1.3.md): SEED-TRIPS removed. Daniel is a first-time renter; OR-10482 is his first rental. No other value changed.
 
 Rules:
 
@@ -149,7 +151,7 @@ Notifications at "now":
 
 Later in the flow: one "Rental closed, S$150 deposit released" notification at Sat 14:05, when the deposit release shows; it leads to the closed summary. The 13:30 collection does not notify separately (the booking shows it as collected).
 
-## 9. SEED-STORAGE and SEED-TRIPS
+## 9. SEED-STORAGE
 
 OutRent Hub (Sungei Kadut):
 - Bike storage S$18 / month, includes intake condition record and basic upkeep
@@ -161,9 +163,7 @@ Storage map, as seen from the VS-5 ride end at the Zhenghua Park side (updated t
 - Rack A, Zhenghua Park entrance: 200 m away, 12 / 12 full, updated Sat 10:50
 - Rack C, Segar Road: 650 m away, 4 of 10 free, updated Sat 10:55; choosing it reserves a spot for 2 h
 
-Past trips (SEED-TRIPS):
-- 12–13 Sep 2026: car bike rack, delivered and collected, S$24, closed, deposit returned
-- 2 Aug 2026: hardtail day rental, Pulau Ubin, S$42, closed, deposit returned
+Past trips: none at the mock clock. Daniel is a first-time renter (section 2); OR-10482 is his first rental. Past trips first shows an entry when OR-10482 closes at Sat 14:05 (S$50 paid, S$150 deposit released).
 
 ## 10. Variant states (VS)
 
