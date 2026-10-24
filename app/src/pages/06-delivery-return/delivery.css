@@ -1,0 +1,69 @@
+/* 06 Delivery & return · the fitter's line. Layout; shared pieces are in design/direction.css. */
+
+.d-screen { background: var(--paper); color: var(--ink); font-family: var(--sans); }
+.s6-screen { padding-bottom: 110px; }
+.s6-head { display: flex; flex-direction: column; gap: 6px; padding-top: var(--s-1); }
+
+.loop { margin-top: var(--s-5); padding: 14px var(--s-4) var(--s-1); border-radius: var(--r-sheet-s); background: var(--sheet); box-shadow: var(--shadow-sheet); }
+
+/* The whole Saturday on one line */
+.ov { position: relative; height: 46px; }
+.ov svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.ov text { font-family: var(--mono); font-size: 9.5px; fill: var(--ink-3); }
+.ov .base { stroke: var(--rule); }
+.ov .tk { stroke: var(--ink-3); }
+.ov .ride { fill: var(--ink); }
+.ov .ride-t { fill: var(--ink); }
+.ov .ovm line { stroke: var(--forest); stroke-width: 1.5; }
+.ov .ovm circle { fill: var(--forest); }
+.ov .ovm text { fill: var(--forest); }
+
+/* A leg: the question, the place, the scale of four times */
+.leg { margin-top: var(--s-2); padding: 14px 0 6px; border-top: var(--hair) solid var(--rule-2); }
+.leg-h { display: flex; justify-content: space-between; align-items: baseline; }
+.leg-h .q { display: flex; align-items: center; gap: 10px; }
+.leg-h .q b { font-size: 16px; line-height: 21px; font-weight: 600; letter-spacing: -0.01em; }
+.leg-h .n { display: grid; place-items: center; flex: none; width: 22px; height: 22px; border-radius: var(--r-pill); background: var(--ink); color: var(--white); font-family: var(--mono); font-size: var(--fs-mono); transition: background-color 0.3s; }
+.leg.done .n { background: var(--forest); }
+.leg.done .leg-h > .small { visibility: hidden; }
+.place { display: grid; grid-template-columns: 20px 1fr auto; gap: 10px; align-items: center; width: 100%; min-height: 52px; padding: 10px 0; border: 0; background: none; color: var(--ink); font: inherit; text-align: left; cursor: pointer; }
+.place .icon { width: 18px; height: 18px; }
+.place .pl b { display: block; font-size: 15.5px; line-height: 20px; font-weight: 600; }
+.place .pl span { font-size: var(--fs-small); color: var(--ink-2); }
+.place .chg { font-size: var(--fs-small); font-weight: 600; color: var(--forest); }
+
+.scale { position: relative; height: 74px; margin: 2px 0 var(--s-1); }
+.scale .axis { position: absolute; left: 0; right: 0; top: 44px; height: 1px; background: var(--rule); }
+.scale .edge { position: absolute; top: 30px; height: 28px; border-left: 1.5px solid var(--ink); }
+.scale .edge span { position: absolute; top: 30px; font-family: var(--mono); font-size: 9.5px; color: var(--ink); white-space: nowrap; }
+.scale .edge.is-d span { left: -6px; transform: translateX(-100%); }
+.scale .edge.is-c span { left: 6px; }
+.scale .band { position: absolute; top: 42px; height: 5px; border-radius: var(--r-bar); background: var(--ink); opacity: 0.18; }
+.scale .band.is-d { right: 0; }
+.scale .band.is-c { width: 2%; }
+.slot { position: absolute; top: 0; display: flex; flex-direction: column; align-items: center; gap: 6px; width: 52px; height: 58px; margin-left: -26px; padding: 0; border: 0; background: none; color: var(--ink); font: inherit; cursor: pointer; }
+.slot b { display: grid; place-items: center; min-width: 52px; height: 30px; border: 1.5px solid var(--rule); border-radius: var(--r-pill); background: var(--sheet); font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums; transition: background-color 0.25s, color 0.25s, border-color 0.25s; }
+.slot i { width: 11px; height: 11px; border: 1.5px solid var(--ink-3); border-radius: var(--r-pill); background: var(--paper); transition: transform 0.3s var(--ease), background-color 0.3s, border-color 0.3s; }
+.slot:not(:disabled):hover b { border-color: var(--ink-3); }
+.slot[aria-pressed="true"] b { border-color: var(--forest); background: var(--forest); color: var(--white); }
+.slot[aria-pressed="true"] i { border-color: var(--forest); background: var(--forest); transform: scale(1.25); }
+.slot:disabled { cursor: default; }
+.slot:disabled b { border-style: dashed; background: transparent; color: var(--ink-3); font-weight: 400; }
+.slot:disabled i { border-style: dashed; }
+.leg:not(.done) .slot.hint b { animation: hint 1.4s var(--ease) 1; }
+@keyframes hint { 0% { transform: none; } 30% { transform: translateY(-4px); border-color: var(--forest); } 60% { transform: none; } }
+
+.clash { display: flex; gap: var(--s-2); align-items: flex-start; padding: 2px 0 10px; font-size: var(--fs-small); line-height: 18px; color: var(--ink-2); }
+.clash .icon { flex: none; width: 16px; height: 16px; margin-top: 1px; color: var(--ink); }
+.loop-f { display: flex; justify-content: space-between; align-items: baseline; padding: var(--s-3) 0 14px; border-top: var(--hair) solid var(--rule-2); font-size: 14px; }
+.loop-f b { font-variant-numeric: tabular-nums; }
+.loop-f b.wait { font-weight: 400; color: var(--ink-3); }
+
+.spot { display: flex; flex-direction: column; gap: var(--s-2); margin: 18px 0 0; }
+.spot .ph { position: relative; aspect-ratio: 16 / 9; border-radius: var(--r-thumb); overflow: hidden; }
+.spot figcaption { display: flex; flex-direction: column; gap: 2px; }
+.s6-go { width: 100%; }
+
+@media (prefers-reduced-motion: reduce) {
+  .leg:not(.done) .slot.hint b { animation: none; }
+}

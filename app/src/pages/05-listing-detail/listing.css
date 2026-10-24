@@ -96,18 +96,6 @@ figure.seen .rlab { opacity: 1; }
 .l-dock .p b span { font-size: var(--fs-small); font-weight: 500; color: var(--ink-2); letter-spacing: 0; }
 .l-dock .p small { font-size: 12.5px; color: var(--ink-2); }
 
-/* 05 -> 12 time skip */
-.skip { position: absolute; inset: 0; z-index: 50; display: flex; flex-direction: column; justify-content: center; gap: 22px; padding: 0 28px; background: var(--paper); }
-.skip .clock { font-size: 40px; line-height: 44px; font-weight: 600; letter-spacing: var(--track-num); }
-.skip .day-l { font-family: var(--mono); font-size: var(--fs-small); letter-spacing: 0.1em; color: var(--ink-2); }
-.skip .run { position: relative; height: 40px; }
-.skip .run .base { position: absolute; left: 0; right: 0; top: 12px; height: 1px; background: var(--rule); }
-.skip .run .fill { position: absolute; left: 0; top: 11px; width: 0; height: 3px; border-radius: var(--r-pill); background: var(--forest); }
-.skip .run i { position: absolute; top: 6px; width: 1px; height: 13px; background: var(--ink-3); }
-.skip .run i.is-ride { background: var(--forest); }
-.skip .run em { position: absolute; top: 22px; transform: translateX(-50%); font-style: normal; font-family: var(--mono); font-size: var(--fs-mono-s); color: var(--ink-3); white-space: nowrap; }
-.skip p { margin: 0; }
-
 @media (prefers-reduced-motion: reduce) {
   .ring, .rlab, .lens .lens-img, .ticks5 i { transition: none; }
 }

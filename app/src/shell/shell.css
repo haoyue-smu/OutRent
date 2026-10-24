@@ -4,7 +4,8 @@ html, body, #root { height: 100%; margin: 0; }
 body { background: var(--desk); font-family: var(--font); color: var(--ink); -webkit-font-smoothing: antialiased; }
 .frame { width: 393px; height: 852px; margin: 0 auto; position: relative; overflow: hidden; background: var(--paper); }
 @media (min-height: 900px) { .frame { margin-top: 24px; border-radius: var(--r-sheet); box-shadow: var(--shadow-float); } }
-.frame > .screen { width: 393px; height: 852px; overflow-y: auto; overflow-x: hidden; }
+.frame-stage { position: absolute; inset: 0; background: var(--paper); }
+.frame-stage > .screen { width: 393px; height: 852px; overflow-y: auto; overflow-x: hidden; }
 .frame-empty { padding: var(--top-safe) var(--gutter) 0; }
 .frame-empty .t-foot { color: var(--muted); }
 /* No one-word last lines in running text (review rule, 24 Oct). */

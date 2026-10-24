@@ -46,7 +46,7 @@ export default function Search() {
     const ph = el.querySelector('.ph')?.getBoundingClientRect()
     const frame = el.closest('.frame')?.getBoundingClientRect()
     const rect = ph && frame ? { top: ph.top - frame.top, left: ph.left - frame.left, width: ph.width, height: ph.height } : null
-    navigate(routeFor('05-listing-detail'), { state: { from: 'search', rect } })
+    navigate(routeFor('05-listing-detail'), { state: { from: 'search', how: 'morph', rect } })
   }
 
   return (

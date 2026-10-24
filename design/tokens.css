@@ -21,6 +21,8 @@
   --photo-ink: #0E1411;   /* behind photos while they load */
   --bar-2: #6E7A74;       /* the second segment of a measured bar */
   --desk: #E3E5E0;        /* around the phone frame, outside the app */
+  --todo-1: #E4E7E1;      /* image stand-in hatch */
+  --todo-2: #ECEEE9;
   --error: #B0473B;       /* true errors only */
   --error-tint: #F6E4E1;
 

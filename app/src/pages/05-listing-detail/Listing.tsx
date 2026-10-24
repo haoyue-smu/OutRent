@@ -48,7 +48,6 @@ export default function Listing() {
   const [toastNode, toast] = useToast()
   const [cur, setCur] = useState(0)
   const [seen, setSeen] = useState<number[]>([])
-  const [skipping, setSkipping] = useState(false)
   const rail = useRef<HTMLDivElement>(null)
   const strip = useRef<HTMLDivElement>(null)
   const screen = useRef<HTMLElement>(null)
@@ -217,54 +216,10 @@ export default function Listing() {
       <div className="dock l-dock-wrap">
         <div className="l-dock">
           <div className="p"><b>S$50 <span>all-in</span></b><small>+ S$150 deposit, held</small></div>
-          <button type="button" className="cta" onClick={() => setSkipping(true)}>Choose delivery</button>
+          <GoTo page="06-delivery-return" className="cta">Choose delivery</GoTo>
         </div>
       </div>
-      {skipping && <TimeSkip onDone={() => navigate(routeFor('12-rental-summary'), { state: { from: 'skip' } })} />}
       {toastNode}
     </>
-  )
-}
-
-// 05 -> 12: the clock runs from Wed 22 Oct 9:06 to Sat 25 Oct 14:05 (hours from Wed 0:00), the days marked
-// on a line and 7:40 on Saturday in forest, then the summary. Pages 06 to 11 sit inside this jump for now.
-const T0 = 9 + 6 / 60, T1 = 72 + 14 + 5 / 60
-const xAt = (t: number) => ((t - T0) / (T1 - T0)) * 100
-const DAYNAMES = ['WED 22 OCT', 'THU 23 OCT', 'FRI 24 OCT', 'SAT 25 OCT']
-const fmt = (t: number) => [DAYNAMES[Math.min(3, Math.floor(t / 24))], `${Math.floor(t % 24)}:${String(Math.floor((t * 60) % 60)).padStart(2, '0')}`]
-function TimeSkip({ onDone }: { onDone: () => void }) {
-  const done = useRef(onDone)
-  const root = useRef<HTMLDivElement>(null)
-  const day = useRef<HTMLSpanElement>(null)
-  const clock = useRef<HTMLSpanElement>(null)
-  const fill = useRef<HTMLSpanElement>(null)
-  useLayoutEffect(() => {
-    if (still()) { done.current(); return }
-    const o = { t: T0 }
-    const tl = gsap.timeline({ onComplete: () => done.current() })
-      .fromTo(root.current, { opacity: 0 }, { opacity: 1, duration: 0.3 })
-      .to(o, {
-        t: T1, duration: 2.4, ease: 'power2.inOut', onUpdate: () => {
-          const [d, c] = fmt(o.t)
-          if (day.current) day.current.textContent = d
-          if (clock.current) clock.current.textContent = c
-          if (fill.current) fill.current.style.width = xAt(o.t) + '%'
-        },
-      })
-    return () => { tl.kill() }
-  }, [])
-  return (
-    <div className="skip" ref={root} aria-live="polite">
-      <span className="day-l" ref={day}>WED 22 OCT</span>
-      <span className="clock num" ref={clock}>9:06</span>
-      <div className="run" aria-hidden="true">
-        <span className="base" /><span className="fill" ref={fill} />
-        {([[24, 'THU'], [48, 'FRI'], [72, 'SAT']] as const).map(([t, l]) => (
-          <span key={l}><i style={{ left: `${xAt(t)}%` }} /><em style={{ left: `${xAt(t)}%` }}>{l}</em></span>
-        ))}
-        <i className="is-ride" style={{ left: `${xAt(79 + 40 / 60)}%` }} />
-      </div>
-      <p className="small">Booking, delivery, hand-over and the ride happen here. Pages 06 to 11 come in the next batches.</p>
-    </div>
   )
 }
