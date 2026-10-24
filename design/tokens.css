@@ -19,6 +19,13 @@
   --mint: #D7EBDD;
   --glow: #9FD3B1;
   --photo-ink: #0E1411;   /* behind photos while they load */
+  --deep: #1B221E;        /* behind the 07 bike photo */
+  --photo-dim: linear-gradient(rgba(14, 20, 17, 0.35), rgba(14, 20, 17, 0.15) 40%, rgba(14, 20, 17, 0.55));
+  --on-photo-ink: rgba(255, 255, 255, 0.85);
+  --on-photo-hint: rgba(255, 255, 255, 0.8);
+  --on-cta-bar: rgba(255, 255, 255, 0.7);
+  --sheet-below: linear-gradient(transparent 60%, var(--sheet) 60%);   /* a scroller whose lower part is a white sheet */
+  --fade-sheet: linear-gradient(to top, var(--sheet), transparent);
   --bar-2: #6E7A74;       /* the second segment of a measured bar */
   --desk: #E3E5E0;        /* around the phone frame, outside the app */
   --todo-1: #E4E7E1;      /* image stand-in hatch */
@@ -73,6 +80,8 @@
   --shadow-card: 0 1px 0 var(--rule), 0 14px 30px -22px rgba(18, 24, 21, 0.35);   /* a result you can pick up */
   --shadow-docket: 0 1px 0 var(--rule), 0 12px 30px -18px rgba(18, 24, 21, 0.25); /* the search docket on Home */
   --shadow-lift: 0 18px 34px -18px rgba(0, 0, 0, 0.45);                           /* the docket on the forest band */
+  --shadow-drawer: 0 -10px 30px -12px rgba(0, 0, 0, 0.4);                         /* a drawer pulled over a photo */
+  --shadow-cta: 0 8px 24px -8px rgba(0, 0, 0, 0.35);                              /* a CTA floating over a sheet */
   --scrim: linear-gradient(to bottom, rgba(18, 24, 21, 0.35), rgba(18, 24, 21, 0));
 
   /* Scene placeholders: stand-ins for photos, not UI colours */

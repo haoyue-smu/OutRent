@@ -36,10 +36,10 @@ export function Hairline({ ink }: { ink?: boolean }) {
   return <hr className={`rule${ink ? ' is-ink' : ''}`} />
 }
 
-export function BackButton({ label, onClick, onPhoto }: { label: string; onClick: () => void; onPhoto?: boolean }) {
+export function BackButton({ label, onClick, onPhoto, icon = 'arrow-left' }: { label: string; onClick: () => void; onPhoto?: boolean; icon?: string }) {
   return (
     <button type="button" className={`back${onPhoto ? ' on-photo' : ''}`} aria-label={label} onClick={onClick}>
-      <Icon name="arrow-left" />
+      <Icon name={icon} />
     </button>
   )
 }
