@@ -1,0 +1,54 @@
+/* 03 Fit Profile. Proposed components from the board (p-hero, p-dot, p-kv, guidance box), then the page layout. Tokens only. */
+
+/* p-hero · one display number with its caption, the focal point of a screen */
+.p-hero { display: flex; flex-direction: column; gap: 2px; }
+.p-hero .k { font-size: var(--fs-foot); line-height: var(--lh-foot); color: var(--muted); }
+.p-hero .sub { font-size: var(--fs-callout); line-height: var(--lh-callout); color: var(--muted); }
+
+/* p-dot · unread or unseen marker */
+.p-dot { width: 10px; height: 10px; border-radius: var(--r-pill); background: var(--sage); flex: none; }
+
+/* p-kv · label left, value right, one line each */
+.p-kv { display: flex; flex-direction: column; }
+.p-kv > div { display: flex; align-items: baseline; justify-content: space-between; gap: var(--s-3); min-height: var(--touch); padding: 10px 0; border-bottom: 1px solid var(--line); font-size: var(--fs-callout); line-height: var(--lh-callout); }
+.p-kv > div:last-child { border-bottom: 0; }
+.p-kv > div > span:first-child { color: var(--ink); min-width: 0; }
+.p-kv > div > span:last-child { font-weight: 600; text-align: right; }
+.p-kv .is-muted { color: var(--muted); font-weight: 400; }
+
+/* guidance box · the .field-error shape in sage, for a hint that is not an error */
+.field-error.is-guide { background: var(--sage-tint); color: var(--sage-dark); }
+
+/* ---------- profile area ---------- */
+.fit-profile { padding: var(--top-safe) var(--gutter) 120px; display: flex; flex-direction: column; gap: var(--s-5); }
+.fit-who { display: flex; align-items: center; gap: 14px; }
+.fit-avatar { width: 64px; height: 64px; border-radius: var(--r-pill); background: var(--sage-tint); color: var(--sage-dark); font-size: var(--fs-title); font-weight: 700; display: flex; align-items: center; justify-content: center; flex: none; }
+.fit-stack { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.fit-strong { font-weight: 600; }
+.fit-chev { color: var(--muted); flex: none; }
+
+.fit-card { display: flex; flex-direction: column; gap: var(--s-3); width: 100%; text-align: left; font: inherit; color: var(--ink); cursor: pointer; }
+.fit-card-head { display: flex; justify-content: space-between; align-items: center; }
+.fit-card .stats { width: 100%; }
+
+.fit-section { display: flex; flex-direction: column; gap: var(--s-2); }
+.fit-list { padding: 0 var(--s-4); }
+.fit-row { display: flex; align-items: center; gap: var(--s-3); min-height: 52px; padding: var(--s-2) 0; text-decoration: none; color: var(--ink); border-bottom: 1px solid var(--line); }
+.fit-row:last-child { border-bottom: 0; }
+.fit-lead { color: var(--sage); flex: none; }
+.fit-row.is-quiet, .fit-row.is-quiet .fit-lead { color: var(--muted); }
+
+/* ---------- fit editor ---------- */
+.fit-bar { position: sticky; top: 0; z-index: 5; background: var(--paper); }
+.fit-bar-title { margin: 0; }
+.fit-page { padding: var(--s-3) var(--gutter) 48px; display: flex; flex-direction: column; gap: var(--s-5); }
+.fit-page.has-bar { padding-bottom: 120px; }
+.fit-section.is-anchor { scroll-margin-top: 106px; }
+.fit-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-2); }
+.fit-page .field input { scroll-margin: 106px 0 120px; }
+.field input.is-empty { flex: 1; min-width: 0; width: auto; font-size: var(--fs-body); font-weight: 400; letter-spacing: 0; }
+.fit-page .explainer { margin: 0; }
+.fit-tiles { padding: var(--s-2); }
+.fit-live { display: flex; flex-direction: column; gap: 10px; }
+.fit-note { display: flex; gap: var(--s-2); align-items: flex-start; }
+.fit-note .icon { flex: none; }

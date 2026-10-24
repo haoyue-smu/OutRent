@@ -1,4 +1,5 @@
 import { useState, type ReactNode } from 'react'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import lockup from '@design/brand/outrent-lockup.svg?raw'
 import { GoTo } from '../../shell/Link'
 import { Icon } from '../../shell/Icon'
@@ -47,18 +48,26 @@ const startThreads = FRAME === 'messages-empty' || FRAME === 'no-bookings' ? []
 type View = 'home' | 'notifications' | 'messages'
 
 export default function Home() {
-  const [view, setView] = useState<View>(isNotices ? 'notifications' : isMessages ? 'messages' : 'home')
+  // ?state=notifications or ?state=messages opens that list from another page (03 Profile); back returns there.
+  const asked = useSearchParams()[0].get('state')
+  const navigate = useNavigate()
+  const [view, setView] = useState<View>(
+    asked === 'notifications' || isNotices ? 'notifications' : asked === 'messages' || isMessages ? 'messages' : 'home')
+  const leave = () => {
+    if (asked && (window.history.state?.idx ?? 0) > 0) navigate(-1)
+    else setView('home')
+  }
   const [notices, setNotices] = useState(startNotices)
   const [threads] = useState(startThreads)
 
   // Leaving the notification centre marks everything in it as seen.
   const backFromNotices = () => {
     setNotices((all) => all.map((n) => ({ ...n, unseen: false })))
-    setView('home')
+    leave()
   }
 
   if (view === 'notifications') return <Notifications notices={notices} onBack={backFromNotices} />
-  if (view === 'messages') return <Messages threads={threads} onBack={() => setView('home')} />
+  if (view === 'messages') return <Messages threads={threads} onBack={leave} />
 
   const unseen = notices.filter((n) => n.unseen).length
   return (

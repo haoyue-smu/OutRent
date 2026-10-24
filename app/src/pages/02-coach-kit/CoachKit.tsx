@@ -86,7 +86,7 @@ export default function CoachKit() {
                   <span className="t-foot">Your frame size appears once your height is in</span>
                 </div>
                 <div className="kit-actions">
-                  <GoTo page="03-fit-profile" className="btn is-block">Add your height</GoTo>
+                  <GoTo page="03-fit-profile" state="fit-empty" className="btn is-block">Add your height</GoTo>
                   <GoTo page="04-search-results" className="btn is-text">Find bikes without a size</GoTo>
                 </div>
               </>

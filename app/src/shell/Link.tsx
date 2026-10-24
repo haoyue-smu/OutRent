@@ -3,6 +3,7 @@ import type { ComponentProps } from 'react'
 import { routeFor } from '../pages'
 
 // Links between pages go by page id, the same way the plain-HTML pages used data-goes-to.
-export function GoTo({ page, ...rest }: { page: string } & Omit<ComponentProps<typeof RouterLink>, 'to'>) {
-  return <RouterLink to={routeFor(page)} {...rest} />
+// state opens one of the page's frames (?state=…), for example the notification centre on 01.
+export function GoTo({ page, state, ...rest }: { page: string; state?: string } & Omit<ComponentProps<typeof RouterLink>, 'to' | 'state'>) {
+  return <RouterLink to={routeFor(page) + (state ? `?state=${state}` : '')} {...rest} />
 }
