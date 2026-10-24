@@ -205,6 +205,9 @@ function EndCard({ onRestart, onClose }: { onRestart: () => void; onClose: () =>
         <div className="pg"><b>03</b><span>Fit profile. An instrument: drag the scales and the bike answers.</span></div>
         <div className="pg"><b>04</b><span>Search. Three bikes, each timed against the 8:00 start.</span></div>
         <div className="pg"><b>05</b><span>Listing. A proof: this exact bike, its marks circled, its price measured.</span></div>
+        <div className="pg"><b>06</b><span>Delivery and return. Both ends of Saturday.</span></div>
+        <div className="pg"><b>07</b><span>Fees and liability. A statement and the terms.</span></div>
+        <div className="pg"><b>08</b><span>Booked. A ticket and what happens next.</span></div>
         <div className="pg"><b>12</b><span>Rental summary. A record: Saturday drawn to scale, ending in S$150 back.</span></div>
       </div>
       <button type="button" className="cta" onClick={onRestart} autoFocus>Start again at Home</button>

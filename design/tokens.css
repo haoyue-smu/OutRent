@@ -52,6 +52,20 @@
   --on-forest-dot: #CFE5D6;
   --tabbar-bg: rgba(243, 244, 240, 0.9);
 
+  /* The job tag (08): the kraft tag a bike shop hangs on a bike */
+  --tag-paper: #EFE7D6;
+  --tag-ink: #2A241A;
+  --tag-ink-2: #5C5240;
+  --tag-label: #7B6D52;
+  --tag-rule: #CDBF9F;
+  --tag-ring: #C9B994;
+  --tag-string: #8C7B5E;
+  --tag-grain: repeating-linear-gradient(0deg, rgba(120, 100, 60, 0.035) 0 1px, transparent 1px 3px);
+  --shadow-tag: 0 20px 40px -18px rgba(40, 30, 10, 0.45);
+  --shadow-tag-hole: 0 0 0 4px var(--tag-ring), inset 0 1px 2px rgba(0, 0, 0, 0.25);
+  --banner-bg: rgba(246, 247, 244, 0.82);
+  --shadow-banner: 0 10px 30px -10px rgba(0, 0, 0, 0.3);
+
   /* On photos */
   --on-photo-bg: rgba(255, 255, 255, 0.72);
   --on-photo-border: rgba(255, 255, 255, 0.55);
