@@ -61,7 +61,8 @@
 .home-entry .home-stack { gap: 2px; }
 .home-entry .p-dot { align-self: center; }
 .home-avatar { width: 52px; height: 52px; border-radius: var(--r-pill); flex: none; }
-.home-preview { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* Two lines, so a short message shows whole and a long one is not cut mid-word on the first line. */
+.home-preview { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; }
 .home-preview.is-unread { color: var(--ink); }
 .home-when { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; align-self: flex-start; padding-top: 2px; }
 .home-when .is-unread { color: var(--sage-dark); font-weight: 600; }
