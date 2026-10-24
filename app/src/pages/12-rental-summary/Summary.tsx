@@ -182,7 +182,7 @@ export default function Summary() {
 
       {/* Arriving from the 05 time skip: the paper cover lifts once the summary is in place. */}
       <div className="s-cover" ref={cover} aria-hidden="true" style={fromSkip && !still() ? undefined : { visibility: 'hidden' }} />
-      {end && <EndCard onRestart={() => navigate(routeFor('03-fit-profile'))} onClose={() => setEnd(false)} />}
+      {end && <EndCard onRestart={() => navigate(routeFor('01-home'))} onClose={() => setEnd(false)} />}
       {toastNode}
     </>
   )
@@ -196,15 +196,18 @@ function EndCard({ onRestart, onClose }: { onRestart: () => void; onClose: () =>
   }, [])
   return (
     <div className="end" ref={el} role="dialog" aria-modal="true" aria-labelledby="end-h" onKeyDown={(e) => { if (e.key === 'Escape') onClose() }}>
-      <Mono>End of slice 1</Mono>
+      <Mono>End of the built route</Mono>
       <h2 className="t-h1" id="end-h">13 Weekly Ride opens here, filled in from this rental.</h2>
       <p className="lede">The idea of the whole app: OutRent sets a bike to your body before it arrives, so every screen reads like a fitting sheet. Daniel’s numbers are the biggest things on it, marked with a fitter’s line. Photos are dated evidence. Motion is a measurement being taken.</p>
       <div>
+        <div className="pg"><b>01</b><span>Home. A docket: what, to where, when.</span></div>
+        <div className="pg"><b>02</b><span>Coach’s post. Her photo, her note, her list.</span></div>
         <div className="pg"><b>03</b><span>Fit profile. An instrument: drag the scales and the bike answers.</span></div>
+        <div className="pg"><b>04</b><span>Search. Three bikes, each timed against the 8:00 start.</span></div>
         <div className="pg"><b>05</b><span>Listing. A proof: this exact bike, its marks circled, its price measured.</span></div>
         <div className="pg"><b>12</b><span>Rental summary. A record: Saturday drawn to scale, ending in S$150 back.</span></div>
       </div>
-      <button type="button" className="cta" onClick={onRestart} autoFocus>Start again at 03</button>
+      <button type="button" className="cta" onClick={onRestart} autoFocus>Start again at Home</button>
     </div>
   )
 }

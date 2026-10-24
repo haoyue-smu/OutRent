@@ -59,6 +59,10 @@
   --glass-blur: blur(16px) saturate(150%);
   --shadow-float: 0 8px 24px rgba(18, 24, 21, 0.12);
   --shadow-ring: 0 0 0 1px rgba(0, 0, 0, 0.18);   /* white rings and lenses on photos */
+  --shadow-sheet: 0 1px 0 var(--rule);             /* a white sheet resting on paper */
+  --shadow-card: 0 1px 0 var(--rule), 0 14px 30px -22px rgba(18, 24, 21, 0.35);   /* a result you can pick up */
+  --shadow-docket: 0 1px 0 var(--rule), 0 12px 30px -18px rgba(18, 24, 21, 0.25); /* the search docket on Home */
+  --shadow-lift: 0 18px 34px -18px rgba(0, 0, 0, 0.45);                           /* the docket on the forest band */
   --scrim: linear-gradient(to bottom, rgba(18, 24, 21, 0.35), rgba(18, 24, 21, 0));
 
   /* Scene placeholders: stand-ins for photos, not UI colours */
@@ -100,7 +104,9 @@
   --r-bar: 3px;
   --r-tick: 6px;
   --r-thumb: 10px;
+  --r-inset: 13px;   /* a photo inside a sheet */
   --r-lens: 14px;
+  --r-sheet-s: 20px; /* result and post sheets */
   --r-tile: 18px;
   --r-card: 22px;
   --r-sheet: 28px;

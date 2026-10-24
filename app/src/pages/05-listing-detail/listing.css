@@ -104,6 +104,7 @@ figure.seen .rlab { opacity: 1; }
 .skip .run .base { position: absolute; left: 0; right: 0; top: 12px; height: 1px; background: var(--rule); }
 .skip .run .fill { position: absolute; left: 0; top: 11px; width: 0; height: 3px; border-radius: var(--r-pill); background: var(--forest); }
 .skip .run i { position: absolute; top: 6px; width: 1px; height: 13px; background: var(--ink-3); }
+.skip .run i.is-ride { background: var(--forest); }
 .skip .run em { position: absolute; top: 22px; transform: translateX(-50%); font-style: normal; font-family: var(--mono); font-size: var(--fs-mono-s); color: var(--ink-3); white-space: nowrap; }
 .skip p { margin: 0; }
 

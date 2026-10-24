@@ -16,7 +16,7 @@ const STAGED = args.includes("--staged");
 const LEAD = process.env.OUTRENT_LEAD === "1";
 
 // Direction (24 Oct): the type scale runs from 10 px mono ticks to the 76 px hero figure.
-const FONT_SIZES = new Set([10, 10.5, 11, 12, 12.5, 13, 14, 15, 16, 17, 18, 19, 20, 22, 24, 28, 30, 32, 34, 38, 40, 44, 76]);
+const FONT_SIZES = new Set([9, 9.5, 10, 10.5, 11, 12, 12.5, 13, 13.5, 14, 14.5, 15, 15.5, 16, 17, 18, 19, 20, 21, 22, 24, 26, 28, 30, 32, 34, 38, 40, 44, 76]);
 const RADII = new Set([0, 5, 6, 10, 12, 14, 16, 18, 22, 27, 28, 999]);
 const NAMED_COLOURS = /\b(white|black|red|green|blue|yellow|orange|purple|pink|gray|grey|brown|gold|cyan|magenta|lime|navy|teal|silver)\b/i;
 const COMPONENT_CLASSES = new Set([...readFileSync(join(ROOT, "design", "components.css"), "utf8").matchAll(/\.([a-zA-Z][\w-]*)/g)].map((m) => m[1]));

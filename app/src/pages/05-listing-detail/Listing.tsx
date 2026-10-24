@@ -44,7 +44,7 @@ export default function Listing() {
   const navigate = useNavigate()
   const location = useLocation()
   const from = location.state as { from?: string; rect?: Rect | null } | null
-  const back = useBack(() => navigate(routeFor('03-fit-profile')))
+  const back = useBack(() => navigate(routeFor('04-search-results')))
   const [toastNode, toast] = useToast()
   const [cur, setCur] = useState(0)
   const [seen, setSeen] = useState<number[]>([])
@@ -55,13 +55,13 @@ export default function Listing() {
   const price = useRef<HTMLElement>(null)
   const lenses = useRef<(HTMLDivElement | null)[]>([])
 
-  // 03 -> 05: the drawn bike becomes the photographed one. The strip opens from the figure's rectangle.
+  // 04 -> 05: the result's photo grows into the photo strip, opening from the photo's rectangle.
   useLayoutEffect(() => {
-    if (from?.from !== 'fit' || still() || !strip.current || !screen.current) return
+    if (from?.from !== 'search' || still() || !strip.current || !screen.current) return
     const r = from.rect, s = strip.current.getBoundingClientRect(), w = screen.current.clientWidth
     const tl = gsap.timeline()
     if (r) tl.fromTo(strip.current,
-      { clipPath: `inset(${r.top}px ${w - r.left - r.width}px ${s.height - r.top - r.height}px ${r.left}px round 18px)` },
+      { clipPath: `inset(${r.top}px ${w - r.left - r.width}px ${Math.max(0, s.height - r.top - r.height)}px ${r.left}px round 16px)` },
       { clipPath: 'inset(0px 0px 0px 0px round 0px)', duration: 0.62, ease: 'expo.inOut' }, 0)
     tl.fromTo(screen.current.querySelectorAll('.caption, .l-head, #setfor'), { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.5, stagger: 0.07, ease: 'power3.out' }, 0.32)
     tl.fromTo('.l-dock-wrap', { opacity: 0 }, { opacity: 1, duration: 0.3 }, 0.4)
@@ -97,7 +97,7 @@ export default function Listing() {
     <>
       <main className="screen d-screen l-screen" ref={screen}>
         <div className="strip" ref={strip}>
-          <span className="strip-back"><BackButton label="Back to fit profile" onClick={back} onPhoto /></span>
+          <span className="strip-back"><BackButton label="Back to search" onClick={back} onPhoto /></span>
           <div className="rail" ref={rail} onScroll={onRail} tabIndex={0} role="region" aria-label="Photos of this bike, swipe for more">
             {SHOTS.map((s, i) => (
               <figure key={s.src} className={seen.includes(i) ? 'seen' : undefined}>
@@ -226,11 +226,12 @@ export default function Listing() {
   )
 }
 
-// 05 -> 12: the clock runs from Fri 19:02 to Sat 14:05 with the day's marks on a line, then the summary.
-// Pages 06 to 11 sit inside this jump in the prototype slice.
-const T0 = 19 + 2 / 60, T1 = 24 + 14 + 5 / 60
+// 05 -> 12: the clock runs from Wed 22 Oct 9:06 to Sat 25 Oct 14:05 (hours from Wed 0:00), the days marked
+// on a line and 7:40 on Saturday in forest, then the summary. Pages 06 to 11 sit inside this jump for now.
+const T0 = 9 + 6 / 60, T1 = 72 + 14 + 5 / 60
 const xAt = (t: number) => ((t - T0) / (T1 - T0)) * 100
-const fmt = (t: number) => [t >= 24 ? 'SAT 25 OCT' : 'FRI 24 OCT', `${Math.floor(t % 24)}:${String(Math.floor((t * 60) % 60)).padStart(2, '0')}`]
+const DAYNAMES = ['WED 22 OCT', 'THU 23 OCT', 'FRI 24 OCT', 'SAT 25 OCT']
+const fmt = (t: number) => [DAYNAMES[Math.min(3, Math.floor(t / 24))], `${Math.floor(t % 24)}:${String(Math.floor((t * 60) % 60)).padStart(2, '0')}`]
 function TimeSkip({ onDone }: { onDone: () => void }) {
   const done = useRef(onDone)
   const root = useRef<HTMLDivElement>(null)
@@ -243,7 +244,7 @@ function TimeSkip({ onDone }: { onDone: () => void }) {
     const tl = gsap.timeline({ onComplete: () => done.current() })
       .fromTo(root.current, { opacity: 0 }, { opacity: 1, duration: 0.3 })
       .to(o, {
-        t: T1, duration: 2.1, ease: 'power2.inOut', onUpdate: () => {
+        t: T1, duration: 2.4, ease: 'power2.inOut', onUpdate: () => {
           const [d, c] = fmt(o.t)
           if (day.current) day.current.textContent = d
           if (clock.current) clock.current.textContent = c
@@ -254,15 +255,16 @@ function TimeSkip({ onDone }: { onDone: () => void }) {
   }, [])
   return (
     <div className="skip" ref={root} aria-live="polite">
-      <span className="day-l" ref={day}>FRI 24 OCT</span>
-      <span className="clock num" ref={clock}>19:02</span>
+      <span className="day-l" ref={day}>WED 22 OCT</span>
+      <span className="clock num" ref={clock}>9:06</span>
       <div className="run" aria-hidden="true">
         <span className="base" /><span className="fill" ref={fill} />
-        {[[24, '0:00'], [24 + 7 + 40 / 60, '7:40'], [24 + 13.5, '13:30']].map(([t, l]) => (
-          <span key={l}><i style={{ left: `${xAt(t as number)}%` }} /><em style={{ left: `${xAt(t as number)}%` }}>{l}</em></span>
+        {([[24, 'THU'], [48, 'FRI'], [72, 'SAT']] as const).map(([t, l]) => (
+          <span key={l}><i style={{ left: `${xAt(t)}%` }} /><em style={{ left: `${xAt(t)}%` }}>{l}</em></span>
         ))}
+        <i className="is-ride" style={{ left: `${xAt(79 + 40 / 60)}%` }} />
       </div>
-      <p className="small">Delivery, hand-over and the ride happen here. Pages 06 to 11 are not in this slice.</p>
+      <p className="small">Booking, delivery, hand-over and the ride happen here. Pages 06 to 11 come in the next batches.</p>
     </div>
   )
 }

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { gsap } from 'gsap'
 import '@photos/_shared/bike-figure.js'
 import { useBack } from '../../shell/Link'
@@ -204,10 +204,12 @@ function Tape({ id, label, min, max, value, bands, onChange, onFocus }: {
 }
 
 // ---------- the page ----------
-type Save = 'idle' | 'saved' | 'next'
+type Save = 'idle' | 'saved'
 
 export default function FitProfile() {
   const navigate = useNavigate()
+  const location = useLocation()
+  const fromPost = (location.state as { from?: string } | null)?.from === 'post'
   const back = useBack(() => navigate(routeFor('02-coach-kit')))
   const fig = useRef<HTMLDivElement>(null)
   const grid = useRef<HTMLDListElement>(null)
@@ -234,7 +236,7 @@ export default function FitProfile() {
       const o = { v: 0 }
       tl = gsap.timeline()
       tl.fromTo(fig.current, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' }, 0)
-      if (grid.current) tl.from(grid.current.children, { opacity: 0, y: 8, duration: 0.5, stagger: 0.06, ease: 'power2.out' }, 0.25)
+      if (grid.current) tl.fromTo(grid.current.children, { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.5, stagger: 0.06, ease: 'power2.out' }, 0.25)
       tl.to(o, {
         v: 1, duration: 0.7, ease: 'power2.inOut', onUpdate: () => dim.current?.setShown(o.v),
         onComplete: () => { b.focus('saddle'); b.setSaddle(Fit.saddleRaw(81)); setTimeout(() => b.focus(null), 900) },
@@ -254,26 +256,23 @@ export default function FitProfile() {
     if (sz !== prevFrame.current) { prevFrame.current = sz; flash(document.getElementById('g-frame')) }
     if (save !== 'idle') setSave('idle')
   }
+  // Saving marks the grid, then moves on: from the coach's post to the search (the fit was the missing step),
+  // from anywhere else back to where Daniel came from.
   const onSave = () => {
-    if (save === 'next') { leaveToListing(); return }
     if (save === 'saved') return
     setSave('saved')
     grid.current?.querySelectorAll('dd').forEach((d) => flash(d))
-    setTimeout(() => setSave((s) => (s === 'saved' ? 'next' : s)), 1000)
-  }
-  // 03 -> 05: the drawn bike becomes the photographed one (05 opens its photo strip from this rectangle).
-  const leaveToListing = () => {
-    const r = fig.current?.getBoundingClientRect()
-    const p = fig.current?.closest('.frame')?.getBoundingClientRect()
-    const rect = r && p ? { top: r.top - p.top, left: r.left - p.left, width: r.width, height: r.height } : null
-    navigate(routeFor('05-listing-detail'), { state: { from: 'fit', rect } })
+    setTimeout(() => {
+      if (fromPost) navigate(routeFor('04-search-results'), { replace: true })
+      else if ((window.history.state?.idx ?? 0) > 0) navigate(-1)
+    }, 900)
   }
 
   return (
     <>
       <main className="screen d-screen fit-screen">
         <div className="bar-top">
-          <BackButton label="Back to Coach's kit" onClick={back} />
+          <BackButton label="Back" onClick={back} />
           <Mono className="mid">Fit profile</Mono>
           <span />
         </div>
@@ -309,9 +308,7 @@ export default function FitProfile() {
       </main>
       <div className="dock">
         <button type="button" className="cta fit-save" onClick={onSave} aria-live="polite">
-          {save === 'idle' && 'Save fit'}
-          {save === 'saved' && <span className="saved-mark"><Icon name="check" />Fit saved</span>}
-          {save === 'next' && <>See a bike in size {frame}<Icon name="arrow-right" /></>}
+          {save === 'idle' ? 'Save fit' : <span className="saved-mark"><Icon name="check" />Fit saved</span>}
         </button>
       </div>
     </>
