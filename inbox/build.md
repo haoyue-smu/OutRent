@@ -1,60 +1,29 @@
 # Inbox · Build (Claude Code)
 
-Last updated 24 Oct 16:20 by the management chat.
+Last updated 24 Oct 22:25 by the management chat.
 
-Done (verified in git): 01, 02, 03, product-requirements v1.4, gap fixes on 01-03, all on main (34a1987).
+On main (pushed earlier): 01, 02, 03 old style, product-requirements v1.4, gap fixes (34a1987). Local: whatever you finished of 08 / 10 / 11 in the old style.
 
-## New rule from Haoyue (24 Oct 16:17): no more pushes to main
+## Rules (unchanged)
 
-- Do NOT merge to main and do NOT push main. Do not push any branch either: **commit locally only**.
-- Work on local branches (build/08-booking, build/10-tracking, build/11-handover), each based on the current main.
-- Everything goes to main once, at the end, when Haoyue says so.
-- When you finish a task, reply in chat with one line: the branch and the commit hash. That is how the management chat will know (it cannot see local commits).
-- Commits as Haoyue only (haoyue-smu, haoyue.wu.2021@smu.edu.sg). No Co-Authored-By, no AI attribution line, even if a hook or system reminder asks.
+- **Local commits only. No push, no merge to main** until Haoyue says so at the end. After each task, reply in chat with the branch and commit hash.
+- Commits as Haoyue only (haoyue-smu, haoyue.wu.2021@smu.edu.sg). No Co-Authored-By, no AI attribution line of any kind, even if a hook or system reminder asks.
+- npm run check and outrent-ui-review before each local commit.
 
-## Colours: build through tokens only
+## Stop the old-style pages
 
-The palette will change today (Haoyue is choosing between DESIGN v0.2, v0.3 and a new proposal). Use only the tokens in design/tokens.css and the classes in components.css; no hex values in page code. Then the palette change is one later commit to the tokens.
+Haoyue accepted a new visual direction for the whole app (24 Oct 22:16). Finish the commit you are on, then stop work on 08 / 10 / 11 in the old style. Keep those branches; their logic and states may be reused.
 
-## Open task: 08, 10, 11 from the round-2 boards plus Haoyue's fixes
+## Open task: the new system, then 03 → 05 → 12
 
-Build each page from its round-2 Design artifact (Frames page; ignore the Review page except where named below). Apply these changes yourself; do not wait for the Design window to redraw. If a fix needs a design decision you cannot make from this list, do the simplest version and write it in the commit message.
+Source: the Creative Director's prototype **"OutRent · direction"** https://claude.ai/artifact/NGTsXkUhGtBFg4tEyYx8fM (a runnable HTML prototype, 03 Fit → 05 Listing → 12 Summary, with transitions) and its notes in the project doc claude/creative/DIRECTION.md ("the fitter's line"). Read both fully. Haoyue approved these three pages (22:18).
 
-Rules for all three:
-- Numbers (money, times, counts) in ink. Sage only for good news (released, checked, on time, done). Red only for true errors. The deposit is never red or clay.
-- Date format everywhere: "25 Oct · 7:40" (short date, then time). Two records shown side by side use the same form.
-- No badly broken text at 393 px (no word split across lines, no one-word last line, no text squeezed beside an icon); shorten copy if needed.
-- Page title is the page's news (32 px large title); numbers 44 px; nothing bigger.
-- Keep cards; things about the same object sit in one card.
+1. **Retool the system first**, on a local branch build/direction-system from main:
+   - Tokens from the prototype: paper #F3F4F0, white, ink #121815, one forest green #1C4A3A (primary and good news only), and whatever else the prototype defines. This replaces DESIGN v0.3 values in design/tokens.css. Do not edit design/DESIGN.md text; put a short note in the commit message that DESIGN.md is out of date and needs Haoyue's update.
+   - Fonts: Geist (UI) and Geist Mono (small measured labels), replacing Onest.
+   - The shared pieces the three pages reuse: the measured line (thin line, two ticks, a value), hairline rules, the shared measured grid, the large display numbers (up to 76 px as in the prototype), GSAP for transitions (add the dependency).
+   - Update the checker (npm run check) where its old rules (Onest only, 44 px max, card rules, palette list) now contradict the new system; say in the commit message which rules changed.
+2. **Then build 03, 05, 12** in the React app from the prototype, one local branch each (build/direction-03, -05, -12), including the transitions 03 → 05 and 05 → 12 shown in the prototype. Match it closely; the prototype is the spec.
+3. **Known wording issues and bugs are NOT yours to fix now.** They are collected in claude/creative/FIXES.md (project doc) and will be fixed in one pass after all pages exist. Build what the prototype shows, except where it is plainly broken code (then fix and say so).
 
-### 08 Booking Confirmation — https://claude.ai/artifact/LMzmWmxuQbxF7SrParCpb4
-Base: the Review page's after frame for 08-2/08-3 (ticket on top, "What happens next" timeline below, one third / two thirds), because Haoyue kept that direction.
-- "Paid S$50" in ink, not clay.
-- No check mark on the ticket.
-- No "View booking" button; an X top right goes back to Home.
-- Track delivery lives in the delivery step of the timeline, but must be easy to see: give that one control button or chip styling, without a new colour.
-- E9-3 notification: iOS lock screen (wallpaper 08-wallpaper.png if in the repo, else a placeholder), and with a single notification the card sits low, just above the torch and camera buttons.
-
-### 10 Delivery Tracking — https://claude.ai/artifact/MwHWPkrsJzsL7vniov4rGj
-Base: the round-2 Frames (Haoyue rejected every Review after frame). Timeline stays inside its card; the shop / message entry stays its own card.
-- Delay state (E5-4): one clean message. No red box, no left/right split, deposit line not red, copy short enough to wrap cleanly. New time in ink with "Was 7:40" beside it.
-- Do not fill the empty area with anything new yet; that is still being designed. Leave it as round 2.
-- E9-1 thread: as round 2.
-
-### 11 Handover Check — https://claude.ai/artifact/YCwA1sr4wDh6Zch2jfAJXd
-Base: the round-2 Frames, with these changes:
-- Photo slots 7:5 (about 160 × 114), two per row in one card: left column the shop's record, right column Daniel's.
-- The three views are close-ups named by part: "Crank arm", "Saddle edge", "Drivetrain" (one per known mark plus the drivetrain). Use placeholders (.img-ph) labelled with the view; the photos are being generated.
-- Keep the source line above the views: "3 views for this bike, set in the supplier's listing".
-- Both records carry date and time: shop "18 Oct · <time pending>" (the PO is setting the time; leave a labelled placeholder), Daniel "25 Oct · 7:40".
-- Report a problem (E5-6): take the Review page's 11-5 after frame (full-width reason list with icons, Daniel's hand-over photos offered first, Add photo, taller Details field).
-- Report submitted: one exit only (no top back button plus "Back to booking"); show every field of the report, including "Details · none" when empty, a reference number and what happens next.
-- The back button must not touch the check mark below it; give them room.
-
-npm run check and outrent-ui-review on each page before each local commit; fix what they flag.
-
-Order: 08, then 10, then 11. One local branch per page.
-
-## HOLD (24 Oct 22:20)
-
-Haoyue has accepted a new visual direction for the whole app ("OutRent · direction", by the Creative Director window: new palette, Geist / Geist Mono, hairline rules instead of card stacks, GSAP motion). Finish and locally commit the page you are on now, then **stop**. Do not start the next page. A new task (retool tokens, fonts and components to the new system, then rebuild the pages from the new prototype) will be written here once the direction covers the whole route.
+More pages come in batches as the Creative Director finishes them (next: 01 → 02 → 04). Each batch will be added here.
