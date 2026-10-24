@@ -39,3 +39,7 @@ After 04: build **01 Home** from "OutRent · direction" (open with no hash) on l
 ## Added 25 Oct 01:42: 06, 07, 08 approved
 
 After 01: build **06 Delivery & Return → 07 Fees & Liability → 08 Booking Confirmation** from "OutRent · direction" (latest version; use the page links in the prototype), one local branch each (build/direction-06, -07, -08), with the transitions between them and from 05. Any images they use are in OutRent Image Library (https://claude.ai/artifact/GeHjSLftCLrd5SGMvyumVU) or listed in the project doc claude/creative/IMAGES.md. Your old-style 08 branch may hold reusable logic; the look comes from the prototype.
+
+## Added 25 Oct 02:25: 10, 11, 13 approved
+
+After 08: build **10 Delivery Tracking → 11 Handover Check → 13 Weekly Ride** from "OutRent · direction" (v20 or later), one local branch each (build/direction-10, -11, -13), with the transitions 08 → 10 → 11 → 12 → 13. 10's map, moving van and drawer, and 11's record card that folds into a slip, are the key motions; match the prototype's timing. Note from the prototype: never use scrollIntoView (it scrolled the phone frame); scroll only the page's own list.
