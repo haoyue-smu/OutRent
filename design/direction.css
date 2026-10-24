@@ -1,0 +1,63 @@
+/* OutRent · the fitter's line · shared pieces (24 Oct 2026)
+   Every screen is drawn like a fitting sheet: Daniel's numbers are the largest things on it, and each one is
+   marked the way a fitter marks a tube, a thin line, two ticks, a value. Uses only tokens.css.
+   Pieces: mono label, hairline, measured grid, measured line, hero number, top bar and back, CTA and dock, toast. */
+
+body { font-family: var(--sans); }
+
+/* ---------- type ---------- */
+.mono { font-family: var(--mono); font-size: var(--fs-mono); line-height: var(--lh-mono); letter-spacing: var(--track-label); text-transform: uppercase; color: var(--ink-3); font-weight: 500; }
+.num { font-variant-numeric: tabular-nums; }
+.t-h1 { margin: 0; font-size: var(--fs-large); line-height: var(--lh-large); font-weight: 600; letter-spacing: var(--track-large); text-wrap: balance; }
+.t-h2 { margin: 0; font-size: var(--fs-title); line-height: var(--lh-title); font-weight: 600; letter-spacing: var(--track-title); text-wrap: balance; }
+.lede { margin: 0; font-size: var(--fs-callout); line-height: var(--lh-callout); color: var(--ink-2); text-wrap: pretty; }
+.small { font-size: var(--fs-small); line-height: var(--lh-small); color: var(--ink-2); text-wrap: pretty; }
+.link { display: inline-flex; align-items: center; min-height: var(--touch); color: var(--forest); font-weight: 600; font-size: 14px; text-decoration: none; background: none; border: 0; padding: 0; font-family: inherit; cursor: pointer; }
+/* The page's news: one figure, up to 76 px. */
+.hero-num { font-size: var(--fs-hero); line-height: var(--lh-hero); font-weight: 600; letter-spacing: var(--track-hero); font-variant-numeric: tabular-nums; }
+
+/* ---------- hairline ---------- */
+.rule { height: 0; border: 0; border-top: var(--hair) solid var(--rule); margin: 0; }
+.rule.is-ink { border-top-color: var(--ink); }
+
+/* ---------- the measured grid: the same object on 03, 05 and 12 ---------- */
+.mgrid { display: grid; grid-template-columns: repeat(var(--n, 4), minmax(0, 1fr)); border-top: var(--hair) solid var(--ink); border-bottom: var(--hair) solid var(--rule); margin: 0; }
+.mgrid > div { display: flex; flex-direction: column; gap: 5px; min-width: 0; padding: 9px 0 11px 10px; border-left: var(--hair) solid var(--rule); }
+.mgrid > div:first-child { border-left: 0; padding-left: 0; }
+.mgrid dt { margin: 0; }
+.mgrid dd { margin: 0; font-size: var(--fs-num); line-height: var(--lh-num); font-weight: 600; letter-spacing: var(--track-num); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.mgrid dd small { margin-left: 2px; font-size: var(--fs-small); font-weight: 500; letter-spacing: 0; color: var(--ink-2); }
+.mgrid dd.is-forest { color: var(--forest); }
+.mgrid .flash { animation: flash 1.1s var(--ease); }
+@keyframes flash { 0% { color: var(--forest); } 100% { color: var(--ink); } }
+
+/* ---------- the measured line: a thin line, two ticks, a value in the middle ---------- */
+.measure { position: relative; height: 24px; }
+.measure::before { content: ""; position: absolute; left: 0; right: 0; top: 11px; height: var(--hair); background: var(--ink); }
+.measure::after { content: ""; position: absolute; left: 0; right: 0; top: 6px; height: 11px; border-left: var(--hair) solid var(--ink); border-right: var(--hair) solid var(--ink); }
+.measure b { position: absolute; left: 50%; top: 0; z-index: 1; transform: translateX(-50%); padding: 0 var(--s-2); background: var(--paper); font-size: var(--fs-callout); line-height: var(--lh-callout); font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.measure.on-sheet b { background: var(--sheet); }
+
+/* ---------- top bar, back ---------- */
+.bar-top { display: grid; grid-template-columns: var(--touch) 1fr var(--touch); align-items: center; height: calc(var(--top-safe) + 48px); padding: calc(var(--top-safe) + 2px) 14px 0; }
+.bar-top .mid { text-align: center; }
+.back { width: var(--touch); height: var(--touch); border-radius: var(--r-pill); display: grid; place-items: center; border: var(--hair) solid var(--rule); background: var(--sheet); color: var(--ink); cursor: pointer; padding: 0; }
+.back .icon, .back svg { width: 20px; height: 20px; }
+.back.on-photo { border-color: var(--on-photo-border); background: var(--on-photo-bg); -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur); }
+.pad { padding-left: var(--gutter); padding-right: var(--gutter); }
+
+/* ---------- primary action and its dock ---------- */
+.cta { display: flex; align-items: center; justify-content: center; gap: 10px; height: 54px; padding: 0 var(--s-6); border: 0; border-radius: 27px; background: var(--forest); color: var(--white); font-family: inherit; font-size: var(--fs-body); font-weight: 600; letter-spacing: -0.01em; white-space: nowrap; text-decoration: none; cursor: pointer; transition: transform var(--t-press) var(--ease), background-color var(--t-quick); }
+.cta:active { transform: scale(0.97); }
+.cta .icon, .cta svg { width: 20px; height: 20px; }
+.dock { position: absolute; left: 0; right: 0; bottom: 0; z-index: 20; padding: 10px var(--s-4) var(--bottom-float); background: var(--paper); }
+.dock::before { content: ""; position: absolute; left: 0; right: 0; bottom: 100%; height: 28px; background: linear-gradient(to top, var(--paper), transparent); pointer-events: none; }
+
+/* ---------- toast ---------- */
+.toast { position: absolute; left: 50%; bottom: 104px; z-index: 60; width: max-content; max-width: 330px; padding: 10px var(--s-4); border-radius: 14px; background: var(--ink); color: var(--white); font-size: 14px; line-height: 19px; text-align: center; pointer-events: none; opacity: 0; transform: translate(-50%, 12px); transition: opacity var(--t-quick), transform var(--t-base) var(--ease); }
+.toast.on { opacity: 1; transform: translate(-50%, 0); }
+
+@media (prefers-reduced-motion: reduce) {
+  .mgrid .flash { animation: none; }
+  .cta:active { transform: none; }
+}

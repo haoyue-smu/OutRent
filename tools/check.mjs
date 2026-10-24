@@ -15,8 +15,9 @@ const args = process.argv.slice(2);
 const STAGED = args.includes("--staged");
 const LEAD = process.env.OUTRENT_LEAD === "1";
 
-const FONT_SIZES = new Set([11, 12, 13, 14, 15, 16, 17, 18, 20, 24, 28, 30, 32, 34, 38, 44]);
-const RADII = new Set([0, 16, 18, 22, 28, 999]);
+// Direction (24 Oct): the type scale runs from 10 px mono ticks to the 76 px hero figure.
+const FONT_SIZES = new Set([10, 10.5, 11, 12, 12.5, 13, 14, 15, 16, 17, 18, 19, 20, 22, 24, 28, 30, 32, 34, 38, 40, 44, 76]);
+const RADII = new Set([0, 5, 6, 10, 12, 14, 16, 18, 22, 27, 28, 999]);
 const NAMED_COLOURS = /\b(white|black|red|green|blue|yellow|orange|purple|pink|gray|grey|brown|gold|cyan|magenta|lime|navy|teal|silver)\b/i;
 const COMPONENT_CLASSES = new Set([...readFileSync(join(ROOT, "design", "components.css"), "utf8").matchAll(/\.([a-zA-Z][\w-]*)/g)].map((m) => m[1]));
 
@@ -35,14 +36,14 @@ function cssBlocks(html) {
 function checkCss(file, css, text, at) {
   const where = (i) => `line ${lineOf(text, at + i)}`;
   const clean = css.replace(/\/\*[\s\S]*?\*\//g, (c) => " ".repeat(c.length));
-  for (const m of clean.matchAll(/#[0-9a-fA-F]{3,8}\b/g)) add(file, "error", `${where(m.index)}: colour ${m[0]} written directly. Use a colour token such as var(--sage).`);
+  for (const m of clean.matchAll(/#[0-9a-fA-F]{3,8}\b/g)) add(file, "error", `${where(m.index)}: colour ${m[0]} written directly. Use a colour token such as var(--forest).`);
   for (const m of clean.matchAll(/\b(rgba?|hsla?|oklch|lab)\s*\(/gi)) add(file, "error", `${where(m.index)}: ${m[1]}() colour written directly. Use a colour token.`);
   for (const m of clean.matchAll(/(?:^|[;{\s])((?:background|background-color|color|border(?:-[a-z]+)?|fill|stroke|outline(?:-color)?)\s*:\s*[^;}]*)/gi)) {
     if (NAMED_COLOURS.test(m[1].replace(/var\([^)]*\)/g, ""))) add(file, "error", `${where(m.index)}: named colour in "${m[1].trim()}". Use a colour token.`);
   }
   for (const m of clean.matchAll(/font-family\s*:\s*([^;}]*)/gi)) {
     const v = m[1].trim();
-    if (!/^(var\(--font\)|inherit)$/.test(v)) add(file, "error", `${where(m.index)}: font-family "${v}". Only var(--font) (Onest) is allowed.`);
+    if (!/^(var\(--(font|sans|mono)\)|inherit)$/.test(v)) add(file, "error", `${where(m.index)}: font-family "${v}". Only var(--sans) (Geist) and var(--mono) (Geist Mono) are allowed.`);
   }
   for (const m of clean.matchAll(/font-size\s*:\s*([^;}]*)/gi)) {
     const v = m[1].trim();
@@ -68,8 +69,8 @@ function checkHtml(file, html, decisions) {
   for (const m of html.matchAll(/<link[^>]+href="([^"]+)"[^>]*>/gi)) {
     const href = m[1];
     if (/rel="preconnect"/.test(m[0])) continue;
-    if (/^https:\/\/fonts\.googleapis\.com\/css2\?family=Onest/.test(href) || /design\/(tokens|components)\.css$/.test(href)) continue;
-    add(file, "error", `line ${lineOf(html, m.index)}: extra stylesheet ${href}. Only the design system and Onest are allowed.`);
+    if (/^https:\/\/fonts\.googleapis\.com\/css2\?family=(Onest|Geist)/.test(href) || /design\/(tokens|components|direction)\.css$/.test(href)) continue;
+    add(file, "error", `line ${lineOf(html, m.index)}: extra stylesheet ${href}. Only the design system and its fonts (Geist, Geist Mono) are allowed.`);
   }
   for (const m of html.matchAll(/<script[^>]*\ssrc="([^"]+)"/gi)) if (/^(https?:)?\/\//.test(m[1])) add(file, "error", `line ${lineOf(html, m.index)}: external script ${m[1]}. No libraries or CDNs: plain HTML, CSS and a little JavaScript only.`);
   for (const m of html.matchAll(/<(img|picture|video|iframe)\b/gi)) add(file, "error", `line ${lineOf(html, m.index)}: <${m[1]}> found. Images must be <div class="img-ph" role="img" aria-label="Photo: …">, and the request listed in DECISIONS.md.`);
@@ -149,7 +150,7 @@ function checkAppFile(file) {
     const css = m[1].replace(/([a-zA-Z]+)\s*:\s*(["'])([^"']*)\2/g, (_, k, __, v) => k.replace(/[A-Z]/g, (c) => "-" + c.toLowerCase()) + ": " + v + ";");
     checkCss(file, css, text, m.index);
   }
-  for (const m of text.matchAll(/\b(#[0-9a-fA-F]{6}|#[0-9a-fA-F]{3})\b/g)) if (!/^#[0-9a-fA-F]{3,8}$/.test(m[1]) || /color|background|fill|stroke/i.test(text.slice(Math.max(0, m.index - 40), m.index))) add(file, "error", `line ${lineOf(text, m.index)}: colour ${m[1]} written directly. Use a token (var(--sage) …).`);
+  for (const m of text.matchAll(/\b(#[0-9a-fA-F]{6}|#[0-9a-fA-F]{3})\b/g)) if (!/^#[0-9a-fA-F]{3,8}$/.test(m[1]) || /color|background|fill|stroke/i.test(text.slice(Math.max(0, m.index - 40), m.index))) add(file, "error", `line ${lineOf(text, m.index)}: colour ${m[1]} written directly. Use a token (var(--forest) …).`);
 }
 function checkApp() {
   const src = join(ROOT, "app", "src");
