@@ -1,6 +1,6 @@
 # OutRent product requirements (Iter2 prototype)
 
-Version 1.4 · 24 Oct 2026 · Product owner window. Consumed by the UX design window and the implementation window.
+Version 1.5 · 24 Oct 2026 · Product owner window. Consumed by the UX design window and the implementation window.
 
 ## 0. How to use this document
 
@@ -48,6 +48,7 @@ The design and implementation windows do not add features and do not change requ
 | 1.2 | 23 Oct 2026 | Answers DESIGN-GAPS-v1.1 (per-item responses: project doc product/PO-ANSWERS-v1.2.md). Changed stories: E2-3, E2-4, E3-3, E3-4, E6-1, E6-3, E8-7, E8-8, E9-3, E9-5. VS-5 now returns the rental, not the old bike. MOCK-DATA.md is also at 1.2. |
 | 1.3 | 23 Oct 2026 | Answers inbox tasks of 23 Oct 20:05 (product/PO-ANSWERS-v1.3.md). Changed story: E5-1. Daniel is a first-time renter; SEED-TRIPS removed from MOCK-DATA.md, also at 1.3. |
 | 1.4 | 24 Oct 2026 | Closes open questions 7–9 on Haoyue's decisions of 24 Oct (product/PO-ANSWERS-v1.4.md). §0 MoSCoW definition rewritten around the demo route; 12 stories move Must → Should: E0-3, E7-1, E7-3, E7-4, E8-1, E8-2, E8-3, E8-4, E8-5, E8-6, E8-7, E8-8 (now 41 Must, 25 Should, 1 Could). E8-8 notes the departure from the Iter1 hard scenario. E9-3 scopes its idle-item and new-message types. No value changed; MOCK-DATA.md stays at 1.3. |
+| 1.5 | 24 Oct 2026 | Answers the 06 Delivery & Return gaps (product/PO-ANSWERS-v1.5.md). Changed story: E4-2 (collection place chosen separately; may differ from delivery). MOCK-DATA.md at 1.4: home address and hand-over spot added, set by PO (open question 11). |
 
 ## 3. Won't build
 
@@ -242,7 +243,7 @@ States: choosing, chosen.
 ### E4-2 The return is part of the decision · Must
 `B1` `Idea 1` `HE #5 #9` · Seed: SEED-BOOKING
 As a renter, Daniel wants to see how the bike goes back before he commits, so the booking covers the whole loop.
-1. Before anything is paid, the after-ride collection (place, Sat 13:30) is shown and chosen alongside delivery. `[D]`
+1. Before anything is paid, the after-ride collection (place, Sat 13:30) is shown and chosen alongside delivery; the collection place is its own choice and may differ from the delivery destination (MOCK-DATA §4). `[D]`
 2. The confirmation (E4-5) reflects the same collection. `[D]`
 States: within booking flow.
 
@@ -570,3 +571,4 @@ Raised here, answered by the PO window, folded into the next version:
 8. Resolved 24 Oct 2026 (Haoyue): the MoSCoW floor is the demo route (§0). Now 41 Must, 25 Should, 1 Could. One judgement call in product/PO-ANSWERS-v1.4.md: E0-3 (storage entry on Home) moved to Should because its only destination, E8-1 on page 16, is off the route; say so if the Home storage card is to be protected, and E0-3 and E8-1 return to Must.
 9. Resolved 24 Oct 2026: the three values set by the PO are accepted by Haoyue as they stand (set by PO, accepted by Haoyue 24 Oct): weekly price S$45 / ride, Hub transfer S$10 home collection, S$5 rack drop. They are no longer open. Any change goes through the PO window and changes everywhere at once.
 10. The PO-ANSWERS files for v1.1 and v1.2 were first written as project docs; from 24 Oct copies sit in product/ next to v1.3. The repo copies are the reference.
+11. Set by PO, v1.5, awaiting Haoyue: Daniel's home address (Blk 325C Sengkang East Way #11-42, Singapore 543325) and the hand-over spot at the Chestnut trailhead carpark ("By the park entrance sign"). Any change goes through the PO window and changes everywhere at once.

@@ -1,12 +1,14 @@
 # OutRent mock data and seeded world
 
-Version 1.3 · 23 Oct 2026 · Owner: Haoyue. Status: **approved as the extension to DESIGN.md section 8** (consistency is the standard: a value may change, but it must change everywhere at once, through the PO window). This file is the single source for every value, name, date and starting state in the prototype. DESIGN.md section 8 values are repeated here unchanged and stay locked.
+Version 1.4 · 24 Oct 2026 · Owner: Haoyue. Status: **approved as the extension to DESIGN.md section 8** (consistency is the standard: a value may change, but it must change everywhere at once, through the PO window). This file is the single source for every value, name, date and starting state in the prototype. DESIGN.md section 8 values are repeated here unchanged and stay locked.
 
 v1.1 answers DESIGN-GAPS-v1.0 from the design window. Changed: supplier corrected to Timah Cycles per DESIGN.md §8 (v1.0 had an outdated name); SEED-RIDE added to §4; slots, listing facts and fulfilment timeline added to §4; §3 notes on inside leg and plain-language labels; §5 kit wear line; §7 no-reviews item; §9 transfer costs and corrected rack locations; VS-1 supplier facts; FD-RECURRING weekly price.
 
 v1.2 answers DESIGN-GAPS-v1.1. Changed: §7 star values and two more Marlin 7 reviews; §8 deposit-release notification; VS-1 Scott Aspect 950 not set to fit; VS-2 stage times; VS-5 rewritten (the rental is returned at the rack, with its terms); VS-6 return slots; FD-RECURRING charging, deposit, pause and stop; new FD-NEW-ITEM, FD-RENT-OUT, FD-MESSAGE. Where an example in review/feedback/wording-rules.md quotes a value, this file wins.
 
 v1.3 (product/PO-ANSWERS-v1.3.md): SEED-TRIPS removed. Daniel is a first-time renter; OR-10482 is his first rental. No other value changed.
+
+v1.4 (product/PO-ANSWERS-v1.5.md): answers the 06 Delivery & Return gaps. Added: §2 Daniel's home address; §4 the hand-over spot at the Chestnut trailhead carpark, and the rule that delivery and collection places are chosen separately (the seeded booking uses the carpark for both). Both new values are set by the PO and listed in REQUIREMENTS.md open question 11 until Haoyue accepts them. No existing value changed.
 
 Rules:
 
@@ -42,6 +44,7 @@ The prototype opens signed in. There is no sign-up or sign-in flow (REQUIREMENTS
 - Member since Aug 2026
 - Payment on file: PayNow (default), Visa ending 4821
 - Renter rating: none yet (first-time renter); this is shown as the absence of history, in whatever way the designer chooses
+- Home address (set by PO, v1.4): Blk 325C Sengkang East Way #11-42, Singapore 543325. One-line form: "Blk 325C Sengkang East Way #11-42". This is the "home address" option at booking (§4) and the home-collection address for storage (FD-STORAGE-BOOKING).
 
 ## 3. SEED-FIT · Fit profile (DESIGN.md section 8, locked)
 
@@ -62,8 +65,8 @@ Booking **OR-10482**, confirmed Thu 22 Oct 09:12.
 | Item | Trek Marlin 7, size M |
 | Supplier | Timah Cycles, Bukit Timah (shop) |
 | Ride | Chestnut Nature Park, Sat 25 Oct, 8:00–12:30 |
-| Delivery | Chestnut trailhead carpark, Sat 7:40, assembled, set to Daniel's fit |
-| Collection | Chestnut trailhead carpark, Sat 13:30 |
+| Delivery | Chestnut trailhead carpark, by the park entrance sign, Sat 7:40, assembled, set to Daniel's fit |
+| Collection | Chestnut trailhead carpark, by the park entrance sign, Sat 13:30 |
 | Day rate | S$38 / day × 1 day |
 | Delivery and collection | S$12 |
 | Set-up to rider's fit | S$0, included |
@@ -71,7 +74,8 @@ Booking **OR-10482**, confirmed Thu 22 Oct 09:12.
 | Deposit | S$150, held, released after return check |
 
 **Slot options at booking** (the "choosing" states):
-- Destination: Chestnut trailhead carpark (chosen) or home address. 
+- Delivery place: Chestnut trailhead carpark (chosen) or home address (§2). Hand-over spot at the carpark (set by PO, v1.4): "By the park entrance sign"; it is part of the carpark value wherever the carpark is the hand-over point, including FD-RECURRING.
+- Collection place: the same two options, chosen separately from the delivery place; the two may differ. The seeded booking uses the carpark for both, and no scenario needs them to differ.
 - Delivery slots, Sat: 7:00 (unavailable: before the first courier run), 7:20, 7:40 (chosen), 8:00.
 - Collection slots, Sat: 13:00, 13:30 (chosen), 14:30, 17:30.
 
