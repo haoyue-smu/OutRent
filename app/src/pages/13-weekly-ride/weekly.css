@@ -1,0 +1,51 @@
+/* 13 Weekly ride · the fitter's line. Layout; shared pieces are in design/direction.css. */
+
+.d-screen { background: var(--paper); color: var(--ink); font-family: var(--sans); }
+.s13-screen { padding-bottom: 110px; }
+.s13-head { display: flex; flex-direction: column; gap: 6px; padding-top: 2px; }
+.s13-flat { margin: 0; }
+.nb { white-space: nowrap; }
+
+/* The stack of weekly tags */
+.tagstack { position: relative; height: 330px; margin-top: 10px; }
+.tag2 { position: absolute; left: 50%; top: var(--s-4); width: 290px; min-height: 280px; margin-left: -145px; padding: 38px var(--s-5) 18px; background: var(--tag-paper); color: var(--tag-ink);
+  clip-path: polygon(18% 0, 82% 0, 100% 9%, 100% 100%, 0 100%, 0 9%); border-radius: 0 0 14px 14px; }
+.tag2.back1, .tag2.back2, .tag2.back3 { filter: brightness(0.97); }
+.tag2.back1 { transform: translate(8px, 6px) rotate(3deg); background: var(--tag-paper-1); }
+.tag2.back2 { transform: translate(14px, 10px) rotate(6deg); background: var(--tag-paper-2); }
+.tag2.back3 { transform: translate(20px, 14px) rotate(9deg); background: var(--tag-paper-3); }
+.tag2 .date { position: absolute; right: var(--s-4); bottom: 14px; font-family: var(--mono); font-size: var(--fs-mono); color: var(--tag-label); }
+.tag2.front { filter: drop-shadow(var(--shadow-tag-front)); }
+.tag2 .hole { position: absolute; left: 50%; top: 9px; width: 15px; height: 15px; margin-left: -7.5px; border-radius: var(--r-pill); background: var(--paper); box-shadow: var(--shadow-tag-hole); }
+.tag2 .mono { color: var(--tag-label); }
+.tag2 .tg-top { display: flex; justify-content: space-between; }
+.tag2 .tg-name { margin-top: 10px; font-size: 28px; line-height: 32px; font-weight: 600; letter-spacing: -0.03em; }
+.tag2 .tg-bike { font-size: 14px; color: var(--tag-ink-2); }
+.tag2 .tg-go { display: grid; grid-template-columns: 1fr 1fr; margin: 14px 0 0; border-top: 1.5px solid var(--tag-ink); border-bottom: var(--hair) solid var(--tag-rule); }
+.tag2 .tg-go div { display: flex; flex-direction: column; gap: 3px; padding: var(--s-2) 0 9px; }
+.tag2 .tg-go div + div { padding-left: 10px; border-left: var(--hair) solid var(--tag-rule); }
+.tag2 .tg-go dt, .tag2 .tg-go dd { margin: 0; }
+.tag2 .tg-go dd { font-size: 22px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.tag2 .tg-at { margin-top: 10px; font-size: 12.5px; line-height: 17px; color: var(--tag-ink-2); }
+
+/* When money moves */
+.money13 { display: flex; flex-direction: column; gap: 10px; margin-top: var(--s-5); }
+.m13-h { display: flex; justify-content: space-between; align-items: baseline; }
+.m13-h b { font-size: 20px; font-weight: 600; letter-spacing: -0.02em; }
+.week { position: relative; height: 62px; }
+.week svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.week text { font-family: var(--mono); font-size: var(--fs-mono-s); fill: var(--ink-3); }
+.week text.ink { fill: var(--ink); }
+.week text.forest { fill: var(--forest); }
+.week .base { stroke: var(--rule); }
+.week .tk { stroke: var(--ink-3); }
+.week .charge { stroke: var(--ink); stroke-width: 1.5; }
+.week .charge-dot { fill: var(--paper); stroke: var(--ink); stroke-width: 2; }
+.week .ride { fill: var(--forest); }
+
+/* After starting: skip, pause, stop */
+.ctl13 { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s-2); margin-top: 18px; }
+.ctl13 button { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: var(--s-3); border: 0; border-radius: var(--r-lens); background: var(--sheet); box-shadow: var(--shadow-sheet); color: var(--ink); font: inherit; text-align: left; cursor: pointer; }
+.ctl13 b { font-size: 14.5px; font-weight: 600; }
+.ctl13 span { font-size: 11.5px; line-height: 15px; color: var(--ink-2); }
+.s13-go { width: 100%; }

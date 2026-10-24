@@ -1,7 +1,7 @@
 import { useLayoutEffect, useRef, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { gsap } from 'gsap'
-import { useBack } from '../../shell/Link'
+import { GoTo, useBack } from '../../shell/Link'
 import { Icon } from '../../shell/Icon'
 import { Photo } from '../../shell/Photo'
 import { BackButton, MeasuredGrid, Mono, still, useToast } from '../../shell/direction'
@@ -36,7 +36,6 @@ export default function Summary() {
   const fromSkip = (location.state as { from?: string } | null)?.from === 'skip'
   const back = useBack(() => navigate(routeFor('05-listing-detail')))
   const [toastNode, toast] = useToast()
-  const [end, setEnd] = useState(false)
   const day = useRef<HTMLDivElement>(null)
   const cover = useRef<HTMLDivElement>(null)
   const [tops, setTops] = useState<number[]>([])
@@ -175,42 +174,14 @@ export default function Summary() {
           </dl>
           <div className="price"><b>S$45</b><span>per ride, S$5 less than today</span></div>
           <p className="small s-charged">Charged each Thu · 20:00. Skip any week before then.</p>
-          <button type="button" className="cta" onClick={() => setEnd(true)}>Set up every Saturday</button>
+          <GoTo page="13-weekly-ride" className="cta">Set up every Saturday</GoTo>
           <button type="button" className="link s-other" onClick={() => toast('Search is not in this slice.')}>Book a different bike</button>
         </section>
       </main>
 
       {/* Arriving from the 05 time skip: the paper cover lifts once the summary is in place. */}
       <div className="s-cover" ref={cover} aria-hidden="true" style={fromSkip && !still() ? undefined : { visibility: 'hidden' }} />
-      {end && <EndCard onRestart={() => navigate(routeFor('01-home'))} onClose={() => setEnd(false)} />}
       {toastNode}
     </>
-  )
-}
-
-// The end of the prototype slice: what comes next, and a way back to 03.
-function EndCard({ onRestart, onClose }: { onRestart: () => void; onClose: () => void }) {
-  const el = useRef<HTMLDivElement>(null)
-  useLayoutEffect(() => {
-    if (!still() && el.current) gsap.fromTo(el.current, { y: 852 }, { y: 0, duration: 0.5, ease: 'expo.out' })
-  }, [])
-  return (
-    <div className="end" ref={el} role="dialog" aria-modal="true" aria-labelledby="end-h" onKeyDown={(e) => { if (e.key === 'Escape') onClose() }}>
-      <Mono>End of the built route</Mono>
-      <h2 className="t-h1" id="end-h">13 Weekly Ride opens here, filled in from this rental.</h2>
-      <p className="lede">The idea of the whole app: OutRent sets a bike to your body before it arrives, so every screen reads like a fitting sheet. Daniel’s numbers are the biggest things on it, marked with a fitter’s line. Photos are dated evidence. Motion is a measurement being taken.</p>
-      <div>
-        <div className="pg"><b>01</b><span>Home. A docket: what, to where, when.</span></div>
-        <div className="pg"><b>02</b><span>Coach’s post. Her photo, her note, her list.</span></div>
-        <div className="pg"><b>03</b><span>Fit profile. An instrument: drag the scales and the bike answers.</span></div>
-        <div className="pg"><b>04</b><span>Search. Three bikes, each timed against the 8:00 start.</span></div>
-        <div className="pg"><b>05</b><span>Listing. A proof: this exact bike, its marks circled, its price measured.</span></div>
-        <div className="pg"><b>06</b><span>Delivery and return. Both ends of Saturday.</span></div>
-        <div className="pg"><b>07</b><span>Fees and liability. A statement and the terms.</span></div>
-        <div className="pg"><b>08</b><span>Booked. A ticket and what happens next.</span></div>
-        <div className="pg"><b>12</b><span>Rental summary. A record: Saturday drawn to scale, ending in S$150 back.</span></div>
-      </div>
-      <button type="button" className="cta" onClick={onRestart} autoFocus>Start again at Home</button>
-    </div>
   )
 }

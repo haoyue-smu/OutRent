@@ -77,6 +77,11 @@ body { font-family: var(--sans); }
 .todo .mono { font-size: 9.5px; color: var(--ink-3); }
 .todo .w { font-size: 12.5px; line-height: 16px; font-weight: 500; text-wrap: balance; }
 
+/* ---------- the end of the built route (shown from 13) ---------- */
+.end { position: absolute; inset: 0; z-index: 55; display: flex; flex-direction: column; gap: 18px; padding: calc(var(--top-safe) + 30px) var(--s-6) 30px; overflow-y: auto; background: var(--paper); }
+.end .pg { display: grid; grid-template-columns: 30px 1fr; gap: var(--s-1) 10px; padding: 10px 0; border-top: var(--hair) solid var(--rule); font-size: 14px; line-height: 20px; }
+.end .pg b { padding-top: 1px; font-family: var(--mono); font-weight: 500; font-size: var(--fs-label); }
+
 @media (prefers-reduced-motion: reduce) {
   .mgrid .flash { animation: none; }
   .cta:active { transform: none; }

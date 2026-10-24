@@ -10,6 +10,7 @@ import Booked from './08-booking-confirmation/Booked'
 import Tracking from './10-delivery-tracking/Tracking'
 import Handover from './11-handover-check/Handover'
 import Summary from './12-rental-summary/Summary'
+import Weekly from './13-weekly-ride/Weekly'
 
 // Register a page here when it is built: import Home from './01-home/Home'; then '01-home': Home.
 export const pageComponents: Record<string, ComponentType> = {
@@ -24,4 +25,5 @@ export const pageComponents: Record<string, ComponentType> = {
   '10-delivery-tracking': Tracking,
   '11-handover-check': Handover,
   '12-rental-summary': Summary,
+  '13-weekly-ride': Weekly,
 }
