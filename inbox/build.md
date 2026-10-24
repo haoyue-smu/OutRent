@@ -31,3 +31,7 @@ More pages come in batches as the Creative Director finishes them (next: 01 → 
 ## Added 25 Oct 00:30: 04 Search Results approved
 
 After 03, 05, 12: build **04 Search Results** from "OutRent · direction" (open with #04) on local branch build/direction-04, including the 04 → 05 photo morph. Its images are in the OutRent Image Library artifact (https://claude.ai/artifact/GeHjSLftCLrd5SGMvyumVU): img/04-marlin-6.webp, img/04-scott-aspect-950.webp; the Marlin 7 is 05's shop-stand photo. Two small wording items are in the project doc claude/creative/FIXES.md (#7, #8); leave them for the end pass.
+
+## Added 25 Oct 00:56: 01 Home approved
+
+After 04: build **01 Home** from "OutRent · direction" (open with no hash) on local branch build/direction-01, replacing the old 01 on main. Its images are in the OutRent Image Library artifact (https://claude.ai/artifact/GeHjSLftCLrd5SGMvyumVU): img/02-coach-post.webp (the "This weekend" card), img/aisyah-avatar.webp, img/01-cat-bikes.webp, img/01-cat-kayaks.webp, img/01-cat-paddleboards.webp, img/01-cat-camping.webp, img/01-storage-promo.webp. Category and promo values that have no MOCK-DATA behind them are gaps in the project doc claude/creative/FIXES.md (#3–#6); build them as the prototype shows (no invented numbers).
