@@ -66,6 +66,25 @@
   --banner-bg: rgba(246, 247, 244, 0.82);
   --shadow-banner: 0 10px 30px -10px rgba(0, 0, 0, 0.3);
 
+  /* The tracking map (10): a quiet street map under the route */
+  --map-ground: #EEF0EA;
+  --map-block: #E5E8E1;
+  --map-park: #D9E5D4;
+  --map-park-2: #CFE0CB;
+  --map-tree: #C3D6BF;
+  --map-casing: #D8DCD5;
+  --map-path: #BFD1BA;
+  --map-route-todo: #9AA49F;
+  --forest-halo: rgba(28, 74, 58, 0.15);
+  --shadow-now: 0 0 0 4px var(--forest-halo);   /* the current step on a progress line */
+  --shadow-drawer-soft: 0 -10px 30px -14px rgba(0, 0, 0, 0.3);
+
+  /* The weekly tags (13), each one a week further back */
+  --tag-paper-1: #E8DFCB;
+  --tag-paper-2: #E2D8C2;
+  --tag-paper-3: #DCD1BA;
+  --shadow-tag-front: 0 14px 20px rgba(40, 30, 10, 0.2);
+
   /* On photos */
   --on-photo-bg: rgba(255, 255, 255, 0.72);
   --on-photo-border: rgba(255, 255, 255, 0.55);

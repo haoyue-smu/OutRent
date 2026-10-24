@@ -82,8 +82,8 @@ export default function Booked() {
         <span className="banner-app" dangerouslySetInnerHTML={{ __html: mark }} />
         <div><div className="bh"><b>OutRent</b><span>now</span></div><b>Booking OR-10482 confirmed</b><span>Trek Marlin 7 · 25 Oct · 7:40</span></div>
       </div>
-      {/* Tracking (10) and the hand-over (11) are not in this batch: the clock runs on to Saturday's summary. */}
-      {skipping && <TimeSkip onDone={() => navigate(routeFor('12-rental-summary'), { state: { from: 'skip', how: 'skip' } })} />}
+      {/* The clock runs on from booking to Saturday morning, when the bike is on its way. */}
+      {skipping && <TimeSkip from={9.2} to={79 + 22 / 60} caption="Set to your fit on 24 Oct · 17:30. On Saturday it leaves the shop at 7:05." onDone={() => navigate(routeFor('10-delivery-tracking'), { state: { from: 'skip', how: 'skip' } })} />}
     </>
   )
 }
