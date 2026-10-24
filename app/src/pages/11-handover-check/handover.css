@@ -1,0 +1,60 @@
+/* 11 Handover check · the fitter's line. Layout; shared pieces are in design/direction.css. */
+
+.d-screen { background: var(--paper); color: var(--ink); font-family: var(--sans); }
+.s11-screen { padding-bottom: 110px; }
+.s11-h { padding-top: 2px; }
+.s11-lede { margin: 6px 0 0; }
+.nb { white-space: nowrap; }
+
+/* One record card */
+.record { position: relative; margin: var(--s-5) var(--s-3) 0; padding: 0 14px var(--s-4); border-radius: var(--r-sheet-s); background: var(--sheet); box-shadow: var(--shadow-record); }
+.rec-h { display: flex; justify-content: space-between; align-items: center; padding: 14px 2px 10px; }
+.record.closed .rec-h .mono { color: var(--forest); }
+.cols { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-2); padding: 10px 0 var(--s-3); border-top: 1.5px solid var(--ink); border-bottom: var(--hair) solid var(--rule-2); }
+.cols > div { display: flex; flex-direction: column; gap: 2px; }
+.cols b { font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+.parts { display: flex; flex-direction: column; gap: 22px; margin-top: var(--s-4); overflow: hidden; }
+.part-h { display: flex; justify-content: space-between; align-items: baseline; padding-bottom: var(--s-2); }
+.part-h b { display: inline-flex; align-items: center; font-size: 16px; font-weight: 600; }
+/* The tick that appears beside each part on save */
+.part-h .tick { display: inline-flex; width: 0; margin-left: 0; overflow: hidden; color: var(--forest); transition: width 0.3s var(--ease), margin 0.3s var(--ease); }
+.part-h .tick .icon { flex: none; width: 12px; height: 12px; }
+.part.ok .part-h .tick { width: 12px; margin-left: var(--s-2); }
+
+.pair { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-2); }
+.pair figure { display: flex; flex-direction: column; gap: 6px; margin: 0; }
+.pair .ph { position: relative; display: block; width: 100%; aspect-ratio: 7 / 5; padding: 0; border-radius: 12px; overflow: hidden; background: var(--sheet); }
+.pair .ph .photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.shot { border: 1.5px dashed var(--ink-3); color: var(--ink); font: inherit; cursor: pointer; }
+.shot.taken { border: 0; }
+.shot .cam { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; font-size: var(--fs-small); font-weight: 600; }
+.shot .cam .icon { width: 24px; height: 24px; }
+.shot .flash { position: absolute; inset: 0; background: var(--white); opacity: 0; pointer-events: none; }
+.ring2 { position: absolute; width: 46px; height: 46px; margin: -23px 0 0 -23px; border: 2px solid var(--white); border-radius: var(--r-pill); box-shadow: var(--shadow-ring-strong); opacity: 0; transform: scale(1.5); transition: opacity 0.35s, transform 0.5s var(--ease); }
+.ring2.on { opacity: 1; transform: scale(1); }
+.markbtn { display: inline-flex; align-items: center; min-height: 40px; margin-top: 10px; padding: 0 14px; border: 1.5px solid var(--ink); border-radius: var(--r-pill); background: none; color: var(--ink); font: inherit; font-size: 13.5px; font-weight: 600; cursor: pointer; }
+.marked, .nomark { display: flex; align-items: center; gap: 6px; margin-top: 10px; font-size: var(--fs-small); font-weight: 600; color: var(--forest); }
+.nomark { font-weight: 500; color: var(--ink-2); }
+.marked .icon { width: 13px; height: 13px; }
+
+/* The filed slip */
+.filed { display: flex; flex-direction: column; gap: 14px; padding-top: 18px; }
+.fps { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s-2); }
+.fp { display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 11.5px; color: var(--ink-2); white-space: nowrap; }
+.fpp { position: relative; width: 76px; height: 52px; }
+.fpp .photo { position: absolute; width: 54px; height: 40px; object-fit: cover; border-radius: var(--r-tick); box-shadow: var(--shadow-photo-edge); }
+.fpp .photo:first-child { left: 0; top: 0; filter: saturate(0.7); }
+.fpp .photo:last-child { right: 0; bottom: 0; }
+.fsum b { display: block; font-size: var(--fs-body); font-weight: 600; color: var(--forest); }
+.fsum span { font-size: var(--fs-small); color: var(--ink-2); }
+.fsum .fsum-l { display: block; }
+.reopen { align-self: flex-start; min-height: 40px; margin-top: 2px; padding: 0 14px; border: var(--hair) solid var(--rule); border-radius: var(--r-pill); background: none; color: var(--ink); font: inherit; font-size: 13.5px; font-weight: 600; cursor: pointer; }
+
+.reportrow { display: grid; grid-template-columns: 22px 1fr 14px; gap: var(--s-3); align-items: center; width: 100%; margin-top: 18px; padding: 14px var(--s-4); border: 1.5px solid var(--rule); border-radius: var(--r-thumb); background: var(--sheet); color: var(--ink); font: inherit; text-align: left; cursor: pointer; }
+.reportrow:active { transform: scale(0.98); }
+.reportrow .icon { width: 20px; height: 20px; }
+.reportrow .icon:last-child { width: 14px; height: 14px; color: var(--ink-3); }
+.reportrow b { display: block; font-size: var(--fs-callout); font-weight: 600; }
+.reportrow span span { font-size: var(--fs-small); color: var(--ink-2); }
+.s11-save { width: 100%; }
