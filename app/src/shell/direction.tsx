@@ -133,3 +133,7 @@ export function EndCard({ onRestart, onClose }: { onRestart: () => void; onClose
     </div>
   )
 }
+
+// What this demo session knows about Daniel, shared by the pages: whether a fit has been saved here.
+// 02 sends him to 03 first when it has not, as in the prototype.
+export const session = { hasFit: false }

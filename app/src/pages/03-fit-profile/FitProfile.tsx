@@ -4,7 +4,7 @@ import { gsap } from 'gsap'
 import '@photos/_shared/bike-figure.js'
 import { useBack } from '../../shell/Link'
 import { Icon } from '../../shell/Icon'
-import { BackButton, Mono, haptic, still } from '../../shell/direction'
+import { BackButton, Mono, haptic, session, still } from '../../shell/direction'
 import { routeFor } from '../../pages'
 import './fit.css'
 
@@ -261,6 +261,7 @@ export default function FitProfile() {
   const onSave = () => {
     if (save === 'saved') return
     setSave('saved')
+    session.hasFit = true
     grid.current?.querySelectorAll('dd').forEach((d) => flash(d))
     setTimeout(() => {
       if (fromPost) navigate(routeFor('04-search-results'), { replace: true })
