@@ -6,7 +6,7 @@
   position: absolute; top: 4px; right: 4px; min-width: 18px; height: 18px; padding: 0 5px;
   border-radius: var(--r-pill); background: var(--sage); color: var(--white);
   font-size: var(--fs-label); line-height: 18px; font-weight: 600; text-align: center;
-  box-shadow: 0 0 0 2px var(--white);
+  outline: 2px solid var(--white);
 }
 .icon-btn.has-badge { position: relative; }
 
