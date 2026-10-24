@@ -27,3 +27,7 @@ Source: the Creative Director's prototype **"OutRent · direction"** https://cla
 3. **Known wording issues and bugs are NOT yours to fix now.** They are collected in claude/creative/FIXES.md (project doc) and will be fixed in one pass after all pages exist. Build what the prototype shows, except where it is plainly broken code (then fix and say so).
 
 More pages come in batches as the Creative Director finishes them (next: 01 → 02 → 04). Each batch will be added here.
+
+## Added 25 Oct 00:30: 04 Search Results approved
+
+After 03, 05, 12: build **04 Search Results** from "OutRent · direction" (open with #04) on local branch build/direction-04, including the 04 → 05 photo morph. Its images are in the OutRent Image Library artifact (https://claude.ai/artifact/GeHjSLftCLrd5SGMvyumVU): img/04-marlin-6.webp, img/04-scott-aspect-950.webp; the Marlin 7 is 05's shop-stand photo. Two small wording items are in the project doc claude/creative/FIXES.md (#7, #8); leave them for the end pass.
