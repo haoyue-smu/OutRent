@@ -7,3 +7,5 @@ body { background: var(--paper); font-family: var(--font); color: var(--ink); -w
 .frame > .screen { width: 393px; height: 852px; overflow-y: auto; overflow-x: hidden; }
 .frame-empty { padding: var(--top-safe) var(--gutter) 0; }
 .frame-empty .t-foot { color: var(--muted); }
+/* No one-word last lines in running text (review rule, 24 Oct). */
+.frame :is(p, .t-body, .t-callout, .t-foot, .sub, .k, .field-error span) { text-wrap: pretty; }

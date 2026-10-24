@@ -1,7 +1,7 @@
 import { useState, type ReactNode } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useSearchParams } from 'react-router-dom'
 import lockup from '@design/brand/outrent-lockup.svg?raw'
-import { GoTo } from '../../shell/Link'
+import { GoTo, useBack } from '../../shell/Link'
 import { Icon } from '../../shell/Icon'
 import { TabBar } from '../../shell/TabBar'
 import { Photo } from '../../shell/Photo'
@@ -13,7 +13,7 @@ import coachGroup from '@photos/01-home/assets/01-home-coach-group.webp'
 import timahCycles from '@photos/01-home/assets/01-home-timah-cycles.webp'
 import './home.css'
 
-// Which frame of the board to show. Change this one value to see each state.
+// Which frame of the board to show. Change this one value, or open the page with ?state=<frame>.
 //   'default'               E0-1 · default, Home selected (a booking tomorrow, 1 unseen notification)
 //   'no-bookings'           E0-1 · no bookings
 //   'notifications-unseen'  E9-4 · with unseen      'notifications-all-seen'  E9-4 · all seen     'notifications-empty'  E9-4 · empty
@@ -22,6 +22,7 @@ type Frame =
   | 'default' | 'no-bookings'
   | 'notifications-unseen' | 'notifications-all-seen' | 'notifications-empty'
   | 'messages-unread' | 'messages-all-read' | 'messages-empty'
+const FRAMES: Frame[] = ['default', 'no-bookings', 'notifications-unseen', 'notifications-all-seen', 'notifications-empty', 'messages-unread', 'messages-all-read', 'messages-empty']
 const FRAME = 'default' as Frame
 
 // ---------- mock data (MOCK-DATA v1.2, mock clock Fri 24 Oct 19:00) ----------
@@ -29,36 +30,34 @@ type Notice = { id: string; icon: string; text: string; when: string; page: stri
 type Thread = { id: string; name: string; preview: string; about: string; when: string; photo: string; alt: string; page: string; unread: boolean }
 
 const NOTICES: Notice[] = [
-  { id: 'idle', icon: 'warehouse', text: 'Giant Escape 3 · not used since 24 May', when: 'Mon 19 Oct, 10:00', page: '14-my-equipment', unseen: true },
-  { id: 'message', icon: 'chat-circle', text: 'New message from Timah Cycles', when: 'Thu 22 Oct, 17:22', page: '10-delivery-tracking', unseen: false },
-  { id: 'confirmed', icon: 'check-circle', text: 'Booking OR-10482 confirmed', when: 'Thu 22 Oct, 09:12', page: '08-booking-confirmation', unseen: false },
+  { id: 'idle', icon: 'warehouse', text: 'Giant Escape 3 · not used since 24\u00a0May', when: '19\u00a0Oct', page: '14-my-equipment', unseen: true },
+  { id: 'message', icon: 'chat-circle', text: 'New message from Timah Cycles', when: '22\u00a0Oct', page: '10-delivery-tracking', unseen: false },
+  { id: 'confirmed', icon: 'check-circle', text: 'Booking OR-10482 confirmed', when: '22\u00a0Oct', page: '08-booking-confirmation', unseen: false },
 ]
 const THREADS: Thread[] = [
-  { id: 'timah', name: 'Timah Cycles', preview: 'Flat pedals are fitted. Clipless available on request.', about: 'Shop · about OR-10482', when: 'Thu 17:22', photo: timahCycles, alt: 'Timah Cycles shopfront, Bukit Timah', page: '10-delivery-tracking', unread: false },
+  { id: 'timah', name: 'Timah Cycles', preview: 'Flat pedals are fitted. Clipless available on request.', about: 'Shop · about OR-10482', when: '22\u00a0Oct', photo: timahCycles, alt: 'Timah Cycles shopfront, Bukit Timah', page: '10-delivery-tracking', unread: false },
 ]
-
-const isNotices = FRAME.startsWith('notifications')
-const isMessages = FRAME.startsWith('messages')
-const hasBooking = FRAME !== 'no-bookings'
-const startNotices = FRAME === 'notifications-empty' || FRAME === 'no-bookings' ? []
-  : NOTICES.map((n) => (FRAME === 'notifications-all-seen' ? { ...n, unseen: false } : n))
-const startThreads = FRAME === 'messages-empty' || FRAME === 'no-bookings' ? []
-  : THREADS.map((t) => ({ ...t, unread: FRAME === 'messages-unread' }))
 
 type View = 'home' | 'notifications' | 'messages'
 
-export default function Home() {
-  // ?state=notifications or ?state=messages opens that list from another page (03 Profile); back returns there.
-  const asked = useSearchParams()[0].get('state')
-  const navigate = useNavigate()
+// A new ?state starts the page fresh, so each frame opens as drawn.
+export default function HomePage() {
+  const state = useSearchParams()[0].get('state') as Frame | null
+  const asked = state && FRAMES.includes(state) ? state : null
+  return <Home key={asked ?? ''} frame={asked ?? FRAME} fromLink={asked !== null} />
+}
+
+function Home({ frame, fromLink }: { frame: Frame; fromLink: boolean }) {
+  const hasBooking = frame !== 'no-bookings'
   const [view, setView] = useState<View>(
-    asked === 'notifications' || isNotices ? 'notifications' : asked === 'messages' || isMessages ? 'messages' : 'home')
-  const leave = () => {
-    if (asked && (window.history.state?.idx ?? 0) > 0) navigate(-1)
-    else setView('home')
-  }
-  const [notices, setNotices] = useState(startNotices)
-  const [threads] = useState(startThreads)
+    frame.startsWith('notifications') ? 'notifications' : frame.startsWith('messages') ? 'messages' : 'home')
+  const [notices, setNotices] = useState(() => frame === 'notifications-empty' || frame === 'no-bookings' ? []
+    : NOTICES.map((n) => (frame === 'notifications-all-seen' ? { ...n, unseen: false } : n)))
+  const [threads] = useState(() => frame === 'messages-empty' || frame === 'no-bookings' ? []
+    : THREADS.map((t) => ({ ...t, unread: frame === 'messages-unread' })))
+  // A list opened from another page (03 Profile) returns there; opened from the bell, it returns to Home.
+  const back = useBack(() => setView('home'))
+  const leave = fromLink ? back : () => setView('home')
 
   // Leaving the notification centre marks everything in it as seen.
   const backFromNotices = () => {
@@ -140,7 +139,7 @@ function WithBooking() {
         <div className="p-hero">
           <span className="k">Delivery in</span>
           <span className="t-display">12<span className="unit"> h </span>40<span className="unit"> min</span></span>
-          <span className="sub">Tomorrow, Sat 25 Oct · 7:40</span>
+          <span className="sub">Tomorrow, 25&nbsp;Oct · 7:40</span>
         </div>
         <hr className="divider" />
         <span className="home-item">

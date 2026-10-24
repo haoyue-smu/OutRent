@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type KeyboardEvent, type PointerEvent, type ReactNode } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
-import { GoTo } from '../../shell/Link'
+import { useSearchParams } from 'react-router-dom'
+import { GoTo, useBack } from '../../shell/Link'
 import { Icon } from '../../shell/Icon'
 import { TabBar } from '../../shell/TabBar'
 import './fit.css'
@@ -47,7 +47,6 @@ export default function FitProfilePage() {
 
 function FitProfile() {
   const [params] = useSearchParams()
-  const navigate = useNavigate()
   const asked = params.get('state') as Frame | null
   const frame = asked && FRAMES.includes(asked) ? asked : FRAME
   const seeded = frame !== 'fit-empty' && frame !== 'fit-height-only'
@@ -70,10 +69,8 @@ function FitProfile() {
     setView('fit')
   }
   // Opened from another page (?state=…): back returns there. Unsaved changes are dropped.
-  const back = () => {
-    if (asked && (window.history.state?.idx ?? 0) > 0) navigate(-1)
-    else setView('profile')
-  }
+  const backToCaller = useBack(() => setView('profile'))
+  const back = asked ? backToCaller : () => setView('profile')
   const save = (fit: Fit) => {
     setSaved(fit)
     setEditing(false)
@@ -132,7 +129,7 @@ function Profile({ saved, onOpenFit }: { saved: Fit | null; onOpenFit: () => voi
           </button>
 
           <Group title="Inbox">
-            <GoTo page="01-home" state="notifications" className="fit-row">
+            <GoTo page="01-home" state="notifications-unseen" className="fit-row">
               <Icon name="bell" className="fit-lead" />
               <span className="fit-stack">
                 <span className="t-callout fit-strong">Notifications</span>
@@ -141,7 +138,7 @@ function Profile({ saved, onOpenFit }: { saved: Fit | null; onOpenFit: () => voi
               <span className="p-dot" role="img" aria-label="Unseen" />
               <Icon name="caret-right" small className="fit-chev" />
             </GoTo>
-            <GoTo page="01-home" state="messages" className="fit-row">
+            <GoTo page="01-home" state="messages-all-read" className="fit-row">
               <Icon name="chat-circle" className="fit-lead" />
               <span className="fit-stack">
                 <span className="t-callout fit-strong">Messages</span>
@@ -197,7 +194,7 @@ type EditorProps = {
 
 function FitEditor({ saved, riding, draft, editing, active, keepFocus, scrolled, onChange, onFocus, onBack, onSave }: EditorProps) {
   const measurements = useRef<HTMLElement>(null)
-  useEffect(() => { if (scrolled) measurements.current?.scrollIntoView({ block: 'start' }) }, [scrolled])
+  useEffect(() => { if (scrolled) document.fonts.ready.then(() => measurements.current?.scrollIntoView({ block: 'start' })) }, [scrolled])
 
   const h = parse(draft.height, HEIGHT)
   const l = parse(draft.leg, LEG)
@@ -223,7 +220,7 @@ function FitEditor({ saved, riding, draft, editing, active, keepFocus, scrolled,
       {(h.bad || l.bad) && (
         <div className="field-error" role="alert">
           <Icon name="warning-circle" small />
-          <span>{h.bad ? `Height between ${HEIGHT.min} and ${HEIGHT.max} cm` : `Inside leg between ${LEG.min} and ${LEG.max} cm, or leave it empty`}</span>
+          <span>{h.bad ? `Height between ${HEIGHT.min} and ${HEIGHT.max}\u00a0cm` : `Inside leg between ${LEG.min} and ${LEG.max}\u00a0cm, or leave it empty`}</span>
         </div>
       )}
     </>
@@ -264,11 +261,11 @@ function FitEditor({ saved, riding, draft, editing, active, keepFocus, scrolled,
           // E1-3 filled: the number a supplier sets first, then the rest of the set-up, then the inputs behind it.
           <div className="fit-page">
             {saddle !== null ? (
-              <Hero k="Saddle height" sub={`From height ${fit.height} cm and inside leg ${fit.leg} cm`}>
+              <Hero k="Saddle height" sub={`From height ${fit.height}\u00a0cm and inside leg ${fit.leg}\u00a0cm`}>
                 {saddle} <span className="unit">cm</span>
               </Hero>
             ) : (
-              <Hero k="Frame size" sub={`From your height, ${fit.height} cm`}>{frame}</Hero>
+              <Hero k="Frame size" sub={`From your height, ${fit.height}\u00a0cm`}>{frame}</Hero>
             )}
             <Figure title="Set for you" text="Figure: bike side view, saddle, bars and fork marked · supplied by Haoyue" hint="Saddle · bars · fork" readout={`Frame ${frame}`} />
             {guide}
@@ -301,7 +298,7 @@ function FitEditor({ saved, riding, draft, editing, active, keepFocus, scrolled,
                   : 'Figure: rider standing, inside leg measured floor to crotch · supplied by Haoyue'}
               </div>
               <span className="corner hint">{active === 'height' ? 'Height' : 'Inside leg'}</span>
-              <span className="corner readout">{(active === 'height' ? draft.height : draft.leg) || '—'} cm</span>
+              <span className="corner readout">{(active === 'height' ? draft.height : draft.leg) || '—'}&nbsp;cm</span>
             </figure>
             {fields}
             <div className="card fit-live">
@@ -317,10 +314,10 @@ function FitEditor({ saved, riding, draft, editing, active, keepFocus, scrolled,
           // E1-3 first entry: empty, then height only (frame size and a hint), then both.
           <div className="fit-page has-bar">
             {hasHeight && (saddle !== null
-              ? <Hero k="Saddle height" sub={`From height ${fit.height} cm and inside leg ${fit.leg} cm`}>{saddle} <span className="unit">cm</span></Hero>
-              : <Hero k="Frame size" sub={`From your height, ${fit.height} cm`}>{frame}</Hero>)}
+              ? <Hero k="Saddle height" sub={`From height ${fit.height}\u00a0cm and inside leg ${fit.leg}\u00a0cm`}>{saddle} <span className="unit">cm</span></Hero>
+              : <Hero k="Frame size" sub={`From your height, ${fit.height}\u00a0cm`}>{frame}</Hero>)}
             {hasHeight
-              ? <Figure title={`Set for ${fit.height} cm`} text="Figure: bike side view, frame size highlighted · supplied by Haoyue" hint="From height" readout={`Frame ${frame}`} />
+              ? <Figure title={`Set for ${fit.height}\u00a0cm`} text="Figure: bike side view, frame size highlighted · supplied by Haoyue" hint="From height" readout={`Frame ${frame}`} />
               : <Figure title="Your bike" text="Figure: bike side view, frame and saddle height marked · supplied by Haoyue" hint="Height sets the frame size" readout="—" />}
             {guide}
             {fields}
@@ -425,7 +422,7 @@ function Ruler({ measure, value, onChange }: { measure: Measure; value: number; 
     <svg
       className="ruler" viewBox={`0 0 ${RULER_W} 64`} role="slider" tabIndex={0}
       aria-label={measure === 'height' ? 'Height' : 'Inside leg'}
-      aria-valuemin={lo} aria-valuemax={hi} aria-valuenow={shown} aria-valuetext={`${shown} cm`}
+      aria-valuemin={lo} aria-valuemax={hi} aria-valuenow={shown} aria-valuetext={`${shown}\u00a0cm`}
       onPointerDown={(e) => { e.currentTarget.setPointerCapture(e.pointerId); fromPointer(e) }}
       onPointerMove={(e) => { if (e.currentTarget.hasPointerCapture(e.pointerId)) fromPointer(e) }}
       onKeyDown={onKey}

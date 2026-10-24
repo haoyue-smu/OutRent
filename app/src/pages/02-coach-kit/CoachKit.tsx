@@ -1,28 +1,41 @@
 import { useEffect, useRef, useState } from 'react'
-import { GoTo } from '../../shell/Link'
+import { useNavigate, useSearchParams } from 'react-router-dom'
+import { GoTo, useBack } from '../../shell/Link'
+import { routeFor } from '../../pages'
 import { Icon } from '../../shell/Icon'
 import { Photo } from '../../shell/Photo'
 import coachAisyah from '@photos/01-home/assets/01-home-coach-aisyah.webp'
 import bike from '@photos/01-home/assets/01-home-bike.webp'
 import './kit.css'
 
-// Which frame of the board to show. Change this one value to see each state.
+// Which frame of the board to show. Change this one value, or open the page with ?state=<frame>.
 //   'with-fit'           E2-5 · kit with fit profile
 //   'with-fit-scrolled'  E2-5 · kit with fit profile · scrolled (opens scrolled to "Already yours")
 //   'without-fit'        E2-5 · kit without fit profile
 type Frame = 'with-fit' | 'with-fit-scrolled' | 'without-fit'
+const FRAMES: Frame[] = ['with-fit', 'with-fit-scrolled', 'without-fit']
 const FRAME = 'with-fit' as Frame
 
 // ---------- mock data (MOCK-DATA v1.2: Daniel, 176 cm, frame M) ----------
-const FIT = FRAME === 'without-fit' ? null : { height: 176, frame: 'M', saddle: 72 }
-const RIDE = { date: 'Sat 25 Oct', when: 'Sat 25 Oct · 8:00–12:30 · Chestnut Nature Park' }
+const SEED_FIT = { height: 176, frame: 'M', saddle: 72 }
+const RIDE = { date: '25\u00a0Oct', when: '25\u00a0Oct · 8:00–12:30 · Chestnut Nature Park' }
 const ALSO = [
   { icon: 'sneaker', name: 'Regular sports shoes', note: 'Wear', skip: false },
   { icon: 'drop', name: '2 water bottles · sunscreen', note: 'Bring', skip: false },
   { icon: 'x', name: 'Clipless pedals', note: 'Not needed on a first ride', skip: true },
 ]
 
-export default function CoachKit() {
+// A new ?state starts the page fresh, so each frame opens as drawn.
+export default function CoachKitPage() {
+  const state = useSearchParams()[0].get('state') as Frame | null
+  const frame = state && FRAMES.includes(state) ? state : FRAME
+  return <CoachKit key={frame} frame={frame} />
+}
+
+function CoachKit({ frame }: { frame: Frame }) {
+  const FIT = frame === 'without-fit' ? null : SEED_FIT
+  const navigate = useNavigate()
+  const back = useBack(() => navigate(routeFor('01-home')))
   const screen = useRef<HTMLElement>(null)
   const heading = useRef<HTMLHeadingElement>(null)
   const owned = useRef<HTMLElement>(null)
@@ -34,14 +47,15 @@ export default function CoachKit() {
     if (el && h) setScrolled(el.scrollTop > h.offsetTop + h.offsetHeight - 98)
   }
   useEffect(() => {
-    if (FRAME === 'with-fit-scrolled') owned.current?.scrollIntoView({ block: 'start' })
+    // After the font loads, so the text above has its final height.
+    if (frame === 'with-fit-scrolled') document.fonts.ready.then(() => owned.current?.scrollIntoView({ block: 'start' }))
     onScroll()
-  }, [])
+  }, [frame])
 
   return (
     <main className="screen is-white" ref={screen} onScroll={onScroll}>
       <div className="topbar kit-bar">
-        <GoTo page="01-home" className="icon-btn" aria-label="Back"><Icon name="arrow-left" /></GoTo>
+        <button type="button" className="icon-btn" aria-label="Back" onClick={back}><Icon name="arrow-left" /></button>
         <span className="name">{scrolled ? "Coach’s kit" : ''}</span>
         <span />
       </div>
@@ -62,7 +76,7 @@ export default function CoachKit() {
 
         <div className="card">
           <div className="kit-rent">
-            <Photo src={bike} alt="A mountain bike with front suspension, side view" className="kit-bike" width={321} height={132} />
+            <Photo src={bike} alt="A mountain bike with front suspension, side view" className="kit-bike" width={321} height={200} />
             <div className="kit-stack is-gap">
               <span className="t-label">Rent</span>
               <span className="t-title">Mountain bike, front suspension</span>
@@ -73,9 +87,9 @@ export default function CoachKit() {
                   <div className="p-hero">
                     <span className="k">Your frame size</span>
                     <span className="t-display">{FIT.frame}</span>
-                    <span className="sub">Saddle height {FIT.saddle} cm</span>
+                    <span className="sub">Saddle height {FIT.saddle}&nbsp;cm</span>
                   </div>
-                  <span className="t-foot kit-fit"><Icon name="ruler" small />From your fit · {FIT.height} cm</span>
+                  <GoTo page="03-fit-profile" state="fit-filled" className="t-foot kit-fit"><Icon name="ruler" small />From your fit · {FIT.height}&nbsp;cm<Icon name="caret-right" small /></GoTo>
                 </div>
                 <GoTo page="04-search-results" className="btn is-block">Find bikes for {RIDE.date}</GoTo>
               </>
@@ -101,7 +115,7 @@ export default function CoachKit() {
               <Icon name="check-circle" className="is-owned" />
               <div className="kit-stack is-gap">
                 <span className="t-callout kit-strong">Road helmet</span>
-                <span className="t-foot">In My gear · last used 2 days ago</span>
+                <span className="t-foot">In My gear · last used 22&nbsp;Oct</span>
               </div>
             </div>
             <div className="t-foot kit-checked"><Icon name="backpack" small />Checked against My gear</div>
