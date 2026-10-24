@@ -47,3 +47,7 @@ After 08: build **10 Delivery Tracking → 11 Handover Check → 13 Weekly Ride*
 ## Added 25 Oct 02:28: 02 approved
 
 After 13: build **02 Coach's post** from "OutRent · direction" (local branch build/direction-02), with the five kit thumbnails (img/02-kit-*.webp) and img/02-coach-post.webp, img/aisyah-avatar.webp from OutRent Image Library. Skip 13's stamp for now (being redesigned).
+
+## Added 25 Oct 03:45: 09 and 14–18 exist; fix pass coming
+
+After 02: build **09 Trips**, then **14 My Equipment → 15 Equipment Detail → 16 Storage Options → 17 Hub Pickup → 18 Storage Map** from "OutRent · direction" (one local branch each, build/direction-09, -14 … -18). Facts: MOCK-DATA v1.6 on product-requirements. A persona review runs on the prototype tonight and a fix pass follows, so wording on every page may still change; build structure and motion first, and expect a copy update later.
