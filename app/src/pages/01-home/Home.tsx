@@ -66,8 +66,8 @@ export default function Home() {
       <main className="screen" key="home">
         <div className={`photo-top home-top${hasBooking ? '' : ' is-short'}`}>
           {hasBooking
-            ? <Photo src={heroTrail} alt="Chestnut Nature Park trail in morning light" />
-            : <Photo src={trailheadUnload} alt="Rider unloading a bike at a trailhead" />}
+            ? <Photo src={heroTrail} alt="Chestnut Nature Park trail in morning light" width={393} height={286} first />
+            : <Photo src={trailheadUnload} alt="Rider unloading a bike at a trailhead" width={393} height={236} first />}
           <div className="float-top">
             <h1 className="chip glass home-brand" dangerouslySetInnerHTML={{ __html: lockup }} />
             <div className="home-actions">
@@ -87,7 +87,7 @@ export default function Home() {
           </div>
           {hasBooking && (
             <div className="home-for">
-              <span className="chip glass"><Icon name="calendar-blank" small />For Coach Aisyah's Saturday ride</span>
+              <span className="chip glass"><Icon name="calendar-blank" small />For Coach Aisyah’s Saturday ride</span>
             </div>
           )}
         </div>
@@ -135,7 +135,7 @@ function WithBooking() {
         </div>
         <hr className="divider" />
         <span className="home-item">
-          <Photo src={bike} alt="This Trek Marlin 7, side view" className="home-thumb" />
+          <Photo src={bike} alt="This Trek Marlin 7, side view" className="home-thumb" width={48} height={48} />
           <span className="home-stack">
             <span className="t-callout home-strong">Trek Marlin 7 · size M</span>
             <span className="t-foot">Chestnut trailhead carpark</span>
@@ -146,7 +146,7 @@ function WithBooking() {
       <SearchField />
       <div className="home-rows">
         <GoTo page="02-coach-kit" className="row">
-          <span className="thumb"><Photo src={coachAisyah} alt="Coach Aisyah, portrait" /></span>
+          <span className="thumb"><Photo src={coachAisyah} alt="Coach Aisyah, portrait" width={64} height={64} /></span>
           <span className="body">
             <span className="meta">Kit list by Coach Aisyah</span>
             <span className="name">First ride at Chestnut</span>
@@ -171,7 +171,7 @@ function NoBookings() {
       <section className="home-section">
         <div className="home-section-head"><h2 className="t-title">Start here</h2></div>
         <GoTo page="02-coach-kit" className="card home-kit">
-          <Photo src={coachGroup} alt="Coach Aisyah with her Saturday group" className="home-thumb" />
+          <Photo src={coachGroup} alt="Coach Aisyah with her Saturday group" className="home-thumb" width={88} height={88} />
           <span className="home-stack">
             <span className="t-foot">Kit list by Coach Aisyah</span>
             <span className="t-callout home-strong">First ride at Chestnut</span>
@@ -264,7 +264,7 @@ function Messages({ threads, onBack }: { threads: Thread[]; onBack: () => void }
         <div className="card home-list">
           {threads.map((t) => (
             <GoTo key={t.id} page={t.page} className="home-entry is-thread">
-              <Photo src={t.photo} alt={t.alt} className="home-avatar" />
+              <Photo src={t.photo} alt={t.alt} className="home-avatar" width={52} height={52} />
               <span className="home-stack">
                 <span className="t-callout home-strong">{t.name}</span>
                 <span className={`t-foot home-preview${t.unread ? ' is-unread' : ''}`}>{t.preview}</span>
