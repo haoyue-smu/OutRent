@@ -54,3 +54,7 @@ Base: the round-2 Frames, with these changes:
 npm run check and outrent-ui-review on each page before each local commit; fix what they flag.
 
 Order: 08, then 10, then 11. One local branch per page.
+
+## HOLD (24 Oct 22:20)
+
+Haoyue has accepted a new visual direction for the whole app ("OutRent · direction", by the Creative Director window: new palette, Geist / Geist Mono, hairline rules instead of card stacks, GSAP motion). Finish and locally commit the page you are on now, then **stop**. Do not start the next page. A new task (retool tokens, fonts and components to the new system, then rebuild the pages from the new prototype) will be written here once the direction covers the whole route.
