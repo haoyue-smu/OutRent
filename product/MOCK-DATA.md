@@ -1,6 +1,6 @@
 # OutRent mock data and seeded world
 
-Version 1.4 · 24 Oct 2026 · Owner: Haoyue. Status: **approved as the extension to DESIGN.md section 8** (consistency is the standard: a value may change, but it must change everywhere at once, through the PO window). This file is the single source for every value, name, date and starting state in the prototype. DESIGN.md section 8 values are repeated here unchanged and stay locked.
+Version 1.5 · 25 Oct 2026 · Owner: Haoyue. Status: **approved as the extension to DESIGN.md section 8** (consistency is the standard: a value may change, but it must change everywhere at once, through the PO window). This file is the single source for every value, name, date and starting state in the prototype. DESIGN.md section 8 values are repeated here unchanged and stay locked.
 
 v1.1 answers DESIGN-GAPS-v1.0 from the design window. Changed: supplier corrected to Timah Cycles per DESIGN.md §8 (v1.0 had an outdated name); SEED-RIDE added to §4; slots, listing facts and fulfilment timeline added to §4; §3 notes on inside leg and plain-language labels; §5 kit wear line; §7 no-reviews item; §9 transfer costs and corrected rack locations; VS-1 supplier facts; FD-RECURRING weekly price.
 
@@ -9,6 +9,8 @@ v1.2 answers DESIGN-GAPS-v1.1. Changed: §7 star values and two more Marlin 7 re
 v1.3 (product/PO-ANSWERS-v1.3.md): SEED-TRIPS removed. Daniel is a first-time renter; OR-10482 is his first rental. No other value changed.
 
 v1.4 (product/PO-ANSWERS-v1.5.md): answers the 06 Delivery & Return gaps. Added: §2 Daniel's home address; §4 the hand-over spot at the Chestnut trailhead carpark, and the rule that delivery and collection places are chosen separately (the seeded booking uses the carpark for both). Also (same version, tasks B and C of 24 Oct 16:05): house date format "25 Oct · 7:40" applied to every date-and-time shown to Daniel (values unchanged); §4 adds the shop's record time (18 Oct · 16:20), the hand-over views for the listing, and the E5-6 submitted time (25 Oct · 7:46). All new values are set by the PO and listed in REQUIREMENTS.md open questions 11–12 until Haoyue accepts them. No existing value changed.
+
+v1.5 (product/PO-ANSWERS-v1.6.md): answers the Creative Director's gaps 3, 4, 5, 6, 9, 14, 15 and the batch-5 value check. Added: §1 demo-route clock; §4 mark time and the courier's name; §6 item types and sizes; §9 the rack nearest home and the pooled-run window; VS-6 intake record detail; new §12 catalogue and pricing rules (categories, weekly and multi-day prices). Changed: §5 coach's note shortened (Haoyue, 25 Oct). New values are set by the PO and listed in REQUIREMENTS.md open question 11 until Haoyue accepts them.
 
 Rules:
 
@@ -35,6 +37,8 @@ Every relative label derives from it. Do not compute from the real date.
 | Road bike and helmet last used | Wed 22 Oct 2026, shown as "2 days ago" |
 
 Variant states (section 10) may declare their own "now"; otherwise the clock above applies.
+
+**Demo-route clock** (confirmed 25 Oct, PO-ANSWERS-v1.6 item 6). The demo route walks the booking as it happened, so pages 01–08 run at **Wed 22 Oct, 9:01–9:12**: Home opens in its no-bookings variant (E0-1), the fit profile is entered on 03, and 08 is the confirmation at 22 Oct · 9:12 (section 4). The status clock on 01–05 runs 9:01–9:06 and ends at 9:12 on 08. At that moment the notification centre holds only the idle prompt (19 Oct · 10:00, unseen) and no message thread exists yet. The route then skips to Sat 25 Oct for 10–13. Every page off the route (09, 14–18, Home with the upcoming booking, the notification centre at "now") uses the Fri 24 Oct 19:00 clock above. Consequence on 05 at 22 Oct: the availability window starts Wed 22 Oct; 22–24 Oct are free (section 4, "free on the other days").
 
 ## 2. SEED-ACCOUNT · Daniel, signed in
 
@@ -83,7 +87,9 @@ Booking **OR-10482**, confirmed 22 Oct · 9:12.
 - Photos: 5 of this unit, dated 18 Oct 2026 (3) and 12 Oct 2026 (2). The supplier's handover record (E5-5) is the 18 Oct set, timed 18 Oct · 16:20 (set by PO, v1.4); Daniel's record is 25 Oct · 7:40. The 12 Oct photos carry no time yet (REQUIREMENTS open question 12).
 - Existing marks on this unit, in the supplier's dated photos: a small scratch on the left crank arm; a scuff on the saddle edge.
 - Hand-over views for this listing (set in the supplier's listing, rule in REQUIREMENTS E5-5): three close-ups, one part each: left crank arm (scratch), saddle edge (scuff), drivetrain (the part most at risk for a bike). Daniel's photos take the same three views.
+- Daniel's marks on the handover record carry the record's own time, 25 Oct · 7:40, and the author "Daniel Lim": the record and its marks are one act at the hand-over (confirmed v1.5).
 - Report a problem at handover (E5-6), if Daniel files one: submitted 25 Oct · 7:46 (set by PO, v1.4).
+- Courier (set by PO, v1.5): **Hafiz**, Timah Cycles' courier, shown by first name with the shop ("Hafiz · Timah Cycles"). No photo: an initial or a van mark stands in. The same courier delivers (7:40), is the one held up in VS-2, and collects from Rack C in VS-5.
 - Specifications: frame M, aluminium; wheels 29 in; front suspension, 100 mm travel; 1 × 10 gears; hydraulic disc brakes; weight 13.9 kg.
 - Assembled dimensions: 180 × 110 × 78 cm.
 - Availability, Fri 24 Oct – Sun 2 Nov: Sat 25 Oct held for OR-10482; booked Sun 26 Oct and Thu 30 – Fri 31 Oct; free on the other days.
@@ -109,16 +115,19 @@ Curated by Coach Aisyah (third-party coach, idea 4), for her Saturday ride (sect
 - Wear: regular sports shoes (not checked against the equipment list)
 - Bring: 2 water bottles, sunscreen
 - Not needed on a first ride: clipless pedals
-- Coach's note (her voice): "Chestnut's easy loop is fine on any hardtail that fits you. Spend money on fit, not on the bike."
+- Coach's note (her voice): "Chestnut's easy loop is fine on any hardtail that fits you." (The second sentence, "Spend money on fit, not on the bike", was withdrawn by Haoyue on 25 Oct: it read as the platform's slogan in her mouth. Do not show it.)
+- Her post caption on 02 is copy in her voice (E10-4), written by the design or creative window around these items; the item values appear unchanged, and she makes no claim about OutRent's prices or service.
 
 ## 6. SEED-EQUIPMENT · What Daniel owns
 
-| Item | Where | Last used | Space note |
-|---|---|---|---|
-| Canyon Endurace (road bike) | Living-room wall bracket | Wed 22 Oct 2026 | — |
-| Giant Escape 3, 2021 (older bike) | Corridor | 24 May 2026 | Blocks the corridor |
-| Hard-shell bike box, 115 × 95 × 30 cm | Hallway, no fixed place | Mar 2025 | Largest single item |
-| Road helmet | Shelf | Wed 22 Oct 2026 | — |
+| Item | Type | Where | Size (space taken) | Last used | Space note |
+|---|---|---|---|---|---|
+| Canyon Endurace (road bike) | Bike | Living-room wall bracket | 170 × 95 × 42 cm | Wed 22 Oct 2026 | — |
+| Giant Escape 3, 2021 (older bike) | Bike | Corridor | 175 × 105 × 60 cm | 24 May 2026 | Blocks the corridor |
+| Hard-shell bike box | Bike box | Hallway, no fixed place | 115 × 95 × 30 cm | Mar 2025 | Largest single item |
+| Road helmet | Helmet | Shelf | — | Wed 22 Oct 2026 | — |
+
+Type and the two bike sizes were added in v1.5 (set by PO) for E7-2 and E7-3 AC1; the box size existed since v1.0. FD-NEW-ITEM adds a fifth type, Accessory.
 
 The idle prompt (idea 9) targets the Giant Escape 3. Rent-out suggestion if stored: S$12 / day, owner share 70% = S$8.40 / day rented.
 
@@ -161,7 +170,7 @@ Later in the flow: one "Rental closed, S$150 deposit released" notification at 2
 
 OutRent Hub (Sungei Kadut):
 - Bike storage S$18 / month, includes intake condition record and basic upkeep
-- Getting it there: home collection S$10, daily 5–7 pm only; or drop at a nearby public rack S$5, picked up on a pooled courier run (runs Tue and Fri mornings)
+- Getting it there: home collection S$10, daily 5–7 pm only; or drop at a nearby public rack S$5, picked up on a pooled courier run (runs Tue and Fri mornings, 7:00–10:00; the bike is dropped before 7:00 that day). From the mock clock the next runs are Tue 28 Oct and Fri 31 Oct. Rack nearest Daniel's home (set by PO, v1.5): Rack S, Sengkang East Way, Blk 325C void deck, 60 m away.
 - Getting it back: free on a pooled run with 2 days' notice; next-day return to home S$8
 - Rent-out while stored: owner opts in, owner receives 70% of each rental, item condition re-checked after every rental
 
@@ -186,7 +195,7 @@ Each variant is the seeded world plus the change below. A story that depends on 
   - It replaces the 13:30 trailhead collection.
   - Dropped at Rack C 25 Oct · 11:20; the reserved spot holds until 13:20; Timah Cycles' courier collects from the rack at 25 Oct · 12:30.
   - The return check happens at that collection, against the handover record. The deposit release still shows at 25 Oct · 14:05.
-- **VS-6 Old bike stored.** Alternate "now": 29 Oct · 10:00. Giant Escape 3 at the Hub since Tue 28 Oct, intake record complete (dated photos, condition "good, chain worn"), storage S$18 / month running, rent-out: not yet opted in. Return slots from this "now": earliest pooled run Fri 31 Oct morning (free, 2 days' notice); next-day home return 30 Oct · 17:00–19:00 (S$8).
+- **VS-6 Old bike stored.** Alternate "now": 29 Oct · 10:00. Giant Escape 3 at the Hub since Tue 28 Oct, intake record complete (3 close-up photos timed 28 Oct · 19:45, author "OutRent Hub": drivetrain, carrying the note "chain worn"; frame, left side; frame, right side; overall condition "good, chain worn"; last-used date updated to 28 Oct by the intake, E7-5), storage S$18 / month running, rent-out: not yet opted in. Return slots from this "now": earliest pooled run Fri 31 Oct morning (free, 2 days' notice); next-day home return 30 Oct · 17:00–19:00 (S$8).
 
 ## 11. Flow-created data (FD)
 
@@ -200,3 +209,12 @@ Values a flow produces, so later screens agree:
 - **FD-NEW-ITEM** (E7-2): Daniel adds a track pump, type accessory, kept in the corridor. Last used: none recorded yet.
 - **FD-RENT-OUT** (E8-6): on opting in, earnings to date S$0; nothing has been rented yet.
 - **FD-MESSAGE** (E9-1, in VS-2): 25 Oct · 7:14, Daniel to Timah Cycles: "The ride starts at 8:00. Can the bike still make it by then?"
+
+## 12. Catalogue and pricing rules
+
+Added in v1.5 (PO-ANSWERS-v1.6, items 3–5). Set by PO; listed in REQUIREMENTS.md open question 11 until Haoyue accepts them.
+
+- **Categories.** The catalogue has two categories with data behind them: **Bikes** (the Trek Marlin 7, Trek Marlin 6 and Scott Aspect 950, sections 4 and 10) and **Kayaks** (VS-4: 3 free Sun 26 Oct, 2 pickup-only Sat 25 Oct). Home shows these two and no others; Paddleboards and Camping do not exist. No per-category count or price is shown. Adding a category is Haoyue's call (REQUIREMENTS open question 13).
+- **Weekly price.** Platform rule: a weekly ride costs 10% less per ride than the one-off all-in total for the same item, delivery and collection. FD-RECURRING is its instance (S$45 against S$50). A Home promo may state the rule; it may not state a figure other than 10%.
+- **Multi-day price.** Platform rule: a rental of 3 days or more takes 10% off the day rate for every day; delivery, collection and set-up are unchanged, and the deposit is held once. Worked instance for the Marlin 7: 3 days = 3 × S$34.20 + S$12 = S$114.60 all-in (one-off 3 × S$38 + S$12 = S$126). OR-10482 is one day and is not discounted; the rule appears in the demo only as the Home promo.
+

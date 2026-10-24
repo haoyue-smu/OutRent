@@ -1,6 +1,6 @@
 # OutRent product requirements (Iter2 prototype)
 
-Version 1.5 · 24 Oct 2026 · Product owner window. Consumed by the UX design window and the implementation window.
+Version 1.6 · 25 Oct 2026 · Product owner window. Consumed by the UX design window and the implementation window.
 
 ## 0. How to use this document
 
@@ -49,6 +49,7 @@ The design and implementation windows do not add features and do not change requ
 | 1.3 | 23 Oct 2026 | Answers inbox tasks of 23 Oct 20:05 (product/PO-ANSWERS-v1.3.md). Changed story: E5-1. Daniel is a first-time renter; SEED-TRIPS removed from MOCK-DATA.md, also at 1.3. |
 | 1.4 | 24 Oct 2026 | Closes open questions 7–9 on Haoyue's decisions of 24 Oct (product/PO-ANSWERS-v1.4.md). §0 MoSCoW definition rewritten around the demo route; 12 stories move Must → Should: E0-3, E7-1, E7-3, E7-4, E8-1, E8-2, E8-3, E8-4, E8-5, E8-6, E8-7, E8-8 (now 41 Must, 25 Should, 1 Could). E8-8 notes the departure from the Iter1 hard scenario. E9-3 scopes its idle-item and new-message types. No value changed; MOCK-DATA.md stays at 1.3. |
 | 1.5 | 24 Oct 2026 | Answers the 06 Delivery & Return gaps (product/PO-ANSWERS-v1.5.md). Changed stories: E4-2 (collection place chosen separately; may differ from delivery), E5-5 (hand-over views rule), E5-6 (submitted state is timed). MOCK-DATA.md at 1.4: home address, hand-over spot, shop record time, hand-over views and report time added, set by PO (open questions 11–12); house date format "25 Oct · 7:40" applied throughout (tasks A, B, C of 24 Oct). |
+| 1.6 | 25 Oct 2026 | Answers the Creative Director's gaps 3, 4, 5, 6, 9, 14, 15 and the batch-5 value check (product/PO-ANSWERS-v1.6.md). No story text changed. MOCK-DATA.md at 1.5: demo-route clock, courier, mark time, item types and sizes, rack nearest home, intake record detail, §12 catalogue and pricing rules; coach's note shortened. Open questions 11, 13 updated. |
 
 ## 3. Won't build
 
@@ -571,5 +572,6 @@ Raised here, answered by the PO window, folded into the next version:
 8. Resolved 24 Oct 2026 (Haoyue): the MoSCoW floor is the demo route (§0). Now 41 Must, 25 Should, 1 Could. One judgement call in product/PO-ANSWERS-v1.4.md: E0-3 (storage entry on Home) moved to Should because its only destination, E8-1 on page 16, is off the route; say so if the Home storage card is to be protected, and E0-3 and E8-1 return to Must.
 9. Resolved 24 Oct 2026: the three values set by the PO are accepted by Haoyue as they stand (set by PO, accepted by Haoyue 24 Oct): weekly price S$45 / ride, Hub transfer S$10 home collection, S$5 rack drop. They are no longer open. Any change goes through the PO window and changes everywhere at once.
 10. The PO-ANSWERS files for v1.1 and v1.2 were first written as project docs; from 24 Oct copies sit in product/ next to v1.3. The repo copies are the reference.
-11. Set by PO, v1.5, awaiting Haoyue: Daniel's home address (Blk 325C Sengkang East Way #11-42, Singapore 543325); the hand-over spot at the Chestnut trailhead carpark ("By the park entrance sign"); the shop's handover record time (18 Oct · 16:20); the E5-6 report submitted time (25 Oct · 7:46). Any change goes through the PO window and changes everywhere at once.
+11. Set by PO, v1.5, awaiting Haoyue: Daniel's home address (Blk 325C Sengkang East Way #11-42, Singapore 543325); the hand-over spot at the Chestnut trailhead carpark ("By the park entrance sign"); the shop's handover record time (18 Oct · 16:20); the E5-6 report submitted time (25 Oct · 7:46). Added v1.6: the courier's name (Hafiz, no photo); the weekly 10% rule as a platform rule; the multi-day rule (10% off the day rate from 3 days); the two bike sizes in SEED-EQUIPMENT; Rack S near home and the pooled-run window 7:00–10:00; the intake record time (28 Oct · 19:45) and views. Any change goes through the PO window and changes everywhere at once.
 12. Not asked for, no value set: the 12 Oct photos (2 of the 5 on the Trek Marlin 7 listing) carry a date but no time. If they appear beside a timed record, raise by story ID (E3-1 or E5-5) and the PO sets a time.
+13. Awaiting Haoyue: the catalogue has two categories with data (Bikes, Kayaks; MOCK-DATA §12). If Home needs more, he names them and the PO seeds each with at least one item; the PO does not add categories on its own.
