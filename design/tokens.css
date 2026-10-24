@@ -58,6 +58,7 @@
   --glass-border: rgba(255, 255, 255, 0.55);
   --glass-blur: blur(16px) saturate(150%);
   --shadow-float: 0 8px 24px rgba(18, 24, 21, 0.12);
+  --shadow-ring: 0 0 0 1px rgba(0, 0, 0, 0.18);   /* white rings and lenses on photos */
   --scrim: linear-gradient(to bottom, rgba(18, 24, 21, 0.35), rgba(18, 24, 21, 0));
 
   /* Scene placeholders: stand-ins for photos, not UI colours */
@@ -96,6 +97,7 @@
   --bottom-float: 22px;
 
   /* Shape */
+  --r-bar: 3px;
   --r-tick: 6px;
   --r-thumb: 10px;
   --r-lens: 14px;

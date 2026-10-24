@@ -57,7 +57,7 @@ function checkCss(file, css, text, at) {
     const bad = v.split(/\s+/).some((part) => { const n = part.match(/^(\d+)px$/); return !(part === "0" || (n && RADII.has(Number(n[1])))); });
     if (bad) add(file, "warn", `${where(m.index)}: border-radius ${v}. Use a radius token (var(--r-card) etc.) or explain it under Notes in DECISIONS.md.`);
   }
-  for (const m of clean.matchAll(/box-shadow\s*:\s*([^;}]*)/gi)) if (!/^(none|var\(--shadow-float\))$/.test(m[1].trim())) add(file, "warn", `${where(m.index)}: custom box-shadow. Use var(--shadow-float) or explain it under Notes in DECISIONS.md.`);
+  for (const m of clean.matchAll(/box-shadow\s*:\s*([^;}]*)/gi)) if (!/^(none|var\(--shadow-[a-z-]+\))$/.test(m[1].trim())) add(file, "warn", `${where(m.index)}: custom box-shadow. Use a shadow token (var(--shadow-float), var(--shadow-ring)) or explain it under Notes in DECISIONS.md.`);
   for (const m of clean.matchAll(/backdrop-filter\s*:\s*([^;}]*)/gi)) if (!/var\(--glass-blur\)|none/.test(m[1])) add(file, "warn", `${where(m.index)}: custom backdrop-filter. Use the .glass class or var(--glass-blur).`);
   for (const m of clean.matchAll(/url\(\s*["']?([^"')]+)/gi)) if (!/icons\.svg/.test(m[1])) add(file, "error", `${where(m.index)}: url(${m[1]}) loads an image. All images must be .img-ph placeholders.`);
   for (const m of clean.matchAll(/(?:linear|radial|conic)-gradient\(/gi)) add(file, "warn", `${where(m.index)}: gradient. Gradients are not part of the look; explain it under Notes in DECISIONS.md.`);
