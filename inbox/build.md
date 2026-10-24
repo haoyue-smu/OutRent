@@ -16,3 +16,12 @@ Merge rule (24 Oct): a page baseline merges to main once it passes `npm run chec
 6. Do not run /design-sync; Haoyue runs it himself when needed.
 
 No AI attribution in commit messages. Put what was fixed and anything not done in the commit messages.
+
+## Next task, after the merges above: 03 Fit Profile baseline (added 24 Oct 14:45)
+
+Haoyue approved the 03 board as it stands (24 Oct 14:43). Build it on a new branch build/03-fit-profile from the updated main.
+
+- Source: the 03 Fit Profile Design artifact https://claude.ai/artifact/BkPNQUPmacJx28N59xzZ27 (republished 24 Oct with PO v1.3: first-time renter, no past trips). Use every frame on its Frames page, including E1-3 empty, height only and filled.
+- No photos on this page.
+- `npm run check` and outrent-ui-review before pushing; fix what they flag; merge to main when it passes (merge rule 24 Oct).
+- Do not start 04, 05, 07 or 10: their boards are being revised.
