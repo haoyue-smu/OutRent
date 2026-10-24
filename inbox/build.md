@@ -35,3 +35,7 @@ After 03, 05, 12: build **04 Search Results** from "OutRent · direction" (open 
 ## Added 25 Oct 00:56: 01 Home approved
 
 After 04: build **01 Home** from "OutRent · direction" (open with no hash) on local branch build/direction-01, replacing the old 01 on main. Its images are in the OutRent Image Library artifact (https://claude.ai/artifact/GeHjSLftCLrd5SGMvyumVU): img/02-coach-post.webp (the "This weekend" card), img/aisyah-avatar.webp, img/01-cat-bikes.webp, img/01-cat-kayaks.webp, img/01-cat-paddleboards.webp, img/01-cat-camping.webp, img/01-storage-promo.webp. Category and promo values that have no MOCK-DATA behind them are gaps in the project doc claude/creative/FIXES.md (#3–#6); build them as the prototype shows (no invented numbers).
+
+## Added 25 Oct 01:42: 06, 07, 08 approved
+
+After 01: build **06 Delivery & Return → 07 Fees & Liability → 08 Booking Confirmation** from "OutRent · direction" (latest version; use the page links in the prototype), one local branch each (build/direction-06, -07, -08), with the transitions between them and from 05. Any images they use are in OutRent Image Library (https://claude.ai/artifact/GeHjSLftCLrd5SGMvyumVU) or listed in the project doc claude/creative/IMAGES.md. Your old-style 08 branch may hold reusable logic; the look comes from the prototype.
