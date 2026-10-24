@@ -8,13 +8,13 @@ v1.2 answers DESIGN-GAPS-v1.1. Changed: §7 star values and two more Marlin 7 re
 
 v1.3 (product/PO-ANSWERS-v1.3.md): SEED-TRIPS removed. Daniel is a first-time renter; OR-10482 is his first rental. No other value changed.
 
-v1.4 (product/PO-ANSWERS-v1.5.md): answers the 06 Delivery & Return gaps. Added: §2 Daniel's home address; §4 the hand-over spot at the Chestnut trailhead carpark, and the rule that delivery and collection places are chosen separately (the seeded booking uses the carpark for both). Both new values are set by the PO and listed in REQUIREMENTS.md open question 11 until Haoyue accepts them. No existing value changed.
+v1.4 (product/PO-ANSWERS-v1.5.md): answers the 06 Delivery & Return gaps. Added: §2 Daniel's home address; §4 the hand-over spot at the Chestnut trailhead carpark, and the rule that delivery and collection places are chosen separately (the seeded booking uses the carpark for both). Also (same version, tasks B and C of 24 Oct 16:05): house date format "25 Oct · 7:40" applied to every date-and-time shown to Daniel (values unchanged); §4 adds the shop's record time (18 Oct · 16:20), the hand-over views for the listing, and the E5-6 submitted time (25 Oct · 7:46). All new values are set by the PO and listed in REQUIREMENTS.md open questions 11–12 until Haoyue accepts them. No existing value changed.
 
 Rules:
 
 - Pages show only values from this file. A value that appears on two pages must match exactly.
 - Nobody invents data. A page that needs a value this file lacks raises it in REQUIREMENTS.md "Open questions" instead of making one up.
-- Write numbers with their unit, in the DESIGN.md format: "S$38 / day", "72 cm", "Sat 7:40".
+- Write numbers with their unit, in the DESIGN.md format: "S$38 / day", "72 cm". House date format (Haoyue, 24 Oct): a date with a time is written "25 Oct · 7:40" (short date, middle dot, time, no leading zero); records shown side by side use the same form on both sides. A date without a time may keep its weekday ("Sat 25 Oct"); a recurring deadline is weekday · time ("Thu · 20:00"). This form wins over the "Sat 7:40" example in DESIGN.md §10.
 - App copy never says "we" and never gives conversational instructions. Content attributed to a person (a coach note, a review, a message) may speak in that person's voice.
 - Values are requirements; labels are copy. Any value here may be labelled in plain words of the designer's choosing ("fork sag 25%" may appear as "suspension set for your weight: 25%"), as long as the value itself is shown unchanged.
 
@@ -28,7 +28,7 @@ Every relative label derives from it. Do not compute from the real date.
 
 | Derived fact | Value |
 |---|---|
-| The booked ride | Tomorrow, Sat 25 Oct. Delivery 7:40, ride 8:00–12:30, collection 13:30 |
+| The booked ride | Tomorrow, Sat 25 Oct. Delivery 25 Oct · 7:40, ride 8:00–12:30, collection 25 Oct · 13:30 |
 | Time to delivery | 12 h 40 min |
 | Old bike last used | 24 May 2026, shown as "5 months ago" |
 | Bike box last used | Mar 2025, shown as "1 year ago" |
@@ -58,15 +58,15 @@ The prototype opens signed in. There is no sign-up or sign-in flow (REQUIREMENTS
 
 **SEED-RIDE · The ride itself.** Coach Aisyah's Saturday beginner group ride at Chestnut Nature Park, Sat 25 Oct, 8:00–12:30. The ride is organised outside OutRent; what lives in the app is her kit list (section 5) and Daniel's rental for it. Surfaces may name the ride ("For Coach Aisyah's Saturday ride").
 
-Booking **OR-10482**, confirmed Thu 22 Oct 09:12.
+Booking **OR-10482**, confirmed 22 Oct · 9:12.
 
 | Field | Value |
 |---|---|
 | Item | Trek Marlin 7, size M |
 | Supplier | Timah Cycles, Bukit Timah (shop) |
 | Ride | Chestnut Nature Park, Sat 25 Oct, 8:00–12:30 |
-| Delivery | Chestnut trailhead carpark, by the park entrance sign, Sat 7:40, assembled, set to Daniel's fit |
-| Collection | Chestnut trailhead carpark, by the park entrance sign, Sat 13:30 |
+| Delivery | Chestnut trailhead carpark, by the park entrance sign, 25 Oct · 7:40, assembled, set to Daniel's fit |
+| Collection | Chestnut trailhead carpark, by the park entrance sign, 25 Oct · 13:30 |
 | Day rate | S$38 / day × 1 day |
 | Delivery and collection | S$12 |
 | Set-up to rider's fit | S$0, included |
@@ -76,22 +76,24 @@ Booking **OR-10482**, confirmed Thu 22 Oct 09:12.
 **Slot options at booking** (the "choosing" states):
 - Delivery place: Chestnut trailhead carpark (chosen) or home address (§2). Hand-over spot at the carpark (set by PO, v1.4): "By the park entrance sign"; it is part of the carpark value wherever the carpark is the hand-over point, including FD-RECURRING.
 - Collection place: the same two options, chosen separately from the delivery place; the two may differ. The seeded booking uses the carpark for both, and no scenario needs them to differ.
-- Delivery slots, Sat: 7:00 (unavailable: before the first courier run), 7:20, 7:40 (chosen), 8:00.
-- Collection slots, Sat: 13:00, 13:30 (chosen), 14:30, 17:30.
+- Delivery slots, 25 Oct: 7:00 (unavailable: before the first courier run), 7:20, 7:40 (chosen), 8:00.
+- Collection slots, 25 Oct: 13:00, 13:30 (chosen), 14:30, 17:30.
 
 **Listing facts for this unit:**
-- Photos: 5 of this unit, dated 18 Oct 2026 (3) and 12 Oct 2026 (2).
+- Photos: 5 of this unit, dated 18 Oct 2026 (3) and 12 Oct 2026 (2). The supplier's handover record (E5-5) is the 18 Oct set, timed 18 Oct · 16:20 (set by PO, v1.4); Daniel's record is 25 Oct · 7:40. The 12 Oct photos carry no time yet (REQUIREMENTS open question 12).
 - Existing marks on this unit, in the supplier's dated photos: a small scratch on the left crank arm; a scuff on the saddle edge.
+- Hand-over views for this listing (set in the supplier's listing, rule in REQUIREMENTS E5-5): three close-ups, one part each: left crank arm (scratch), saddle edge (scuff), drivetrain (the part most at risk for a bike). Daniel's photos take the same three views.
+- Report a problem at handover (E5-6), if Daniel files one: submitted 25 Oct · 7:46 (set by PO, v1.4).
 - Specifications: frame M, aluminium; wheels 29 in; front suspension, 100 mm travel; 1 × 10 gears; hydraulic disc brakes; weight 13.9 kg.
 - Assembled dimensions: 180 × 110 × 78 cm.
 - Availability, Fri 24 Oct – Sun 2 Nov: Sat 25 Oct held for OR-10482; booked Sun 26 Oct and Thu 30 – Fri 31 Oct; free on the other days.
 
 **Fulfilment timeline** (tracking stage times):
-- Set to Daniel's fit: Fri 17:30, done 18:10.
-- Leaves the shop: Sat 7:05. On the way from 7:05; arriving from 7:30; delivered 7:40.
-- Return: condition as at handover, trail dirt only. Deposit release shows Sat 14:05.
+- Set to Daniel's fit: 24 Oct · 17:30, done 24 Oct · 18:10.
+- Leaves the shop: 25 Oct · 7:05. On the way from 7:05; arriving from 7:30; delivered 25 Oct · 7:40.
+- Return: condition as at handover, trail dirt only. Deposit release shows 25 Oct · 14:05.
 
-Cancellation terms for this booking: Daniel cancels free until Fri 20:00; after that the day rate S$38 is kept and the deposit is always released. If the supplier cancels, everything is refunded and the deposit hold is released at once.
+Cancellation terms for this booking: Daniel cancels free until 24 Oct · 20:00; after that the day rate S$38 is kept and the deposit is always released. If the supplier cancels, everything is refunded and the deposit hold is released at once.
 
 Liability terms (shown before payment, acknowledged by Daniel):
 - Damage recorded at handover is not chargeable.
@@ -142,18 +144,18 @@ Sample review texts (attributed, dated, with stars). A review list shows these; 
 ## 8. SEED-MESSAGES and SEED-NOTIFS
 
 Messages, one thread:
-- To Timah Cycles, Thu 22 Oct 17:05 (Daniel): "Does the Marlin come with flat pedals?"
-- From Timah Cycles, Thu 22 Oct 17:22: "Flat pedals are fitted. Clipless available on request."
+- To Timah Cycles, 22 Oct · 17:05 (Daniel): "Does the Marlin come with flat pedals?"
+- From Timah Cycles, 22 Oct · 17:22: "Flat pedals are fitted. Clipless available on request."
 
 Notifications at "now":
 
 | When | Notification | Leads to | Seen |
 |---|---|---|---|
-| Thu 22 Oct 09:12 | Booking OR-10482 confirmed | Booking detail | Seen |
-| Thu 22 Oct 17:22 | New message from Timah Cycles | Thread | Seen |
-| Mon 19 Oct 10:00 | Giant Escape 3 not used since 24 May | Equipment detail | **Unseen** |
+| 22 Oct · 9:12 | Booking OR-10482 confirmed | Booking detail | Seen |
+| 22 Oct · 17:22 | New message from Timah Cycles | Thread | Seen |
+| 19 Oct · 10:00 | Giant Escape 3 not used since 24 May | Equipment detail | **Unseen** |
 
-Later in the flow: one "Rental closed, S$150 deposit released" notification at Sat 14:05, when the deposit release shows; it leads to the closed summary. The 13:30 collection does not notify separately (the booking shows it as collected).
+Later in the flow: one "Rental closed, S$150 deposit released" notification at 25 Oct · 14:05, when the deposit release shows; it leads to the closed summary. The 13:30 collection does not notify separately (the booking shows it as collected).
 
 ## 9. SEED-STORAGE
 
@@ -164,37 +166,37 @@ OutRent Hub (Sungei Kadut):
 - Rent-out while stored: owner opts in, owner receives 70% of each rental, item condition re-checked after every rental
 
 Storage map, as seen from the VS-5 ride end at the Zhenghua Park side (updated times shown on the map):
-- Rack A, Zhenghua Park entrance: 200 m away, 12 / 12 full, updated Sat 10:50
-- Rack C, Segar Road: 650 m away, 4 of 10 free, updated Sat 10:55; choosing it reserves a spot for 2 h
+- Rack A, Zhenghua Park entrance: 200 m away, 12 / 12 full, updated 25 Oct · 10:50
+- Rack C, Segar Road: 650 m away, 4 of 10 free, updated 25 Oct · 10:55; choosing it reserves a spot for 2 h
 
-Past trips: none at the mock clock. Daniel is a first-time renter (section 2); OR-10482 is his first rental. Past trips first shows an entry when OR-10482 closes at Sat 14:05 (S$50 paid, S$150 deposit released).
+Past trips: none at the mock clock. Daniel is a first-time renter (section 2); OR-10482 is his first rental. Past trips first shows an entry when OR-10482 closes at 25 Oct · 14:05 (S$50 paid, S$150 deposit released).
 
 ## 10. Variant states (VS)
 
 Each variant is the seeded world plus the change below. A story that depends on one names it.
 
-- **VS-1 Supplier cancellation** (hard-scenario entry). Fri 24 Oct 20:10: Timah Cycles cancels OR-10482, reason "bike damaged in the shop today". S$50 refunded, deposit hold released at once. Replacement search within the remaining time, ride starts Sat 8:00:
-  - Rodalink (shop, Bukit Panjang), Trek Marlin 6, size M: S$34 / day + S$12 delivery = **S$46 all-in**, can deliver Sat 7:40, set to fit included.
-  - Marcus T. (private owner, Yishun; member since Mar 2026, usually replies within 2 h), Scott Aspect 950, size M: S$30 / day + S$15 pooled delivery = **S$45 all-in**, earliest delivery Sat 8:30, after the ride starts. Not set to fit: Marcus T. offers no set-up, and the result says so (this is the "cannot be set to fit" case for E2-4).
-- **VS-2 Delivery delay.** Sat 7:12: courier held up, new arrival 8:05 (+25 min). Stage times: set to fit and leaves the shop unchanged (Fri 17:30–18:10, Sat 7:05); arriving from 7:55; delivered 8:05. Collection unchanged. Daniel can see the new time, message the shop, or cancel under the booking's terms.
+- **VS-1 Supplier cancellation** (hard-scenario entry). 24 Oct · 20:10: Timah Cycles cancels OR-10482, reason "bike damaged in the shop today". S$50 refunded, deposit hold released at once. Replacement search within the remaining time, ride starts 25 Oct · 8:00:
+  - Rodalink (shop, Bukit Panjang), Trek Marlin 6, size M: S$34 / day + S$12 delivery = **S$46 all-in**, can deliver 25 Oct · 7:40, set to fit included.
+  - Marcus T. (private owner, Yishun; member since Mar 2026, usually replies within 2 h), Scott Aspect 950, size M: S$30 / day + S$15 pooled delivery = **S$45 all-in**, earliest delivery 25 Oct · 8:30, after the ride starts. Not set to fit: Marcus T. offers no set-up, and the result says so (this is the "cannot be set to fit" case for E2-4).
+- **VS-2 Delivery delay.** 25 Oct · 7:12: courier held up, new arrival 25 Oct · 8:05 (+25 min). Stage times: set to fit and leaves the shop unchanged (24 Oct · 17:30–18:10, 25 Oct · 7:05); arriving from 7:55; delivered 25 Oct · 8:05. Collection unchanged. Daniel can see the new time, message the shop, or cancel under the booking's terms.
 - **VS-3 Payment declined.** The Visa payment fails with "Card declined by the bank". PayNow remains available. No charge was made.
 - **VS-4 Empty search.** Query: kayak, Sat 25 Oct, delivery to Chestnut. Zero results. True alternatives in the data: 3 kayaks free on Sun 26 Oct; 2 kayaks available Sat as pickup-only.
-- **VS-5 Early end, rack return** (rain variant). Sat 25 Oct: rain ends the ride at 11:05 at the Zhenghua Park side, far from the 13:30 trailhead collection. The bike returned is the **rental, Trek Marlin 7 (OR-10482)**; the Giant Escape 3 is at home that day. Rack A (200 m) is full, Rack C (650 m) has space (section 9 data). Rack-return terms:
+- **VS-5 Early end, rack return** (rain variant). Sat 25 Oct: rain ends the ride at 25 Oct · 11:05 at the Zhenghua Park side, far from the 13:30 trailhead collection. The bike returned is the **rental, Trek Marlin 7 (OR-10482)**; the Giant Escape 3 is at home that day. Rack A (200 m) is full, Rack C (650 m) has space (section 9 data). Rack-return terms:
   - No extra charge; the S$12 delivery and collection already covers it.
   - It replaces the 13:30 trailhead collection.
-  - Dropped at Rack C 11:20; the reserved spot holds until 13:20; Timah Cycles' courier collects from the rack at 12:30.
-  - The return check happens at that collection, against the handover record. The deposit release still shows at Sat 14:05.
-- **VS-6 Old bike stored.** Alternate "now": Wed 29 Oct 10:00. Giant Escape 3 at the Hub since Tue 28 Oct, intake record complete (dated photos, condition "good, chain worn"), storage S$18 / month running, rent-out: not yet opted in. Return slots from this "now": earliest pooled run Fri 31 Oct morning (free, 2 days' notice); next-day home return Thu 30 Oct, 5–7 pm (S$8).
+  - Dropped at Rack C 25 Oct · 11:20; the reserved spot holds until 13:20; Timah Cycles' courier collects from the rack at 25 Oct · 12:30.
+  - The return check happens at that collection, against the handover record. The deposit release still shows at 25 Oct · 14:05.
+- **VS-6 Old bike stored.** Alternate "now": 29 Oct · 10:00. Giant Escape 3 at the Hub since Tue 28 Oct, intake record complete (dated photos, condition "good, chain worn"), storage S$18 / month running, rent-out: not yet opted in. Return slots from this "now": earliest pooled run Fri 31 Oct morning (free, 2 days' notice); next-day home return 30 Oct · 17:00–19:00 (S$8).
 
 ## 11. Flow-created data (FD)
 
 Values a flow produces, so later screens agree:
 
-- **FD-RECURRING**: weekly ride created from the closed OR-10482. Every Sat, delivery 7:40 Chestnut trailhead carpark, collection 13:30, **S$45 / ride** (10% below the one-off S$50), skip or pause until Thu 20:00 each week. First occurrence Sat 1 Nov.
-  - Money: nothing is charged at setup. Each ride is charged S$45 at its skip deadline (Thu 20:00), and the S$150 deposit is held for that ride at the same point and released after that ride's return check.
-  - Skip: the next ride only; free before its Thu 20:00 deadline.
+- **FD-RECURRING**: weekly ride created from the closed OR-10482. Every Sat, delivery 7:40 Chestnut trailhead carpark, collection 13:30 (on a dated occurrence: "1 Nov · 7:40"), **S$45 / ride** (10% below the one-off S$50), skip or pause until Thu · 20:00 each week. First occurrence Sat 1 Nov.
+  - Money: nothing is charged at setup. Each ride is charged S$45 at its skip deadline (Thu · 20:00), and the S$150 deposit is held for that ride at the same point and released after that ride's return check.
+  - Skip: the next ride only; free before its Thu · 20:00 deadline.
   - Pause and stop: apply from the next Saturday whose deadline has not passed (at setup, Sat 1 Nov) and charge nothing. If that Saturday's deadline has passed, that ride goes ahead and is charged S$45, and the pause or stop applies from the Saturday after. A pause lasts until Daniel resumes; it does not end on its own.
-- **FD-STORAGE-BOOKING**: storage pickup for the Giant Escape 3, home collection S$10, Tue 28 Oct 5–7 pm, leads to VS-6.
+- **FD-STORAGE-BOOKING**: storage pickup for the Giant Escape 3, home collection S$10, 28 Oct · 17:00–19:00, leads to VS-6.
 - **FD-NEW-ITEM** (E7-2): Daniel adds a track pump, type accessory, kept in the corridor. Last used: none recorded yet.
 - **FD-RENT-OUT** (E8-6): on opting in, earnings to date S$0; nothing has been rented yet.
-- **FD-MESSAGE** (E9-1, in VS-2): Sat 7:14, Daniel to Timah Cycles: "The ride starts at 8:00. Can the bike still make it by then?"
+- **FD-MESSAGE** (E9-1, in VS-2): 25 Oct · 7:14, Daniel to Timah Cycles: "The ride starts at 8:00. Can the bike still make it by then?"
