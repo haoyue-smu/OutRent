@@ -42,13 +42,13 @@ export default function CoachKit() {
     <main className="screen is-white" ref={screen} onScroll={onScroll}>
       <div className="topbar kit-bar">
         <GoTo page="01-home" className="icon-btn" aria-label="Back"><Icon name="arrow-left" /></GoTo>
-        <span className="name">{scrolled ? "Coach's kit" : ''}</span>
+        <span className="name">{scrolled ? "Coach’s kit" : ''}</span>
         <span />
       </div>
       <div className="kit-page">
         <div className="kit-head">
           <div className="kit-coach">
-            <Photo src={coachAisyah} alt="Coach Aisyah, portrait" />
+            <Photo src={coachAisyah} alt="Coach Aisyah, portrait" width={56} height={56} />
             <div className="kit-stack">
               <span className="t-callout kit-strong">Coach Aisyah</span>
               <span className="t-foot">Kit list for her Saturday ride</span>
@@ -62,7 +62,7 @@ export default function CoachKit() {
 
         <div className="card">
           <div className="kit-rent">
-            <Photo src={bike} alt="A mountain bike with front suspension, side view" className="kit-bike" />
+            <Photo src={bike} alt="A mountain bike with front suspension, side view" className="kit-bike" width={321} height={132} />
             <div className="kit-stack is-gap">
               <span className="t-label">Rent</span>
               <span className="t-title">Mountain bike, front suspension</span>
