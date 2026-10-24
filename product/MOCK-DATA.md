@@ -1,6 +1,6 @@
 # OutRent mock data and seeded world
 
-Version 1.5 · 25 Oct 2026 · Owner: Haoyue. Status: **approved as the extension to DESIGN.md section 8** (consistency is the standard: a value may change, but it must change everywhere at once, through the PO window). This file is the single source for every value, name, date and starting state in the prototype. DESIGN.md section 8 values are repeated here unchanged and stay locked.
+Version 1.6 · 25 Oct 2026 · Owner: Haoyue. Status: **approved as the extension to DESIGN.md section 8** (consistency is the standard: a value may change, but it must change everywhere at once, through the PO window). This file is the single source for every value, name, date and starting state in the prototype. DESIGN.md section 8 values are repeated here unchanged and stay locked.
 
 v1.1 answers DESIGN-GAPS-v1.0 from the design window. Changed: supplier corrected to Timah Cycles per DESIGN.md §8 (v1.0 had an outdated name); SEED-RIDE added to §4; slots, listing facts and fulfilment timeline added to §4; §3 notes on inside leg and plain-language labels; §5 kit wear line; §7 no-reviews item; §9 transfer costs and corrected rack locations; VS-1 supplier facts; FD-RECURRING weekly price.
 
@@ -11,6 +11,8 @@ v1.3 (product/PO-ANSWERS-v1.3.md): SEED-TRIPS removed. Daniel is a first-time re
 v1.4 (product/PO-ANSWERS-v1.5.md): answers the 06 Delivery & Return gaps. Added: §2 Daniel's home address; §4 the hand-over spot at the Chestnut trailhead carpark, and the rule that delivery and collection places are chosen separately (the seeded booking uses the carpark for both). Also (same version, tasks B and C of 24 Oct 16:05): house date format "25 Oct · 7:40" applied to every date-and-time shown to Daniel (values unchanged); §4 adds the shop's record time (18 Oct · 16:20), the hand-over views for the listing, and the E5-6 submitted time (25 Oct · 7:46). All new values are set by the PO and listed in REQUIREMENTS.md open questions 11–12 until Haoyue accepts them. No existing value changed.
 
 v1.5 (product/PO-ANSWERS-v1.6.md): answers the Creative Director's gaps 3, 4, 5, 6, 9, 14, 15 and the batch-5 value check. Added: §1 demo-route clock; §4 mark time and the courier's name; §6 item types and sizes; §9 the rack nearest home and the pooled-run window; VS-6 intake record detail; new §12 catalogue and pricing rules (categories, weekly and multi-day prices). Changed: §5 coach's note shortened (Haoyue, 25 Oct). New values are set by the PO and listed in REQUIREMENTS.md open question 11 until Haoyue accepts them.
+
+v1.6 (product/PO-ANSWERS-v1.7.md): Haoyue accepted every PO-set value of v1.4–v1.5 (open question 11 closed) and chose four Home categories (open question 13 closed). §12 now lists Bikes, Kayaks, Paddleboards, Camping, with one seeded item each for Paddleboards and Camping.
 
 Rules:
 
@@ -212,9 +214,14 @@ Values a flow produces, so later screens agree:
 
 ## 12. Catalogue and pricing rules
 
-Added in v1.5 (PO-ANSWERS-v1.6, items 3–5). Set by PO; listed in REQUIREMENTS.md open question 11 until Haoyue accepts them.
+Added in v1.5 (PO-ANSWERS-v1.6, items 3–5); accepted by Haoyue 25 Oct (PO-ANSWERS-v1.7). Categories settled by Haoyue 25 Oct.
 
-- **Categories.** The catalogue has two categories with data behind them: **Bikes** (the Trek Marlin 7, Trek Marlin 6 and Scott Aspect 950, sections 4 and 10) and **Kayaks** (VS-4: 3 free Sun 26 Oct, 2 pickup-only Sat 25 Oct). Home shows these two and no others; Paddleboards and Camping do not exist. No per-category count or price is shown. Adding a category is Haoyue's call (REQUIREMENTS open question 13).
+- **Categories** (Haoyue, 25 Oct): Home shows four: **Bikes**, **Kayaks**, **Paddleboards**, **Camping**, in that order. No per-category count or price is shown. Data behind each:
+  - Bikes: the Trek Marlin 7, Trek Marlin 6 and Scott Aspect 950 (sections 4 and 10).
+  - Kayaks: VS-4 (3 free Sun 26 Oct, 2 pickup-only Sat 25 Oct); no kayak listing is drawn, so none is itemised.
+  - Paddleboards, one seeded item: **Red Paddle Co Ride 10'6" inflatable SUP**, with pump, paddle and leash. Supplier: **Seabreeze Watersports, East Coast (shop)**, rating 4.7, 41 reviews. Day rate S$28 / day; delivery and collection to East Coast Park S$10; all-in for one day **S$38**; deposit S$100, held. Delivers to East Coast Park and Pasir Ris Park only; no set-up to rider's fit (not applicable). Dimensions packed: 90 × 40 × 30 cm.
+  - Camping, one seeded item: **Decathlon MH100 2-person tent** with 2 sleeping mats. Supplier: **Marcus T. (private owner, Yishun)**, the same owner as in VS-1 (rating 4.6, 9 reviews). Day rate S$12 / day; pooled delivery to Pasir Ris Park or East Coast Park S$8; all-in for one day **S$20**; deposit S$50, held. Not set to fit (not applicable). Dimensions packed: 60 × 20 × 20 cm.
+  - These two items exist so the Home tiles lead to real data (a category search shows them). No story on the demo route opens them; if a page draws either, raise the story ID for any value not listed here.
 - **Weekly price.** Platform rule: a weekly ride costs 10% less per ride than the one-off all-in total for the same item, delivery and collection. FD-RECURRING is its instance (S$45 against S$50). A Home promo may state the rule; it may not state a figure other than 10%.
 - **Multi-day price.** Platform rule: a rental of 3 days or more takes 10% off the day rate for every day; delivery, collection and set-up are unchanged, and the deposit is held once. Worked instance for the Marlin 7: 3 days = 3 × S$34.20 + S$12 = S$114.60 all-in (one-off 3 × S$38 + S$12 = S$126). OR-10482 is one day and is not discounted; the rule appears in the demo only as the Home promo.
 
