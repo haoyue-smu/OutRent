@@ -1,6 +1,6 @@
 # OutRent product requirements (Iter2 prototype)
 
-Version 1.3 · 23 Oct 2026 · Product owner window. Consumed by the UX design window and the implementation window.
+Version 1.4 · 24 Oct 2026 · Product owner window. Consumed by the UX design window and the implementation window.
 
 ## 0. How to use this document
 
@@ -22,8 +22,8 @@ Read in this order: this section, then DESIGN.md (visual law, locked), then MOCK
 **States to design.** Each story lists the distinct states that must exist. The list names states only; what each looks like is the designer's call. Every listed state must appear in the comps and in the build (see E10-1).
 
 **MoSCoW.**
-- **Must**: the two scenarios cannot be walked, or a scored Iter1 HE fix is missing, without it.
-- **Should**: standard in benchmark rental apps (Turo, Hygglo, Airbnb); its absence makes OutRent feel incomplete.
+- **Must**: the floor is the demo route (decided by Haoyue, 24 Oct). A story is Must when it sits on a page of the demo route (01 02 03 04 05 06 07 08 10 11 12 13, the order in team/sitemap.html) or when a route story depends on it to show its AC. Cross-cutting rules (E10) are Must.
+- **Should**: everything on 09, 14, 15, 16, 17, 18 and anything else off the route, unless a route story depends on it; plus what is standard in benchmark rental apps (Turo, Hygglo, Airbnb) and whose absence makes OutRent feel incomplete.
 - **Could**: adds polish or depth; cut first under time pressure.
 - **Won't**: section 3. Do not build, do not partially build.
 
@@ -47,6 +47,7 @@ The design and implementation windows do not add features and do not change requ
 | 1.1 | 23 Oct 2026 | Answers DESIGN-GAPS-v1.0 (per-item responses: project doc product/PO-ANSWERS-v1.1.md). Changed stories: E0-2, E1-3, E5-8, E6-1, E6-2. §0 gains the "Labels are copy" rule. MOCK-DATA.md is also at 1.1: supplier corrected to Timah Cycles per DESIGN.md §8, plus the values the gaps asked for. |
 | 1.2 | 23 Oct 2026 | Answers DESIGN-GAPS-v1.1 (per-item responses: project doc product/PO-ANSWERS-v1.2.md). Changed stories: E2-3, E2-4, E3-3, E3-4, E6-1, E6-3, E8-7, E8-8, E9-3, E9-5. VS-5 now returns the rental, not the old bike. MOCK-DATA.md is also at 1.2. |
 | 1.3 | 23 Oct 2026 | Answers inbox tasks of 23 Oct 20:05 (product/PO-ANSWERS-v1.3.md). Changed story: E5-1. Daniel is a first-time renter; SEED-TRIPS removed from MOCK-DATA.md, also at 1.3. |
+| 1.4 | 24 Oct 2026 | Closes open questions 7–9 on Haoyue's decisions of 24 Oct (product/PO-ANSWERS-v1.4.md). §0 MoSCoW definition rewritten around the demo route; 12 stories move Must → Should: E0-3, E7-1, E7-3, E7-4, E8-1, E8-2, E8-3, E8-4, E8-5, E8-6, E8-7, E8-8 (now 41 Must, 25 Should, 1 Could). E8-8 notes the departure from the Iter1 hard scenario. E9-3 scopes its idle-item and new-message types. No value changed; MOCK-DATA.md stays at 1.3. |
 
 ## 3. Won't build
 
@@ -85,7 +86,7 @@ As a user, Daniel wants the app's main areas reachable from anywhere at root lev
 4. Conversations (E9-2) and the notification centre (E9-4) are each reachable from a root area; which one is the designer's call. `[B]`
 States: each root area selected.
 
-### E0-3 Storage is discoverable without renting · Must
+### E0-3 Storage is discoverable without renting · Should
 `B3` `Idea 8` `HE #6` · Seed: SEED-STORAGE
 As an owner with a space problem, Daniel wants to find storage without first going through a rental, so the second half of the product exists for him.
 1. From the main surface, Daniel reaches what storage is and costs (E8-1) without entering any rental flow. `[D+B]`
@@ -397,7 +398,7 @@ States: occurrence in trips.
 
 ## E7 · Owner: equipment log
 
-### E7-1 What I own · Must
+### E7-1 What I own · Should
 `B3` `Idea 9` `HE #22` · Seed: SEED-EQUIPMENT
 As an owner, Daniel wants his gear listed with the facts that matter for space, so the flat's problem is visible in the app.
 1. My gear lists Daniel's items with, per item: where it lives, when it was last used (mock-clock relative), and a space note where one exists. `[D]`
@@ -411,14 +412,14 @@ As an owner, Daniel wants to log a new item, so the list stays true.
 1. Daniel adds an item with at least a name, a type and where it lives; it appears in the list. `[D+B]`
 States: add flow, list updated.
 
-### E7-3 Item detail, at home · Must
+### E7-3 Item detail, at home · Should
 `B3` `Idea 9` `HE #10` · Seed: SEED-EQUIPMENT
 As an owner, Daniel wants one item's situation in full, so "store it" becomes an informed option.
 1. The detail shows: the item, where it lives, space taken, last used (24 May 2026, "5 months ago"). `[D]`
 2. Storing it is offered from here and leads to E8-2. `[B]`
 States: at home. (At the Hub is E8-5.)
 
-### E7-4 The idle prompt · Must
+### E7-4 The idle prompt · Should
 `B3` `Idea 9` · Seed: SEED-NOTIFS
 As an owner who stops noticing his own clutter, Daniel wants the platform to ask about untouched gear, so idle things resurface on their own.
 1. The seeded notification about the Giant Escape 3 leads to that item's detail. `[B]`
@@ -433,58 +434,58 @@ States: shown within item detail.
 
 ## E8 · Storage
 
-### E8-1 What storage is and costs · Must
+### E8-1 What storage is and costs · Should
 `B3` `Idea 8` `HE #6` · Seed: SEED-STORAGE
 As an owner short of space, Daniel wants storage explained before any commitment, so the Hub is a choice he can evaluate.
 1. The storage surface states: what the Hub handles, S$18 / month per bike, what the intake includes, and that a stored bike can earn rent. `[D]`
 2. It leads to sending an item (E8-2) and to the rent-out terms (E8-6). `[B]`
 States: default.
 
-### E8-2 Send a bike to the Hub · Must
+### E8-2 Send a bike to the Hub · Should
 `B1` `B3` `Idea 2` `Idea 8` `HE #5` · Seed: SEED-STORAGE, FD-STORAGE-BOOKING
 As an owner without a van, Daniel wants the platform to collect the bike, so storing it does not require moving it himself.
 1. Daniel chooses between home collection (daily 5–7 pm only) and dropping at a nearby rack for a pooled courier run (next runs shown: Tue and Fri mornings). The constraint of each path is visible as he chooses. `[D]`
 2. The cost of the chosen path and the running storage cost are shown before confirming. `[D]`
 States: choosing path, path chosen.
 
-### E8-3 The way back, shown first · Must
+### E8-3 The way back, shown first · Should
 `B3` `HE #5` · Seed: SEED-STORAGE
 As an owner, Daniel wants to know how the bike comes home before it leaves, so storage never feels like surrender.
 1. Before confirming storage, the return options and their costs are shown: free on a pooled run with 2 days' notice, next-day home return S$8. `[D]`
 2. The confirmation restates the return terms. `[D]`
 States: within E8-2 flow.
 
-### E8-4 Intake record · Must
+### E8-4 Intake record · Should
 `B3` `Idea 8` · Seed: VS-6
 As an owner handing his property to a warehouse, Daniel wants its condition fixed at intake, so storage is safe for the owner, not only convenient.
 1. The intake produces a dated condition record with photos; Daniel can read it from the item's detail. `[D+B]`
 2. The record states its consequence: condition at intake is the baseline for anything later, including rentals of the stored bike. `[D]`
 States: intake record view.
 
-### E8-5 Item detail, at the Hub · Must
+### E8-5 Item detail, at the Hub · Should
 `B3` `Idea 8` `HE #10` · Seed: VS-6
 As an owner of a stored bike, Daniel wants its status at a glance, so out of sight is not out of knowledge.
 1. The stored state of the detail shows: at the Hub since 28 Oct, the intake record, the running cost, and the rent-out state (not yet opted in). `[D]`
 2. Retrieval is offered from here (E8-9). `[B]`
 States: at the Hub. (Pairs with E7-3's at-home state: one page, two states.)
 
-### E8-6 Earn while stored · Must
+### E8-6 Earn while stored · Should
 `B3` `Idea 8` · Seed: VS-6, SEED-EQUIPMENT rent-out values
 As an owner who would list "if the money covered the trouble", Daniel wants rent-out to be opt-in with the terms first, so his liability worry is answered before his bike earns.
 1. Opting in shows, before confirming: the suggested rate (S$12 / day), the owner share (70%, S$8.40 / day rented), and that condition is re-checked after every rental against the intake record. `[D]`
 2. Daniel confirms himself; the item then reads as available to rent, and earnings to date are visible on its detail. `[D+B]`
 States: terms review, opted in.
 
-### E8-7 The storage map · Must
+### E8-7 The storage map · Should
 `B1` `B3` `Idea 7` `HE #15` · Seed: SEED-STORAGE map, VS-5
 As a rider returning a bike in the field, Daniel wants nearby public racks with live facts, so a rack is a plan, not a hope.
 1. The map shows racks with: spaces (12 / 12 full at Rack A, 4 of 10 free at Rack C), distance, and when each count was updated. `[D]`
 2. Whether choosing a rack reserves a spot, and for how long (2 h), is stated. `[D]`
 States: map default.
 
-### E8-8 The full rack is not the end · Must
+### E8-8 The full rack is not the end · Should
 `B1` `B3` `Idea 7` · Seed: VS-5
-As a rider caught by rain far from the booked collection point, Daniel wants to return the rented bike at the next nearest rack when the first is full, so idea 7 works precisely when it is needed. The bike in VS-5 is the rental (Trek Marlin 7, OR-10482), not the Giant Escape 3.
+As a rider caught by rain far from the booked collection point, Daniel wants to return the rented bike at the next nearest rack when the first is full, so idea 7 works precisely when it is needed. The bike in VS-5 is the rental (Trek Marlin 7, OR-10482), not the Giant Escape 3; the Giant stays at home until the Hub intake on Tue 28 Oct. This departs from the Iter1 hard scenario, where the old bike came back via a rack (settled by Haoyue, 24 Oct).
 1. With Rack A full, the map offers Rack C (650 m, 4 free) as the alternative; choosing it reserves the spot. `[D+B]`
 2. Before the drop is confirmed, the rack-return terms are shown: no extra charge, the 13:30 trailhead collection is replaced, and the return check happens when the supplier's courier collects from the rack (MOCK-DATA VS-5). `[D]`
 3. After the drop, the booking shows the bike at Rack C awaiting collection, and the 13:30 trailhead collection reads as replaced. The close (E5-7) follows from the courier's check. `[D]`
@@ -518,6 +519,7 @@ Seed: SEED-NOTIFS, VS-1, VS-2
 As a user, Daniel wants events to reach him and lead somewhere, so the app can start conversations, not only answer them.
 1. These events produce notifications, each leading to its subject: booking confirmed → booking detail; supplier cancellation → cancellation notice (E4-7); delivery delay → tracking (E5-4); collection done and deposit released → closed summary (one notification, sent when the deposit release shows; the collection itself does not notify separately); idle item → item detail (E7-4); new message → thread. `[D+B]`
 2. No notification is a dead end; every one opens the thing it is about. `[B]`
+The idle-item and new-message types carry the priority of their destination stories (E7-4, E9-1: Should); the other four are Must.
 States: one drawn example per notification type.
 
 ### E9-4 The notification centre · Should
@@ -564,7 +566,7 @@ Raised here, answered by the PO window, folded into the next version:
 4. v1.1: the design window's DESIGN-GAPS-v1.0 items are all answered; the per-item responses are in the project doc product/PO-ANSWERS-v1.1.md. The gaps doc cited a file review/feedback/wording-rules.md that is not in the repo; its substance is covered by the "Labels are copy" rule in section 0. (It is now in the project; see 5.)
 5. v1.2: DESIGN-GAPS-v1.1 is answered in product/PO-ANSWERS-v1.2.md. Where an example in review/feedback/wording-rules.md quotes a value, MOCK-DATA.md wins; the rules govern form, not values.
 6. Not yet raised by the design window, no value set: the deposit for the Rodalink replacement booking (E4-8 AC4 runs it through E4-3). Raise by story ID if the replacement's cost review is drawn.
-7. Waiting for Haoyue (24 Oct handover): VS-5 returns the rental at the rack (PO ruling in v1.2). This departs from the Iter1 hard scenario, where the old bike came back via a rack. Keeping the old-bike version would mean moving VS-5 to a Saturday after the Hub intake (Tue 28 Oct) and reworking the storage storyline. Stands as the rental until he decides.
-8. Waiting for Haoyue: MoSCoW balance. 53 Must, 13 Should, 1 Could. If that leaves Design too little room to cut, he names the floor to protect and the PO moves the rest to Should.
-9. Waiting for Haoyue: three values the PO set without a source, kept because they are consistent: weekly price S$45 / ride (from his "10% off" canvas note), Hub transfer S$10 home collection and S$5 rack drop. Any change goes through the PO window and changes everywhere at once.
+7. Resolved 24 Oct 2026 (Haoyue): VS-5 returns the rental, Trek Marlin 7 (OR-10482), at the rack on Sat 25 Oct; the Giant Escape 3 stays at home until the Hub intake on Tue 28 Oct. The departure from the Iter1 hard scenario is noted in E8-8. VS-5 does not move.
+8. Resolved 24 Oct 2026 (Haoyue): the MoSCoW floor is the demo route (§0). Now 41 Must, 25 Should, 1 Could. One judgement call in product/PO-ANSWERS-v1.4.md: E0-3 (storage entry on Home) moved to Should because its only destination, E8-1 on page 16, is off the route; say so if the Home storage card is to be protected, and E0-3 and E8-1 return to Must.
+9. Resolved 24 Oct 2026: the three values set by the PO are accepted by Haoyue as they stand (set by PO, accepted by Haoyue 24 Oct): weekly price S$45 / ride, Hub transfer S$10 home collection, S$5 rack drop. They are no longer open. Any change goes through the PO window and changes everywhere at once.
 10. The PO-ANSWERS files for v1.1 and v1.2 were first written as project docs; from 24 Oct copies sit in product/ next to v1.3. The repo copies are the reference.
