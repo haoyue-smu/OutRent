@@ -43,3 +43,7 @@ After 01: build **06 Delivery & Return → 07 Fees & Liability → 08 Booking Co
 ## Added 25 Oct 02:25: 10, 11, 13 approved
 
 After 08: build **10 Delivery Tracking → 11 Handover Check → 13 Weekly Ride** from "OutRent · direction" (v20 or later), one local branch each (build/direction-10, -11, -13), with the transitions 08 → 10 → 11 → 12 → 13. 10's map, moving van and drawer, and 11's record card that folds into a slip, are the key motions; match the prototype's timing. Note from the prototype: never use scrollIntoView (it scrolled the phone frame); scroll only the page's own list.
+
+## Added 25 Oct 02:28: 02 approved
+
+After 13: build **02 Coach's post** from "OutRent · direction" (local branch build/direction-02), with the five kit thumbnails (img/02-kit-*.webp) and img/02-coach-post.webp, img/aisyah-avatar.webp from OutRent Image Library. Skip 13's stamp for now (being redesigned).
