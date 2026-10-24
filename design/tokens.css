@@ -35,6 +35,14 @@
   --fig-shadow: #6D7771;
   --fig-ghost: #9AA39E;
 
+  /* On the forest band (01) */
+  --on-forest-ink: rgba(255, 255, 255, 0.75);
+  --on-forest-label: rgba(255, 255, 255, 0.62);
+  --on-forest-fill: rgba(255, 255, 255, 0.1);
+  --on-forest-line: rgba(255, 255, 255, 0.22);
+  --on-forest-dot: #CFE5D6;
+  --tabbar-bg: rgba(243, 244, 240, 0.9);
+
   /* On photos */
   --on-photo-bg: rgba(255, 255, 255, 0.72);
   --on-photo-border: rgba(255, 255, 255, 0.55);
