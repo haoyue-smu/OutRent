@@ -1,436 +1,324 @@
-import { useEffect, useRef, useState, type KeyboardEvent, type PointerEvent, type ReactNode } from 'react'
-import { useSearchParams } from 'react-router-dom'
-import { GoTo, useBack } from '../../shell/Link'
+import { useEffect, useRef, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { gsap } from 'gsap'
+import '@photos/_shared/bike-figure.js'
+import { useBack } from '../../shell/Link'
 import { Icon } from '../../shell/Icon'
-import { TabBar } from '../../shell/TabBar'
+import { BackButton, Mono, haptic, still } from '../../shell/direction'
+import { routeFor } from '../../pages'
 import './fit.css'
 
-// Which frame of the board to show. Change this one value, or open the page with ?state=<frame>.
-//   'profile'              E1-1 · E1-2 · profile area, Profile tab selected
-//   'fit-empty'            E1-3 · empty (first entry)
-//   'fit-height-only'      E1-3 · height only
-//   'fit-filled'           E1-3 · filled
-//   'fit-filled-scrolled'  E1-3 · filled · scrolled (opens scrolled to Measurements)
-//   'fit-editing'          E1-3 · editing (inside leg chosen, ruler showing)
-type Frame = 'profile' | 'fit-empty' | 'fit-height-only' | 'fit-filled' | 'fit-filled-scrolled' | 'fit-editing'
-const FRAMES: Frame[] = ['profile', 'fit-empty', 'fit-height-only', 'fit-filled', 'fit-filled-scrolled', 'fit-editing']
-const FRAME = 'profile' as Frame
+// 03 Fit profile · the fitter's line. An instrument: drag the scales and the bike answers.
+// Source: the Creative Director's prototype "OutRent · direction" (screen s03), approved 24 Oct 22:18.
 
-// ---------- mock data (MOCK-DATA v1.3 §2 SEED-ACCOUNT, §3 SEED-FIT) ----------
-type Fit = { height: number; leg: number | null }
-type Riding = { level: string; trails: string }
-const SEED_FIT: Fit = { height: 176, leg: 81 }
-const SEED_RIDING: Riding = { level: 'Rides weekly on park connectors', trails: 'First time' }
-const ACCOUNT = { name: 'Daniel Lim', initials: 'DL', since: 'Member since Aug 2026 · no renter rating yet' }
+declare global { interface Window { LeadFigures: { bike: string } } }
 
-// Derived set-up. With height 176 and inside leg 81 these give the locked values: frame M, saddle 72 cm.
-const HEIGHT = { min: 120, max: 220, ruler: [150, 200] as const }
-const LEG = { min: 50, max: 110, ruler: [60, 95] as const }
-const frameFor = (h: number) => (h < 165 ? 'S' : h < 180 ? 'M' : h < 190 ? 'L' : 'XL')
-const saddleFor = (leg: number) => Math.round(leg * 0.883)
-const SAG = 25
-const BARS = '+1'
-
-type Measure = 'height' | 'leg'
-const parse = (text: string, r: { min: number; max: number }) => {
-  if (text.trim() === '') return { value: null, bad: false }
-  const n = Number(text)
-  const ok = Number.isInteger(n) && n >= r.min && n <= r.max
-  return { value: ok ? n : null, bad: !ok }
+// ---------- fit rules (03 working values) ----------
+export const Fit = {
+  saddleRaw: (leg: number) => leg * 0.883,
+  frame: (h: number) => (h < 165 ? 'S' : h <= 177 ? 'M' : 'L'),
+  scale: { S: 0.92, M: 1, L: 1.08 } as Record<string, number>,
+  chart: { S: [155, 165], M: [165, 177], L: [177, 188] } as Record<string, [number, number]>,
 }
 
-// A new ?state starts the page fresh, so each frame opens as drawn.
-export default function FitProfilePage() {
-  const state = useSearchParams()[0].get('state')
-  return <FitProfile key={state ?? ''} />
+// ---------- the Anatomy bike (Haoyue's figure), its saddle on a spring ----------
+const D = { EX: [2.0907, 0.5558], EY: [-1.1116, 1.0453], EZ: [0, -2.0506], saddle: 71.523, move: 24 }
+const proj = (v: number[]): [number, number] => [D.EX[0] * v[0] + D.EY[0] * v[1] + D.EZ[0] * v[2], D.EX[1] * v[0] + D.EY[1] * v[1] + D.EZ[1] * v[2]]
+const ORIGIN: [number, number] = [450, 306]
+const NS = 'http://www.w3.org/2000/svg'
+const mk = (tag: string, attrs: Record<string, string | number>, parent?: Element) => {
+  const e = document.createElementNS(NS, tag)
+  for (const k in attrs) e.setAttribute(k, String(attrs[k]))
+  parent?.appendChild(e)
+  return e
 }
 
-function FitProfile() {
-  const [params] = useSearchParams()
-  const asked = params.get('state') as Frame | null
-  const frame = asked && FRAMES.includes(asked) ? asked : FRAME
-  const seeded = frame !== 'fit-empty' && frame !== 'fit-height-only'
-
-  const [view, setView] = useState<'profile' | 'fit'>(frame === 'profile' ? 'profile' : 'fit')
-  const [saved, setSaved] = useState<Fit | null>(seeded ? SEED_FIT : null)
-  const [riding] = useState<Riding | null>(seeded ? SEED_RIDING : null)
-  const [draft, setDraft] = useState({
-    height: frame === 'fit-empty' ? '' : String(SEED_FIT.height),
-    leg: seeded ? String(SEED_FIT.leg) : '',
-  })
-  const [editing, setEditing] = useState(frame === 'fit-editing')
-  const [active, setActive] = useState<Measure>('leg')
-  // Typing into the saved profile switches to the editing layout; the field being typed in keeps focus.
-  const [keepFocus, setKeepFocus] = useState<Measure | null>(null)
-
-  const openFit = () => {
-    setDraft({ height: saved ? String(saved.height) : '', leg: saved?.leg ? String(saved.leg) : '' })
-    setEditing(false)
-    setView('fit')
+type Node = { el: SVGGraphicsElement; part: string; with: string; move: number[] }
+class Bike {
+  svg: SVGSVGElement
+  parts: SVGGElement
+  nodes: Node[]
+  s = { x: 0, v: 0, want: 0 }
+  scale = 1
+  raf = 0
+  last = 0
+  ghost?: SVGGElement
+  listeners: (() => void)[] = []
+  constructor(root: HTMLElement) {
+    root.innerHTML = window.LeadFigures.bike
+    this.svg = root.querySelector('.bike') as SVGSVGElement
+    this.parts = this.svg.querySelector('.b-parts') as SVGGElement
+    this.nodes = [...this.parts.children].map((el) => {
+      const d = (el as HTMLElement).dataset
+      return { el: el as SVGGraphicsElement, part: d.part ?? '', with: d.with || d.part || '', move: (d.move ?? '0,0,0').split(',').map(Number) }
+    })
   }
-  // Opened from another page (?state=…): back returns there. Unsaved changes are dropped.
-  const backToCaller = useBack(() => setView('profile'))
-  const back = asked ? backToCaller : () => setView('profile')
-  const save = (fit: Fit) => {
-    setSaved(fit)
-    setEditing(false)
+  saddleCm() { return D.saddle + this.s.x * D.move }
+  setSaddle(cm: number, instant?: boolean) {
+    this.s.want = (cm - D.saddle) / D.move
+    if (instant || still()) { this.s.x = this.s.want; this.s.v = 0; this.place() } else this.run()
   }
-
-  if (view === 'profile') return <Profile saved={saved} onOpenFit={openFit} />
-  return (
-    <FitEditor
-      saved={saved} riding={riding} draft={draft} editing={editing} active={active} keepFocus={keepFocus}
-      scrolled={frame === 'fit-filled-scrolled'}
-      onChange={(m, text) => {
-        setDraft((d) => ({ ...d, [m]: text.replace(/\D/g, '').slice(0, 3) }))
-        setActive(m)
-        if (saved && !editing) { setEditing(true); setKeepFocus(m) }
-      }}
-      onFocus={setActive}
-      onBack={back}
-      onSave={save}
-    />
-  )
+  run() { if (!this.raf) { this.last = 0; this.raf = requestAnimationFrame((t) => this.tick(t)) } }
+  tick(now: number) {
+    const dt = this.last ? Math.min((now - this.last) / 1000, 1 / 30) : 1 / 60
+    this.last = now
+    const s = this.s
+    for (let i = 0; i < 4; i++) { const h = dt / 4; s.v += ((s.want - s.x) * 300 - s.v * 26) * h; s.x += s.v * h }
+    if (Math.abs(s.want - s.x) < 1e-3 && Math.abs(s.v) < 1e-3) { s.x = s.want; s.v = 0 }
+    this.place()
+    this.raf = s.x !== s.want ? requestAnimationFrame((t) => this.tick(t)) : 0
+  }
+  place() {
+    const sh = this.s.x
+    for (const o of this.nodes) {
+      if (o.with !== 'saddle' || !sh) { if (o.with === 'saddle') o.el.removeAttribute('transform'); continue }
+      const [dx, dy] = proj(o.move.map((c) => c * sh))
+      o.el.setAttribute('transform', `translate(${dx.toFixed(2)} ${dy.toFixed(2)})`)
+    }
+    this.listeners.forEach((f) => f())
+  }
+  focus(part: string | null) { this.nodes.forEach((o) => o.el.toggleAttribute('data-on', !!part && o.part === part)) }
+  // A size change scales the bike on a spring, with a dashed ghost of the old size fading out.
+  swap(k: number) {
+    if (k === this.scale) return
+    const from = this.scale
+    this.scale = k
+    if (still()) {
+      this.parts.setAttribute('transform', `translate(${ORIGIN[0] * (1 - k)} ${ORIGIN[1] * (1 - k)}) scale(${k})`)
+      this.listeners.forEach((f) => f())
+      return
+    }
+    if (!this.ghost) { this.ghost = this.parts.cloneNode(true) as SVGGElement; this.ghost.setAttribute('class', 'b-ghost'); this.parts.before(this.ghost) }
+    gsap.killTweensOf([this.parts, this.ghost])
+    gsap.set(this.ghost, { scale: from, svgOrigin: ORIGIN.join(' '), opacity: 0.9 })
+    gsap.to(this.parts, { scale: k, svgOrigin: ORIGIN.join(' '), duration: 0.34, ease: 'back.out(1.6)', onUpdate: () => this.listeners.forEach((f) => f()) })
+    gsap.to(this.ghost, { opacity: 0, duration: 0.34, delay: 0.08, ease: 'none' })
+  }
+  stop() { cancelAnimationFrame(this.raf); this.raf = 0 }
 }
 
-// ---------- E1-1 · E1-2 profile area ----------
-function Profile({ saved, onOpenFit }: { saved: Fit | null; onOpenFit: () => void }) {
-  return (
-    <>
-      <main className="screen" key="profile">
-        <div className="fit-profile">
-          <h1 className="t-large">Profile</h1>
-          <div className="fit-who">
-            <span className="fit-avatar" aria-hidden="true">{ACCOUNT.initials}</span>
-            <div className="fit-stack">
-              <span className="t-title">{ACCOUNT.name}</span>
-              <span className="t-foot">{ACCOUNT.since}</span>
-            </div>
-          </div>
-
-          <button type="button" className="card fit-card" onClick={onOpenFit}>
-            <span className="fit-card-head">
-              <span className="t-callout fit-strong">Your fit</span>
-              <Icon name="caret-right" small className="fit-chev" />
-            </span>
-            {saved ? (
-              <span className="stats">
-                <span className="stat"><span className="v">{saved.height} <small>cm</small></span><span className="k">Height</span></span>
-                <span className="stat"><span className="v">{frameFor(saved.height)}</span><span className="k">Frame</span></span>
-                <span className="stat">
-                  <span className="v">{saved.leg ? <>{saddleFor(saved.leg)} <small>cm</small></> : '—'}</span>
-                  <span className="k">Saddle</span>
-                </span>
-              </span>
-            ) : (
-              <span className="t-callout">Add your height to set the frame size</span>
-            )}
-            <span className="t-foot">Rented bikes are adjusted to this before delivery</span>
-          </button>
-
-          <Group title="Inbox">
-            <GoTo page="01-home" state="notifications-unseen" className="fit-row">
-              <Icon name="bell" className="fit-lead" />
-              <span className="fit-stack">
-                <span className="t-callout fit-strong">Notifications</span>
-                <span className="t-foot">1 unseen</span>
-              </span>
-              <span className="p-dot" role="img" aria-label="Unseen" />
-              <Icon name="caret-right" small className="fit-chev" />
-            </GoTo>
-            <GoTo page="01-home" state="messages-all-read" className="fit-row">
-              <Icon name="chat-circle" className="fit-lead" />
-              <span className="fit-stack">
-                <span className="t-callout fit-strong">Messages</span>
-                <span className="t-foot">Timah Cycles</span>
-              </span>
-              <Icon name="caret-right" small className="fit-chev" />
-            </GoTo>
-          </Group>
-
-          {/* Payment methods are chosen at payment (07); here they are shown, not edited. */}
-          <Group title="Payment methods">
-            <div className="fit-row">
-              <Icon name="device-mobile" className="fit-lead" />
-              <span className="fit-stack">
-                <span className="t-callout fit-strong">PayNow</span>
-                <span className="t-foot">Default</span>
-              </span>
-            </div>
-            <div className="fit-row">
-              <Icon name="credit-card" className="fit-lead" />
-              <span className="fit-stack"><span className="t-callout fit-strong">Visa ·4821</span></span>
-            </div>
-          </Group>
-
-          {/* E1-2 AC2: beyond scope, shown as a quiet surface; nothing depends on it. */}
-          <div className="card fit-list">
-            <div className="fit-row is-quiet">
-              <Icon name="gear" className="fit-lead" />
-              <span className="fit-stack"><span className="t-callout">Account details and help</span></span>
-            </div>
-          </div>
-        </div>
-      </main>
-      <TabBar current="03-fit-profile" />
-    </>
-  )
+// The saddle-height dimension line drawn beside the seat tube: two ticks, a forest pill with the value.
+function dimension(bike: Bike) {
+  const svg = bike.svg
+  const sb = bike.nodes.filter((o) => o.part === 'saddle').map((o) => o.el.getBBox())
+    .reduce((a, b) => ({ x: Math.min(a.x, b.x), y: Math.min(a.y, b.y), X: Math.max(a.X, b.x + b.width) }), { x: 1e9, y: 1e9, X: -1e9 })
+  const TOP0 = [(sb.x + sb.X) / 2, sb.y]
+  const U = proj([7.02 / 24, 0, 22.95 / 24])
+  const BB = [TOP0[0] - U[0] * D.saddle, TOP0[1] - U[1] * D.saddle]
+  const len = Math.hypot(U[0], U[1]); const dir = [U[0] / len, U[1] / len]
+  let n = [-dir[1], dir[0]]; if (n[0] < 0) n = [-n[0], -n[1]]
+  const off = 26
+  const g = mk('g', { class: 'dim' }, svg) as SVGGElement
+  const ext1 = mk('line', { class: 'ext' }, g), ext2 = mk('line', { class: 'ext' }, g), main = mk('line', {}, g)
+  const t1 = mk('line', {}, g), t2 = mk('line', {}, g)
+  const pill = mk('rect', { rx: 8, width: 48, height: 17 }, g), lab = mk('text', { 'text-anchor': 'middle' }, g)
+  const sc = ([x, y]: number[]) => [ORIGIN[0] + bike.scale * (x - ORIGIN[0]), ORIGIN[1] + bike.scale * (y - ORIGIN[1])]
+  let shown = 1
+  const set = (el: Element, p: number[], q: number[]) => { el.setAttribute('x1', String(p[0])); el.setAttribute('y1', String(p[1])); el.setAttribute('x2', String(q[0])); el.setAttribute('y2', String(q[1])) }
+  const draw = () => {
+    const cm = bike.saddleCm()
+    const a = sc(BB), t = sc([BB[0] + U[0] * cm, BB[1] + U[1] * cm])
+    const A = [a[0] + n[0] * off, a[1] + n[1] * off], T = [t[0] + n[0] * off, t[1] + n[1] * off]
+    const Tp = [A[0] + (T[0] - A[0]) * shown, A[1] + (T[1] - A[1]) * shown]
+    set(ext1, a, [A[0] + n[0] * 5, A[1] + n[1] * 5]); set(ext2, t, [T[0] + n[0] * 5, T[1] + n[1] * 5])
+    set(main, A, Tp)
+    const tk = (p: number[]) => [[p[0] - n[0] * 5, p[1] - n[1] * 5], [p[0] + n[0] * 5, p[1] + n[1] * 5]]
+    set(t1, ...(tk(A) as [number[], number[]])); set(t2, ...(tk(Tp) as [number[], number[]]))
+    ;(ext2 as SVGElement).style.opacity = (t2 as SVGElement).style.opacity = shown > 0.98 ? '1' : '0'
+    const mx = (A[0] + T[0]) / 2 + n[0] * 30, my = (A[1] + T[1]) / 2 + n[1] * 30
+    pill.setAttribute('x', String(mx - 24)); pill.setAttribute('y', String(my - 9)); lab.setAttribute('x', String(mx)); lab.setAttribute('y', String(my + 3.6))
+    lab.textContent = Math.round(cm) + ' cm'
+    g.style.opacity = shown > 0 ? '1' : '0'
+  }
+  bike.listeners.push(draw)
+  const bb = svg.getBBox()
+  svg.setAttribute('viewBox', `${bb.x - 4} ${bb.y - 22} ${bb.width + 8} ${bb.height + 26}`)
+  return { draw, setShown: (v: number) => { shown = v; draw() } }
 }
 
-function Group({ title, children }: { title: string; children: ReactNode }) {
-  return (
-    <section className="fit-section">
-      <h2 className="t-title">{title}</h2>
-      <div className="card fit-list">{children}</div>
-    </section>
-  )
-}
-
-// ---------- E1-3 create and edit the fit profile ----------
-type EditorProps = {
-  saved: Fit | null; riding: Riding | null; draft: { height: string; leg: string }; editing: boolean; active: Measure; keepFocus: Measure | null; scrolled: boolean
-  onChange: (m: Measure, text: string) => void; onFocus: (m: Measure) => void; onBack: () => void; onSave: (fit: Fit) => void
-}
-
-function FitEditor({ saved, riding, draft, editing, active, keepFocus, scrolled, onChange, onFocus, onBack, onSave }: EditorProps) {
-  const measurements = useRef<HTMLElement>(null)
-  useEffect(() => { if (scrolled) document.fonts.ready.then(() => measurements.current?.scrollIntoView({ block: 'start' })) }, [scrolled])
-
-  const h = parse(draft.height, HEIGHT)
-  const l = parse(draft.leg, LEG)
-  const valid = h.value !== null && !l.bad
-  const showSaved = saved !== null && !editing
-  const fit = showSaved ? saved : { height: h.value ?? 0, leg: l.value }
-  const hasHeight = showSaved || h.value !== null
-  const frame = hasHeight ? frameFor(fit.height) : null
-  const saddle = hasHeight && fit.leg ? saddleFor(fit.leg) : null
-
-  const fields = (
-    <>
-      <div className="fit-fields">
-        <MeasureField
-          label={saved || draft.height ? 'Height' : 'Height · required'} name="height" text={draft.height}
-          bad={h.bad} chosen={editing && active === 'height'} focus={editing && keepFocus === 'height'} onChange={onChange} onFocus={onFocus}
-        />
-        <MeasureField
-          label={saved?.leg || draft.leg ? 'Inside leg' : 'Inside leg · optional'} name="leg" text={draft.leg}
-          bad={l.bad} chosen={editing && active === 'leg'} focus={editing && keepFocus === 'leg'} onChange={onChange} onFocus={onFocus}
-        />
-      </div>
-      {(h.bad || l.bad) && (
-        <div className="field-error" role="alert">
-          <Icon name="warning-circle" small />
-          <span>{h.bad ? `Height between ${HEIGHT.min} and ${HEIGHT.max}\u00a0cm` : `Inside leg between ${LEG.min} and ${LEG.max}\u00a0cm, or leave it empty`}</span>
-        </div>
-      )}
-    </>
-  )
-
-  const ridingCard = (
-    <section className="fit-section">
-      <h2 className="t-title">Riding</h2>
-      <div className="card fit-list">
-        <div className="p-kv">
-          <div><span>Level</span>{riding ? <span>{riding.level}</span> : <span className="is-muted">Add</span>}</div>
-          {riding && <div><span>Trails</span><span>{riding.trails}</span></div>}
-        </div>
-      </div>
-    </section>
-  )
-
-  const footnote = (
-    <div className="t-foot fit-note"><Icon name="info" small /><span>Suppliers set rented gear to these values before delivery</span></div>
-  )
-
-  const guide = hasHeight && !fit.leg && (
-    <div className="field-error is-guide" aria-live="polite">
-      <Icon name="ruler" small /><span>Add inside leg to make the saddle height exact</span>
-    </div>
-  )
-
-  return (
-    <>
-      <main className="screen" key="fit">
-        <div className="topbar fit-bar">
-          <button type="button" className="icon-btn" aria-label="Back" onClick={onBack}><Icon name="arrow-left" /></button>
-          <h1 className="name fit-bar-title">Your fit</h1>
-          <span />
-        </div>
-
-        {showSaved ? (
-          // E1-3 filled: the number a supplier sets first, then the rest of the set-up, then the inputs behind it.
-          <div className="fit-page">
-            {saddle !== null ? (
-              <Hero k="Saddle height" sub={`From height ${fit.height}\u00a0cm and inside leg ${fit.leg}\u00a0cm`}>
-                {saddle} <span className="unit">cm</span>
-              </Hero>
-            ) : (
-              <Hero k="Frame size" sub={`From your height, ${fit.height}\u00a0cm`}>{frame}</Hero>
-            )}
-            <Figure title="Set for you" text="Figure: bike side view, saddle, bars and fork marked · supplied by Haoyue" hint="Saddle · bars · fork" readout={`Frame ${frame}`} />
-            {guide}
-            <div className="card fit-tiles">
-              <div className="stats">
-                <div className="stat"><span className="v">{frame}</span><span className="k">Frame size</span></div>
-                <div className="stat"><span className="v">{SAG} <small>%</small></span><span className="k">Suspension sag</span></div>
-                <div className="stat"><span className="v">{BARS} <small>cm</small></span><span className="k">Bar height</span></div>
-              </div>
-            </div>
-            <section className="fit-section is-anchor" ref={measurements}>
-              <h2 className="t-title">Measurements</h2>
-              {fields}
-            </section>
-            {ridingCard}
-            {footnote}
-          </div>
-        ) : editing ? (
-          // E1-3 editing: a ruler on the figure for the chosen length; the derived set-up follows as it changes.
-          <div className="fit-page has-bar">
-            <figure className="explainer has-ruler">
-              <Ruler
-                measure={active}
-                value={active === 'height' ? h.value ?? HEIGHT.ruler[0] : l.value ?? LEG.ruler[0]}
-                onChange={(v) => onChange(active, String(v))}
-              />
-              <div className="placeholder">
-                {active === 'height'
-                  ? 'Figure: rider standing, height measured floor to crown · supplied by Haoyue'
-                  : 'Figure: rider standing, inside leg measured floor to crotch · supplied by Haoyue'}
-              </div>
-              <span className="corner hint">{active === 'height' ? 'Height' : 'Inside leg'}</span>
-              <span className="corner readout">{(active === 'height' ? draft.height : draft.leg) || '—'}&nbsp;cm</span>
-            </figure>
-            {fields}
-            <div className="card fit-live">
-              <span className="t-foot">Updates as you change it</span>
-              <div className="stats">
-                <div className="stat"><span className="v">{saddle ?? '—'}{saddle !== null && <> <small>cm</small></>}</span><span className="k">Saddle</span></div>
-                <div className="stat"><span className="v">{frame ?? '—'}</span><span className="k">Frame</span></div>
-                <div className="stat"><span className="v">{BARS} <small>cm</small></span><span className="k">Bars</span></div>
-              </div>
-            </div>
-          </div>
-        ) : (
-          // E1-3 first entry: empty, then height only (frame size and a hint), then both.
-          <div className="fit-page has-bar">
-            {hasHeight && (saddle !== null
-              ? <Hero k="Saddle height" sub={`From height ${fit.height}\u00a0cm and inside leg ${fit.leg}\u00a0cm`}>{saddle} <span className="unit">cm</span></Hero>
-              : <Hero k="Frame size" sub={`From your height, ${fit.height}\u00a0cm`}>{frame}</Hero>)}
-            {hasHeight
-              ? <Figure title={`Set for ${fit.height}\u00a0cm`} text="Figure: bike side view, frame size highlighted · supplied by Haoyue" hint="From height" readout={`Frame ${frame}`} />
-              : <Figure title="Your bike" text="Figure: bike side view, frame and saddle height marked · supplied by Haoyue" hint="Height sets the frame size" readout="—" />}
-            {guide}
-            {fields}
-            {ridingCard}
-            {footnote}
-          </div>
-        )}
-      </main>
-
-      {!showSaved && (
-        <div className="actionbar glass is-single">
-          <button
-            type="button" className="btn is-block" disabled={!valid}
-            onClick={() => h.value !== null && onSave({ height: h.value, leg: l.value })}
-          >
-            Save fit
-          </button>
-        </div>
-      )}
-    </>
-  )
-}
-
-function Hero({ k, sub, children }: { k: string; sub: string; children: ReactNode }) {
-  return (
-    <div className="p-hero">
-      <span className="k">{k}</span>
-      <span className="t-display">{children}</span>
-      <span className="sub">{sub}</span>
-    </div>
-  )
-}
-
-function Figure({ title, text, hint, readout }: { title: string; text: string; hint: string; readout: string }) {
-  return (
-    <figure className="explainer">
-      <span className="corner fig">Fig 1</span>
-      <span className="corner title">{title}</span>
-      <div className="placeholder">{text}</div>
-      <span className="corner hint">{hint}</span>
-      <span className="corner readout">{readout}</span>
-    </figure>
-  )
-}
-
-function MeasureField({ label, name, text, bad, chosen, focus, onChange, onFocus }: {
-  label: string; name: Measure; text: string; bad: boolean; chosen: boolean; focus: boolean
-  onChange: (m: Measure, text: string) => void; onFocus: (m: Measure) => void
+// ---------- the measuring tape: drag the scale under a fixed needle ----------
+const PX = 11, PAD = 240
+function Tape({ id, label, min, max, value, bands, onChange, onFocus }: {
+  id: string; label: string; min: number; max: number; value: number; bands?: Record<string, [number, number]>
+  onChange: (v: number) => void; onFocus: (on: boolean) => void
 }) {
-  const input = useRef<HTMLInputElement>(null)
-  useEffect(() => {
-    const el = input.current
-    if (focus && el) { el.focus(); el.setSelectionRange(el.value.length, el.value.length) }
-  }, [focus])
-  const cls = ['field', chosen ? 'is-chosen' : '', bad ? 'is-error' : ''].filter(Boolean).join(' ')
-  return (
-    <label className={cls}>
-      <span>{label}</span>
-      <span className="value">
-        <input
-          ref={input} type="text" inputMode="numeric" name={name} autoComplete="off" placeholder="Add"
-          className={text ? undefined : 'is-empty'} style={text ? { width: `${text.length + 0.6}ch` } : undefined}
-          value={text} aria-label={name === 'height' ? 'Height in cm' : 'Inside leg in cm'} aria-invalid={bad || undefined}
-          onChange={(e) => onChange(name, e.target.value)} onFocus={() => onFocus(name)}
-        />
-        <span className="unit">cm</span>
-      </span>
-    </label>
-  )
-}
+  const el = useRef<HTMLDivElement>(null)
+  const svg = useRef<SVGSVGElement>(null)
+  const st = useRef({ v: value, raw: value, drag: null as null | { x: number; from: number } })
+  const total = (max - min) * PX
 
-// The library ruler edge (.explainer.has-ruler): drag along it, or use the arrow keys, to set the chosen length.
-const RULER_W = 353, PAD = 22
-function Ruler({ measure, value, onChange }: { measure: Measure; value: number; onChange: (v: number) => void }) {
-  const [lo, hi] = measure === 'height' ? HEIGHT.ruler : LEG.ruler
-  const span = RULER_W - PAD * 2
-  const x = (v: number) => PAD + ((v - lo) / (hi - lo)) * span
-  const clamp = (v: number) => Math.min(hi, Math.max(lo, Math.round(v)))
-  const shown = clamp(value)
-
-  const fromPointer = (e: PointerEvent<SVGSVGElement>) => {
-    const box = e.currentTarget.getBoundingClientRect()
-    const vx = ((e.clientX - box.left) / box.width) * RULER_W
-    onChange(clamp(lo + ((vx - PAD) / span) * (hi - lo)))
+  const place = () => {
+    const w = el.current?.clientWidth ?? 393
+    const raw = st.current.raw
+    if (svg.current) svg.current.style.transform = `translateX(${w / 2 - PAD - (raw - min) * PX}px)`
+    if (bands && svg.current) {
+      const z = Fit.frame(Math.round(raw))
+      svg.current.querySelectorAll<SVGElement>('[data-b]').forEach((b) => b.classList.toggle('on', b.dataset.b === z))
+    }
   }
-  const onKey = (e: KeyboardEvent<SVGSVGElement>) => {
-    const step = { ArrowLeft: -1, ArrowDown: -1, ArrowRight: 1, ArrowUp: 1, PageDown: -5, PageUp: 5 }[e.key]
-    if (step) { e.preventDefault(); onChange(clamp(shown + step)) }
-    else if (e.key === 'Home') { e.preventDefault(); onChange(lo) }
-    else if (e.key === 'End') { e.preventDefault(); onChange(hi) }
+  const setV = (nv: number) => {
+    nv = Math.max(min, Math.min(max, nv))
+    st.current.raw = nv
+    const r = Math.round(nv)
+    if (r !== st.current.v) { st.current.v = r; haptic(); onChange(r) }
+    place()
   }
+  useEffect(() => { place(); const r = () => place(); addEventListener('resize', r); return () => removeEventListener('resize', r) })
 
   const ticks = []
-  for (let v = lo; v <= hi; v++) {
-    const major = v % 5 === 0
-    ticks.push(<line key={v} className={major ? 'major' : 'minor'} x1={x(v)} x2={x(v)} y1={40} y2={major ? 52 : 47} />)
-    if (major) ticks.push(<text key={`t${v}`} x={x(v)} y={62} textAnchor="middle" className={Math.abs(v - shown) < 3 ? 'on' : undefined}>{v}</text>)
+  if (bands) for (const [k, [a, b]] of Object.entries(bands)) {
+    ticks.push(<rect key={`b${k}`} className="band" data-b={k} x={PAD + (a - min) * PX + 1} y={0} width={(b - a) * PX - 2} height={3} rx={1.5} />)
+    ticks.push(<text key={`t${k}`} className="bandt" data-b={k} x={PAD + ((a + b) / 2 - min) * PX} y={14} textAnchor="middle">{k}</text>)
   }
-  const nx = x(shown)
-  const bx = Math.min(RULER_W - 56, Math.max(0, nx - 28))
+  for (let c = min; c <= max; c++) {
+    const x = PAD + (c - min) * PX, maj = c % 5 === 0
+    ticks.push(<line key={c} className={`tk${maj ? ' maj' : ''}`} x1={x} x2={x} y1={maj ? 18 : 22} y2={32} />)
+    if (maj) ticks.push(<text key={`n${c}`} x={x} y={44} textAnchor="middle">{c}</text>)
+  }
+  const end = () => {
+    if (!st.current.drag) return
+    st.current.drag = null
+    onFocus(false)
+    const to = Math.round(st.current.raw)
+    if (still()) { st.current.raw = to; place(); return }
+    const o = { r: st.current.raw }
+    gsap.to(o, { r: to, duration: 0.25, ease: 'power2.out', onUpdate: () => { st.current.raw = o.r; place() } })
+  }
   return (
-    <svg
-      className="ruler" viewBox={`0 0 ${RULER_W} 64`} role="slider" tabIndex={0}
-      aria-label={measure === 'height' ? 'Height' : 'Inside leg'}
-      aria-valuemin={lo} aria-valuemax={hi} aria-valuenow={shown} aria-valuetext={`${shown}\u00a0cm`}
-      onPointerDown={(e) => { e.currentTarget.setPointerCapture(e.pointerId); fromPointer(e) }}
-      onPointerMove={(e) => { if (e.currentTarget.hasPointerCapture(e.pointerId)) fromPointer(e) }}
-      onKeyDown={onKey}
+    <div
+      ref={el} id={id} className="tape" role="slider" tabIndex={0} aria-label={label}
+      aria-valuemin={min} aria-valuemax={max} aria-valuenow={value} aria-valuetext={`${value} cm`}
+      onPointerDown={(e) => { st.current.drag = { x: e.clientX, from: st.current.raw }; e.currentTarget.setPointerCapture(e.pointerId); onFocus(true) }}
+      onPointerMove={(e) => { const d = st.current.drag; if (d) setV(d.from - (e.clientX - d.x) / PX) }}
+      onPointerUp={end} onPointerCancel={end}
+      onKeyDown={(e) => {
+        const d = ({ ArrowRight: 1, ArrowUp: 1, ArrowLeft: -1, ArrowDown: -1 } as Record<string, number>)[e.key]
+        if (!d) return
+        e.preventDefault(); setV(st.current.v + d); st.current.raw = st.current.v; place()
+      }}
     >
-      {ticks}
-      <line className="needle" x1={nx} x2={nx} y1={30} y2={54} />
-      <rect className="bubble" x={bx} y={8} width={56} height={22} rx={11} />
-      <text className="bubble-t" x={bx + 28} y={23} textAnchor="middle">{shown} cm</text>
-    </svg>
+      <svg ref={svg} width={total + PAD * 2} viewBox={`0 0 ${total + PAD * 2} 46`} aria-hidden="true">{ticks}</svg>
+      <span className="needle" aria-hidden="true" />
+    </div>
   )
+}
+
+// ---------- the page ----------
+type Save = 'idle' | 'saved' | 'next'
+
+export default function FitProfile() {
+  const navigate = useNavigate()
+  const back = useBack(() => navigate(routeFor('02-coach-kit')))
+  const fig = useRef<HTMLDivElement>(null)
+  const grid = useRef<HTMLDListElement>(null)
+  const bike = useRef<Bike | null>(null)
+  const dim = useRef<ReturnType<typeof dimension> | null>(null)
+  const [fit, setFitState] = useState({ height: 176, leg: 81 })
+  const [save, setSave] = useState<Save>('idle')
+  const frame = Fit.frame(fit.height)
+  const saddle = Math.round(Fit.saddleRaw(fit.leg))
+
+  // Build the figure once, then the intro: the figure settles, the grid steps in, the dimension line draws.
+  useEffect(() => {
+    if (!fig.current) return
+    let cancelled = false
+    let tl: gsap.core.Timeline | null = null
+    document.fonts.ready.then(() => {
+      if (cancelled || !fig.current) return
+      const b = new Bike(fig.current)
+      bike.current = b
+      dim.current = dimension(b)
+      b.setSaddle(Fit.saddleRaw(81), true)
+      if (still()) { dim.current.setShown(1); return }
+      b.setSaddle(60, true); dim.current.setShown(0)
+      const o = { v: 0 }
+      tl = gsap.timeline()
+      tl.fromTo(fig.current, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' }, 0)
+      if (grid.current) tl.from(grid.current.children, { opacity: 0, y: 8, duration: 0.5, stagger: 0.06, ease: 'power2.out' }, 0.25)
+      tl.to(o, {
+        v: 1, duration: 0.7, ease: 'power2.inOut', onUpdate: () => dim.current?.setShown(o.v),
+        onComplete: () => { b.focus('saddle'); b.setSaddle(Fit.saddleRaw(81)); setTimeout(() => b.focus(null), 900) },
+      }, 0.45)
+    })
+    return () => { cancelled = true; tl?.kill(); bike.current?.stop() }
+  }, [])
+
+  // Keep the bike, the grid and the save button in step with the two measurements.
+  const prevFrame = useRef(frame)
+  const update = (patch: Partial<typeof fit>) => {
+    const next = { ...fit, ...patch }
+    setFitState(next)
+    const sz = Fit.frame(next.height)
+    bike.current?.swap(Fit.scale[sz])
+    bike.current?.setSaddle(Fit.saddleRaw(next.leg))
+    if (sz !== prevFrame.current) { prevFrame.current = sz; flash(document.getElementById('g-frame')) }
+    if (save !== 'idle') setSave('idle')
+  }
+  const onSave = () => {
+    if (save === 'next') { leaveToListing(); return }
+    if (save === 'saved') return
+    setSave('saved')
+    grid.current?.querySelectorAll('dd').forEach((d) => flash(d))
+    setTimeout(() => setSave((s) => (s === 'saved' ? 'next' : s)), 1000)
+  }
+  // 03 -> 05: the drawn bike becomes the photographed one (05 opens its photo strip from this rectangle).
+  const leaveToListing = () => {
+    const r = fig.current?.getBoundingClientRect()
+    const p = fig.current?.closest('.frame')?.getBoundingClientRect()
+    const rect = r && p ? { top: r.top - p.top, left: r.left - p.left, width: r.width, height: r.height } : null
+    navigate(routeFor('05-listing-detail'), { state: { from: 'fit', rect } })
+  }
+
+  return (
+    <>
+      <main className="screen d-screen fit-screen">
+        <div className="bar-top">
+          <BackButton label="Back to Coach's kit" onClick={back} />
+          <Mono className="mid">Fit profile</Mono>
+          <span />
+        </div>
+        <div className="pad">
+          <div className="fit-head">
+            <h1 className="t-h1">Your fit</h1>
+            <p className="lede">Shops set every rented bike to these numbers before delivery.</p>
+          </div>
+          <div className="stage"><div className="fig" ref={fig} /></div>
+          <dl className="mgrid" ref={grid}>
+            <div><dt className="mono">Saddle</dt><dd><span className="num">{saddle}</span><small>cm</small></dd></div>
+            <div><dt className="mono">Frame</dt><dd id="g-frame">{frame}</dd></div>
+            <div><dt className="mono">Fork sag</dt><dd>25<small>%</small></dd></div>
+            <div><dt className="mono">Bars</dt><dd>+1<small>cm</small></dd></div>
+          </dl>
+          <div className="tapes">
+            <div className="tape-row">
+              <div className="lab"><Mono id="lab-h">Height</Mono><span className="val"><span className="num">{fit.height}</span><small>cm</small></span></div>
+              <Tape id="tape-height" label="Height" min={150} max={200} value={fit.height} bands={Fit.chart}
+                onChange={(v) => update({ height: v })} onFocus={(on) => bike.current?.focus(on ? 'frame' : null)} />
+            </div>
+            <div className="tape-row">
+              <div className="lab"><Mono id="lab-l">Inside leg · in socks, floor to crotch</Mono><span className="val"><span className="num">{fit.leg}</span><small>cm</small></span></div>
+              <Tape id="tape-leg" label="Inside leg" min={60} max={95} value={fit.leg}
+                onChange={(v) => update({ leg: v })} onFocus={(on) => bike.current?.focus(on ? 'saddle' : null)} />
+            </div>
+          </div>
+          <dl className="riding">
+            <dt className="mono">Riding</dt>
+            <dd className="v">Weekly on park connectors<br /><span>First time on trails, so a softer fork and bars up 1&nbsp;cm</span></dd>
+          </dl>
+        </div>
+      </main>
+      <div className="dock">
+        <button type="button" className="cta fit-save" onClick={onSave} aria-live="polite">
+          {save === 'idle' && 'Save fit'}
+          {save === 'saved' && <span className="saved-mark"><Icon name="check" />Fit saved</span>}
+          {save === 'next' && <>See a bike in size {frame}<Icon name="arrow-right" /></>}
+        </button>
+      </div>
+    </>
+  )
+}
+
+function flash(el: Element | null) {
+  if (!el) return
+  el.classList.remove('flash'); void (el as HTMLElement).offsetWidth; el.classList.add('flash')
 }
