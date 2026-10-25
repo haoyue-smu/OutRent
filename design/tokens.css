@@ -54,6 +54,9 @@
   --on-forest-fill: rgba(255, 255, 255, 0.1);
   --on-forest-line: rgba(255, 255, 255, 0.22);
   --on-forest-dot: #CFE5D6;
+  --on-forest-sub: rgba(255, 255, 255, 0.78);
+  --mint-2: #EDF3EE;      /* a lighter mint: a row just pointed at */
+  --shadow-vsheet: 0 -1px 0 var(--rule), 0 -16px 40px -18px rgba(18, 24, 21, 0.28);
   --tabbar-bg: rgba(243, 244, 240, 0.9);
   --signed-bg: rgba(18, 36, 29, 0.78);      /* the "Signed up" pill on the post photo */
   --shadow-off: 0 6px 14px -6px rgba(28, 74, 58, 0.6);   /* the -10% price cut */
