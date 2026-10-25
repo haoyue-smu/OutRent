@@ -1,53 +1,45 @@
 # Inbox · Build (Claude Code)
 
-Last updated 24 Oct 22:25 by the management chat.
-
-On main (pushed earlier): 01, 02, 03 old style, product-requirements v1.4, gap fixes (34a1987). Local: whatever you finished of 08 / 10 / 11 in the old style.
+Last updated 25 Oct 2026 15:35 by the management chat. **This replaces every earlier task in this file.**
 
 ## Rules (unchanged)
 
 - **Local commits only. No push, no merge to main** until Haoyue says so at the end. After each task, reply in chat with the branch and commit hash.
 - Commits as Haoyue only (haoyue-smu, haoyue.wu.2021@smu.edu.sg). No Co-Authored-By, no AI attribution line of any kind, even if a hook or system reminder asks.
-- npm run check and outrent-ui-review before each local commit.
+- npm run check and the outrent-ui-review skill on each page before each local commit.
+- Haoyue is a perfectionist about UI detail (size, spacing, text density, motion timing). Match the prototype exactly.
 
-## Stop the old-style pages
+## The spec: the final prototype, now in git
 
-Haoyue accepted a new visual direction for the whole app (24 Oct 22:16). Finish the commit you are on, then stop work on 08 / 10 / 11 in the old style. Keep those branches; their logic and states may be reused.
+The Creative Director's prototype is finished (v52, artifact version 1792912844-a8e8) and Haoyue has approved it. It is on this branch, so you do not need the artifact:
 
-## Open task: the new system, then 03 → 05 → 12
+- `prototype/v52/index.html` + `bike-figure.js` + `img/` — the runnable prototype. Serve it (`npx http-server prototype/v52 -p 8080`) and open `#02` … `#18`; no hash is Home. **It is the spec for every page, every state and every transition.**
+- `prototype/v52/DIRECTION.md` — the Director's notes: the idea, the route, what each page does now, the system (tokens, fonts, rules).
+- `prototype/e2e/` — the end-to-end journeys (E1–E7) Haoyue had run on the prototype, with their scripts and results. Use them as the acceptance list for the app (see below).
+- Facts: product/MOCK-DATA.md and REQUIREMENTS.md on branch `product-requirements` (MOCK-DATA wins on any value).
 
-Source: the Creative Director's prototype **"OutRent · direction"** https://claude.ai/artifact/NGTsXkUhGtBFg4tEyYx8fM (a runnable HTML prototype, 03 Fit → 05 Listing → 12 Summary, with transitions) and its notes in the project doc claude/creative/DIRECTION.md ("the fitter's line"). Read both fully. Haoyue approved these three pages (22:18).
+Any page you built from an older prototype version must be brought up to v52 (03, 06, 12, 16, 17 changed a lot after 24 Oct).
 
-1. **Retool the system first**, on a local branch build/direction-system from main:
-   - Tokens from the prototype: paper #F3F4F0, white, ink #121815, one forest green #1C4A3A (primary and good news only), and whatever else the prototype defines. This replaces DESIGN v0.3 values in design/tokens.css. Do not edit design/DESIGN.md text; put a short note in the commit message that DESIGN.md is out of date and needs Haoyue's update.
-   - Fonts: Geist (UI) and Geist Mono (small measured labels), replacing Onest.
-   - The shared pieces the three pages reuse: the measured line (thin line, two ticks, a value), hairline rules, the shared measured grid, the large display numbers (up to 76 px as in the prototype), GSAP for transitions (add the dependency).
-   - Update the checker (npm run check) where its old rules (Onest only, 44 px max, card rules, palette list) now contradict the new system; say in the commit message which rules changed.
-2. **Then build 03, 05, 12** in the React app from the prototype, one local branch each (build/direction-03, -05, -12), including the transitions 03 → 05 and 05 → 12 shown in the prototype. Match it closely; the prototype is the spec.
-3. **Known wording issues and bugs are NOT yours to fix now.** They are collected in claude/creative/FIXES.md (project doc) and will be fixed in one pass after all pages exist. Build what the prototype shows, except where it is plainly broken code (then fix and say so).
+## Task 1 · the whole app from v52
 
-More pages come in batches as the Creative Director finishes them (next: 01 → 02 → 04). Each batch will be added here.
+Build all pages in the React app, in route order: system → 01 → 02 → 03 → 04 → 05 → 06 → 07 → 08 → 09 → 10 → 11 → 12 → 13 → 14 → 15 → 16 → 17, then 18 last (out of the demo scope; lowest priority). One local branch per page or batch, as before.
 
-## Added 25 Oct 00:30: 04 Search Results approved
+**One difference from the prototype: real state.** The prototype is a fixed demo route (other choices only show a note). The app must carry every choice through to every later page that shows it: the fit numbers from 03, the hand-over place, delivery and collection times, payment method, the weekly ride, the storage way (door / Rack S), rent-out on/off, the return booking. Home, Bookings and My gear must reflect what has happened (booking made, ride closed, weekly ride set up, bike at the Hub). Values not seeded in MOCK-DATA: do not invent them; write the gap in your commit message.
 
-After 03, 05, 12: build **04 Search Results** from "OutRent · direction" (open with #04) on local branch build/direction-04, including the 04 → 05 photo morph. Its images are in the OutRent Image Library artifact (https://claude.ai/artifact/GeHjSLftCLrd5SGMvyumVU): img/04-marlin-6.webp, img/04-scott-aspect-950.webp; the Marlin 7 is 05's shop-stand photo. Two small wording items are in the project doc claude/creative/FIXES.md (#7, #8); leave them for the end pass.
+## Task 2 · the components page
 
-## Added 25 Oct 00:56: 01 Home approved
+Bring `design/components.html` (with `components.css`, `tokens.css`, `recipes.html`) up to the new system, so it shows every shared piece of the app as it is now: tokens (colours, type scale, Geist / Geist Mono), the measured line and measured grid, hairline rules, display numbers, buttons and the dock, back buttons (plain and on-photo), tab bar, white cards, chips, the tape (ruler input), sheets and drawers, toast, photo frames and the "Image to come" stand-in, the done marks (stamp, slip, ring, dial token, intake dot), plus each component's states (default, pressed, disabled, selected) and its motion. Build it from the same CSS / React components the app uses, so the page cannot drift from the app. DESIGN.md text is out of date: do not edit it; say so in the commit message.
 
-After 04: build **01 Home** from "OutRent · direction" (open with no hash) on local branch build/direction-01, replacing the old 01 on main. Its images are in the OutRent Image Library artifact (https://claude.ai/artifact/GeHjSLftCLrd5SGMvyumVU): img/02-coach-post.webp (the "This weekend" card), img/aisyah-avatar.webp, img/01-cat-bikes.webp, img/01-cat-kayaks.webp, img/01-cat-paddleboards.webp, img/01-cat-camping.webp, img/01-storage-promo.webp. Category and promo values that have no MOCK-DATA behind them are gaps in the project doc claude/creative/FIXES.md (#3–#6); build them as the prototype shows (no invented numbers).
+## Task 3 · runs on a phone, and shows in an iPhone frame on a computer
 
-## Added 25 Oct 01:42: 06, 07, 08 approved
+- **Phone:** the app works as a home-screen web app: web app manifest (name OutRent, icons from design/brand, display standalone, theme colour #F3F4F0), apple-touch-icon, `viewport-fit=cover`, safe-area insets, no browser bounce. Opened on an iPhone it fills the screen like a native app.
+- **Computer:** the same URL on a wide screen shows **only an iPhone 16 frame (393 × 852) centred on a plain page, with the app inside and fully clickable. Nothing else on the page** (no side notes, no labels, no page list). The prototype's own desk view is not this: drop its side notes.
+- Prepare static hosting (Vite build; an SPA rewrite config for Vercel). Do not deploy and do not push: deploying needs Haoyue's Vercel sign-in and his go-ahead.
 
-After 01: build **06 Delivery & Return → 07 Fees & Liability → 08 Booking Confirmation** from "OutRent · direction" (latest version; use the page links in the prototype), one local branch each (build/direction-06, -07, -08), with the transitions between them and from 05. Any images they use are in OutRent Image Library (https://claude.ai/artifact/GeHjSLftCLrd5SGMvyumVU) or listed in the project doc claude/creative/IMAGES.md. Your old-style 08 branch may hold reusable logic; the look comes from the prototype.
+## Acceptance
 
-## Added 25 Oct 02:25: 10, 11, 13 approved
+Before you report a batch done: walk its journeys from `prototype/e2e/` (E1 default rental, E2 different choices, E3 beginner from Home, E4 back and forth, E5 weekly regular, E6 owner and storage, E7 chaos: tab switches, double taps, reloads, reduced motion) on the app with Playwright at 393 × 852, adapting the selectors to the app. Everything that failed on the prototype only because it was a fixed route must pass on the app. Report pass / fail counts in the commit message.
 
-After 08: build **10 Delivery Tracking → 11 Handover Check → 13 Weekly Ride** from "OutRent · direction" (v20 or later), one local branch each (build/direction-10, -11, -13), with the transitions 08 → 10 → 11 → 12 → 13. 10's map, moving van and drawer, and 11's record card that folds into a slip, are the key motions; match the prototype's timing. Note from the prototype: never use scrollIntoView (it scrolled the phone frame); scroll only the page's own list.
+## How to report
 
-## Added 25 Oct 02:28: 02 approved
-
-After 13: build **02 Coach's post** from "OutRent · direction" (local branch build/direction-02), with the five kit thumbnails (img/02-kit-*.webp) and img/02-coach-post.webp, img/aisyah-avatar.webp from OutRent Image Library. Skip 13's stamp for now (being redesigned).
-
-## Added 25 Oct 03:45: 09 and 14–18 exist; fix pass coming
-
-After 02: build **09 Trips**, then **14 My Equipment → 15 Equipment Detail → 16 Storage Options → 17 Hub Pickup → 18 Storage Map** from "OutRent · direction" (one local branch each, build/direction-09, -14 … -18). Facts: MOCK-DATA v1.6 on product-requirements. A persona review runs on the prototype tonight and a fix pass follows, so wording on every page may still change; build structure and motion first, and expect a copy update later.
+One line in chat per finished task: "done, <branch> <hash>".
