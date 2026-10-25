@@ -1,187 +1,121 @@
-import { useLayoutEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { gsap } from 'gsap'
-import { GoTo, useBack } from '../../shell/Link'
 import { Icon } from '../../shell/Icon'
 import { Photo } from '../../shell/Photo'
-import { BackButton, MeasuredGrid, Mono, still, useToast } from '../../shell/direction'
+import { BackButton, MeasuredGrid, Mono, still } from '../../shell/direction'
 import { routeFor } from '../../pages'
+import { clockOf, collectAt, dateTime, deliverAt, fitNow, getState, set, setClock, useStore } from '../../shell/store'
+import { payWith, releaseH } from '../../shell/rental'
 import rCrank from '@photos/12-rental-summary/assets/12-direction-r-crank.webp'
 import rSaddle from '@photos/12-rental-summary/assets/12-direction-r-saddle.webp'
 import rDrive from '@photos/12-rental-summary/assets/12-direction-r-drive.webp'
+import marlin from '@photos/12-rental-summary/assets/12-direction-backdrop-marlin7.webp'
 import './summary.css'
 
-// 12 Rental summary · the fitter's line. A record: Saturday drawn to scale, ending in S$150 back.
-// Source: the Creative Director's prototype "OutRent · direction" (screen s12), approved 24 Oct 22:18.
+// 12 Rental summary · the fitter's line (v50). The record first: the deposit back as the page's one figure,
+// "Your Saturday" as four evenly spaced steps, the return check; then the offer, a forest block with this
+// Marlin 7 (Weekly ride · 10% off, S$45 against S$50, four Saturdays) -> 13; then Back to Home.
+// Source: the Creative Director's prototype v52 (#12). Real state: the times, places, fit and payment Daniel
+// chose; opening it closes the rental (as v52 does); once the weekly ride is set up the block says so.
 
-// Saturday 7:00-14:30 on a vertical scale, 50 px an hour.
-const Y0 = 7, PXH = 50, TOPPAD = 10
-const yAt = (t: number) => TOPPAD + (t - Y0) * PXH
-const EVENTS = [
-  { t: 7 + 40 / 60, tm: '7:40', b: 'Delivered, set to your fit', s: 'Chestnut trailhead carpark · saddle 72 cm' },
-  { t: 10.25, tm: '8:00–12:30', b: 'Coach Aisyah’s Saturday ride', s: 'Chestnut Nature Park' },
-  { t: 13.5, tm: '13:30', b: 'Collected', s: 'As at hand-over, trail dirt only' },
-  { t: 14 + 5 / 60, tm: '14:05', b: 'Deposit released', s: 'S$150 back · S$50 paid in total' },
-]
-const DOTS: [number, boolean][] = [[7 + 40 / 60, false], [8, false], [12.5, false], [13.5, false], [14 + 5 / 60, true]]
-const HOURS: number[] = []
-for (let h = 7; h <= 14.5; h += 0.5) HOURS.push(h)
-const BACKS = [
-  { src: rCrank, part: 'Crank arm' }, { src: rSaddle, part: 'Saddle edge' }, { src: rDrive, part: 'Drivetrain' },
-]
+const BACKS = [{ src: rCrank, part: 'Crank arm' }, { src: rSaddle, part: 'Saddle edge' }, { src: rDrive, part: 'Drivetrain' }]
 
 export default function Summary() {
   const navigate = useNavigate()
   const location = useLocation()
-  const fromSkip = (location.state as { from?: string } | null)?.from === 'skip'
-  const back = useBack(() => navigate(routeFor('05-listing-detail')))
-  const [toastNode, toast] = useToast()
-  const day = useRef<HTMLDivElement>(null)
+  const fromSkip = (location.state as { how?: string } | null)?.how === 'skip'
+  const s = useStore((x) => x)
+  const root = useRef<HTMLElement>(null)
   const cover = useRef<HTMLDivElement>(null)
-  const [tops, setTops] = useState<number[]>([])
-  const [links, setLinks] = useState<string[]>([])
-  const [height, setHeight] = useState(440)
+  const f = fitNow(s)
+  const d = deliverAt(s), c = collectAt(s), pd = s.book.place.d
+  const rel = releaseH(s)
+  const weekly = s.weekly
 
-  // Labels sit at their time; where two would overlap, the later one moves down with a dashed leader.
+  // The summary is the rental closed: arriving here (from the skip, from Past or directly) records it.
+  useEffect(() => {
+    const x = getState()
+    if (x.paid && !x.closed) set({ closed: true, now: Math.max(x.now, releaseH(x)) })
+  }, [])
+  useEffect(() => { setClock(clockOf(rel)) }, [rel])
+
+  // The day is told in four steps; the figure settles from the lighter green to forest.
   useLayoutEffect(() => {
-    const labels = [...(day.current?.querySelectorAll<HTMLElement>('.evl') ?? [])]
-    let bottom = -1e9
-    const t: number[] = [], l: string[] = []
-    labels.forEach((e, i) => {
-      const want = yAt(EVENTS[i].t) - 10
-      const top = Math.max(want, bottom + 10)
-      t.push(top + 10)
-      bottom = top + e.offsetHeight
-      if (top > want + 2) l.push(`M62 ${want + 10} C78 ${want + 10}, 74 ${top + 18}, 92 ${top + 18}`)
-    })
-    setTops(t); setLinks(l)
-    // The drawing grows to hold its last label (the prototype let it run into the next section).
-    setHeight(Math.max(440, Math.ceil(bottom + 14)))
+    const cv = cover.current
+    if (still() || !root.current) { if (cv) cv.style.visibility = 'hidden'; return }
+    if (cv) gsap.to(cv, { opacity: 0, duration: 0.4, delay: 0.25, onComplete: () => { cv.style.visibility = 'hidden' } })
+    const ctx = gsap.context(() => {
+      gsap.fromTo('.tl12 li', { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.4, stagger: 0.14, delay: 0.3, ease: 'power2.out' })
+      gsap.fromTo('.amt', { color: 'var(--forest-2)' }, { color: 'var(--forest)', duration: 0.6, delay: 0.9 })
+    }, root)
+    return () => ctx.revert()
   }, [])
 
-  // The intro: the trail draws down the day, each event lights as the head passes it, the ride band grows.
-  useLayoutEffect(() => {
-    if (!tops.length || !day.current) return
-    const root = day.current
-    const trail = root.querySelector<SVGPathElement>('#trail')!
-    const head = root.querySelector<SVGCircleElement>('#head')!
-    const halo = root.querySelector<SVGCircleElement>('#halo')!
-    const band = root.querySelector<SVGRectElement>('#rideband')!
-    const labels = [...root.querySelectorAll<HTMLElement>('.evl')]
-    const coverOut = () => cover.current && gsap.to(cover.current, { opacity: 0, duration: 0.4, delay: 0.25, onComplete: () => { if (cover.current) cover.current.style.visibility = 'hidden' } })
-    if (still()) {
-      trail.style.strokeDasharray = 'none'; head.style.opacity = halo.style.opacity = '0'
-      if (cover.current) cover.current.style.visibility = 'hidden'
-      return
-    }
-    coverOut()
-    const L = trail.getTotalLength(), y0 = yAt(7.667), y1 = yAt(14.083)
-    trail.style.strokeDasharray = String(L); trail.style.strokeDashoffset = String(L)
-    gsap.set(labels, { opacity: 0.15 }); gsap.set(band, { scaleY: 0, transformOrigin: '50% 0%' })
-    gsap.set([head, halo], { opacity: 1 })
-    const lit = new Set<number>()
-    const o = { p: 0 }
-    const tl = gsap.timeline({ delay: fromSkip ? 0.6 : 0.35 })
-    tl.to(o, {
-      p: 1, duration: 2.6, ease: 'power1.inOut', onUpdate: () => {
-        trail.style.strokeDashoffset = String(L * (1 - o.p))
-        const y = y0 + (y1 - y0) * o.p
-        head.setAttribute('cy', String(y)); halo.setAttribute('cy', String(y))
-        labels.forEach((lab, i) => { if (!lit.has(i) && tops[i] <= y + 14) { lit.add(i); gsap.to(lab, { opacity: 1, duration: 0.35 }) } })
-      },
-    })
-    tl.to(band, { scaleY: 1, duration: 1.6, ease: 'power1.inOut' }, 0.2)
-    tl.to(halo, { attr: { r: 26 }, opacity: 0, duration: 0.8, ease: 'power2.out' })
-    tl.to(head, { opacity: 0, duration: 0.3 }, '<')
-    tl.to(labels, { opacity: 1, duration: 0.35 }, '<')
-    tl.fromTo('#amt', { color: 'var(--forest-2)' }, { color: 'var(--forest)', duration: 0.6 }, '<')
-    return () => { tl.kill() }
-  }, [tops, fromSkip])
+  const toBookings = () => navigate(routeFor('09-trips'), { replace: true, state: { how: 'back' } })
+  const toHome = () => navigate(routeFor('01-home'), { replace: true, state: { how: 'back' } })
+  const at = pd === 0 ? 'at the trailhead' : 'at Blk 325C'
 
   return (
     <>
-      <main className="screen d-screen s-screen">
+      <main className="screen d-screen s12-screen" ref={root}>
         <div className="bar-top">
-          <BackButton label="Back" onClick={back} />
+          <BackButton label="Back to Bookings" onClick={toBookings} />
           <Mono className="mid">OR-10482 · closed</Mono>
           <span />
         </div>
         <div className="pad">
           <div className="hero12">
             <Mono>Trek Marlin 7 · Sat 25 Oct</Mono>
-            <span className="hero-num amt" id="amt">S$150</span>
+            <span className="amt">S$150</span>
             <h1 className="what">deposit released</h1>
-            <span className="small">Nothing kept · 25 Oct · 14:05</span>
+            <span className="small">Nothing kept · {dateTime(rel)}</span>
           </div>
 
-          <section className="sec">
-            <div className="sec-h"><h2 className="t-h2">Your Saturday</h2><Mono>Drawn to scale</Mono></div>
-            <div className="day" ref={day} style={{ height }}>
-              <svg aria-hidden="true">
-                <g className="hr">
-                  {HOURS.map((h) => {
-                    const full = h % 1 === 0
-                    return (
-                      <g key={h}>
-                        <line className={full ? 'h' : undefined} x1={full ? 34 : 40} x2={48} y1={yAt(h)} y2={yAt(h)} />
-                        {full && <text x={0} y={yAt(h) + 3.5}>{h}:00</text>}
-                      </g>
-                    )
-                  })}
-                </g>
-                <line className="axis" x1={56} x2={56} y1={yAt(7)} y2={yAt(14.5)} />
-                <rect className="ride" id="rideband" x={52} y={yAt(8)} width={8} height={yAt(12.5) - yAt(8)} rx={4} />
-                <path className="trail" id="trail" d={`M56 ${yAt(7 + 40 / 60)} L56 ${yAt(14 + 5 / 60)}`} />
-                {DOTS.map(([t, endDot]) => <g key={t} className={`ev${endDot ? ' end' : ''}`}><circle cx={56} cy={yAt(t)} r={endDot ? 6 : 4.5} /></g>)}
-                <circle className="halo" id="halo" cx={56} cy={yAt(7.667)} r={12} />
-                <circle className="head" id="head" cx={56} cy={yAt(7.667)} r={4} />
-                {links.map((d) => <path key={d} className="leader" d={d} />)}
-              </svg>
-              {EVENTS.map((e, i) => (
-                <div key={e.tm} className="evl" style={tops.length ? { top: tops[i] } : undefined}>
-                  <span className="tm">{e.tm}</span><b>{e.b}</b><span>{e.s}</span>
-                </div>
-              ))}
-            </div>
+          <section className="sec12">
+            <h2 className="t-h2">Your Saturday</h2>
+            <ol className="tl12">
+              <li><time>{d}</time><i /><div><b>Delivered, set to your fit</b><span>{pd === 0 ? 'Chestnut trailhead carpark' : 'Blk 325C'} · saddle {f.saddle} cm</span></div></li>
+              <li className="ride"><time>8:00<br />12:30</time><i /><div><b>Coach Aisyah’s Saturday ride</b><span>Chestnut Nature Park · 4 h 30 min</span></div></li>
+              <li><time>{c}</time><i /><div><b>Collected</b><span>As at hand-over, trail dirt only</span></div></li>
+              <li className="last"><time>{clockOf(rel)}</time><i /><div><b>Deposit released</b><span>S$150 released · S$50 paid by {payWith(s)}</span></div></li>
+            </ol>
           </section>
 
-          <section className="sec s-backs">
-            <h2 className="t-h2">Checked against the 7:40 photos</h2>
+          <section className="sec12">
+            <h2 className="t-h2">Checked against the {d} photos</h2>
             <div className="backs">
               {BACKS.map((b) => (
                 <figure key={b.part}>
-                  <Photo src={b.src} alt={`${b.part} at return, 13:30`} width={113} height={81} />
+                  <Photo src={b.src} alt={`${b.part} at return, ${c}`} width={113} height={81} />
                   <b>{b.part}</b>
                   <span><Icon name="check" small />No change</span>
                 </figure>
               ))}
             </div>
-            <MeasuredGrid className="s-grid" items={[
+            <MeasuredGrid className="g12" items={[
               { k: 'Paid', v: 'S$50' }, { k: 'Deposit', v: 'Released', tone: 'forest' }, { k: 'Kept', v: 'S$0' },
             ]} />
           </section>
         </div>
 
-        <section className="again">
-          <h2 className="t-h2 again-h">Ride again every Saturday</h2>
-          <div className="weeks">
-            <div><b>1 Nov</b><small>First</small></div><div><b>8 Nov</b></div><div><b>15 Nov</b></div><div><b>22 Nov</b></div>
+        <section className={`ad12${weekly ? ' set' : ''}`} aria-label="Weekly ride">
+          <div className="adph"><Photo src={marlin} alt="This Trek Marlin 7" width={393} height={200} /><span className="adk">Weekly ride · 10% off</span></div>
+          <div className="adb">
+            <h2 className="t-h2">{weekly ? 'Riding again every Saturday' : 'Same bike. Same Saturday.'}</h2>
+            <p className="adl">This Trek Marlin 7, set to your fit, {at} every Saturday: delivered {d}, collected {c}.</p>
+            <div className="adp"><b>S$45</b><span>a ride</span><s>S$50</s></div>
+            <div className="weeks"><div><b>1 Nov</b><small>First</small></div><div><b>8 Nov</b></div><div><b>15 Nov</b></div><div><b>22 Nov</b></div></div>
+            <button className="cta" type="button" onClick={() => navigate(routeFor('13-weekly-ride'), { state: { from: 'the rental summary' } })}>{weekly ? 'Open the weekly ride' : 'See the weekly ride'}</button>
+            <p className="small adn">{weekly
+              ? 'Next charge 30 Oct · 20:00: S$45. Skip 1 Nov free before then.'
+              : 'Nothing is charged today. Each ride is charged the Thursday before, at 20:00. Skip any week before then.'}</p>
           </div>
-          <dl className="terms">
-            <dt>Bike</dt><dd>This Trek Marlin 7, set to your fit</dd>
-            <dt>Times</dt><dd>7:40 delivery · 13:30 collection</dd>
-            <dt>Place</dt><dd>Chestnut trailhead carpark</dd>
-          </dl>
-          <div className="price"><b>S$45</b><span>per ride, S$5 less than today</span></div>
-          <p className="small s-charged">Charged each Thu · 20:00. Skip any week before then.</p>
-          <GoTo page="13-weekly-ride" className="cta">Set up every Saturday</GoTo>
-          <button type="button" className="link s-other" onClick={() => toast('Search is not in this slice.')}>Book a different bike</button>
         </section>
+        <div className="home12"><button className="ghostbtn" type="button" onClick={toHome}>Back to Home</button></div>
       </main>
-
-      {/* Arriving from the 05 time skip: the paper cover lifts once the summary is in place. */}
+      {/* Arriving from the time skip: the paper cover lifts once the summary is in place. */}
       <div className="s-cover" ref={cover} aria-hidden="true" style={fromSkip && !still() ? undefined : { visibility: 'hidden' }} />
-      {toastNode}
     </>
   )
 }

@@ -7,7 +7,7 @@
 
 /* The map */
 .mapwrap { position: absolute; inset: 0 0 var(--sh10, 380px) 0; overflow: hidden; }
-.map10 { position: absolute; inset: 0; width: 100%; height: 100%; transform-origin: 50% 40%; }
+.map10 { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; transform-origin: 0 0; }
 .map10 .m-ground { fill: var(--map-ground); }
 .map10 .m-block { fill: var(--map-block); }
 .map10 .m-park { fill: var(--map-park); }
@@ -44,7 +44,8 @@
 .eta2 > div { display: flex; flex-direction: column; gap: 2px; }
 .eta2 b { font-size: 52px; line-height: 54px; font-weight: 600; letter-spacing: -0.05em; }
 .here .eta2 b { color: var(--forest); }
-.eta2 .in { padding-bottom: 6px; font-size: 16px; color: var(--ink-2); white-space: nowrap; }
+.etar { display: flex; align-items: center; gap: var(--s-3); padding-bottom: 6px; white-space: nowrap; }
+.eta2 .in { font-size: 16px; color: var(--ink-2); }
 
 .prog { position: relative; height: 40px; margin: 0 2px; }
 .prog::before { content: ""; position: absolute; left: 0; right: 0; top: 6px; height: 2px; background: var(--rule); }
@@ -67,9 +68,7 @@
 .chat10 svg { width: 20px; height: 20px; }
 .fitrow { display: grid; grid-template-columns: 56px 1fr; gap: var(--s-3); align-items: center; }
 .fitrow .th { position: relative; width: 56px; height: 56px; border-radius: 12px; overflow: hidden; }
-.fitrow .th .todo { padding: 5px; }
-.fitrow .th .todo .mono { display: none; }
-.fitrow .th .todo .w { font-size: 9.5px; line-height: 11px; }
+.fitrow .th .photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 62% 40%; display: block; }
 .fitrow b { display: block; font-size: 14.5px; font-weight: 600; }
 .fitrow span span { font-size: 12.5px; color: var(--ink-2); }
 .s10-go { width: 100%; }
