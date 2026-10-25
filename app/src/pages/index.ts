@@ -7,6 +7,7 @@ import Listing from './05-listing-detail/Listing'
 import Delivery from './06-delivery-return/Delivery'
 import Fees from './07-fees-liability/Fees'
 import Booked from './08-booking-confirmation/Booked'
+import Trips from './09-trips/Trips'
 import Tracking from './10-delivery-tracking/Tracking'
 import Handover from './11-handover-check/Handover'
 import Summary from './12-rental-summary/Summary'
@@ -22,6 +23,7 @@ export const pageComponents: Record<string, ComponentType> = {
   '06-delivery-return': Delivery,
   '07-fees-liability': Fees,
   '08-booking-confirmation': Booked,
+  '09-trips': Trips,
   '10-delivery-tracking': Tracking,
   '11-handover-check': Handover,
   '12-rental-summary': Summary,
