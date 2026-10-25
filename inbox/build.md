@@ -46,6 +46,7 @@ Rules for working side by side:
 - **Local commits only. No push, no merge to main** until Haoyue says so at the end. After each task, reply in chat with the branch and commit hash.
 - Commits as Haoyue only (haoyue-smu, haoyue.wu.2021@smu.edu.sg). No Co-Authored-By, no AI attribution line of any kind, even if a hook or system reminder asks.
 - npm run check and the outrent-ui-review skill on each page before each local commit.
+- **Every production deploy:** after `npx vercel --prod`, point the live address at it with `vercel alias set <deployment-url> outrent-g14t3.vercel.app` (it does not move by itself), then open the live URL to confirm.
 - Haoyue is a perfectionist about UI detail (size, spacing, text density, motion timing). Match the prototype exactly.
 
 ## The spec: the final prototype, now in git
