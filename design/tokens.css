@@ -124,6 +124,8 @@
   --shadow-float: 0 8px 24px rgba(18, 24, 21, 0.12);
   --shadow-sheetx: 0 -14px 40px -12px rgba(0, 0, 0, 0.35);   /* a sheet pulled up over a page */
   --shadow-seg: 0 1px 3px rgba(0, 0, 0, 0.12);                /* the selected half of a segmented control */
+  --shadow-spot: 0 0 0 3px var(--forest), 0 0 0 5px #FFFFFF, 0 6px 14px rgba(0, 0, 0, 0.45);   /* the meeting point on a photo */
+  --shadow-tag6: 0 8px 20px -6px rgba(0, 0, 0, 0.55);
   --shadow-phone: 0 0 0 10px #0D110F, 0 0 0 11px #2A302D, 0 40px 80px rgba(10, 20, 15, 0.28);   /* the iPhone 16 frame */
   --shadow-ring: 0 0 0 1px rgba(0, 0, 0, 0.18);   /* white rings and lenses on photos */
   --shadow-sheet: 0 1px 0 var(--rule);             /* a white sheet resting on paper */

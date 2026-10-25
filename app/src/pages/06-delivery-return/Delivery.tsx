@@ -1,164 +1,167 @@
-import { useLayoutEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { gsap } from 'gsap'
 import { useBack } from '../../shell/Link'
 import { Icon } from '../../shell/Icon'
-import { BackButton, Mono, haptic, still } from '../../shell/direction'
+import { Photo } from '../../shell/Photo'
+import { BackButton, Mono, Sheet, haptic, still, useSheet } from '../../shell/direction'
+import { PLACES, getState, hm, set, setClock, useStore, type Place } from '../../shell/store'
 import { routeFor } from '../../pages'
+import spot from '@photos/06-delivery-return/assets/06-direction-handover-spot.webp'
 import './delivery.css'
 
-// 06 Delivery & return · the fitter's line. The Saturday on one line; pick both ends around the ride.
-// Source: the Creative Director's prototype "OutRent · direction" (#06), approved 25 Oct 01:40.
+// 06 Delivery and collection · the fitter's line (v52, the v48 page). Where you meet (the hand-over spot as a
+// photo, a white "Meet here" pin on the sign), then three suggested times plus Other for each leg, with the ride
+// between them, and the bill that starts with the two chosen times.
+// Real state: both places (chosen separately) and any time go into the booking and on to every later page.
 
 type Kind = 'd' | 'c'
-const PLACES = [
-  ['Chestnut trailhead carpark', 'By the park entrance sign'],
-  ['Blk 325C Sengkang East Way #11-42', 'Your home address'],
-]
-// Each scale: its stretch of the day, the ride edge, and four time buttons spaced evenly (the line above keeps true time).
-const LEGS: Record<Kind, { q: string; done: string; edge: number; edgeLabel: string; slots: { t: string; off?: boolean }[] }> = {
-  d: { q: 'When should it arrive?', done: 'Arrives', edge: 8, edgeLabel: 'RIDE STARTS 8:00', slots: [{ t: '7:00', off: true }, { t: '7:20' }, { t: '7:40' }, { t: '8:00' }] },
-  c: { q: 'When should it be collected?', done: 'Collected', edge: 12.5, edgeLabel: 'RIDE ENDS 12:30', slots: [{ t: '13:00' }, { t: '13:30' }, { t: '14:30' }, { t: '17:30' }] },
-}
-const hm = (t: string) => { const [h, m] = t.split(':').map(Number); return h + m / 60 }
+const CHIPS: Record<Kind, string[]> = { d: ['7:20', '7:40', '8:00'], c: ['13:00', '13:30', '14:30'] }
+// Other times, in 10-minute steps: delivery from the first courier slot to the end of the ride, collection after it.
+const RANGE: Record<Kind, [number, number]> = { d: [7 + 20 / 60, 12.5], c: [12.5, 20] }
+const times = (k: Kind) => { const out: string[] = []; const [a, z] = RANGE[k]; for (let m = Math.round(a * 60); m <= z * 60; m += 10) out.push(`${Math.floor(m / 60)}:${String(m % 60).padStart(2, '0')}`); return out }
 
 export default function Delivery() {
   const navigate = useNavigate()
   const back = useBack(() => navigate(routeFor('05-listing-detail')))
-  const [pick, setPick] = useState<Record<Kind, string | null>>({ d: null, c: null })
-  const [place, setPlace] = useState<Record<Kind, number>>({ d: 0, c: 0 })
-  const [last, setLast] = useState<Kind | null>(null)
-  const root = useRef<HTMLElement>(null)
-  const both = pick.d && pick.c
+  const book = useStore((s) => s.book)
+  const where = useSheet()
+  const [draft, setDraft] = useState<{ d: Place; c: Place }>(book.place)
+  const [other, setOther] = useState<Kind | null>(null)
+  const wheel = useRef<HTMLDivElement>(null)
+  const [wheelAt, setWheelAt] = useState('')
+  const both = book.d && book.c
 
-  // On arrival, the time buttons of each step nudge in turn, to show they are the thing to tap.
-  useLayoutEffect(() => {
-    if (still() || !root.current) return
-    const slots = [...root.current.querySelectorAll<HTMLElement>('.slot:not(:disabled)')]
-    const timers = slots.map((b, i) => window.setTimeout(() => b.classList.add('hint'), 500 + i * 120))
-    return () => timers.forEach(clearTimeout)
-  }, [])
+  useEffect(() => { setClock(getState().paid ? '19:00' : '9:07') }, [])
 
   const choose = (k: Kind, t: string) => {
-    setPick((p) => ({ ...p, [k]: t }))
-    setLast(k)
+    set((s) => ({ ...s, book: { ...s.book, [k]: t } }))
     haptic()
   }
-  const swapPlace = (k: Kind, el: HTMLElement) => {
-    setPlace((p) => ({ ...p, [k]: 1 - p[k] }))
-    if (!still()) gsap.fromTo(el.querySelector('.pl'), { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.3 })
+
+  // the wheel: the row nearest the middle line is the one picked
+  const pick = () => {
+    const wh = wheel.current
+    if (!wh) return ''
+    const rows = [...wh.querySelectorAll<HTMLElement>('.t')], c = wh.scrollTop + 90
+    let best = rows[0]
+    rows.forEach((r) => { if (Math.abs(r.offsetTop + 22 - c) < Math.abs(best.offsetTop + 22 - c)) best = r })
+    const t = best?.textContent ?? ''
+    if (t !== wheelAt) setWheelAt(t)
+    return t
+  }
+  const openOther = (k: Kind) => {
+    setOther(k)
+    const start = book[k] && !CHIPS[k].includes(book[k]!) ? book[k]! : k === 'd' ? '7:50' : '13:10'
+    requestAnimationFrame(() => {
+      const wh = wheel.current, row = [...(wh?.querySelectorAll<HTMLElement>('.t') ?? [])].find((r) => r.textContent === start)
+      if (wh && row) { wh.scrollTop = row.offsetTop - 68; setWheelAt(start) }
+      wh?.focus({ preventScroll: true })
+    })
+  }
+  useEffect(() => {
+    if (!other) return
+    const k = (e: KeyboardEvent) => { if (e.key === 'Escape') setOther(null) }
+    addEventListener('keydown', k)
+    return () => removeEventListener('keydown', k)
+  }, [other])
+  const confirmTime = () => { const t = pick(); if (other && t) choose(other, t); setOther(null) }
+  const scrollTo = (el: HTMLElement) => wheel.current?.scrollTo({ top: el.offsetTop - 68, behavior: still() ? 'auto' : 'smooth' })
+
+  const same = book.place.d === book.place.c
+  const late = book.d && hm(book.d) > 8, early = book.c && hm(book.c) < 12.5
+  const cta = both ? 'See the fees' : book.d ? 'Pick a collection time' : 'Pick a delivery time'
+
+  const leg = (k: Kind) => {
+    const chosenOther = book[k] && !CHIPS[k].includes(book[k]!)
+    return (
+      <div className="leg6">
+        <div className="lh"><Mono>{k === 'd' ? 'Delivery' : 'Collection'}</Mono><span className="dt6">Sat 25 Oct</span></div>
+        <div className="chips6">
+          {CHIPS[k].map((t) => (
+            <button key={t} type="button" className="c6" aria-pressed={book[k] === t} aria-label={`${k === 'd' ? 'Deliver' : 'Collect'} at ${t}`} onClick={() => choose(k, t)}>{t}</button>
+          ))}
+          <button type="button" className={`c6${chosenOther ? '' : ' oth'}`} aria-pressed={!!chosenOther} aria-label={chosenOther ? `${k === 'd' ? 'Deliver' : 'Collect'} at ${book[k]}, pick another time` : `Pick another ${k === 'd' ? 'delivery' : 'collection'} time`} onClick={() => openOther(k)}>{chosenOther ? book[k] : 'Other'}</button>
+        </div>
+        {k === 'd' && late && <p className="note6">Arrives after your ride starts at 8:00.</p>}
+        {k === 'c' && early && <p className="note6">Collected before your ride ends at 12:30.</p>}
+      </div>
+    )
   }
 
   return (
     <>
-      <main className="screen d-screen s6-screen" ref={root}>
+      <main className="screen d-screen s6-screen">
         <div className="bar-top">
           <BackButton label="Back to the listing" onClick={back} />
-          <Mono className="mid">Delivery &amp; return</Mono>
+          <Mono className="mid">Sat 25 Oct</Mono>
           <span />
         </div>
         <div className="pad">
-          <div className="s6-head">
-            <h1 className="t-h1">Saturday, both ways</h1>
-            <p className="lede">Pick when the bike reaches you and when it is collected. Coach Aisyah’s ride runs 8:00–12:30.</p>
-          </div>
-          <div className="loop">
-            <Overview d={pick.d} c={pick.c} last={last} />
-            {(['d', 'c'] as Kind[]).map((k) => (
-              <div key={k}>
-                <section className={`leg${pick[k] ? ' done' : ''}`} aria-labelledby={`q-${k}`}>
-                  <div className="leg-h">
-                    <span className="q"><span className="n" aria-hidden="true">{k === 'd' ? 1 : 2}</span><b id={`q-${k}`}>{pick[k] ? `${LEGS[k].done} ${pick[k]}` : LEGS[k].q}</b></span>
-                    <span className="small">Tap a time</span>
-                  </div>
-                  <button type="button" className="place" onClick={(e) => swapPlace(k, e.currentTarget)} aria-label={`Place: ${PLACES[place[k]][0]}. Change`}>
-                    <Icon name="map-pin" />
-                    <span className="pl"><b>{PLACES[place[k]][0]}</b><span>{PLACES[place[k]][1]}</span></span>
-                    <span className="chg">Change</span>
-                  </button>
-                  <Scale k={k} picked={pick[k]} onPick={(t) => choose(k, t)} />
-                </section>
-                {k === 'd' && pick.d === '8:00' && (
-                  <div className="clash" role="status"><Icon name="info" small /><span>8:00 arrives as the ride starts. 7:40 leaves time to set off.</span></div>
-                )}
-              </div>
-            ))}
-            <div className="loop-f"><span>Delivery and collection</span><b className={both ? undefined : 'wait'}>{both ? 'S$12' : 'Choose both times'}</b></div>
-          </div>
-          <figure className="spot">
-            <div className="ph"><div className="todo"><Mono>Image to come</Mono><span className="w">The hand-over spot: Chestnut trailhead carpark, by the park entrance sign</span></div></div>
-            <figcaption><Mono>Hand-over spot</Mono><span className="small">By the park entrance sign, Chestnut trailhead carpark</span></figcaption>
+          <h1 className="t-h1">Delivery and collection</h1>
+          <figure className="meet6">
+            <div className="ph">
+              {book.place.d === 0 ? <>
+                <Photo src={spot} alt="The Chestnut trailhead carpark on a Saturday morning, the low wooden park entrance sign at its edge" width={353} height={221} first />
+                <span className="spot6" aria-hidden="true" />
+                <span className="tag6" aria-hidden="true"><Icon name="map-pin-fill" />Meet here</span>
+              </> : (
+                <span className="todo" role="img" aria-label="Photo to come: Blk 325C Sengkang East Way"><span className="mono">Image to come</span><span className="w">Blk 325C Sengkang East Way, your home address</span></span>
+              )}
+            </div>
+            <figcaption>
+              <span className="tx">
+                <b>{PLACES[book.place.d][0]}</b>
+                <span>{same
+                  ? (book.place.d === 0 ? 'By the park entrance sign. The bike is handed over here both ways.' : 'Your home address. The bike is handed over here both ways.')
+                  : `Delivered here. Collected from ${book.place.c === 0 ? 'the Chestnut trailhead carpark, by the park entrance sign' : 'your home address, Blk 325C'}.`}</span>
+              </span>
+              <button className="link" type="button" onClick={() => { setDraft(book.place); where.show() }}>Change</button>
+            </figcaption>
           </figure>
+          {leg('d')}
+          <div className="ride6n"><i /><span>Your ride with Coach Aisyah · <b>8:00–12:30</b></span><i /></div>
+          {leg('c')}
+          <dl className="bill6">
+            <div className="when"><dt>Delivery</dt><dd className={book.d ? undefined : 'wait'}>{book.d ? `25 Oct · ${book.d}` : 'Pick a time'}</dd></div>
+            <div className="when"><dt>Collection</dt><dd className={book.c ? undefined : 'wait'}>{book.c ? `25 Oct · ${book.c}` : 'Pick a time'}</dd></div>
+            <div><dt>Trek Marlin 7, 1 day</dt><dd>S$38</dd></div>
+            <div><dt>Delivery and collection</dt><dd>S$12</dd></div>
+            <div className="tot"><dt>All-in for Sat 25 Oct</dt><dd>S$50</dd></div>
+          </dl>
         </div>
       </main>
-      <div className="dock">
-        <button type="button" className="cta s6-go" disabled={!both} onClick={() => navigate(routeFor('07-fees-liability'))}>
-          {both ? 'See the fees' : 'Choose both times'}
-        </button>
+      <div className="dock"><button type="button" className="cta" style={{ width: '100%' }} disabled={!both} onClick={() => navigate(routeFor('07-fees-liability'))}>{cta}</button></div>
+
+      {/* any other time: a wheel in 10-minute steps */}
+      <div className={`sheet6${other ? ' on' : ''}`} aria-hidden={!other} onClick={(e) => { if (e.target === e.currentTarget) setOther(null) }}>
+        <div className="sh6" role="dialog" aria-modal="true" aria-label={other === 'c' ? 'Another collection time' : 'Another delivery time'}>
+          <span className="grab" aria-hidden="true"><i /></span>
+          <div className="lh"><b>{other === 'c' ? 'Another collection time' : 'Another delivery time'}</b><span className="hint">Sat 25 Oct · your ride is 8:00–12:30</span></div>
+          <div className="wheel6" ref={wheel} tabIndex={0} role="listbox" aria-label="Times" aria-activedescendant={wheelAt ? `w6-${wheelAt.replace(':', '')}` : undefined} onScroll={pick}
+            onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); confirmTime(); return } const d = e.key === 'ArrowDown' ? 1 : e.key === 'ArrowUp' ? -1 : 0; if (!d || !wheel.current) return; e.preventDefault(); wheel.current.scrollBy({ top: d * 44 }) }}>
+            <div className="padr" />
+            {other && times(other).map((t) => (
+              <div key={t} id={`w6-${t.replace(':', '')}`} role="option" aria-selected={wheelAt === t} className={`t${wheelAt === t ? ' on' : ''}`} onClick={(e) => scrollTo(e.currentTarget)}>{t}</div>
+            ))}
+            <div className="padr" />
+          </div>
+          <button type="button" className="cta" style={{ width: '100%' }} onClick={confirmTime}>Use this time{wheelAt ? ` · ${wheelAt}` : ''}</button>
+        </div>
       </div>
+
+      <Sheet sheet={where} label="Where to meet" title="Where to meet" closeLabel="Close, keep the places as they are">
+        {(['d', 'c'] as Kind[]).map((k) => (
+          <div key={k} className="where6">
+            <Mono>{k === 'd' ? 'Delivery' : 'Collection'}</Mono>
+            {PLACES.map((p, i) => (
+              <button key={p[0]} type="button" className="opt" aria-pressed={draft[k] === i} onClick={() => { setDraft((x) => ({ ...x, [k]: i as Place })); haptic() }}>
+                <span className="rad" /><b>{i === 0 ? 'Chestnut trailhead carpark' : 'Your home address'}</b><span /><span className="s">{i === 0 ? 'By the park entrance sign' : PLACES[1][0]}</span>
+              </button>
+            ))}
+          </div>
+        ))}
+        <button type="button" className="cta" style={{ width: '100%', marginTop: 16 }} onClick={() => { set((s) => ({ ...s, book: { ...s.book, place: draft } })); haptic(); where.hide() }}>Use these places</button>
+      </Sheet>
     </>
-  )
-}
-
-// One leg's scale: the ride edge, a shaded band on the ride side, and the four time buttons.
-function Scale({ k, picked, onPick }: { k: Kind; picked: string | null; onPick: (t: string) => void }) {
-  const leg = LEGS[k]
-  const ex = k === 'd' ? 87.5 : 0
-  return (
-    <div className="scale">
-      <span className="axis" />
-      <span className={`band ${k === 'd' ? 'is-d' : 'is-c'}`} style={{ left: `${ex}%` }} />
-      <span className={`edge ${k === 'd' ? 'is-d' : 'is-c'}`} style={{ left: `${ex}%` }}><span>{leg.edgeLabel}</span></span>
-      {leg.slots.map((s, i) => (
-        <button
-          key={s.t} type="button" className="slot" style={{ left: `${12.5 + i * 25}%` }} disabled={s.off}
-          aria-pressed={picked === s.t}
-          aria-label={s.off ? `${s.t}, before the first courier run` : `${k === 'd' ? 'Deliver at' : 'Collect at'} ${s.t}`}
-          onClick={() => onPick(s.t)}
-        >
-          <b>{s.t}</b><i aria-hidden="true" />
-        </button>
-      ))}
-    </div>
-  )
-}
-
-// The whole Saturday on one line: the ride in ink, the two chosen times as forest ticks.
-function Overview({ d, c, last }: { d: string | null; c: string | null; last: Kind | null }) {
-  const box = useRef<HTMLDivElement>(null)
-  const [W, setW] = useState(321)
-  useLayoutEffect(() => { if (box.current?.clientWidth) setW(box.current.clientWidth) }, [])
-  const lo = 7, hi = 18, x = (t: number) => 2 + ((t - lo) / (hi - lo)) * (W - 4)
-  const hours = []
-  for (let t = lo; t <= hi; t++) hours.push(<line key={t} x1={x(t)} x2={x(t)} y1={21} y2={24} className="tk" />)
-  // The newest marker pops in.
-  const marker = useRef<SVGGElement>(null)
-  useLayoutEffect(() => {
-    if (!last || still() || !marker.current) return
-    const t = gsap.fromTo(marker.current, { opacity: 0, y: -6 }, { opacity: 1, y: 0, duration: 0.35, ease: 'back.out(2)' })
-    return () => { t.kill() }
-  }, [d, c, last])
-  const marks = ([['d', d], ['c', c]] as const).filter(([, t]) => t)
-  return (
-    <div className="ov" ref={box}>
-      <svg viewBox={`0 0 ${W} 46`} aria-hidden="true">
-        <line x1={x(lo)} x2={x(hi)} y1={24} y2={24} className="base" />
-        {hours}
-        {[7, 10, 13, 16, 18].map((t) => <text key={t} x={x(t)} y={42} textAnchor={t === lo ? 'start' : t === hi ? 'end' : 'middle'}>{t}:00</text>)}
-        <rect x={x(8)} y={21.5} width={x(12.5) - x(8)} height={5} rx={2.5} className="ride" />
-        <text x={(x(8) + x(12.5)) / 2} y={12} textAnchor="middle" className="ride-t">RIDE</text>
-        {marks.map(([k, t]) => {
-          const X = x(hm(t!))
-          return (
-            <g key={k} className="ovm" ref={k === last ? marker : undefined}>
-              <line x1={X} x2={X} y1={14} y2={24} />
-              <circle cx={X} cy={24} r={4.5} />
-              <text x={X} y={12} textAnchor={k === 'd' ? 'end' : 'start'}>{t}</text>
-            </g>
-          )
-        })}
-      </svg>
-      <span className="sr-only">{d || c ? `Chosen: ${d ? `arrives ${d}` : ''}${d && c ? ', ' : ''}${c ? `collected ${c}` : ''}` : 'No times chosen yet'}</span>
-    </div>
   )
 }
