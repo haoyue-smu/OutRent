@@ -19,7 +19,8 @@ export type State = {
   closed: boolean                            // 12: returned, deposit released
   weekly: boolean                            // 13: every Saturday from 1 Nov
   storage: { way: StoreWay; booked: boolean; hub: boolean; rentOn: boolean; ret: Return }
-  added: null | { type: string; where: string }   // 14: the track pump
+  added: null | { type: string; where: string; name?: string }   // 14: the track pump
+  rackLeft: boolean                          // 18: on the rain day the Marlin 7 was left at Rack C instead
 }
 
 export const SEED: State = {
@@ -33,6 +34,7 @@ export const SEED: State = {
   weekly: false,
   storage: { way: '', booked: false, hub: false, rentOn: false, ret: '' },
   added: null,
+  rackLeft: false,
 }
 
 const KEY = 'outrent.state.v52'

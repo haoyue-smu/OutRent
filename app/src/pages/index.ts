@@ -12,6 +12,11 @@ import Tracking from './10-delivery-tracking/Tracking'
 import Handover from './11-handover-check/Handover'
 import Summary from './12-rental-summary/Summary'
 import Weekly from './13-weekly-ride/Weekly'
+import Gear from './14-my-equipment/Gear'
+import Item from './15-equipment-detail/Item'
+import Storage from './16-storage-options/Storage'
+import Pickup from './17-hub-pickup/Pickup'
+import Racks from './18-storage-map/Racks'
 
 // Register a page here when it is built: import Home from './01-home/Home'; then '01-home': Home.
 export const pageComponents: Record<string, ComponentType> = {
@@ -28,4 +33,9 @@ export const pageComponents: Record<string, ComponentType> = {
   '11-handover-check': Handover,
   '12-rental-summary': Summary,
   '13-weekly-ride': Weekly,
+  '14-my-equipment': Gear,
+  '15-equipment-detail': Item,
+  '16-storage-options': Storage,
+  '17-hub-pickup': Pickup,
+  '18-storage-map': Racks,
 }
