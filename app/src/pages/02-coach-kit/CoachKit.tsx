@@ -4,7 +4,8 @@ import lockup from '@design/brand/outrent-lockup.svg?raw'
 import { useBack } from '../../shell/Link'
 import { Icon } from '../../shell/Icon'
 import { Photo } from '../../shell/Photo'
-import { BackButton, Mono, session, still } from '../../shell/direction'
+import { BackButton, Mono, still } from '../../shell/direction'
+import { getState } from '../../shell/store'
 import { routeFor } from '../../pages'
 import aisyah from '@photos/01-home/assets/01-direction-aisyah-avatar.webp'
 import post from '@photos/01-home/assets/01-direction-02-coach-post.webp'
@@ -69,7 +70,7 @@ export default function CoachKit() {
     if (d < -20) setSheet('open')
     else if (d > 20) setSheet((s) => (s === 'open' ? 'up' : 'down'))
   }
-  const rent = () => navigate(routeFor(session.hasFit ? '04-search-results' : '03-fit-profile'), { state: { from: 'post' } })
+  const rent = () => navigate(routeFor(getState().fit.hasProfile ? '04-search-results' : '03-fit-profile'), { state: { from: 'post' } })
 
   return (
     <>

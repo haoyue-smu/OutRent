@@ -2,7 +2,7 @@ import { useLayoutEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { gsap } from 'gsap'
 import { useBack } from '../../shell/Link'
-import { BackButton, EndCard, Mono, haptic, still, useToast } from '../../shell/direction'
+import { BackButton, Mono, haptic, still, useToast } from '../../shell/direction'
 import { routeFor } from '../../pages'
 import './weekly.css'
 
@@ -19,7 +19,6 @@ export default function Weekly() {
   const back = useBack(() => navigate(routeFor('12-rental-summary')))
   const [toastNode, toast] = useToast()
   const [started, setStarted] = useState(false)
-  const [end, setEnd] = useState(false)
   const root = useRef<HTMLElement>(null)
   const ctl = useRef<HTMLDivElement>(null)
 
@@ -33,7 +32,7 @@ export default function Weekly() {
   }, [])
 
   const start = () => {
-    if (started) { setEnd(true); return }
+    if (started) { navigate(routeFor('09-trips')); return }
     setStarted(true)
     haptic()
     requestAnimationFrame(() => {
@@ -88,7 +87,6 @@ export default function Weekly() {
         <button type="button" className="cta s13-go" onClick={start}>{started ? 'Done' : 'Start every Saturday'}</button>
       </div>
       {toastNode}
-      {end && <EndCard onRestart={() => navigate(routeFor('01-home'))} onClose={() => setEnd(false)} />}
     </>
   )
 }

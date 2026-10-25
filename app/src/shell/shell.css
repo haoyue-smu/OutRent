@@ -1,12 +1,31 @@
-/* App shell: centres one 393 × 852 phone frame on a paper background.
-   Everything inside .screen is the prototype; the shell itself is not part of the design. */
+/* App shell. On a computer: only an iPhone 16 frame (393 × 852) centred on a plain page, nothing else.
+   On a phone (520 px or narrower): the app fills the screen, like a native app, with no browser bounce. */
 html, body, #root { height: 100%; margin: 0; }
-body { background: var(--desk); font-family: var(--font); color: var(--ink); -webkit-font-smoothing: antialiased; }
-.frame { width: 393px; height: 852px; margin: 0 auto; position: relative; overflow: hidden; background: var(--paper); }
-@media (min-height: 900px) { .frame { margin-top: 24px; border-radius: var(--r-sheet); box-shadow: var(--shadow-float); } }
+html, body { overflow: hidden; overscroll-behavior: none; }
+body { background: var(--desk); font-family: var(--font); color: var(--ink); -webkit-font-smoothing: antialiased; -webkit-tap-highlight-color: transparent; -webkit-text-size-adjust: 100%; }
+#root { display: grid; place-items: center; }
+button { -webkit-touch-callout: none; }
+
+.frame { position: relative; isolation: isolate; flex: none; width: 393px; height: 852px; overflow: hidden; overflow: clip; border-radius: var(--r-phone); background: var(--paper); box-shadow: var(--shadow-phone); }
 .frame-stage { position: absolute; inset: 0; background: var(--paper); }
-.frame-stage > .screen { width: 393px; height: 852px; overflow-y: auto; overflow-x: hidden; }
+.frame-stage > .screen { width: 100%; height: 100%; overflow-y: auto; overflow-x: hidden; overscroll-behavior: contain; scrollbar-width: none; }
+.frame-stage > .screen::-webkit-scrollbar { display: none; }
 .frame-empty { padding: var(--top-safe) var(--gutter) 0; }
-.frame-empty .t-foot { color: var(--muted); }
+
+/* the drawn status bar (desktop frame only) */
+.status { position: absolute; inset: 0 0 auto; z-index: 70; display: flex; align-items: flex-end; justify-content: space-between; height: 50px; padding: 0 30px 8px 44px; color: var(--ink); font-size: 16px; font-weight: 600; pointer-events: none; transition: color 0.3s; }
+.status svg { display: block; }
+.status .r { display: flex; align-items: center; gap: 6px; }
+.frame[data-dark-top] .status { color: var(--white); }
+
+/* A frame shorter than the window would be cut: scale it down to fit, never scroll the page. */
+@media (min-width: 521px) { .frame { zoom: var(--fit-zoom, 1); } }
+
+@media (max-width: 520px) {
+  #root { display: block; }
+  .frame { width: 100%; height: 100%; border-radius: 0; box-shadow: none; }
+  .status { display: none; }
+}
+
 /* No one-word last lines in running text (review rule, 24 Oct). */
-.frame :is(p, .t-body, .t-callout, .t-foot, .sub, .k, .field-error span) { text-wrap: pretty; }
+.frame :is(p, .lede, .small) { text-wrap: pretty; }

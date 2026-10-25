@@ -104,3 +104,67 @@ body { font-family: var(--sans); }
 .hatch { background: repeating-linear-gradient(135deg, var(--rule-2) 0 3px, transparent 3px 6px); }
 
 .needle::before { content: ""; position: absolute; top: -1px; left: -4px; border: 5px solid transparent; border-top: 6px solid var(--forest); }
+
+/* ---------- line icons (the prototype's own set, drawn on a 24 px grid) ---------- */
+.ic { flex: none; width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.chev { width: 14px; height: 14px; color: var(--ink-3); }
+
+/* ---------- icon button (round, on paper) ---------- */
+.ibtn { position: relative; display: grid; place-items: center; width: var(--touch); height: var(--touch); padding: 0; border: var(--hair) solid var(--rule); border-radius: var(--r-pill); background: var(--sheet); color: var(--ink); cursor: pointer; }
+.ibtn .icon, .ibtn svg { width: 20px; height: 20px; }
+.ibtn .dot { position: absolute; top: 10px; right: 11px; width: 8px; height: 8px; border-radius: var(--r-pill); background: var(--forest); box-shadow: 0 0 0 2px var(--sheet); }
+
+/* ---------- a root page's heading (09, 14): date above, title, tab bar below ---------- */
+.roothead { display: flex; justify-content: space-between; align-items: flex-end; gap: var(--s-3); padding: calc(var(--top-safe) + 10px) var(--gutter) 0; }
+.roothead .mono { display: block; margin-bottom: 6px; }
+.lbl { display: flex; justify-content: space-between; align-items: baseline; gap: var(--s-3); padding: 26px 0 10px; border-bottom: var(--hair) solid var(--ink); }
+.lbl b { font-size: 16px; font-weight: 600; letter-spacing: -0.01em; }
+
+/* ---------- a photo at the top of a page, the page sliding up over it ---------- */
+.photo-top { position: relative; height: 300px; overflow: hidden; background: var(--photo-bg); }
+.photo-top .photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+.photo-top .back { position: absolute; left: 14px; top: calc(var(--top-safe) + 2px); z-index: 3; }
+.photo-top .shade { position: absolute; inset: auto 0 0 0; height: 90px; background: var(--photo-shade); }
+.photo-top .cap { position: absolute; left: var(--gutter); right: var(--gutter); bottom: 36px; z-index: 2; display: flex; justify-content: space-between; gap: 10px; color: var(--white); }
+.photo-top .cap .mono { color: var(--on-photo-ink); }
+.over { position: relative; z-index: 2; margin-top: -22px; padding-top: 22px; border-radius: var(--r-card) var(--r-card) 0 0; background: var(--paper); }
+
+/* ---------- sheet over a page, its scrim, its close button ---------- */
+.sheetx { position: absolute; left: 0; right: 0; bottom: 0; z-index: 48; max-height: 88%; overflow-y: auto; padding: 10px var(--gutter) 26px; border-radius: var(--r-sheet) var(--r-sheet) 0 0; background: var(--sheet); box-shadow: var(--shadow-sheetx); transform: translateY(105%); visibility: hidden; transition: transform 0.45s var(--ease), visibility 0s 0.45s; }
+.sheetx.on { transform: none; visibility: visible; transition: transform 0.45s var(--ease); }
+.scrim { position: absolute; inset: 0; z-index: 47; background: var(--scrim-sheet); opacity: 0; pointer-events: none; transition: opacity 0.35s; }
+.scrim.on { opacity: 1; pointer-events: auto; }
+.sheetx .grab07, .grab07 { display: block; width: 36px; height: 5px; margin: 0 auto 10px; border-radius: var(--r-pill); background: var(--rule); }
+.sheetx .sx-h { display: flex; justify-content: space-between; align-items: center; gap: var(--s-3); margin: 4px 0 14px; }
+.sheetx .sx-h h2 { margin: 0; }
+.xbtn { display: grid; place-items: center; flex: none; width: 40px; height: 40px; padding: 0; border: var(--hair) solid var(--rule); border-radius: var(--r-pill); background: none; color: var(--ink); cursor: pointer; }
+.xbtn .ic { width: 16px; height: 16px; }
+@media (max-width: 520px) { .sheetx { padding-bottom: max(18px, env(safe-area-inset-bottom, 0px)); } }
+
+/* ---------- a key and its value on one row ---------- */
+.kv { display: grid; grid-template-columns: 1fr auto; gap: 2px var(--s-3); align-items: baseline; padding: 11px 0; border-bottom: var(--hair) solid var(--rule); }
+.kv b { font-size: var(--fs-callout); font-weight: 600; }
+.kv .v { font-size: var(--fs-callout); font-weight: 600; font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
+.kv .s { grid-column: 1 / -1; font-size: var(--fs-small); line-height: var(--lh-small); color: var(--ink-2); }
+
+/* ---------- the second action: an outlined pill ---------- */
+.ghostbtn { display: flex; align-items: center; justify-content: center; gap: var(--s-2); width: 100%; height: 50px; padding: 0; border: 1.5px solid var(--ink); border-radius: 25px; background: none; color: var(--ink); font: inherit; font-size: 16px; font-weight: 600; cursor: pointer; }
+.ghostbtn:active { transform: scale(0.98); }
+
+/* ---------- one of a few options, picked like a radio ---------- */
+.opt { display: grid; grid-template-columns: 22px 1fr auto; gap: 4px var(--s-3); align-items: start; width: 100%; padding: 14px; border: 1.5px solid var(--rule); border-radius: var(--r-lens); background: var(--sheet); color: var(--ink); font: inherit; text-align: left; cursor: pointer; transition: border-color var(--t-quick), opacity var(--t-base); }
+.opt + .opt { margin-top: var(--s-2); }
+.opt .rad { display: grid; place-items: center; width: 20px; height: 20px; margin-top: 1px; border: 1.8px solid var(--ink-3); border-radius: var(--r-pill); }
+.opt[aria-pressed="true"] { border-color: var(--forest); }
+.opt[aria-pressed="true"] .rad { border-color: var(--forest); }
+.opt[aria-pressed="true"] .rad::after { content: ""; width: 10px; height: 10px; border-radius: var(--r-pill); background: var(--forest); }
+.opt b { font-size: 15.5px; line-height: 20px; font-weight: 600; }
+.opt .pr { font-size: 16px; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.opt .s { grid-column: 2 / -1; font-size: var(--fs-small); line-height: var(--lh-small); color: var(--ink-2); }
+
+/* ---------- the tab bar (01, 09, 14) ---------- */
+.tabbar { position: absolute; left: 0; right: 0; bottom: 0; z-index: 20; display: grid; grid-template-columns: repeat(4, 1fr); padding: 0 var(--s-2) var(--bottom-tab); border-top: var(--hair) solid var(--rule); background: var(--tabbar-bg); -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px); }
+.tabbar button { position: relative; display: flex; flex-direction: column; align-items: center; gap: 3px; min-height: 52px; padding: 9px 0 0; border: 0; background: none; color: var(--ink-3); font: inherit; font-size: var(--fs-mono); font-weight: 500; cursor: pointer; }
+.tabbar button .icon { width: 22px; height: 22px; }
+.tabbar button[aria-current] { color: var(--ink); }
+.tabbar button[aria-current]::before { content: ""; position: absolute; top: -1px; left: 50%; width: 22px; height: 2px; margin-left: -11px; background: var(--forest); }
