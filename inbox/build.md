@@ -36,6 +36,11 @@ The Creative Director's prototype is finished (v52, artifact version 1792912844-
 - `prototype/e2e/` — the end-to-end journeys (E1–E7) Haoyue had run on the prototype, with their scripts and results. Use them as the acceptance list for the app (see below).
 - Facts: product/MOCK-DATA.md and REQUIREMENTS.md on branch `product-requirements` (MOCK-DATA wins on any value).
 
+**PO-ANSWERS-v1.8 (product-requirements 8a89fbb, after v52 was drawn) applies on top of the prototype:**
+- 07 and 08: the S$50 is paid by PayNow; the S$150 deposit is **held on Visa ···4821**, not charged, released after the return check (a PayNow transfer cannot hold money). 07 shows the pay line and a deposit line saying it is held on Visa ···4821; 08 shows "Paid · S$50 · PayNow" and the deposit held on Visa ···4821. Keep the prototype's layout; only these facts change.
+- 17: home collection has a 17:00–19:00 slot every day Sat 25 – Fri 31 Oct, pooled runs Tue 28 and Fri 31 Oct; Tue 28 is Daniel's choice.
+- 09: dates with a time drop the weekday ("30 Oct · 20:00").
+
 Any page you built from an older prototype version must be brought up to v52 (03, 06, 12, 16, 17 changed a lot after 24 Oct).
 
 ## Task 1 · the whole app from v52
