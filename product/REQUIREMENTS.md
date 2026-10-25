@@ -1,6 +1,6 @@
 # OutRent product requirements (Iter2 prototype)
 
-Version 1.4 · 24 Oct 2026 · Product owner window. Consumed by the UX design window and the implementation window.
+Version 1.8 · 25 Oct 2026 · Product owner window. Consumed by the UX design window and the implementation window.
 
 ## 0. How to use this document
 
@@ -48,6 +48,10 @@ The design and implementation windows do not add features and do not change requ
 | 1.2 | 23 Oct 2026 | Answers DESIGN-GAPS-v1.1 (per-item responses: project doc product/PO-ANSWERS-v1.2.md). Changed stories: E2-3, E2-4, E3-3, E3-4, E6-1, E6-3, E8-7, E8-8, E9-3, E9-5. VS-5 now returns the rental, not the old bike. MOCK-DATA.md is also at 1.2. |
 | 1.3 | 23 Oct 2026 | Answers inbox tasks of 23 Oct 20:05 (product/PO-ANSWERS-v1.3.md). Changed story: E5-1. Daniel is a first-time renter; SEED-TRIPS removed from MOCK-DATA.md, also at 1.3. |
 | 1.4 | 24 Oct 2026 | Closes open questions 7–9 on Haoyue's decisions of 24 Oct (product/PO-ANSWERS-v1.4.md). §0 MoSCoW definition rewritten around the demo route; 12 stories move Must → Should: E0-3, E7-1, E7-3, E7-4, E8-1, E8-2, E8-3, E8-4, E8-5, E8-6, E8-7, E8-8 (now 41 Must, 25 Should, 1 Could). E8-8 notes the departure from the Iter1 hard scenario. E9-3 scopes its idle-item and new-message types. No value changed; MOCK-DATA.md stays at 1.3. |
+| 1.5 | 24 Oct 2026 | Answers the 06 Delivery & Return gaps (product/PO-ANSWERS-v1.5.md). Changed stories: E4-2 (collection place chosen separately; may differ from delivery), E5-5 (hand-over views rule), E5-6 (submitted state is timed). MOCK-DATA.md at 1.4: home address, hand-over spot, shop record time, hand-over views and report time added, set by PO (open questions 11–12); house date format "25 Oct · 7:40" applied throughout (tasks A, B, C of 24 Oct). |
+| 1.6 | 25 Oct 2026 | Answers the Creative Director's gaps 3, 4, 5, 6, 9, 14, 15 and the batch-5 value check (product/PO-ANSWERS-v1.6.md). No story text changed. MOCK-DATA.md at 1.5: demo-route clock, courier, mark time, item types and sizes, rack nearest home, intake record detail, §12 catalogue and pricing rules; coach's note shortened. Open questions 11, 13 updated. |
+| 1.7 | 25 Oct 2026 | Haoyue's answers of 25 Oct 02:39 (product/PO-ANSWERS-v1.7.md): open question 11 closed, all PO-set values accepted; open question 13 closed, Home keeps four categories. No story text changed. MOCK-DATA.md at 1.6: §12 seeds Paddleboards and Camping with one item each. |
+| 1.8 | 25 Oct 2026 | Answers the persona-review deposit question and FIXES 19–22 (product/PO-ANSWERS-v1.8.md). Changed stories: E4-9 (PayNow deposit fallback), E6-1 (setup also from an upcoming booking). MOCK-DATA.md at 1.7. |
 
 ## 3. Won't build
 
@@ -242,7 +246,7 @@ States: choosing, chosen.
 ### E4-2 The return is part of the decision · Must
 `B1` `Idea 1` `HE #5 #9` · Seed: SEED-BOOKING
 As a renter, Daniel wants to see how the bike goes back before he commits, so the booking covers the whole loop.
-1. Before anything is paid, the after-ride collection (place, Sat 13:30) is shown and chosen alongside delivery. `[D]`
+1. Before anything is paid, the after-ride collection (place, Sat 13:30) is shown and chosen alongside delivery; the collection place is its own choice and may differ from the delivery destination (MOCK-DATA §4). `[D]`
 2. The confirmation (E4-5) reflects the same collection. `[D]`
 States: within booking flow.
 
@@ -300,7 +304,7 @@ States: replacement results.
 Seed: VS-3
 As a payer, Daniel wants a failed payment to say what happened and what works, so failure is a step, not a wall.
 1. The declined state says what failed, that no charge was made, and in plain language what Daniel can do: retry or switch to PayNow. `[D]`
-2. Switching method and completing leads to the normal confirmation. `[B]`
+2. Switching method and completing leads to the normal confirmation; with PayNow and no card to hold it, the deposit is paid and later refunded, and the confirmation and every later page of the booking say so (MOCK-DATA §2 deposit rule, VS-3). `[B]`
 States: payment declined.
 
 ## E5 · Rental management and fulfilment
@@ -339,7 +343,7 @@ States: delayed tracking, delay notification.
 ### E5-5 Handover record · Must
 `HE #11 #12 #13 #16` · Seed: SEED-BOOKING
 As a renter liable for damage, Daniel wants the condition fixed in evidence at handover, so the deposit is judged on record, not memory.
-1. At handover, the supplier's dated photos and Daniel's own photos of the same unit sit side by side for comparison. `[D]`
+1. At handover, the supplier's dated photos and Daniel's own photos of the same unit sit side by side for comparison, both timed in the same form. The hand-over views are close-ups of one part each: every known mark of the unit plus the part most at risk for its category; the set is defined per listing by the supplier, and Daniel's photos take the same views (MOCK-DATA §4). `[D]`
 2. Daniel marks existing damage; marked items are part of the record with date and author. `[D+B]`
 3. The completed record is reachable later from the booking detail and can be reopened to view. `[B]`
 4. The record states its consequence: existing marks are not chargeable. `[D]`
@@ -349,7 +353,7 @@ States: recording, completed record, reopened view.
 Seed: SEED-BOOKING
 As a renter facing a wrong or damaged item, Daniel wants a way to object at the door, so acceptance is a choice.
 1. From the handover record, Daniel can report a problem; the report names the booking and the evidence just captured. `[D+B]`
-2. The report's submitted state is visible and reachable later. `[D]`
+2. The report's submitted state is visible, timed (MOCK-DATA §4) and reachable later. `[D]`
 States: report form, submitted.
 
 ### E5-7 Return, close, deposit back · Must
@@ -372,7 +376,7 @@ States: offer within closed summary.
 ### E6-1 Set up the weekly ride · Must
 `B1` `Idea 3` · Seed: FD-RECURRING
 As a weekly rider, Daniel wants a standing arrangement, so logistics stop being a weekly task.
-1. Setup shows what will recur: every Sat, delivery 7:40 Chestnut trailhead, collection 13:30, S$45 / ride (below the one-off S$50), first occurrence Sat 1 Nov. `[D]`
+1. Setup shows what will recur: every Sat, delivery 7:40 Chestnut trailhead, collection 13:30, S$45 / ride (below the one-off S$50), first occurrence Sat 1 Nov. Setup is reachable from the closed rental (E5-8) and from the upcoming booking in trips; the first occurrence is the Saturday after the booked ride either way (MOCK-DATA FD-RECURRING). `[D]`
 2. Setup states when money moves: nothing is charged at setup; each ride is charged S$45 at its skip deadline (Thu 20:00), and the S$150 deposit is held for each ride at that point and released after that ride's return check (MOCK-DATA FD-RECURRING). `[D]`
 3. Confirming creates the weekly ride; it appears in trips. `[B]`
 States: setup review, created.
@@ -570,3 +574,6 @@ Raised here, answered by the PO window, folded into the next version:
 8. Resolved 24 Oct 2026 (Haoyue): the MoSCoW floor is the demo route (§0). Now 41 Must, 25 Should, 1 Could. One judgement call in product/PO-ANSWERS-v1.4.md: E0-3 (storage entry on Home) moved to Should because its only destination, E8-1 on page 16, is off the route; say so if the Home storage card is to be protected, and E0-3 and E8-1 return to Must.
 9. Resolved 24 Oct 2026: the three values set by the PO are accepted by Haoyue as they stand (set by PO, accepted by Haoyue 24 Oct): weekly price S$45 / ride, Hub transfer S$10 home collection, S$5 rack drop. They are no longer open. Any change goes through the PO window and changes everywhere at once.
 10. The PO-ANSWERS files for v1.1 and v1.2 were first written as project docs; from 24 Oct copies sit in product/ next to v1.3. The repo copies are the reference.
+11. Resolved 25 Oct 2026 (Haoyue, "all ok"): every PO-set value of v1.5 and v1.6 is accepted as it stands. Set by PO, v1.5: Daniel's home address (Blk 325C Sengkang East Way #11-42, Singapore 543325); the hand-over spot at the Chestnut trailhead carpark ("By the park entrance sign"); the shop's handover record time (18 Oct · 16:20); the E5-6 report submitted time (25 Oct · 7:46). Added v1.6: the courier's name (Hafiz, no photo); the weekly 10% rule as a platform rule; the multi-day rule (10% off the day rate from 3 days); the two bike sizes in SEED-EQUIPMENT; Rack S near home and the pooled-run window 7:00–10:00; the intake record time (28 Oct · 19:45) and views. Any change goes through the PO window and changes everywhere at once.
+12. Not asked for, no value set: the 12 Oct photos (2 of the 5 on the Trek Marlin 7 listing) carry a date but no time. If they appear beside a timed record, raise by story ID (E3-1 or E5-5) and the PO sets a time.
+13. Resolved 25 Oct 2026 (Haoyue, option A): Home shows four categories, Bikes, Kayaks, Paddleboards, Camping. Paddleboards and Camping are each seeded with one item (MOCK-DATA §12) so the tiles lead to real data.
