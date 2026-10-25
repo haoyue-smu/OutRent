@@ -38,4 +38,10 @@ export const legsLine = (s: State) => {
   const { d, c } = s.book.place
   return d === c ? placeFull(d) : `Delivered to ${placeFull(d)}; collected from ${placeFull(c)}`
 }
+// The same, short enough for the weekly tag.
+export const legsShort = (s: State) => {
+  const { d, c } = s.book.place
+  const short = (p: Place) => (p === 0 ? 'Chestnut trailhead carpark' : 'Blk 325C')
+  return (d === c ? placeFull(d) : `Delivered to ${short(d)}; collected at ${short(c)}`).replace('#11-42', '#11‑42')   // a non-breaking hyphen keeps the unit number on one line
+}
 export const payWith = (s: State) => (s.book.pay === 'PayNow' ? 'PayNow' : 'Visa ···4821')

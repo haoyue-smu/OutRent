@@ -106,7 +106,7 @@ export default function Summary() {
             <p className="adl">This Trek Marlin 7, set to your fit, {at} every Saturday: delivered {d}, collected {c}.</p>
             <div className="adp"><b>S$45</b><span>a ride</span><s>S$50</s></div>
             <div className="weeks"><div><b>1 Nov</b><small>First</small></div><div><b>8 Nov</b></div><div><b>15 Nov</b></div><div><b>22 Nov</b></div></div>
-            <button className="cta" type="button" onClick={() => navigate(routeFor('13-weekly-ride'))}>{weekly ? 'Open the weekly ride' : 'See the weekly ride'}</button>
+            <button className="cta" type="button" onClick={() => navigate(routeFor('13-weekly-ride'), { state: { from: 'the rental summary' } })}>{weekly ? 'Open the weekly ride' : 'See the weekly ride'}</button>
             <p className="small adn">{weekly
               ? 'Next charge 30 Oct · 20:00: S$45. Skip 1 Nov free before then.'
               : 'Nothing is charged today. Each ride is charged the Thursday before, at 20:00. Skip any week before then.'}</p>
