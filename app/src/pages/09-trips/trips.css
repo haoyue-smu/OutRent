@@ -59,3 +59,8 @@
 .row9.wk .th.cream { display: flex; flex-direction: column; justify-content: center; gap: 1px; padding: 0 0 0 var(--s-2); border-left: 3px solid var(--forest); background: var(--sheet); }
 .row9.wk .th.cream span { font-family: var(--mono); font-size: 8.5px; line-height: 10px; letter-spacing: var(--track-label); color: var(--ink-3); }
 .none9 { margin: 0; padding: var(--s-3) 0 2px; font-size: 14px; line-height: 20px; color: var(--ink-2); }
+
+/* a storage booking: the date on a paper tile, like the weekly row's tile */
+.row9 .th.g-dt { display: flex; flex-direction: column; align-items: center; justify-content: center; background: var(--sheet); }
+.row9 .th.g-dt b { font-size: 19px; line-height: 20px; font-weight: 600; letter-spacing: -0.02em; }
+.row9 .th.g-dt span { font-family: var(--mono); font-size: 9px; letter-spacing: 0.08em; color: var(--ink-3); }

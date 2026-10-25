@@ -125,6 +125,7 @@ export default function Item() {
           ) : (
             <div>
               <div className="costrun"><span><Mono>Storage</Mono><br /><span className="small">Running since 28 Oct · OutRent Hub, Sungei Kadut</span></span><b>S$18 / month</b></div>
+              {st.way && <div className="kv"><b>Got there</b><span className="v">{st.way === 'home' ? 'S$10' : 'S$5'}</span><span className="s">{st.way === 'home' ? 'Door pickup · 28 Oct · 17:00–19:00' : 'Rack S drop-off · 28 Oct · shared courier run 7:00–10:00'}</span></div>}
               <article className="intake">
                 <header className="intake-h"><Mono>Intake record</Mono><Mono>28 Oct · 19:45 · OutRent Hub</Mono></header>
                 <div className="intake-ph">

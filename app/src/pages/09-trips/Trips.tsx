@@ -181,6 +181,26 @@ export default function Trips() {
             </>
           )}
 
+          {s.storage.booked && (
+            <>
+              <div className="lbl"><b>Storage</b><Mono>Giant Escape 3</Mono></div>
+              {!s.storage.hub && (
+                <button className="row9" type="button" onClick={() => go('17-hub-pickup')}>
+                  <span className="th g-dt" aria-hidden="true"><b>28</b><span>TUE</span></span>
+                  <span><b>To the OutRent Hub · Tue 28 Oct</b><span>{s.storage.way === 'home' ? 'Door pickup · 17:00–19:00 · S$10' : 'Rack S drop-off · before 7:00 · S$5'}</span></span>
+                  <Chev />
+                </button>
+              )}
+              {s.storage.hub && (
+                <button className="row9" type="button" onClick={() => go('15-equipment-detail')}>
+                  <span className="th g-dt" aria-hidden="true"><b>{s.storage.ret === 'next' ? '30' : s.storage.ret ? '31' : '28'}</b><span>{s.storage.ret === 'next' ? 'THU' : s.storage.ret ? 'FRI' : 'OCT'}</span></span>
+                  <span><b>{s.storage.ret ? 'Coming home' : 'At the OutRent Hub'}</b><span>{s.storage.ret === 'next' ? '30 Oct · 17:00–19:00 · S$8 · to Blk 325C' : s.storage.ret ? 'Fri 31 Oct, morning · shared run · free' : 'Since 28 Oct · S$18 / month'}</span></span>
+                  <Chev />
+                </button>
+              )}
+            </>
+          )}
+
           {closed && (
             <>
               <div className="lbl"><b>Past</b><Mono>1 rental</Mono></div>
