@@ -1,39 +1,74 @@
-/* 02 Coach's Kit. Proposed component from the board (p-hero), then the page layout. Tokens only. */
+/* 02 Coach's post · the fitter's line (v52). Her post on a white card under the app's forest "signed up" tab;
+   OutRent's drawer over it. Layout here; shared pieces are in design/components.css. */
 
-/* p-hero · one display number with its caption, the focal point of a screen */
-.p-hero { display: flex; flex-direction: column; gap: 2px; }
-.p-hero .k { font-size: var(--fs-foot); line-height: var(--lh-foot); color: var(--muted); }
-.p-hero .sub { font-size: var(--fs-callout); line-height: var(--lh-callout); color: var(--muted); }
+.d-screen { background: var(--paper); color: var(--ink); font-family: var(--sans); }
+.s2-screen { padding-bottom: 24px; }
 
-/* ---------- Coach's Kit ---------- */
-.kit-bar { position: sticky; top: 0; z-index: 5; background: var(--white); }
-/* 152 px at the end lets "Already yours" scroll up under the bar (the scrolled frame). */
-.kit-page { padding: var(--s-2) var(--gutter) 152px; display: flex; flex-direction: column; gap: var(--s-6); }
-.kit-head { display: flex; flex-direction: column; gap: var(--s-4); }
-.kit-coach { display: flex; align-items: center; gap: var(--s-3); }
-.kit-coach .photo { width: 56px; height: 56px; border-radius: var(--r-pill); flex: none; object-fit: cover; display: block; }
-.kit-stack { display: flex; flex-direction: column; }
-.kit-stack.is-gap { gap: 2px; }
-.kit-title { display: flex; flex-direction: column; gap: var(--s-1); }
-.kit-title .t-callout { color: var(--muted); }
-.kit-strong { font-weight: 600; }
+/* The app's note above the coach's post: a tab the post card tucks under */
+.signed2 { position: relative; z-index: 0; display: grid; grid-template-columns: 28px 1fr; gap: 10px; align-items: center; margin: 4px var(--s-3) -18px; padding: 10px 14px 28px; border-radius: var(--r-sheet-s) var(--r-sheet-s) 0 0; background: var(--forest); color: var(--white); }
+.signed2 .seal { display: grid; place-items: center; width: 28px; height: 28px; border-radius: var(--r-pill); background: var(--white); color: var(--forest); }
+.signed2 .seal svg { width: 14px; height: 14px; }
+.signed2 .sx { display: flex; flex-direction: column; gap: 1px; }
+.signed2 b { font-size: 14.5px; line-height: 19px; font-weight: 600; }
+.signed2 .sx span { font-size: 12.5px; line-height: 16px; color: var(--on-forest-sub); }
 
-.kit-rent { display: flex; flex-direction: column; gap: var(--s-4); }
-/* The bike photo is square; 200 px tall with the crop low keeps both wheels and the bars in view. */
-.kit-rent .kit-bike { width: 100%; height: 200px; border-radius: var(--r-card); object-fit: cover; object-position: 50% 77%; display: block; }
-/* The fit link sits under the size, full width, so it is never squeezed beside the hero. */
-.kit-size { display: flex; flex-direction: column; align-items: flex-start; gap: var(--s-1); }
-.kit-fit { display: flex; align-items: center; gap: var(--s-1); min-height: var(--touch); color: var(--sage-dark); text-decoration: none; }
-.kit-actions { display: flex; flex-direction: column; gap: var(--s-1); }
-.kit-actions .btn.is-text { align-self: center; padding: 0; }
+/* The coach's post */
+.cpost { position: relative; z-index: 1; margin: 4px var(--s-3) 0; border-radius: var(--r-card); overflow: hidden; background: var(--sheet); box-shadow: var(--shadow-card); }
+.author { display: flex; align-items: center; gap: var(--s-3); padding: 14px 14px var(--s-3); }
+.author .av { position: relative; flex: none; width: 40px; height: 40px; border-radius: var(--r-pill); overflow: hidden; }
+.author .av-img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 28%; }
+.author b { display: block; font-size: 16px; font-weight: 600; }
+.cpost-ph { position: relative; aspect-ratio: 4 / 3; overflow: hidden; }
+.cpost-ph .post-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 70%; }
+.cpost-body { display: flex; flex-direction: column; gap: 10px; padding: var(--s-4) var(--s-4) 18px; }
+.cpost-body .t-h1 { font-size: 26px; line-height: 30px; }
+.event { display: flex; flex-wrap: wrap; gap: var(--s-1) var(--s-4); font-size: 13.5px; color: var(--ink-2); }
+.event span { display: inline-flex; align-items: center; gap: 6px; }
+.event .icon { width: 15px; height: 15px; color: var(--ink); }
+.cap { margin: var(--s-1) 0 0; font-size: 16px; line-height: 23px; text-wrap: pretty; }
 
-.kit-section { display: flex; flex-direction: column; gap: var(--s-3); scroll-margin-top: 122px; }
-.kit-list { padding: 0 var(--s-4); }
-.kit-list.is-owned { padding: var(--s-1) var(--s-4) var(--s-3); }
-.kit-item { display: flex; gap: var(--s-3); align-items: flex-start; padding: var(--s-3) 0; }
-.kit-item .is-owned { color: var(--sage); }
-.kit-item .is-skip { color: var(--muted); }
-.kit-item .is-struck { color: var(--muted); text-decoration: line-through; }
-.kit-checked { display: flex; gap: 6px; align-items: center; padding: var(--s-1) 0 2px; }
+/* Her list */
+.kit { display: flex; flex-direction: column; margin: 2px 0 0; padding: 0; list-style: none; }
+.kit > li { border-top: var(--hair) solid var(--rule-2); }
+.kit > li:first-child { border-top: 0; }
+.kit-it { display: grid; grid-template-columns: 60px 1fr; gap: var(--s-3); align-items: center; padding: var(--s-2) 0; }
+button.kit-it { width: 100%; border: 0; border-radius: 12px; background: none; color: var(--ink); font: inherit; text-align: left; cursor: pointer; transition: background-color 0.3s; }
+.need-bike.ping { background: var(--mint-2); }
+.kit-it .th { position: relative; width: 60px; height: 60px; border-radius: 12px; overflow: hidden; background: var(--paper); }
+.kit-it .th .photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.kit-it .th .bike-img { object-position: 38% 55%; }
+.kit-it .tx { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.kit-it .tx b { font-size: 15.5px; line-height: 20px; font-weight: 600; }
+.kit-it .tx span { font-size: var(--fs-small); line-height: 18px; color: var(--ink-2); text-wrap: pretty; }
+.kit-it.is-skip .th { opacity: 0.55; }
+.kit-it.is-skip .tx b { color: var(--ink-2); }
+.kit-skip { margin-top: 6px; padding-top: var(--s-3); border-top: var(--hair) solid var(--rule); }
 
-.kit-quote { display: flex; flex-direction: column; gap: var(--s-2); }
+/* OutRent's drawer: pops up on a spring, tucks away when the post is touched */
+.vsheet { position: absolute; left: 0; right: 0; bottom: 0; z-index: 25; display: flex; flex-direction: column; gap: 10px; padding: 6px 18px var(--s-6); border-radius: 26px 26px 0 0; background: var(--sheet); box-shadow: var(--shadow-vsheet);
+  transform: translateY(110%); transition: transform 0.55s cubic-bezier(0.2, 1.25, 0.32, 1); }
+.vsheet.is-up { transform: translateY(0); }
+.vsheet.is-down { transform: translateY(110%); transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 0.38s; }
+.vsheet .grab { display: grid; place-items: center; align-self: center; width: 60px; height: 22px; padding: 0; border: 0; background: none; cursor: pointer; }
+.vsheet .grab i { width: 36px; height: 5px; border-radius: var(--r-pill); background: var(--rule); }
+.vsheet .sh-head { display: flex; justify-content: space-between; align-items: center; padding: 0; border: 0; background: none; color: var(--ink); font: inherit; cursor: pointer; }
+.vsheet .sh-logo svg { display: block; width: auto; height: 16px; }
+.vsheet .sh-head .mono { color: var(--forest); }
+.vsheet .sh-more { display: flex; flex-direction: column; gap: 10px; padding: var(--s-1) 0; }
+.orow { display: grid; grid-template-columns: 44px 1fr; gap: var(--s-3); align-items: center; }
+.orow .th { position: relative; display: grid; place-items: center; width: 44px; height: 44px; border-radius: var(--r-thumb); overflow: hidden; background: var(--sheet); }
+.orow .th .photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.orow .th .bike-img { object-position: 38% 55%; }
+/* what Daniel owns shows its own photo, greyed, with a tick */
+.orow .th.own .photo { filter: grayscale(1) brightness(1.05) contrast(0.85); opacity: 0.7; }
+.orow .th.own .tick { position: absolute; inset: 0; display: grid; place-items: center; }
+.orow .th.own .tick i { display: grid; place-items: center; width: 22px; height: 22px; border-radius: var(--r-pill); background: var(--forest); color: var(--white); box-shadow: 0 0 0 2px var(--white); }
+.orow .th.own .tick svg { width: 12px; height: 12px; }
+.orow .tx { display: flex; flex-direction: column; gap: 1px; }
+.orow .tx b { font-size: var(--fs-callout); line-height: 20px; font-weight: 600; }
+.orow .tx span { font-size: var(--fs-small); line-height: 18px; color: var(--ink-2); text-wrap: pretty; }
+.vsheet .cta { width: 100%; }
+
+@media (prefers-reduced-motion: reduce) {
+  .vsheet, .vsheet.is-down { transition: none; }
+}

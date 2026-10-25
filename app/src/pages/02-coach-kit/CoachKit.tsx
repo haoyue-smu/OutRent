@@ -1,153 +1,155 @@
-import { useEffect, useRef, useState } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
-import { GoTo, useBack } from '../../shell/Link'
-import { routeFor } from '../../pages'
+import { useEffect, useRef, useState, type MouseEvent, type PointerEvent } from 'react'
+import { useNavigate } from 'react-router-dom'
+import lockup from '@design/brand/outrent-lockup.svg?raw'
+import { useBack } from '../../shell/Link'
 import { Icon } from '../../shell/Icon'
 import { Photo } from '../../shell/Photo'
-import coachAisyah from '@photos/01-home/assets/01-home-coach-aisyah.webp'
-import bike from '@photos/01-home/assets/01-home-bike.webp'
+import { BackButton, Mono, still } from '../../shell/direction'
+import { deliverAt, fitNow, placeShort, setClock, useStore } from '../../shell/store'
+import { routeFor } from '../../pages'
+import aisyah from '@photos/01-home/assets/01-direction-aisyah-avatar.webp'
+import post from '@photos/01-home/assets/01-direction-02-coach-post.webp'
+import bike from '@photos/01-home/assets/01-direction-cat-bikes.webp'
+import helmet from '@photos/02-coach-kit/assets/02-direction-kit-helmet.webp'
+import shoes from '@photos/02-coach-kit/assets/02-direction-kit-shoes.webp'
+import bottles from '@photos/02-coach-kit/assets/02-direction-kit-bottles.webp'
+import sunscreen from '@photos/02-coach-kit/assets/02-direction-kit-sunscreen.webp'
+import pedals from '@photos/02-coach-kit/assets/02-direction-kit-clipless-pedals.webp'
 import './kit.css'
 
-// Which frame of the board to show. Change this one value, or open the page with ?state=<frame>.
-//   'with-fit'           E2-5 · kit with fit profile
-//   'with-fit-scrolled'  E2-5 · kit with fit profile · scrolled (opens scrolled to "Already yours")
-//   'without-fit'        E2-5 · kit without fit profile
-type Frame = 'with-fit' | 'with-fit-scrolled' | 'without-fit'
-const FRAMES: Frame[] = ['with-fit', 'with-fit-scrolled', 'without-fit']
-const FRAME = 'with-fit' as Frame
+// 02 Coach's post · the fitter's line (v52). Her photo, her note, her list. The app adds two things: a forest tab
+// above the post (Daniel has signed up for the ride) and one drawer, the same on entry and after the bike tap:
+// the bike he needs, and his own helmet greyed with a tick (it is already in My gear).
+// Once the bike is booked the drawer says so and leads to Bookings instead of the search.
 
-// ---------- mock data (MOCK-DATA v1.2: Daniel, 176 cm, frame M) ----------
-const SEED_FIT = { height: 176, frame: 'M', saddle: 72 }
-const RIDE = { date: '25\u00a0Oct', when: '25\u00a0Oct · 8:00–12:30 · Chestnut Nature Park' }
-const ALSO = [
-  { icon: 'sneaker', name: 'Regular sports shoes', note: 'Wear', skip: false },
-  { icon: 'drop', name: '2 water bottles · sunscreen', note: 'Bring', skip: false },
-  { icon: 'x', name: 'Clipless pedals', note: 'Not needed on a first ride', skip: true },
+type Item = { src: string; alt: string; name: string; note?: string }
+const KIT: Item[] = [
+  { src: helmet, alt: 'A black mountain-bike helmet', name: 'Bike helmet', note: 'Any bike helmet. A road helmet is fine.' },
+  { src: shoes, alt: 'Grey running shoes', name: 'Sports shoes', note: 'Your regular running shoes.' },
+  { src: bottles, alt: 'Two water bottles', name: '2 water bottles' },
+  { src: sunscreen, alt: 'A tube of sunscreen', name: 'Sunscreen' },
 ]
+type Sheet = 'hidden' | 'up' | 'down'
 
-// A new ?state starts the page fresh, so each frame opens as drawn.
-export default function CoachKitPage() {
-  const state = useSearchParams()[0].get('state') as Frame | null
-  const frame = state && FRAMES.includes(state) ? state : FRAME
-  return <CoachKit key={frame} frame={frame} />
-}
-
-function CoachKit({ frame }: { frame: Frame }) {
-  const FIT = frame === 'without-fit' ? null : SEED_FIT
+export default function CoachKit() {
   const navigate = useNavigate()
   const back = useBack(() => navigate(routeFor('01-home')))
+  const s = useStore((x) => x)
+  const [sheet, setSheet] = useState<Sheet>('hidden')
+  const [ping, setPing] = useState(false)
   const screen = useRef<HTMLElement>(null)
-  const heading = useRef<HTMLHeadingElement>(null)
-  const owned = useRef<HTMLElement>(null)
-  const [scrolled, setScrolled] = useState(false)
+  const need = useRef<HTMLButtonElement>(null)
+  const y0 = useRef<number | null>(null)
+  const f = fitNow(s)
 
-  // The bar names the page once the big title has scrolled under it.
-  const onScroll = () => {
-    const el = screen.current, h = heading.current
-    if (el && h) setScrolled(el.scrollTop > h.offsetTop + h.offsetHeight - 98)
-  }
+  useEffect(() => { setClock(s.paid ? '19:00' : '9:02') }, [s.paid])
+  // The drawer pops up a moment after the post appears, like a notification.
   useEffect(() => {
-    // After the font loads, so the text above has its final height.
-    if (frame === 'with-fit-scrolled') document.fonts.ready.then(() => owned.current?.scrollIntoView({ block: 'start' }))
-    onScroll()
-  }, [frame])
+    const t = window.setTimeout(() => setSheet('up'), still() ? 0 : 650)
+    return () => clearTimeout(t)
+  }, [])
+
+  // Tapping the hardtail centres it in the page's own list (never scrollIntoView) and brings the drawer back.
+  const showNeed = () => {
+    const sc = screen.current, el = need.current
+    if (sc && el) {
+      const r = el.getBoundingClientRect(), b = sc.getBoundingClientRect()
+      sc.scrollTo({ top: sc.scrollTop + (r.top + r.height / 2) - (b.top + b.height / 2), behavior: still() ? 'auto' : 'smooth' })
+    }
+    setSheet('up')
+    setPing(true)
+    window.setTimeout(() => setPing(false), 900)
+  }
+  // Touching the post tucks the drawer away; its head brings it back.
+  const onPost = (e: MouseEvent) => {
+    if ((e.target as HTMLElement).closest('.need-bike')) return
+    if (sheet === 'up') setSheet('down')
+  }
+  const onDown = (e: PointerEvent) => { if (!(e.target as HTMLElement).closest('.cta')) y0.current = e.clientY }
+  const onUp = (e: PointerEvent) => {
+    if (y0.current == null) return
+    const d = e.clientY - y0.current
+    y0.current = null
+    if (d < -20) setSheet('up')
+    else if (d > 20) setSheet('down')
+  }
+  const rent = () => {
+    if (s.paid) { navigate(routeFor('09-trips')); return }
+    navigate(routeFor(s.fit.hasProfile ? '04-search-results' : '03-fit-profile'), { state: { from: 'post' } })
+  }
+  const cta = s.paid ? 'See it in Bookings' : s.fit.hasProfile ? 'See mountain bikes for Sat 25 Oct' : 'Enter your fit to find a bike'
 
   return (
-    <main className="screen is-white" ref={screen} onScroll={onScroll}>
-      <div className="topbar kit-bar">
-        <button type="button" className="icon-btn" aria-label="Back" onClick={back}><Icon name="arrow-left" /></button>
-        <span className="name">{scrolled ? "Coach’s kit" : ''}</span>
-        <span />
-      </div>
-      <div className="kit-page">
-        <div className="kit-head">
-          <div className="kit-coach">
-            <Photo src={coachAisyah} alt="Coach Aisyah, portrait" width={56} height={56} />
-            <div className="kit-stack">
-              <span className="t-callout kit-strong">Coach Aisyah</span>
-              <span className="t-foot">Kit list for her Saturday ride</span>
+    <>
+      <main className="screen d-screen s2-screen" ref={screen}>
+        <div className="bar-top">
+          <BackButton label="Back to Home" onClick={back} />
+          <Mono className="mid">Post</Mono>
+          <span />
+        </div>
+        <div className="signed2" role="note">
+          <span className="seal" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" /></svg></span>
+          <span className="sx"><b>You have signed up for this ride</b><span>Sat 25 Oct · 8:00 · Chestnut Nature Park</span></span>
+        </div>
+        <article className="cpost" onClick={onPost}>
+          <header className="author">
+            <span className="av"><Photo src={aisyah} alt="Coach Aisyah" width={40} height={40} className="av-img" /></span>
+            <div><b>Coach Aisyah</b><span className="small">Mountain bike coach</span></div>
+          </header>
+          <div className="cpost-ph"><Photo src={post} alt="Hardtails and helmets lined up at the Chestnut trailhead on a Saturday morning" width={369} height={277} first className="post-img" /></div>
+          <div className="cpost-body">
+            <h1 className="t-h1">First ride at Chestnut</h1>
+            <div className="event">
+              <span><Icon name="calendar-blank" />Sat 25 Oct · 8:00–12:30</span>
+              <span><Icon name="map-pin" />Chestnut Nature Park</span>
+            </div>
+            <p className="cap">First time on the trails? Join my beginner ride this Saturday. Here’s what to bring.</p>
+            <ul className="kit" aria-label="What to bring">
+              <li>
+                <button type="button" ref={need} className={`kit-it need-bike${ping ? ' ping' : ''}`} onClick={showNeed} aria-label="Hardtail mountain bike: you need one. Show how to rent it">
+                  <span className="th"><Photo src={bike} alt="" width={60} height={60} className="bike-img" /></span>
+                  <span className="tx"><b>Hardtail mountain bike</b><span>A mountain bike with suspension at the front only. Get one in your size.</span></span>
+                </button>
+              </li>
+              {KIT.map((k) => (
+                <li key={k.name} className="kit-it">
+                  <span className="th"><Photo src={k.src} alt={k.alt} width={60} height={60} /></span>
+                  <span className="tx"><b>{k.name}</b>{k.note && <span>{k.note}</span>}</span>
+                </li>
+              ))}
+            </ul>
+            <div className="kit-skip">
+              <Mono>Not needed</Mono>
+              <ul className="kit">
+                <li className="kit-it is-skip">
+                  <span className="th"><Photo src={pedals} alt="A clipless pedal beside a cycling shoe with a cleat" width={60} height={60} /></span>
+                  <span className="tx"><b>Clipless pedals</b><span>Pedals that lock onto special shoes. Leave them for later rides.</span></span>
+                </li>
+              </ul>
             </div>
           </div>
-          <div className="kit-title">
-            <h1 className="t-large" ref={heading}>First ride at Chestnut</h1>
-            <span className="t-callout">{RIDE.when}</span>
+        </article>
+      </main>
+
+      <section className={`vsheet is-${sheet}`} aria-label="OutRent, for this ride" onPointerDown={onDown} onPointerUp={onUp}>
+        <button type="button" className="grab" aria-label={sheet === 'down' ? 'Show OutRent’s part' : 'Tuck it away'} onClick={() => setSheet((x) => (x === 'down' ? 'up' : 'down'))}><i /></button>
+        <button type="button" className="sh-head" onClick={() => setSheet('up')}>
+          <span className="sh-logo" role="img" aria-label="OutRent" dangerouslySetInnerHTML={{ __html: lockup }} /><Mono>For this ride</Mono>
+        </button>
+        <div className="sh-more">
+          <div className="orow">
+            <span className="th"><Photo src={bike} alt="" width={44} height={44} className="bike-img" /></span>
+            {s.paid
+              ? <span className="tx"><b>Trek Marlin 7 · size {f.frame}</b><span>Booked · OR-10482 · delivered 25 Oct · {deliverAt(s)} at {placeShort(s.book.place.d)}.</span></span>
+              : <span className="tx"><b>Mountain bike</b><span>Rent one, set to your fit and delivered to Chestnut.</span></span>}
+          </div>
+          <div className="orow">
+            <span className="th own"><Photo src={helmet} alt="" width={44} height={44} /><span className="tick"><i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" /></svg></i></span></span>
+            <span className="tx"><b>Bike helmet</b><span>Your road helmet is in My gear.</span></span>
           </div>
         </div>
-
-        <div className="card">
-          <div className="kit-rent">
-            <Photo src={bike} alt="A mountain bike with front suspension, side view" className="kit-bike" width={321} height={200} />
-            <div className="kit-stack is-gap">
-              <span className="t-label">Rent</span>
-              <span className="t-title">Mountain bike, front suspension</span>
-            </div>
-            {FIT ? (
-              <>
-                <div className="kit-size">
-                  <div className="p-hero">
-                    <span className="k">Your frame size</span>
-                    <span className="t-display">{FIT.frame}</span>
-                    <span className="sub">Saddle height {FIT.saddle}&nbsp;cm</span>
-                  </div>
-                  <GoTo page="03-fit-profile" state="fit-filled" className="t-foot kit-fit"><Icon name="ruler" small />From your fit · {FIT.height}&nbsp;cm<Icon name="caret-right" small /></GoTo>
-                </div>
-                <GoTo page="04-search-results" className="btn is-block">Find bikes for {RIDE.date}</GoTo>
-              </>
-            ) : (
-              <>
-                <div className="kit-stack is-gap">
-                  <span className="t-callout">Sized to the rider</span>
-                  <span className="t-foot">Your frame size appears once your height is in</span>
-                </div>
-                <div className="kit-actions">
-                  <GoTo page="03-fit-profile" state="fit-empty" className="btn is-block">Add your height</GoTo>
-                  <GoTo page="04-search-results" className="btn is-text">Find bikes without a size</GoTo>
-                </div>
-              </>
-            )}
-          </div>
-        </div>
-
-        <section className="kit-section" ref={owned}>
-          <h2 className="t-title">Already yours</h2>
-          <div className="card kit-list is-owned">
-            <div className="kit-item">
-              <Icon name="check-circle" className="is-owned" />
-              <div className="kit-stack is-gap">
-                <span className="t-callout kit-strong">Road helmet</span>
-                <span className="t-foot">In My gear · last used 22&nbsp;Oct</span>
-              </div>
-            </div>
-            <div className="t-foot kit-checked"><Icon name="backpack" small />Checked against My gear</div>
-          </div>
-        </section>
-
-        <section className="kit-section">
-          <h2 className="t-title">Also for Saturday</h2>
-          <div className="card kit-list">
-            {ALSO.map((a, i) => (
-              <div key={a.name}>
-                {i > 0 && <hr className="divider" />}
-                <div className="kit-item">
-                  <Icon name={a.icon} className={a.skip ? 'is-skip' : undefined} />
-                  <div className="kit-stack is-gap">
-                    <span className={`t-callout kit-strong${a.skip ? ' is-struck' : ''}`}>{a.name}</span>
-                    <span className="t-foot">{a.note}</span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <div className="card is-filled">
-          <div className="kit-quote">
-            <span className="t-label">From the coach</span>
-            <p className="t-body">“Chestnut’s easy loop is fine on any hardtail that fits you. Spend money on fit, not on the bike.”</p>
-            <span className="t-foot">Coach Aisyah</span>
-          </div>
-        </div>
-      </div>
-    </main>
+        <button type="button" className="cta" onClick={rent}>{cta}</button>
+      </section>
+    </>
   )
 }

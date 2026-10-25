@@ -1,0 +1,45 @@
+/* 14 My gear · the fitter's line (v52). Layout; shared pieces are in design/components.css. */
+
+.s14-screen { padding-bottom: 110px; }
+
+/* The idle bike leads: one photo card, flagged with how long it has stood unused */
+.idlecard { display: flex; flex-direction: column; width: 100%; margin-top: 18px; padding: 0; border: 0; border-radius: var(--r-card); overflow: hidden; background: var(--sheet); box-shadow: var(--shadow-photo-card); color: var(--ink); font: inherit; text-align: left; cursor: pointer; }
+.idlecard .ph { position: relative; display: block; aspect-ratio: 16 / 10; overflow: hidden; background: var(--photo-ink); }
+.idlecard .ic-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 55%; display: block; }
+.idlecard .flag.mono { position: absolute; left: var(--s-3); top: var(--s-3); padding: 6px 10px; border-radius: var(--r-chip); background: var(--forest); color: var(--white); font-size: 10.5px; }
+.idlecard .bd { display: flex; flex-direction: column; gap: var(--s-1); padding: 14px var(--s-4) var(--s-4); }
+.idlecard .row { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+.idlecard .row b { font-size: var(--fs-title); line-height: var(--lh-title); font-weight: 600; letter-spacing: var(--track-title); }
+.idlecard .ago { font-family: var(--mono); font-size: var(--fs-mono); color: var(--forest); font-weight: 600; white-space: nowrap; }
+.idlecard .go { display: flex; align-items: center; gap: 6px; margin-top: var(--s-2); font-size: var(--fs-callout); font-weight: 600; color: var(--forest); }
+.idlecard .go .chev { color: var(--forest); }
+.idlecard:active { transform: scale(0.99); transition: transform var(--t-press) var(--ease); }
+
+/* Everything else: a two-column photo grid */
+.ggrid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-3); margin-top: 14px; }
+.gcard { display: flex; flex-direction: column; gap: 3px; min-width: 0; padding: 0; border: 0; background: none; color: var(--ink); font: inherit; text-align: left; cursor: pointer; }
+.gcard .ph { position: relative; display: block; aspect-ratio: 1; margin-bottom: 6px; border-radius: 16px; overflow: hidden; background: var(--sheet); }
+.gcard .ph .photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.gcard b { font-size: var(--fs-callout); line-height: 19px; font-weight: 600; }
+.gcard .w { font-size: 12.5px; line-height: 16px; color: var(--ink-2); }
+.gcard .ago { margin-top: 2px; font-family: var(--mono); font-size: 10.5px; color: var(--ink-3); }
+.gcard .ago.old { color: var(--forest); font-weight: 600; }
+.gcard.add .ph { display: grid; place-items: center; border: 1.5px dashed var(--ink-3); background: transparent; color: var(--ink-2); }
+.gcard.add .ph .ic { width: 28px; height: 28px; }
+.gcard .ph.nophoto { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; color: var(--ink-3); }
+.gcard:active .ph { transform: scale(0.97); transition: transform var(--t-press) var(--ease); }
+
+/* Add an item */
+.fld { display: flex; flex-direction: column; gap: 6px; padding: 10px 0; }
+.fld .in { position: relative; display: flex; align-items: center; height: 48px; padding: 0 14px; border: 1.5px solid var(--rule); border-radius: var(--r-lens); background: var(--paper); font-size: 16px; transition: border-color var(--t-quick); }
+.fld .in:focus-within, .fld .in.typing { border-color: var(--forest); }
+.fld .in input { width: 100%; height: 100%; padding: 0; border: 0; outline: 0; background: none; color: var(--ink); font: inherit; font-size: 16px; caret-color: var(--forest); }
+.fld .in.drawn input { color: transparent; }
+.fld .in .mirror { position: absolute; left: 14px; top: 0; bottom: 0; display: flex; align-items: center; pointer-events: none; white-space: pre; }
+.fld .in .caret { display: inline-block; width: 1.5px; height: 20px; margin-left: 1px; background: var(--forest); animation: blink14 1s steps(1) infinite; }
+@keyframes blink14 { 50% { opacity: 0; } }
+.chips { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+.chips button { height: 38px; padding: 0 14px; border: 1.5px solid var(--rule); border-radius: var(--r-pill); background: none; color: var(--ink-2); font: inherit; font-size: 14px; font-weight: 500; cursor: pointer; transition: border-color var(--t-quick), background-color var(--t-quick), color var(--t-quick); }
+.chips button[aria-pressed="true"] { border-color: var(--forest); background: var(--mint); color: var(--forest); font-weight: 600; }
+.s14-note { margin: 6px 0 14px; }
+.s14-save { width: 100%; }

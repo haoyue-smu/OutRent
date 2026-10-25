@@ -1,0 +1,61 @@
+/* 17 Hub pickup · the fitter's line (v52). Layout; shared pieces are in design/components.css. */
+
+.s17-screen { padding-bottom: calc(76px + var(--bottom-float)); }   /* the dock and 12 px */
+.s17-lede { margin-top: 6px; }
+.paths { display: flex; flex-direction: column; gap: var(--s-2); margin-top: var(--s-4); }
+.paths .opt.is-off { opacity: 0.45; }
+
+/* A 24-hour dial with the two courier windows on it */
+.dial17 { position: relative; width: 280px; height: 280px; margin: 14px auto 0; }
+.dial17 svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.dial17 .d-ring { fill: none; stroke: var(--rule-2); stroke-width: 16; }
+.dial17 .d-tk { stroke: var(--ink-3); stroke-width: 1; }
+.dial17 .d-tk.maj { stroke: var(--ink); stroke-width: 1.5; }
+.dial17 .hl { font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.04em; fill: var(--ink-3); }
+.dial17 .wl { font-family: var(--mono); font-size: 9px; letter-spacing: 0.06em; font-weight: 500; fill: var(--ink-3); }
+.dial17 .w17 { fill: none; stroke: var(--dial-win); stroke-width: 16; stroke-linecap: butt; }
+.dial17 .by7 line { stroke: var(--ink); stroke-width: 2; }
+.dial17 .by7 .wl { fill: var(--ink); }
+.dial17[data-path="home"] .a-eve, .dial17[data-path="rack"] .a-run { stroke: var(--forest); }
+.dial17[data-path="home"] .l-eve, .dial17[data-path="rack"] .l-run { fill: var(--forest); }
+.dial17[data-path="home"] .a-run, .dial17[data-path="rack"] .a-eve { opacity: 0.45; }
+.dial17 .tok17 circle { fill: var(--sheet); stroke: var(--forest); stroke-width: 2; }
+.dial17 .tok17 g { fill: none; stroke: var(--forest); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.dc { position: absolute; left: 50%; top: 50%; display: flex; flex-direction: column; align-items: center; gap: 3px; width: 150px; text-align: center; transform: translate(-50%, -50%); }
+.dc b { font-size: 22px; line-height: 26px; font-weight: 600; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; text-wrap: balance; }
+.dc > span:last-child { font-size: var(--fs-label); line-height: var(--lh-label); color: var(--ink-2); text-wrap: balance; }
+.dial17.booked .dc .mono { color: var(--forest); }
+
+.cost17 { display: grid; grid-template-columns: 1fr auto; gap: 2px var(--s-3); align-items: baseline; margin-top: var(--s-4); padding-top: var(--s-3); border-top: 1.5px solid var(--ink); }
+.cost17 b { font-size: var(--fs-callout); font-weight: 600; }
+.cost17 .v { font-size: 22px; font-weight: 600; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.cost17 .s { grid-column: 1 / -1; font-size: var(--fs-small); color: var(--ink-2); }
+.back17 { margin-top: 22px; }
+.back17 .k { display: flex; justify-content: space-between; align-items: baseline; padding-bottom: 6px; border-bottom: var(--hair) solid var(--ink); }
+.back17 .k b { font-size: 16px; font-weight: 600; }
+
+/* Booked: the forest card */
+.booked17 { display: flex; flex-direction: column; gap: 6px; margin-top: var(--s-4); padding: var(--s-4); border-radius: var(--r-tile); background: var(--forest); color: var(--white); }
+.booked17 .mono { color: var(--on-forest-k); }
+.booked17 .bk-k { display: inline-flex; align-items: center; gap: 6px; }
+.booked17 .bk-k .ic { width: 14px; height: 14px; }
+.booked17 .bk-t { padding: 6px 18px 0; font-size: 24px; line-height: 29px; font-weight: 600; letter-spacing: -0.025em; }   /* v52 indents the time: 09's .bk-t padding reaches it */
+.bk-rows { margin: var(--s-2) 0 0; border-top: var(--hair) solid var(--on-forest-line); }
+.bk-rows div { display: grid; grid-template-columns: 70px 1fr; gap: 10px; padding: 9px 0; border-bottom: var(--hair) solid var(--on-forest-rule); font-size: 14px; line-height: 19px; }
+.bk-rows div:last-child { padding-bottom: 0; border-bottom: 0; }
+.bk-rows dt { padding-top: 2px; font-family: var(--mono); font-size: var(--fs-mono); letter-spacing: var(--track-label); text-transform: uppercase; color: var(--on-forest-dt); }
+.bk-rows dd { margin: 0; color: var(--white); }
+.s17-go { width: 100%; }
+
+/* Narrow phones (360 px): the window labels sit outside the 280 px dial, so the dial gives a little room. */
+@media (max-width: 380px) { .dial17 { transform: scale(0.92); } }
+
+/* the pickup day: door any day of the week ahead, Rack S on the two pooled runs */
+.days17 { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; margin-top: 14px; }
+.d17 { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; height: 52px; padding: 0; border: var(--hair) solid var(--rule); border-radius: 14px; background: var(--sheet); color: var(--ink); cursor: pointer; transition: background-color 0.2s, color 0.2s, border-color 0.2s, transform var(--t-press) var(--ease); }
+.d17 span { font-family: var(--mono); font-size: 9px; letter-spacing: 0.08em; color: var(--ink-3); }
+.d17 b { font-size: 17px; line-height: 20px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.d17:active { transform: scale(0.96); }
+.d17[aria-pressed="true"] { border-color: var(--forest); background: var(--forest); color: var(--white); }
+.d17[aria-pressed="true"] span { color: var(--on-forest-label); }
+.d17:disabled { opacity: 0.45; cursor: default; }

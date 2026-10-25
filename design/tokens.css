@@ -1,82 +1,232 @@
-/* OutRent design tokens · Trail Glass · v0.3
-   The only values pages may use. Source of truth: design/DESIGN.md.
-   Load once per page, before components.css:
-   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;600;700&display=swap"> */
+/* OutRent design tokens · the fitter's line · direction (24 Oct 2026)
+   The only values pages may use. Source: the Creative Director's prototype "OutRent · direction"
+   (final prototype v52, 25 Oct 2026). design/DESIGN.md still describes v0.3 and needs Haoyue's update.
+   Load once per page, before components.css and direction.css:
+   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap"> */
 
 :root {
-  /* Colour scheme (DESIGN.md §2) */
-  --sage: #3E6A5A;
-  --sage-dark: #2F5246;
-  --sage-tint: #E3ECE7;
-  --ink: #1E2622;
-  --muted: #5C6863;
-  --clay: #B5603F;
-  --clay-dark: #8E4A30;
-  --clay-tint: #F4E6DF;
-  --paper: #F4F1E8;
-  --mist: var(--paper); /* v0.2 name, kept one release as an alias */
-  --line: #E3DFD3;
+  /* Colour: paper and ink, one forest green for the primary action and good news only */
+  --paper: #F3F4F0;
+  --sheet: #FFFFFF;
   --white: #FFFFFF;
-  --error: #B0473B;
+  --ink: #121815;
+  --ink-2: #4B5550;
+  --ink-3: #666F6A;       /* small text grey */
+  --tick: #7F8883;        /* scale ticks only, never text */
+  --rule: #D9DDD7;
+  --rule-2: #E9ECE7;
+  --forest: #1C4A3A;
+  --forest-2: #2C6650;
+  --mint: #D7EBDD;
+  --glow: #9FD3B1;
+  --photo-ink: #0E1411;   /* behind photos while they load */
+  --photo-bg: #1A1F1C;    /* behind a photo at the top of a page */
+  --photo-shade: linear-gradient(transparent, rgba(14, 20, 17, 0.45));   /* under a caption on a photo */
+  --scrim-sheet: rgba(14, 20, 17, 0.32);   /* behind a sheet */
+  --deep: #1B221E;        /* behind the 07 bike photo */
+  --photo-dim: linear-gradient(rgba(14, 20, 17, 0.35), rgba(14, 20, 17, 0.15) 40%, rgba(14, 20, 17, 0.55));
+  --on-photo-ink: rgba(255, 255, 255, 0.85);
+  --on-photo-hint: rgba(255, 255, 255, 0.8);
+  --on-cta-bar: rgba(255, 255, 255, 0.7);
+  --sheet-below: linear-gradient(transparent 60%, var(--sheet) 60%);   /* a scroller whose lower part is a white sheet */
+  --fade-sheet: linear-gradient(to top, var(--sheet), transparent);
+  --bar-2: #6E7A74;       /* the second segment of a measured bar */
+  --desk: #E3E5E0;        /* around the phone frame, outside the app */
+  --todo-1: #E4E7E1;      /* image stand-in hatch */
+  --todo-2: #ECEEE9;
+  --error: #B0473B;       /* true errors only */
   --error-tint: #F6E4E1;
 
-  /* Explainer figure greys (explainer plate only) */
-  --fig-shade-1: #E6EAE7;
-  --fig-shade-2: #EDF0EE;
-  --fig-lo: #A3ACA7;
-  --fig-selected: #B9CFC3;
+  /* The bike figure (03): paper parts, ink lines, forest for the part being set */
+  --fig-s0: #E2E5E1;
+  --fig-s1: #EEF0ED;
+  --fig-s2: #F5F6F4;
+  --fig-s3: #F8F9F7;
+  --fig-mid: #5E6863;
+  --fig-lo: #A4ACA7;
+  --fig-faint: #D8DCD7;
+  --fig-shadow: #6D7771;
+  --fig-ghost: #9AA39E;
+  --fig-ring-edge: #0D2A20;   /* the O-ring's edge on the fork */
 
-  /* Materials built from the scheme */
-  --backdrop: rgba(30, 38, 34, 0.32);
-  --glass-bg: rgba(255, 255, 255, 0.64);
-  --glass-border: rgba(255, 255, 255, 0.7);
-  --glass-blur: blur(24px) saturate(160%);
-  --shadow-float: 0 8px 24px rgba(30, 38, 34, 0.12);
-  --scrim: linear-gradient(to bottom, rgba(30, 38, 34, 0.35), rgba(30, 38, 34, 0));
+  /* On the forest band (01) */
+  --on-forest-ink: rgba(255, 255, 255, 0.75);
+  --on-forest-label: rgba(255, 255, 255, 0.62);
+  --on-forest-fill: rgba(255, 255, 255, 0.1);
+  --on-forest-line: rgba(255, 255, 255, 0.22);
+  --on-forest-dot: #CFE5D6;
+  --on-forest-sub: rgba(255, 255, 255, 0.78);
+  --mint-2: #EDF3EE;      /* a lighter mint: a row just pointed at */
+  --shadow-vsheet: 0 -1px 0 var(--rule), 0 -16px 40px -18px rgba(18, 24, 21, 0.28);
+  --tabbar-bg: rgba(243, 244, 240, 0.9);
+  --signed-bg: rgba(18, 36, 29, 0.78);      /* the "Signed up" pill on the post photo */
+  --shadow-off: 0 6px 14px -6px rgba(28, 74, 58, 0.6);   /* the -10% price cut */
+  --shadow-disc: 0 14px 24px -16px rgba(18, 24, 21, 0.55);
+
+  /* The job tag (08): the kraft tag a bike shop hangs on a bike */
+  --tag-paper: #EFE7D6;
+  --tag-ink: #2A241A;
+  --tag-ink-2: #5C5240;
+  --tag-label: #7B6D52;
+  --tag-rule: #CDBF9F;
+  --tag-ring: #C9B994;
+  --tag-string: #8C7B5E;
+  --tag-grain: repeating-linear-gradient(0deg, rgba(120, 100, 60, 0.035) 0 1px, transparent 1px 3px);
+  --shadow-tag: 0 20px 40px -18px rgba(40, 30, 10, 0.45);
+  --shadow-tag-hole: 0 0 0 4px var(--tag-ring), inset 0 1px 2px rgba(0, 0, 0, 0.25);
+  --banner-bg: rgba(246, 247, 244, 0.82);
+  --shadow-banner: 0 10px 30px -10px rgba(0, 0, 0, 0.3);
+
+  /* The tracking map (10): a quiet street map under the route */
+  --map-ground: #EEF0EA;
+  --map-block: #E5E8E1;
+  --map-park: #D9E5D4;
+  --map-park-2: #CFE0CB;
+  --map-tree: #C3D6BF;
+  --map-casing: #D8DCD5;
+  --map-path: #BFD1BA;
+  --map-route-todo: #9AA49F;
+  --forest-halo: rgba(28, 74, 58, 0.15);
+  --shadow-now: 0 0 0 4px var(--forest-halo);   /* the current step on a progress line */
+  --shadow-drawer-soft: 0 -10px 30px -14px rgba(0, 0, 0, 0.3);
+  --shadow-record: 0 1px 2px rgba(18, 24, 21, 0.06), 0 14px 30px -22px rgba(18, 24, 21, 0.35);   /* the hand-over record card */
+  --shadow-ring-strong: 0 0 0 1px rgba(0, 0, 0, 0.25);
+  --shadow-photo-edge: 0 0 0 2px var(--sheet);
+
+  /* The weekly tags (13), each one a week further back */
+  --tag-paper-1: #E8DFCB;
+  --tag-paper-2: #E2D8C2;
+  --tag-paper-3: #DCD1BA;
+  --shadow-tag-front: 0 14px 20px rgba(40, 30, 10, 0.2);
+
+  /* My gear and the Hub (14–18) */
+  --fs-idle: 48px; --lh-idle: 50px;   /* "5 months ago" on 15: the item's own big figure */
+  --shadow-photo-card:0 1px 0 var(--rule), 0 18px 36px -26px rgba(18, 24, 21, 0.45);   /* a photo card you can open (14) */
+  --box-face: #F7F8F5;     /* the lit face of the drawn box (15) */
+  --split-rest: #B9C2BD;   /* the 30% OutRent keeps, on the rent-out bar */
+  --dial-win: #C9D1CB;     /* a courier window on the 24-hour dial (17), before it is chosen */
+  --on-forest-rule: rgba(255, 255, 255, 0.14);
+  --on-forest-dt: rgba(255, 255, 255, 0.65);
+  --on-forest-k: rgba(255, 255, 255, 0.7);
+  --map18-ground: #E7EBE6;   /* the rain-day map (18) */
+  --map18-park: #D2DECF;
+  --map18-block: #DDE2DB;
+  --map18-casing: #D3D8D1;
+  --map18-full: #C9CFC8;
+  --map18-you: #3D6EDB;      /* "you" on a map: the one blue, as maps draw it */
+  --map18-you-ink: #2B4A9A;
+  --rain: linear-gradient(transparent, rgba(70, 90, 82, 0.55));
+  --pill18-bg: rgba(255, 255, 255, 0.82);
+  --shadow-pill: 0 4px 14px -6px rgba(0, 0, 0, 0.25);
+
+  /* On photos */
+  --on-photo-bg: rgba(255, 255, 255, 0.72);
+  --on-photo-border: rgba(255, 255, 255, 0.55);
+  --on-photo-label: rgba(14, 20, 17, 0.62);
+  --on-photo-ring: rgba(0, 0, 0, 0.18);
+
+  /* v0.3 names, kept so older pages render in the new colours until they are rebuilt */
+  --sage: var(--forest);
+  --sage-dark: var(--forest);
+  --sage-tint: var(--mint);
+  --muted: var(--ink-2);
+  --line: var(--rule);
+  --mist: var(--paper);
+  --clay: var(--ink);        /* clay is retired: money is ink */
+  --clay-dark: var(--ink);
+  --clay-tint: var(--rule-2);
+
+  /* Materials */
+  --backdrop: rgba(18, 24, 21, 0.32);
+  --glass-bg: rgba(255, 255, 255, 0.72);
+  --glass-border: rgba(255, 255, 255, 0.55);
+  --glass-blur: blur(16px) saturate(150%);
+  --shadow-float: 0 8px 24px rgba(18, 24, 21, 0.12);
+  --shadow-sheetx: 0 -14px 40px -12px rgba(0, 0, 0, 0.35);   /* a sheet pulled up over a page */
+  --shadow-seg: 0 1px 3px rgba(0, 0, 0, 0.12);                /* the selected half of a segmented control */
+  --shadow-spot: 0 0 0 3px var(--forest), 0 0 0 5px #FFFFFF, 0 6px 14px rgba(0, 0, 0, 0.45);   /* the meeting point on a photo */
+  --shadow-tag6: 0 8px 20px -6px rgba(0, 0, 0, 0.55);
+  --shadow-phone: 0 0 0 10px #0D110F, 0 0 0 11px #2A302D, 0 40px 80px rgba(10, 20, 15, 0.28);   /* the iPhone 16 frame */
+  --shadow-ring: 0 0 0 1px rgba(0, 0, 0, 0.18);   /* white rings and lenses on photos */
+  --shadow-sheet: 0 1px 0 var(--rule);             /* a white sheet resting on paper */
+  --shadow-card: 0 1px 0 var(--rule), 0 14px 30px -22px rgba(18, 24, 21, 0.35);   /* a result you can pick up */
+  --shadow-docket: 0 1px 0 var(--rule), 0 12px 30px -18px rgba(18, 24, 21, 0.25); /* the search docket on Home */
+  --shadow-lift: 0 18px 34px -18px rgba(0, 0, 0, 0.45);                           /* the docket on the forest band */
+  --shadow-drawer: 0 -10px 30px -12px rgba(0, 0, 0, 0.4);                         /* a drawer pulled over a photo */
+  --shadow-cta: 0 8px 24px -8px rgba(0, 0, 0, 0.35);                              /* a CTA floating over a sheet */
+  --scrim: linear-gradient(to bottom, rgba(18, 24, 21, 0.35), rgba(18, 24, 21, 0));
 
   /* Scene placeholders: stand-ins for photos, not UI colours */
-  --scene-1: #DCE6E0;
-  --scene-2: #B9CCC0;
-  --scene-3: #8FAE9C;
-  --scene-4: #5E8574;
+  --scene-1: #DCE3DE;
+  --scene-2: #B7C6BC;
+  --scene-3: #8CA597;
+  --scene-4: #5B7A6B;
 
-  /* Type (DESIGN.md §3) */
-  --font: 'Onest', system-ui, sans-serif;
-  --fs-display: 44px;  --lh-display: 46px;
+  /* Type: Geist for the interface, Geist Mono for small measured labels */
+  --sans: "Geist", ui-sans-serif, system-ui, sans-serif;
+  --mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --font: var(--sans);
+  --fs-hero: 76px;     --lh-hero: 76px;      /* one figure per page, the page's news */
+  --fs-display: 44px;  --lh-display: 44px;
   --fs-large: 32px;    --lh-large: 36px;
-  --fs-title: 20px;    --lh-title: 25px;
+  --fs-num: 24px;      --lh-num: 28px;       /* values in the measured grid */
+  --fs-title: 19px;    --lh-title: 24px;
   --fs-body: 17px;     --lh-body: 24px;
-  --fs-callout: 15px;  --lh-callout: 21px;
+  --fs-callout: 15px;  --lh-callout: 22px;
+  --fs-small: 13px;    --lh-small: 18px;
   --fs-foot: 13px;     --lh-foot: 18px;
   --fs-label: 12px;    --lh-label: 16px;
-  --track-display: -0.035em;
-  --track-large: -0.03em;
-  --track-title: -0.01em;
+  --fs-mono: 11px;     --lh-mono: 14px;      /* measured labels, uppercase */
+  --fs-mono-s: 10px;                         /* scale ticks */
+  --track-hero: -0.055em;
+  --track-display: -0.04em;
+  --track-large: -0.032em;
+  --track-num: -0.03em;
+  --track-title: -0.015em;
   --track-label: 0.08em;
 
   /* Space (4 px grid) */
   --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-5: 20px; --s-6: 24px; --s-8: 32px; --s-10: 40px;
   --gutter: 20px;
-  --top-safe: 54px;
+  --top-safe: 54px;       /* under the drawn status bar of the desktop frame */
   --bottom-float: 22px;
+  --bottom-tab: 24px;
 
   /* Shape */
-  --r-thumb: 16px;
+  --r-bar: 3px;
+  --r-tick: 6px;
+  --r-chip: 8px;     /* small flags and price cuts */
+  --r-thumb: 10px;
+  --r-inset: 13px;   /* a photo inside a sheet */
+  --r-lens: 14px;
+  --r-sheet-s: 20px; /* result and post sheets */
   --r-tile: 18px;
   --r-card: 22px;
   --r-sheet: 28px;
   --r-pill: 999px;
+  --r-phone: 48px;   /* the iPhone frame on a computer */
+  --hair: 1px;
   --touch: 44px;
 
-  /* Motion (DESIGN.md §9) */
+  /* Motion: a measurement being taken */
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
   --t-press: 120ms;
   --t-quick: 200ms;
   --t-base: 320ms;
   --t-slow: 560ms;
-  --ease-glide: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-glide: var(--ease);
   --ease-exit: cubic-bezier(0.4, 0, 1, 1);
 
   color-scheme: light;
+}
+
+/* On a phone the app fills the screen: the real status bar and home indicator take their own room. */
+@media (max-width: 520px) {
+  :root {
+    --top-safe: calc(env(safe-area-inset-top, 0px) + 10px);
+    --bottom-float: max(16px, env(safe-area-inset-bottom, 0px));
+    --bottom-tab: max(12px, env(safe-area-inset-bottom, 0px));
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -1,0 +1,56 @@
+/* 16 Storage at the OutRent Hub · the fitter's line (v52). Layout; shared pieces are in design/components.css. */
+
+.s16-screen { padding-bottom: calc(76px + var(--bottom-float)); }   /* the dock and 12 px */
+.top16.photo-top { height: 320px; }
+.p16 { object-position: 50% 55%; }
+.s16-lede { margin-top: 6px; }
+
+/* One price, as a plate */
+.plate { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--s-3); margin-top: 18px; padding: 14px 0; border-top: 1.5px solid var(--ink); border-bottom: var(--hair) solid var(--rule); }
+.plate .p b { font-size: 56px; line-height: 56px; font-weight: 600; letter-spacing: -0.05em; font-variant-numeric: tabular-nums; }
+.plate .p span { margin-left: 6px; font-size: 16px; color: var(--ink-2); }
+.plate .r { padding-bottom: var(--s-1); font-size: var(--fs-small); line-height: var(--lh-small); color: var(--ink-2); text-align: right; }
+
+.incl { display: flex; flex-direction: column; gap: var(--s-3); margin: 14px 0 0; padding: 0; list-style: none; }
+.incl li { display: grid; grid-template-columns: 22px 1fr; gap: var(--s-3); align-items: start; font-size: 14px; line-height: 19px; color: var(--ink-2); }
+.incl li .ic { margin-top: 0; color: var(--forest); }
+.incl li b { display: block; font-size: var(--fs-callout); font-weight: 600; color: var(--ink); }
+.incl li.on b { color: var(--forest); }
+
+/* There and back as one route: three stops, the fares between them */
+.route16 { position: relative; margin: 0; padding: 6px 0 0; list-style: none; }
+.route16::before { content: ""; position: absolute; left: 7px; top: 36px; bottom: 36px; width: 2px; background: var(--ink); transform-origin: top; }
+.route16 .stop { position: relative; display: grid; grid-template-columns: 16px minmax(0, 1fr) auto; gap: 14px; align-items: center; padding: 10px 0; }
+.route16 .stop > i { position: relative; z-index: 1; width: 16px; height: 16px; border: 2px solid var(--ink); border-radius: var(--r-pill); background: var(--paper); }
+.route16 .hub > i { border-radius: var(--s-1); background: var(--ink); }
+.route16 .again2 > i { border-color: var(--forest); background: var(--forest); }
+.route16 .stop div { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.route16 .stop b { font-size: 16px; line-height: 21px; font-weight: 600; }
+.route16 .stop div span { font-size: var(--fs-small); line-height: var(--lh-small); color: var(--ink-2); }
+.route16 .stop em { font-style: normal; font-size: 20px; font-weight: 600; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.route16 .stop em small { font-size: var(--fs-small); font-weight: 500; letter-spacing: 0; color: var(--ink-2); }
+.route16 .leg { margin: 2px 0 2px 30px; border: 0; padding: 10px 14px var(--s-1); border-radius: 16px; background: var(--sheet); box-shadow: var(--shadow-sheet); }
+.route16 .leg > .mono { display: block; padding-bottom: var(--s-1); }
+.fare { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--s-3); align-items: center; padding: 9px 0; border-top: var(--hair) solid var(--rule-2); }
+.fare > span { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.fare b { font-size: var(--fs-callout); line-height: 20px; font-weight: 600; }
+.fare > span > span { font-size: 12.5px; line-height: 17px; color: var(--ink-2); text-wrap: pretty; }
+.fare em { font-style: normal; font-size: var(--fs-body); font-weight: 600; font-variant-numeric: tabular-nums; }
+
+.termslink { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0; border: 0; background: none; color: var(--forest); font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; }
+.termslink .ic { width: 14px; height: 14px; stroke-width: 2.2; }
+.s16-go { width: 100%; }
+
+/* The rent-out sheet */
+.s16-terms { margin-top: 14px; }
+.rt16on { display: flex; align-items: center; gap: var(--s-2); margin: var(--s-3) 0 0; font-size: var(--fs-callout); font-weight: 600; color: var(--forest); }
+.rt16on .ic { width: 16px; height: 16px; }
+.s16-off { margin-top: var(--s-3); }
+.s16-ack { position: relative; display: grid; grid-template-columns: 26px 1fr; gap: var(--s-3); align-items: center; min-height: 52px; margin-top: 6px; padding: 6px 0; font-size: var(--fs-callout); font-weight: 500; cursor: pointer; }
+.s16-ack input { position: absolute; opacity: 0; pointer-events: none; }
+.s16-ack .box { display: grid; place-items: center; width: 26px; height: 26px; border: 1.5px solid var(--ink); border-radius: var(--s-2); color: var(--white); transition: background-color 0.2s, border-color 0.2s; }
+.s16-ack .box .icon { width: 15px; height: 15px; opacity: 0; transform: scale(0.6); transition: opacity 0.25s var(--ease), transform 0.25s var(--ease); }
+.s16-ack input:checked + .box { border-color: var(--forest); background: var(--forest); }
+.s16-ack input:checked + .box .icon { opacity: 1; transform: scale(1); }
+.s16-ack input:focus-visible + .box { outline: 2px solid var(--forest); outline-offset: 2px; }
+.s16-on { width: 100%; margin-top: 6px; }

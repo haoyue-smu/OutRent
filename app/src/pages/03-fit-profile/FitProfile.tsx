@@ -1,436 +1,152 @@
-import { useEffect, useRef, useState, type KeyboardEvent, type PointerEvent, type ReactNode } from 'react'
-import { useSearchParams } from 'react-router-dom'
-import { GoTo, useBack } from '../../shell/Link'
+import { useEffect, useRef, useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { useBack } from '../../shell/Link'
 import { Icon } from '../../shell/Icon'
-import { TabBar } from '../../shell/TabBar'
+import { BackButton, Mono } from '../../shell/direction'
+import { lock } from '../../shell/PageFrame'
+import { Fit, getState, set, setClock } from '../../shell/store'
+import { routeFor } from '../../pages'
+import { Tape, createSession } from './session'
 import './fit.css'
 
-// Which frame of the board to show. Change this one value, or open the page with ?state=<frame>.
-//   'profile'              E1-1 · E1-2 · profile area, Profile tab selected
-//   'fit-empty'            E1-3 · empty (first entry)
-//   'fit-height-only'      E1-3 · height only
-//   'fit-filled'           E1-3 · filled
-//   'fit-filled-scrolled'  E1-3 · filled · scrolled (opens scrolled to Measurements)
-//   'fit-editing'          E1-3 · editing (inside leg chosen, ruler showing)
-type Frame = 'profile' | 'fit-empty' | 'fit-height-only' | 'fit-filled' | 'fit-filled-scrolled' | 'fit-editing'
-const FRAMES: Frame[] = ['profile', 'fit-empty', 'fit-height-only', 'fit-filled', 'fit-filled-scrolled', 'fit-editing']
-const FRAME = 'profile' as Frame
+// 03 Fit profile · the fitter's line (v52, the fitting session of v44). Four steps, no scrolling: 01 Height,
+// 02 Inside leg, 03 Riding, 04 Check. The bike stays in a tall stage; each step moves the camera to the part it
+// sets (session.ts). The dock names the next step; on 04 it saves the fit. A returning rider opens on 04.
+// The numbers go straight into the story state, so every later page shows this fit.
 
-// ---------- mock data (MOCK-DATA v1.3 §2 SEED-ACCOUNT, §3 SEED-FIT) ----------
-type Fit = { height: number; leg: number | null }
-type Riding = { level: string; trails: string }
-const SEED_FIT: Fit = { height: 176, leg: 81 }
-const SEED_RIDING: Riding = { level: 'Rides weekly on park connectors', trails: 'First time' }
-const ACCOUNT = { name: 'Daniel Lim', initials: 'DL', since: 'Member since Aug 2026 · no renter rating yet' }
+const NEXT: Record<number, string> = { 1: 'Next: inside leg', 2: 'Next: how you ride', 3: 'Next: check the set-up' }
+const STEPS = ['Height', 'Inside leg', 'Riding', 'Check']
 
-// Derived set-up. With height 176 and inside leg 81 these give the locked values: frame M, saddle 72 cm.
-const HEIGHT = { min: 120, max: 220, ruler: [150, 200] as const }
-const LEG = { min: 50, max: 110, ruler: [60, 95] as const }
-const frameFor = (h: number) => (h < 165 ? 'S' : h < 180 ? 'M' : h < 190 ? 'L' : 'XL')
-const saddleFor = (leg: number) => Math.round(leg * 0.883)
-const SAG = 25
-const BARS = '+1'
+export default function FitProfile() {
+  const navigate = useNavigate()
+  const location = useLocation()
+  const fromPost = (location.state as { from?: string } | null)?.from === 'post'
+  const back = useBack(() => navigate(routeFor('02-coach-kit')))
+  const fig = useRef<HTMLDivElement>(null)
+  const stage = useRef<HTMLDivElement>(null)
+  const tapeH = useRef<HTMLDivElement>(null)
+  const tapeL = useRef<HTMLDivElement>(null)
+  const grid = useRef<HTMLDListElement>(null)
+  const frameEl = useRef<HTMLElement>(null)
+  const save = useRef<HTMLButtonElement>(null)
+  const ses = useRef<ReturnType<typeof createSession> | null>(null)
+  const tapes = useRef<{ h?: ReturnType<typeof Tape>; l?: ReturnType<typeof Tape> }>({})
+  const [fit, setFitState] = useState(() => ({ height: getState().fit.height, leg: getState().fit.leg }))
+  const [step, setStep] = useState(() => (getState().fit.hasProfile ? 4 : 1))
+  const [saved, setSaved] = useState(false)
+  const frame = Fit.frame(fit.height)
+  const saddle = Math.round(Fit.saddleRaw(fit.leg))
 
-type Measure = 'height' | 'leg'
-const parse = (text: string, r: { min: number; max: number }) => {
-  if (text.trim() === '') return { value: null, bad: false }
-  const n = Number(text)
-  const ok = Number.isInteger(n) && n >= r.min && n <= r.max
-  return { value: ok ? n : null, bad: !ok }
-}
+  useEffect(() => { setClock(getState().paid ? '19:00' : '9:03') }, [])
 
-// A new ?state starts the page fresh, so each frame opens as drawn.
-export default function FitProfilePage() {
-  const state = useSearchParams()[0].get('state')
-  return <FitProfile key={state ?? ''} />
-}
+  // Build the figure, the session and the two tapes once the fonts are in (the figure measures its own text).
+  useEffect(() => {
+    let cancelled = false
+    const start = getState().fit
+    document.fonts.ready.then(() => {
+      if (cancelled || !fig.current || !stage.current || !tapeH.current || !tapeL.current) return
+      ses.current = createSession({ fig: fig.current, stage: stage.current, height: start.height, leg: start.leg, hasProfile: start.hasProfile, onStep: setStep })
+      const change = (patch: { height?: number; leg?: number }) => {
+        ses.current?.setFit(patch)
+        setFitState((f) => ({ ...f, ...patch }))
+        set((s) => ({ ...s, fit: { ...s.fit, ...patch } }))
+        setSaved(false)
+      }
+      tapes.current.h = Tape(tapeH.current, { min: 150, max: 200, value: start.height, bands: Fit.chart, onChange: (v) => change({ height: v }), focus: () => ses.current?.heightFocus() })
+      tapes.current.l = Tape(tapeL.current, { min: 60, max: 95, value: start.leg, sub: 0.883, onChange: (v) => change({ leg: v }), focus: (on) => ses.current?.legFocus(on) })
+    })
+    return () => { cancelled = true; ses.current?.destroy(); tapes.current.h?.destroy(); tapes.current.l?.destroy() }
+  }, [])
 
-function FitProfile() {
-  const [params] = useSearchParams()
-  const asked = params.get('state') as Frame | null
-  const frame = asked && FRAMES.includes(asked) ? asked : FRAME
-  const seeded = frame !== 'fit-empty' && frame !== 'fit-height-only'
+  // A tape inside a hidden panel has no width: place it again when its step shows.
+  useEffect(() => { if (step === 1) tapes.current.h?.place(); if (step === 2) tapes.current.l?.place() }, [step])
 
-  const [view, setView] = useState<'profile' | 'fit'>(frame === 'profile' ? 'profile' : 'fit')
-  const [saved, setSaved] = useState<Fit | null>(seeded ? SEED_FIT : null)
-  const [riding] = useState<Riding | null>(seeded ? SEED_RIDING : null)
-  const [draft, setDraft] = useState({
-    height: frame === 'fit-empty' ? '' : String(SEED_FIT.height),
-    leg: seeded ? String(SEED_FIT.leg) : '',
-  })
-  const [editing, setEditing] = useState(frame === 'fit-editing')
-  const [active, setActive] = useState<Measure>('leg')
-  // Typing into the saved profile switches to the editing layout; the field being typed in keeps focus.
-  const [keepFocus, setKeepFocus] = useState<Measure | null>(null)
+  // The frame letter flashes forest when the height crosses into another size.
+  const lastFrame = useRef(frame)
+  useEffect(() => { if (frame !== lastFrame.current) { lastFrame.current = frame; flash(frameEl.current) } }, [frame])
 
-  const openFit = () => {
-    setDraft({ height: saved ? String(saved.height) : '', leg: saved?.leg ? String(saved.leg) : '' })
-    setEditing(false)
-    setView('fit')
-  }
-  // Opened from another page (?state=…): back returns there. Unsaved changes are dropped.
-  const backToCaller = useBack(() => setView('profile'))
-  const back = asked ? backToCaller : () => setView('profile')
-  const save = (fit: Fit) => {
-    setSaved(fit)
-    setEditing(false)
+  const onDock = () => {
+    if (step < 4) { ses.current?.goStep(step + 1); return }
+    if (saved) return
+    setSaved(true); lock(save.current)
+    set((s) => ({ ...s, fit: { ...s.fit, ...fit, hasProfile: true } }))
+    grid.current?.querySelectorAll('dd').forEach((d) => flash(d))
+    // From the coach's post the fit was the missing step: go on to the bikes (Back from there returns to the post).
+    window.setTimeout(() => {
+      if (fromPost) navigate(routeFor('04-search-results'), { replace: true })
+      else back()
+    }, 900)
   }
 
-  if (view === 'profile') return <Profile saved={saved} onOpenFit={openFit} />
-  return (
-    <FitEditor
-      saved={saved} riding={riding} draft={draft} editing={editing} active={active} keepFocus={keepFocus}
-      scrolled={frame === 'fit-filled-scrolled'}
-      onChange={(m, text) => {
-        setDraft((d) => ({ ...d, [m]: text.replace(/\D/g, '').slice(0, 3) }))
-        setActive(m)
-        if (saved && !editing) { setEditing(true); setKeepFocus(m) }
-      }}
-      onFocus={setActive}
-      onBack={back}
-      onSave={save}
-    />
-  )
-}
-
-// ---------- E1-1 · E1-2 profile area ----------
-function Profile({ saved, onOpenFit }: { saved: Fit | null; onOpenFit: () => void }) {
   return (
     <>
-      <main className="screen" key="profile">
-        <div className="fit-profile">
-          <h1 className="t-large">Profile</h1>
-          <div className="fit-who">
-            <span className="fit-avatar" aria-hidden="true">{ACCOUNT.initials}</span>
-            <div className="fit-stack">
-              <span className="t-title">{ACCOUNT.name}</span>
-              <span className="t-foot">{ACCOUNT.since}</span>
-            </div>
-          </div>
-
-          <button type="button" className="card fit-card" onClick={onOpenFit}>
-            <span className="fit-card-head">
-              <span className="t-callout fit-strong">Your fit</span>
-              <Icon name="caret-right" small className="fit-chev" />
-            </span>
-            {saved ? (
-              <span className="stats">
-                <span className="stat"><span className="v">{saved.height} <small>cm</small></span><span className="k">Height</span></span>
-                <span className="stat"><span className="v">{frameFor(saved.height)}</span><span className="k">Frame</span></span>
-                <span className="stat">
-                  <span className="v">{saved.leg ? <>{saddleFor(saved.leg)} <small>cm</small></> : '—'}</span>
-                  <span className="k">Saddle</span>
-                </span>
-              </span>
-            ) : (
-              <span className="t-callout">Add your height to set the frame size</span>
-            )}
-            <span className="t-foot">Rented bikes are adjusted to this before delivery</span>
-          </button>
-
-          <Group title="Inbox">
-            <GoTo page="01-home" state="notifications-unseen" className="fit-row">
-              <Icon name="bell" className="fit-lead" />
-              <span className="fit-stack">
-                <span className="t-callout fit-strong">Notifications</span>
-                <span className="t-foot">1 unseen</span>
-              </span>
-              <span className="p-dot" role="img" aria-label="Unseen" />
-              <Icon name="caret-right" small className="fit-chev" />
-            </GoTo>
-            <GoTo page="01-home" state="messages-all-read" className="fit-row">
-              <Icon name="chat-circle" className="fit-lead" />
-              <span className="fit-stack">
-                <span className="t-callout fit-strong">Messages</span>
-                <span className="t-foot">Timah Cycles</span>
-              </span>
-              <Icon name="caret-right" small className="fit-chev" />
-            </GoTo>
-          </Group>
-
-          {/* Payment methods are chosen at payment (07); here they are shown, not edited. */}
-          <Group title="Payment methods">
-            <div className="fit-row">
-              <Icon name="device-mobile" className="fit-lead" />
-              <span className="fit-stack">
-                <span className="t-callout fit-strong">PayNow</span>
-                <span className="t-foot">Default</span>
-              </span>
-            </div>
-            <div className="fit-row">
-              <Icon name="credit-card" className="fit-lead" />
-              <span className="fit-stack"><span className="t-callout fit-strong">Visa ·4821</span></span>
-            </div>
-          </Group>
-
-          {/* E1-2 AC2: beyond scope, shown as a quiet surface; nothing depends on it. */}
-          <div className="card fit-list">
-            <div className="fit-row is-quiet">
-              <Icon name="gear" className="fit-lead" />
-              <span className="fit-stack"><span className="t-callout">Account details and help</span></span>
-            </div>
-          </div>
-        </div>
-      </main>
-      <TabBar current="03-fit-profile" />
-    </>
-  )
-}
-
-function Group({ title, children }: { title: string; children: ReactNode }) {
-  return (
-    <section className="fit-section">
-      <h2 className="t-title">{title}</h2>
-      <div className="card fit-list">{children}</div>
-    </section>
-  )
-}
-
-// ---------- E1-3 create and edit the fit profile ----------
-type EditorProps = {
-  saved: Fit | null; riding: Riding | null; draft: { height: string; leg: string }; editing: boolean; active: Measure; keepFocus: Measure | null; scrolled: boolean
-  onChange: (m: Measure, text: string) => void; onFocus: (m: Measure) => void; onBack: () => void; onSave: (fit: Fit) => void
-}
-
-function FitEditor({ saved, riding, draft, editing, active, keepFocus, scrolled, onChange, onFocus, onBack, onSave }: EditorProps) {
-  const measurements = useRef<HTMLElement>(null)
-  useEffect(() => { if (scrolled) document.fonts.ready.then(() => measurements.current?.scrollIntoView({ block: 'start' })) }, [scrolled])
-
-  const h = parse(draft.height, HEIGHT)
-  const l = parse(draft.leg, LEG)
-  const valid = h.value !== null && !l.bad
-  const showSaved = saved !== null && !editing
-  const fit = showSaved ? saved : { height: h.value ?? 0, leg: l.value }
-  const hasHeight = showSaved || h.value !== null
-  const frame = hasHeight ? frameFor(fit.height) : null
-  const saddle = hasHeight && fit.leg ? saddleFor(fit.leg) : null
-
-  const fields = (
-    <>
-      <div className="fit-fields">
-        <MeasureField
-          label={saved || draft.height ? 'Height' : 'Height · required'} name="height" text={draft.height}
-          bad={h.bad} chosen={editing && active === 'height'} focus={editing && keepFocus === 'height'} onChange={onChange} onFocus={onFocus}
-        />
-        <MeasureField
-          label={saved?.leg || draft.leg ? 'Inside leg' : 'Inside leg · optional'} name="leg" text={draft.leg}
-          bad={l.bad} chosen={editing && active === 'leg'} focus={editing && keepFocus === 'leg'} onChange={onChange} onFocus={onFocus}
-        />
-      </div>
-      {(h.bad || l.bad) && (
-        <div className="field-error" role="alert">
-          <Icon name="warning-circle" small />
-          <span>{h.bad ? `Height between ${HEIGHT.min} and ${HEIGHT.max}\u00a0cm` : `Inside leg between ${LEG.min} and ${LEG.max}\u00a0cm, or leave it empty`}</span>
-        </div>
-      )}
-    </>
-  )
-
-  const ridingCard = (
-    <section className="fit-section">
-      <h2 className="t-title">Riding</h2>
-      <div className="card fit-list">
-        <div className="p-kv">
-          <div><span>Level</span>{riding ? <span>{riding.level}</span> : <span className="is-muted">Add</span>}</div>
-          {riding && <div><span>Trails</span><span>{riding.trails}</span></div>}
-        </div>
-      </div>
-    </section>
-  )
-
-  const footnote = (
-    <div className="t-foot fit-note"><Icon name="info" small /><span>Suppliers set rented gear to these values before delivery</span></div>
-  )
-
-  const guide = hasHeight && !fit.leg && (
-    <div className="field-error is-guide" aria-live="polite">
-      <Icon name="ruler" small /><span>Add inside leg to make the saddle height exact</span>
-    </div>
-  )
-
-  return (
-    <>
-      <main className="screen" key="fit">
-        <div className="topbar fit-bar">
-          <button type="button" className="icon-btn" aria-label="Back" onClick={onBack}><Icon name="arrow-left" /></button>
-          <h1 className="name fit-bar-title">Your fit</h1>
+      <main className="screen d-screen fit-screen">
+        <div className="bar-top">
+          <BackButton label="Back" onClick={back} />
+          <Mono className="mid">Fit profile</Mono>
           <span />
         </div>
-
-        {showSaved ? (
-          // E1-3 filled: the number a supplier sets first, then the rest of the set-up, then the inputs behind it.
-          <div className="fit-page">
-            {saddle !== null ? (
-              <Hero k="Saddle height" sub={`From height ${fit.height}\u00a0cm and inside leg ${fit.leg}\u00a0cm`}>
-                {saddle} <span className="unit">cm</span>
-              </Hero>
-            ) : (
-              <Hero k="Frame size" sub={`From your height, ${fit.height}\u00a0cm`}>{frame}</Hero>
-            )}
-            <Figure title="Set for you" text="Figure: bike side view, saddle, bars and fork marked · supplied by Haoyue" hint="Saddle · bars · fork" readout={`Frame ${frame}`} />
-            {guide}
-            <div className="card fit-tiles">
-              <div className="stats">
-                <div className="stat"><span className="v">{frame}</span><span className="k">Frame size</span></div>
-                <div className="stat"><span className="v">{SAG} <small>%</small></span><span className="k">Suspension sag</span></div>
-                <div className="stat"><span className="v">{BARS} <small>cm</small></span><span className="k">Bar height</span></div>
+        <div className="stage s3" ref={stage}><div className="fig" ref={fig} /></div>
+        <div className="pad">
+          <div className="steps3" role="tablist" aria-label="Fit steps">
+            {STEPS.map((l, i) => {
+              const n = i + 1
+              return (
+                <button key={l} type="button" role="tab" aria-selected={step === n} className={n < step || (n === 1 && step > 1) ? 'done' : undefined}
+                  onClick={() => ses.current?.goStep(n)}><b>{String(n).padStart(2, '0')}</b>{l}</button>
+              )
+            })}
+          </div>
+          <section className="p3" hidden={step !== 1}>
+            <div className="rd3">
+              <div><Mono id="lab-h">Height</Mono><b><span className="num">{fit.height}</span><small>cm</small></b></div>
+              <i className="fr-to" aria-hidden="true" />
+              <div className="o"><Mono>Frame</Mono><b ref={frameEl}>{frame}</b></div>
+            </div>
+            <div className="tape" ref={tapeH} role="slider" tabIndex={0} aria-labelledby="lab-h" aria-valuemin={150} aria-valuemax={200} aria-valuenow={fit.height}><svg aria-hidden="true" /><span className="needle" /></div>
+            <p className="fr-note">Your height picks the frame size. Drag the scale to change it.</p>
+          </section>
+          <section className="p3" hidden={step !== 2}>
+            <div className="rd3">
+              <div><Mono id="lab-l">Inside leg</Mono><b><span className="num">{fit.leg}</span><small>cm</small></b></div>
+              <i className="fr-to" aria-hidden="true" />
+              <div className="o"><Mono>Saddle</Mono><b><span className="num">{saddle}</span><small>cm</small></b></div>
+            </div>
+            <div className="tape dual" ref={tapeL} role="slider" tabIndex={0} aria-labelledby="lab-l" aria-valuemin={60} aria-valuemax={95} aria-valuenow={fit.leg}><svg aria-hidden="true" /><span className="needle" /></div>
+            <p className="fr-note">In socks, floor to crotch. The green scale is the saddle: 88.3% of your inside leg.</p>
+          </section>
+          <section className="p3" hidden={step !== 3}>
+            <div className="rd3 ride">
+              <div><Mono>Riding</Mono><b className="txt">Weekly on park connectors, first time on trails</b></div>
+              <i className="fr-to" aria-hidden="true" />
+              <div className="o two">
+                <div><Mono>Fork sag</Mono><b>25<small>%</small></b></div>
+                <div><Mono>Handlebar</Mono><b>+1<small>cm</small></b></div>
               </div>
             </div>
-            <section className="fit-section is-anchor" ref={measurements}>
-              <h2 className="t-title">Measurements</h2>
-              {fields}
-            </section>
-            {ridingCard}
-            {footnote}
-          </div>
-        ) : editing ? (
-          // E1-3 editing: a ruler on the figure for the chosen length; the derived set-up follows as it changes.
-          <div className="fit-page has-bar">
-            <figure className="explainer has-ruler">
-              <Ruler
-                measure={active}
-                value={active === 'height' ? h.value ?? HEIGHT.ruler[0] : l.value ?? LEG.ruler[0]}
-                onChange={(v) => onChange(active, String(v))}
-              />
-              <div className="placeholder">
-                {active === 'height'
-                  ? 'Figure: rider standing, height measured floor to crown · supplied by Haoyue'
-                  : 'Figure: rider standing, inside leg measured floor to crotch · supplied by Haoyue'}
-              </div>
-              <span className="corner hint">{active === 'height' ? 'Height' : 'Inside leg'}</span>
-              <span className="corner readout">{(active === 'height' ? draft.height : draft.leg) || '—'}&nbsp;cm</span>
-            </figure>
-            {fields}
-            <div className="card fit-live">
-              <span className="t-foot">Updates as you change it</span>
-              <div className="stats">
-                <div className="stat"><span className="v">{saddle ?? '—'}{saddle !== null && <> <small>cm</small></>}</span><span className="k">Saddle</span></div>
-                <div className="stat"><span className="v">{frame ?? '—'}</span><span className="k">Frame</span></div>
-                <div className="stat"><span className="v">{BARS} <small>cm</small></span><span className="k">Bars</span></div>
-              </div>
-            </div>
-          </div>
-        ) : (
-          // E1-3 first entry: empty, then height only (frame size and a hint), then both.
-          <div className="fit-page has-bar">
-            {hasHeight && (saddle !== null
-              ? <Hero k="Saddle height" sub={`From height ${fit.height}\u00a0cm and inside leg ${fit.leg}\u00a0cm`}>{saddle} <span className="unit">cm</span></Hero>
-              : <Hero k="Frame size" sub={`From your height, ${fit.height}\u00a0cm`}>{frame}</Hero>)}
-            {hasHeight
-              ? <Figure title={`Set for ${fit.height}\u00a0cm`} text="Figure: bike side view, frame size highlighted · supplied by Haoyue" hint="From height" readout={`Frame ${frame}`} />
-              : <Figure title="Your bike" text="Figure: bike side view, frame and saddle height marked · supplied by Haoyue" hint="Height sets the frame size" readout="—" />}
-            {guide}
-            {fields}
-            {ridingCard}
-            {footnote}
-          </div>
-        )}
-      </main>
-
-      {!showSaved && (
-        <div className="actionbar glass is-single">
-          <button
-            type="button" className="btn is-block" disabled={!valid}
-            onClick={() => h.value !== null && onSave({ height: h.value, leg: l.value })}
-          >
-            Save fit
-          </button>
+            <p className="fr-note">Softer suspension and a higher bar for a first time on trails. <button className="link inl" type="button" onClick={() => ses.current?.replay()}>Play the set-up again</button></p>
+          </section>
+          <section className="p3" hidden={step !== 4}>
+            <dl className="mgrid" ref={grid}>
+              <div><dt className="mono">Saddle</dt><dd><span className="num">{saddle}</span><small>cm</small></dd></div>
+              <div><dt className="mono">Frame</dt><dd>{frame}</dd></div>
+              <div><dt className="mono">Fork sag</dt><dd>25<small>%</small></dd></div>
+              <div><dt className="mono">Handlebar</dt><dd>+1<small>cm</small></dd></div>
+            </dl>
+            <p className="fr-note">From your height {fit.height} cm and inside leg {fit.leg} cm. Any bike marked ‘Set to your fit’ is adjusted to these numbers before delivery.</p>
+          </section>
         </div>
-      )}
+      </main>
+      <div className="dock">
+        <button type="button" className="cta" ref={save} style={{ width: '100%' }} onClick={onDock} aria-live="polite">
+          {step < 4 ? <>{NEXT[step]}<Icon name="arrow-right" /></> : saved ? <span className="saved-mark"><Icon name="check" />Fit saved</span> : 'Save fit'}
+        </button>
+      </div>
     </>
   )
 }
 
-function Hero({ k, sub, children }: { k: string; sub: string; children: ReactNode }) {
-  return (
-    <div className="p-hero">
-      <span className="k">{k}</span>
-      <span className="t-display">{children}</span>
-      <span className="sub">{sub}</span>
-    </div>
-  )
-}
-
-function Figure({ title, text, hint, readout }: { title: string; text: string; hint: string; readout: string }) {
-  return (
-    <figure className="explainer">
-      <span className="corner fig">Fig 1</span>
-      <span className="corner title">{title}</span>
-      <div className="placeholder">{text}</div>
-      <span className="corner hint">{hint}</span>
-      <span className="corner readout">{readout}</span>
-    </figure>
-  )
-}
-
-function MeasureField({ label, name, text, bad, chosen, focus, onChange, onFocus }: {
-  label: string; name: Measure; text: string; bad: boolean; chosen: boolean; focus: boolean
-  onChange: (m: Measure, text: string) => void; onFocus: (m: Measure) => void
-}) {
-  const input = useRef<HTMLInputElement>(null)
-  useEffect(() => {
-    const el = input.current
-    if (focus && el) { el.focus(); el.setSelectionRange(el.value.length, el.value.length) }
-  }, [focus])
-  const cls = ['field', chosen ? 'is-chosen' : '', bad ? 'is-error' : ''].filter(Boolean).join(' ')
-  return (
-    <label className={cls}>
-      <span>{label}</span>
-      <span className="value">
-        <input
-          ref={input} type="text" inputMode="numeric" name={name} autoComplete="off" placeholder="Add"
-          className={text ? undefined : 'is-empty'} style={text ? { width: `${text.length + 0.6}ch` } : undefined}
-          value={text} aria-label={name === 'height' ? 'Height in cm' : 'Inside leg in cm'} aria-invalid={bad || undefined}
-          onChange={(e) => onChange(name, e.target.value)} onFocus={() => onFocus(name)}
-        />
-        <span className="unit">cm</span>
-      </span>
-    </label>
-  )
-}
-
-// The library ruler edge (.explainer.has-ruler): drag along it, or use the arrow keys, to set the chosen length.
-const RULER_W = 353, PAD = 22
-function Ruler({ measure, value, onChange }: { measure: Measure; value: number; onChange: (v: number) => void }) {
-  const [lo, hi] = measure === 'height' ? HEIGHT.ruler : LEG.ruler
-  const span = RULER_W - PAD * 2
-  const x = (v: number) => PAD + ((v - lo) / (hi - lo)) * span
-  const clamp = (v: number) => Math.min(hi, Math.max(lo, Math.round(v)))
-  const shown = clamp(value)
-
-  const fromPointer = (e: PointerEvent<SVGSVGElement>) => {
-    const box = e.currentTarget.getBoundingClientRect()
-    const vx = ((e.clientX - box.left) / box.width) * RULER_W
-    onChange(clamp(lo + ((vx - PAD) / span) * (hi - lo)))
-  }
-  const onKey = (e: KeyboardEvent<SVGSVGElement>) => {
-    const step = { ArrowLeft: -1, ArrowDown: -1, ArrowRight: 1, ArrowUp: 1, PageDown: -5, PageUp: 5 }[e.key]
-    if (step) { e.preventDefault(); onChange(clamp(shown + step)) }
-    else if (e.key === 'Home') { e.preventDefault(); onChange(lo) }
-    else if (e.key === 'End') { e.preventDefault(); onChange(hi) }
-  }
-
-  const ticks = []
-  for (let v = lo; v <= hi; v++) {
-    const major = v % 5 === 0
-    ticks.push(<line key={v} className={major ? 'major' : 'minor'} x1={x(v)} x2={x(v)} y1={40} y2={major ? 52 : 47} />)
-    if (major) ticks.push(<text key={`t${v}`} x={x(v)} y={62} textAnchor="middle" className={Math.abs(v - shown) < 3 ? 'on' : undefined}>{v}</text>)
-  }
-  const nx = x(shown)
-  const bx = Math.min(RULER_W - 56, Math.max(0, nx - 28))
-  return (
-    <svg
-      className="ruler" viewBox={`0 0 ${RULER_W} 64`} role="slider" tabIndex={0}
-      aria-label={measure === 'height' ? 'Height' : 'Inside leg'}
-      aria-valuemin={lo} aria-valuemax={hi} aria-valuenow={shown} aria-valuetext={`${shown}\u00a0cm`}
-      onPointerDown={(e) => { e.currentTarget.setPointerCapture(e.pointerId); fromPointer(e) }}
-      onPointerMove={(e) => { if (e.currentTarget.hasPointerCapture(e.pointerId)) fromPointer(e) }}
-      onKeyDown={onKey}
-    >
-      {ticks}
-      <line className="needle" x1={nx} x2={nx} y1={30} y2={54} />
-      <rect className="bubble" x={bx} y={8} width={56} height={22} rx={11} />
-      <text className="bubble-t" x={bx + 28} y={23} textAnchor="middle">{shown} cm</text>
-    </svg>
-  )
+function flash(el: Element | null) {
+  if (!el) return
+  el.classList.remove('flash'); void (el as HTMLElement).offsetWidth; el.classList.add('flash')
 }

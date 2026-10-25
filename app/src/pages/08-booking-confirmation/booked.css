@@ -1,0 +1,53 @@
+/* 08 Booking confirmation · the fitter's line. Layout; shared pieces are in design/components.css. */
+
+.d-screen { background: var(--paper); color: var(--ink); font-family: var(--sans); }
+.s8-screen { padding-bottom: 110px; }
+.s8-h { padding-top: 2px; }
+.s8-lede { margin: 6px 0 0; }
+.s8-flat { margin: 0; }
+.nb { white-space: nowrap; }
+
+/* The job tag on its string */
+.tagstage { position: relative; height: 520px; margin-top: var(--s-1); }
+.tagstage .string { position: absolute; left: 0; top: 0; width: 100%; height: 120px; overflow: visible; }
+.tagstage .string path { fill: none; stroke: var(--tag-string); stroke-width: 1.6; }
+.tag { position: absolute; left: 50%; top: 96px; width: 300px; margin-left: -150px; padding: 42px var(--s-5) var(--s-5); background: var(--tag-paper); color: var(--tag-ink);
+  clip-path: polygon(18% 0, 82% 0, 100% 9%, 100% 100%, 0 100%, 0 9%); border-radius: 0 0 14px 14px; transform-origin: 50% 16px; box-shadow: var(--shadow-tag); }
+.tag::after { content: ""; position: absolute; inset: 0; background: var(--tag-grain); pointer-events: none; }
+.tag .hole { position: absolute; left: 50%; top: 10px; width: 16px; height: 16px; margin-left: -8px; border-radius: var(--r-pill); background: var(--paper); box-shadow: var(--shadow-tag-hole); }
+.tag .mono { color: var(--tag-label); }
+.tg-top { display: flex; justify-content: space-between; }
+.tg-name { margin-top: 10px; font-size: 28px; line-height: 32px; font-weight: 600; letter-spacing: -0.03em; }
+.tg-bike { font-size: 14px; color: var(--tag-ink-2); }
+.tg-set, .tg-go { margin: 0; }
+.tg-set { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 14px; border-top: 1.5px solid var(--tag-ink); border-bottom: var(--hair) solid var(--tag-rule); }
+.tg-go { display: grid; grid-template-columns: 1fr 1fr; border-bottom: var(--hair) solid var(--tag-rule); }
+.tg-set div, .tg-go div { display: flex; flex-direction: column; gap: 3px; padding: var(--s-2) 0 9px; }
+.tg-set div + div, .tg-go div + div { padding-left: 10px; border-left: var(--hair) solid var(--tag-rule); }
+.tg-set dt, .tg-go dt { margin: 0; }
+.tg-set dd, .tg-go dd { margin: 0; }
+.tg-set dd { font-size: var(--fs-num); line-height: 26px; font-weight: 600; letter-spacing: var(--track-num); font-variant-numeric: tabular-nums; }
+.tg-set dd small { margin-left: 2px; font-size: var(--fs-label); font-weight: 500; letter-spacing: 0; color: var(--tag-ink-2); }
+.tg-go dd { font-size: 16px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.tg-at { min-height: 84px; margin-top: 10px; padding-right: 96px; font-size: 12.5px; line-height: 17px; color: var(--tag-ink-2); }
+.stamp { position: absolute; right: var(--s-4); bottom: 14px; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 84px; height: 84px; border: 2.5px solid var(--forest); border-radius: var(--r-pill); color: var(--forest); transform: rotate(-14deg); opacity: 0.9; mix-blend-mode: multiply; }
+.stamp::before { content: ""; position: absolute; inset: 4px; border: var(--hair) solid var(--forest); border-radius: var(--r-pill); }
+.stamp span { font-family: var(--mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; }
+.stamp b { font-size: 19px; line-height: 21px; font-weight: 700; letter-spacing: -0.02em; }
+
+.after08 { display: flex; flex-direction: column; gap: var(--s-3); margin-top: -8px; }
+.nextline { display: grid; grid-template-columns: 44px 1fr; gap: 10px; align-items: baseline; padding-top: var(--s-3); border-top: var(--hair) solid var(--rule); font-size: 14.5px; line-height: 20px; }
+.s8-track { width: 100%; }
+
+/* The phone's notification banner */
+.banner { position: absolute; left: 10px; right: 10px; top: calc(var(--top-safe) + 6px); z-index: 45; display: grid; grid-template-columns: 38px 1fr; gap: 10px; align-items: center; padding: var(--s-3) 14px; border-radius: var(--r-card); background: var(--banner-bg); -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur); box-shadow: var(--shadow-banner); transform: translateY(-160px); color: var(--ink); font-size: 13.5px; line-height: 18px; }
+.banner-app { display: grid; place-items: center; width: 38px; height: 38px; padding: 7px; border-radius: var(--r-thumb); background: var(--sheet); }
+.banner-app svg { width: 100%; height: auto; }
+.banner .bh { display: flex; justify-content: space-between; font-size: var(--fs-label); color: var(--ink-3); }
+.banner .bh b { font-size: 11.5px; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink-2); }
+.banner > div > b { display: block; font-weight: 600; }
+.banner > div > span { color: var(--ink-2); }
+
+@media (prefers-reduced-motion: reduce) {
+  .banner { display: none; }
+}
