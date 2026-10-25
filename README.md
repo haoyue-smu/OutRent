@@ -8,7 +8,7 @@
 </p>
 
 <p align="center">
-  <b>Live demo:</b> <a href="LIVE_URL">LIVE_URL</a>
+  <b>Live demo:</b> <a href="https://outrent-g14t3.vercel.app">outrent-g14t3.vercel.app</a>
 </p>
 
 <p align="center">
@@ -45,10 +45,10 @@ npm --prefix app install
 npm run app:dev
 ```
 
-Then open the address it prints. On a computer the app shows inside an iPhone frame; on a phone it fills the screen and can be added to the home screen.
+Then open the address it prints, or use the live demo above. On a computer the app shows inside an iPhone frame; on a phone it fills the screen and can be added to the home screen.
 
 ```bash
-npm --prefix app run build   # static site in app/dist
+npm --prefix app run build   # static site in app/dist (deployed to Vercel with the Vercel CLI)
 npm run check                # the design-system rules
 node app/e2e/run.mjs         # the end-to-end journeys (with the dev server running)
 ```
