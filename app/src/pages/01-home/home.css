@@ -6,7 +6,8 @@
 /* The forest band: lockup, greeting and the search docket */
 .band01 { padding-bottom: 18px; border-radius: 0 0 var(--r-sheet) var(--r-sheet); background: var(--forest); color: var(--white); }
 .home-top { display: flex; justify-content: space-between; align-items: center; height: calc(var(--top-safe) + 52px); padding: calc(var(--top-safe) + 4px) 14px 0 var(--gutter); }
-.lockup svg { display: block; width: auto; height: 22px; }
+.lockup { display: block; touch-action: none; -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; -webkit-user-drag: none; }
+.lockup svg { display: block; width: auto; height: 22px; pointer-events: none; }
 .band01 .ibtn { border-color: var(--on-forest-line); background: var(--on-forest-fill); color: var(--white); }
 .band01 .ibtn .dot { background: var(--on-forest-dot); box-shadow: 0 0 0 2px var(--forest); }
 .hello { display: flex; flex-direction: column; gap: var(--s-1); padding-top: 10px; }

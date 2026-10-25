@@ -1,7 +1,8 @@
 import { useRef, useSyncExternalStore } from 'react'
 
-// What has happened so far in Daniel's story, shared by every page and kept for the browser session
-// (a reload keeps it; a new tab starts again). Values come from product/MOCK-DATA.md; the app only records
+// What has happened so far in Daniel's story, shared by every page and kept on this device (localStorage):
+// closing the tab, a new tab and the home-screen app all continue. Only a reset (/reset, ?reset or the hidden
+// hold on the Home logo) starts again. Values come from product/MOCK-DATA.md; the app only records
 // which of the seeded choices Daniel made.
 
 export type Place = 0 | 1                    // 0 Chestnut trailhead carpark, 1 Daniel's home address
@@ -46,10 +47,20 @@ const deep = (a: Record<string, unknown>, b: Record<string, unknown>): Record<st
   return o
 }
 const seeded = (() => { try { const q = new URLSearchParams(location.search).get('seed'); return q ? JSON.parse(atob(q)) as Partial<State> : null } catch { return null } })()
+// /reset (and /?reset) clears the story before anything reads it, then shows Home at / in the seed state.
+const resetLink = (() => {
+  try {
+    if (location.pathname.replace(/\/+$/, '') !== '/reset' && !new URLSearchParams(location.search).has('reset')) return false
+    localStorage.removeItem(KEY); sessionStorage.clear(); sessionStorage.setItem('outrent.restarted', '1')
+    history.replaceState(null, '', '/')
+    return true
+  } catch { return false }
+})()
 const load = (): State => {
+  if (resetLink) return SEED
   if (seeded) return deep(SEED as unknown as Record<string, unknown>, seeded as Record<string, unknown>) as unknown as State
   try {
-    const raw = sessionStorage.getItem(KEY)
+    const raw = localStorage.getItem(KEY)
     if (raw) return { ...SEED, ...JSON.parse(raw) }
   } catch { /* private mode or blocked storage: start from the seed */ }
   return SEED
@@ -63,11 +74,17 @@ export function getState() { return state }
 // set(s => ({ ...s, paid: true })) or set({ paid: true })
 export function set(patch: Partial<State> | ((s: State) => State)) {
   state = typeof patch === 'function' ? patch(state) : { ...state, ...patch }
-  if (!seeded) try { sessionStorage.setItem(KEY, JSON.stringify(state)) } catch { /* not kept, still works */ }
+  if (!seeded) try { localStorage.setItem(KEY, JSON.stringify(state)) } catch { /* not kept, still works */ }
   subs.forEach((f) => f())
 }
 
-export function reset() { set(SEED) }
+// Start the demo again: forget the story and any saved navigation, then open Home fresh (a full load, so every
+// page's first-visit intro runs again). Home says "Demo restarted" once.
+export const RESTARTED = 'outrent.restarted'
+export function restart() {
+  try { localStorage.removeItem(KEY); sessionStorage.clear(); sessionStorage.setItem(RESTARTED, '1') } catch { /* storage blocked */ }
+  location.replace('/')
+}
 
 const subscribe = (f: () => void) => { subs.add(f); return () => { subs.delete(f) } }
 // The picked value is kept per state object, so a pick that builds a new object does not re-render forever.

@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef } from 'react'
+import { useEffect, useLayoutEffect, useRef, type DragEvent, type MouseEvent, type PointerEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { gsap } from 'gsap'
 import lockup from '@design/brand/outrent-lockup-white.svg?raw'
@@ -7,7 +7,7 @@ import { Photo } from '../../shell/Photo'
 import { Chev, Mono, TabBar, still, useToast } from '../../shell/direction'
 import { routeFor } from '../../pages'
 import {
-  SAT, clockOf, collectAt, countdown, dateLabel, deliverAt, fitNow, hm, homeNow, isClosed, placeShort, setClock, useStore,
+  RESTARTED, SAT, clockOf, collectAt, countdown, dateLabel, deliverAt, fitNow, hm, homeNow, isClosed, placeShort, restart, setClock, useStore,
 } from '../../shell/store'
 import post from '@photos/01-home/assets/01-direction-02-coach-post.webp'
 import aisyah from '@photos/01-home/assets/01-direction-aisyah-avatar.webp'
@@ -52,6 +52,24 @@ export default function Home() {
   const hasNext = upcoming || (closed && s.weekly) || st.booked
   const f = fitNow(s)
 
+  // Restarted (by /reset or the hold below): say so once.
+  useEffect(() => {
+    try { if (sessionStorage.getItem(RESTARTED)) { sessionStorage.removeItem(RESTARTED); window.setTimeout(() => toast('Demo restarted'), 400) } } catch { /* storage blocked */ }
+  }, [toast])
+
+  // Hidden: holding the logo for 3 s restarts the demo, with a mouse, a finger or a pen (pointer events).
+  // A short tap does nothing; lifting, leaving or moving more than 10 px cancels the hold. No hint while held.
+  const holdRef = useRef<{ t: number; x: number; y: number } | null>(null)
+  const cancelHold = () => { if (holdRef.current) { clearTimeout(holdRef.current.t); holdRef.current = null } }
+  useEffect(() => cancelHold, [])
+  const hold = {
+    onPointerDown: (e: PointerEvent) => { cancelHold(); holdRef.current = { t: window.setTimeout(restart, 3000), x: e.clientX, y: e.clientY } },
+    onPointerMove: (e: PointerEvent) => { const h = holdRef.current; if (h && Math.hypot(e.clientX - h.x, e.clientY - h.y) > 10) cancelHold() },
+    onPointerUp: cancelHold, onPointerCancel: cancelHold, onPointerLeave: cancelHold,
+    onContextMenu: (e: MouseEvent) => e.preventDefault(),
+    onDragStart: (e: DragEvent) => e.preventDefault(),
+  }
+
   useEffect(() => { setClock(s.paid || s.now > 67 ? clockOf(now) : '9:01') }, [now, s.paid, s.now])
 
   // The docket settles, its three lines slide in, the sections below rise in turn.
@@ -89,7 +107,7 @@ export default function Home() {
       <main className="screen d-screen h1-screen" ref={root}>
         <div className="band01">
           <div className="home-top">
-            <span className="lockup" role="img" aria-label="OutRent" dangerouslySetInnerHTML={{ __html: lockup }} />
+            <span className="lockup" role="img" aria-label="OutRent" draggable={false} dangerouslySetInnerHTML={{ __html: lockup }} {...hold} />
             <button type="button" className="ibtn" aria-label="Notifications, 1 unseen" onClick={() => toast('Notifications are not in this demo yet.')}>
               <Icon name="bell" /><span className="dot" aria-hidden="true" />
             </button>

@@ -61,11 +61,11 @@ export async function journey(J, persona, fn, opts = {}) {
     },
     async start(path = '01-home') {
       await p.goto(BASE + '/' + path)
-      await p.evaluate(() => sessionStorage.clear())
+      await p.evaluate(() => { localStorage.clear(); sessionStorage.clear() })
       await p.goto(BASE + '/' + path)
       await t.waitPage(path)
     },
-    state: () => p.evaluate(() => JSON.parse(sessionStorage.getItem('outrent.state.v52') || '{}')),
+    state: () => p.evaluate(() => JSON.parse(localStorage.getItem('outrent.state.v52') || '{}')),
     toast: () => p.evaluate(() => document.querySelector('.toast.on')?.textContent ?? ''),
   }
   try { await fn(t) } catch (e) { await t.rec('CRASH', 'journey threw', 'no exception', e.message.split('\n')[0], false, { sev: 4 }) }
