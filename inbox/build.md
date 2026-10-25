@@ -2,6 +2,17 @@
 
 Last updated 25 Oct 2026 16:05 by the management chat. **This replaces every earlier task in this file.**
 
+## NOW (25 Oct 18:00) · Build-1 only: finish, put it on GitHub main, deploy
+
+Haoyue (17:56): after the PO v1.8 change, push to GitHub **main**, with the README, then deploy. No E1–E7 run needed this time. **This lifts the no-push-to-main rule for this task only.**
+
+1. On build/v52-app (18f127d): apply the PO-ANSWERS-v1.8 facts listed under "The spec" below (07/08 deposit held on Visa ···4821 with S$50 by PayNow; 17 slots; 09 dates without weekday). npm run check; commit.
+2. Rewrite `README.md` at the repo root as a formal public project README (the repo may be made public as a showcase): what OutRent is (SMU IS211 Interaction Design and Prototyping, Iter2 high-fidelity prototype: peer-to-peer rental and storage of bulky outdoor gear in Singapore, persona Daniel), the live demo link (fill in after step 4), a screenshot, how to run it (`npm --prefix app install`, `npm run app:dev`), how it is built (React + Vite, GSAP, the design system, the components page at /components, the mock data in product/), the folder map, and the team: Haoyue Wu (lead, as "haoyue"), Amanda Kong, Harwin Halim, Joshua Sau, Nguyen Minh Tuan, Shanise John David, Leong Kai Jun. Plain, short English. No AI attribution.
+3. Merge into main: `git fetch origin`, then merge build/v52-app into main, and also merge origin/product-requirements (REQUIREMENTS v1.8, MOCK-DATA v1.7) so product/ on main is current. Resolve conflicts in favour of build/v52-app for app/ and design/, and product-requirements for product/. npm run check must pass. Commit as Haoyue (no AI attribution), then `git push origin main`.
+4. Deploy with the Vercel CLI from the app folder: `npx vercel` once to link the project (framework Vite, root the app folder, build `npm run build`, output `dist`), then `npx vercel --prod`. On the first run Vercel opens a browser for Haoyue to log in: tell him in one line and wait; he logs in himself (never create an account or type a password). Keep npm caches on drive D.
+5. Put the production URL into README.md (step 2), commit and push main again.
+6. Reply one line: "done, main <hash>, <URL>".
+
 ## Three Build windows from 25 Oct 16:05 (Haoyue chose to build in parallel)
 
 Done so far (local, window Build-1): build/v52-system bed27dc, build/v52-01 0a39180.
