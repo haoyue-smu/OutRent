@@ -2,6 +2,16 @@
 
 Last updated 25 Oct 2026 16:05 by the management chat. **This replaces every earlier task in this file.**
 
+## NOW (25 Oct 20:55) · Build-1: make the hidden reset work for Haoyue
+
+Haoyue (20:52) cannot trigger the 3-second hold on the Home logo on his laptop, although Management's Playwright mouse hold on the live site works (toast shown, storage cleared). Likely cause: he uses touchpad tap-to-click, which sends a short click, never a held button; a held press also gives no sign it is counting.
+
+1. Keep the 3-second hold, and add a second trigger on the same logo: **5 taps within 2 seconds** (pointerup count; works with touchpad taps, mouse clicks and fingers). Either one resets.
+2. While a hold is running, fade the logo to 40% opacity over the 3 seconds (a quiet sign it is counting; back to 100% if cancelled). No other hint.
+3. Make the logo's hit area at least 44 px tall (padding, not a bigger image) so a finger or touchpad tap lands on it.
+4. Test on the live site after deploy: 5 quick clicks → reset + "Demo restarted"; 3-second mouse hold → reset; a single click does nothing; emulated touch at 393 × 852 both ways.
+5. npm run check; commit as Haoyue (no AI attribution); push main; `npx vercel --prod`; `vercel alias set <deployment> outrent-g14t3.vercel.app`. Reply one line: "done, main <hash>".
+
 ## NOW (25 Oct 20:35) · Build-1: keep progress until a reset link, then redeploy
 
 Bug Haoyue found on the deployed app (outrent-g14t3.vercel.app): after he saves anything (fit, delivery times, …) there is no way back to the starting state. `app/src/shell/store.ts` keeps the story in sessionStorage and `reset()` is never called. Haoyue (20:28): **no visible button or tab for this.** Progress should stay until he deliberately resets it with a link.
