@@ -74,7 +74,7 @@ export default function Booked() {
           </section>
         </div>
         <div className="pad after08">
-          <p className="small s8-flat">Paid with {payLabel(s.book.pay)}. S$150 deposit held on Visa ···4821, released after the return check. Free to cancel until <span className="nb">24 Oct · 20:00</span>.</p>
+          <p className="small s8-flat">Paid · S$50 · {payLabel(s.book.pay)}. Deposit · S$150 · held on Visa&nbsp;···4821, released after the return check. Free to cancel until <span className="nb">24 Oct · 20:00</span>.</p>
           <div className="nextline"><Mono>Next</Mono><span>Timah Cycles sets it to your fit on <span className="nb">24 Oct · 17:30</span>.{d === '7:40' && <> It leaves the shop on <span className="nb">25 Oct · 7:05</span>.</>}</span></div>
         </div>
       </main>

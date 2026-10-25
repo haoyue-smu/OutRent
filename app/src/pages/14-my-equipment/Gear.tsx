@@ -4,7 +4,8 @@ import { gsap } from 'gsap'
 import { Photo } from '../../shell/Photo'
 import { Chev, LineIcon, Mono, Sheet, TabBar, haptic, still, useSheet, useToast } from '../../shell/direction'
 import { routeFor } from '../../pages'
-import { HUB, clockOf, dayOf, offRouteNow, set, setClock, useStore } from '../../shell/store'
+import { clockOf, dayOf, offRouteNow, set, setClock, useStore } from '../../shell/store'
+import { dayLong, dm, hubNow, pickDay } from '../../shell/storage'
 import corridor from '@photos/14-my-equipment/assets/14-direction-15-giant-corridor.webp'
 import hubPhoto from '@photos/14-my-equipment/assets/14-direction-15-giant-hub.webp'
 import canyon from '@photos/14-my-equipment/assets/14-direction-14-canyon-wall.webp'
@@ -33,7 +34,7 @@ export default function Gear() {
   const s = useStore((x) => x)
   const st = s.storage
   const hub = st.hub
-  const now = hub ? Math.max(s.now, HUB) : offRouteNow(s)
+  const now = hub ? Math.max(s.now, hubNow(s)) : offRouteNow(s)
   const d = dayOf(now)
   const count = 4 + (s.added ? 1 : 0)
 
@@ -83,9 +84,9 @@ export default function Gear() {
   }
 
   const added = s.added
-  const flag = hub ? 'At the OutRent Hub since 28 Oct' : 'Not used since 24 May'
+  const flag = hub ? `At the OutRent Hub since ${dm(pickDay(s))}` : 'Not used since 24 May'
   const sub = hub ? 'Bike · OutRent Hub, Sungei Kadut · S$18 / month' : 'Bike · blocks the corridor · 175 × 105 × 60 cm'
-  const go = hub ? 'See it at the Hub' : st.booked ? 'Pickup booked · Tue 28 Oct' : 'Store it or rent it out'
+  const go = hub ? 'See it at the Hub' : st.booked ? `Pickup booked · ${dayLong(pickDay(s))}` : 'Store it or rent it out'
 
   return (
     <>

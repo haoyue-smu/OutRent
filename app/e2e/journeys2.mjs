@@ -216,3 +216,30 @@ export async function E7r(t) {
   await t.go(s, 'Hub', p.locator('.dock .cta'), '15-equipment-detail', { timeout: 5000 })
   await t.chk(s, 'at the Hub', 'At the OutRent Hub since 28 Oct', await t.text())
 }
+
+// PO-ANSWERS v1.8: door pickup any day Sat 25 – Fri 31 Oct; the chosen day carries to 14, 15, 09 and Home.
+export async function E6c(t) {
+  const { p } = t
+  await t.start()
+  const s = t.S()
+  await t.go(s, 'tab My gear', p.locator('.tabbar button', { hasText: 'My gear' }), '14-my-equipment')
+  await t.go(s, 'Giant', p.locator('.idlecard'), '15-equipment-detail')
+  await t.go(s, 'store', t.btn('Store it at the Hub'), '16-storage-options')
+  await t.go(s, 'send', t.btn('Send the Giant Escape 3'), '17-hub-pickup')
+  await t.tap(p.locator('.opt', { hasText: 'Door pickup' }), { wait: 600 })
+  await t.chk(s, 'door days Sat 25 – Fri 31', '25 26 27 28 29 30 31', (await p.locator('.days17 b').allInnerTexts()).join(' '))
+  await t.tap(p.locator('.opt', { hasText: 'Rack drop-off' }), { wait: 600 })
+  await t.chk(s, 'rack days Tue 28 and Fri 31', '28 31', (await p.locator('.days17 b').allInnerTexts()).join(' '))
+  await t.tap(p.locator('.opt', { hasText: 'Door pickup' }), { wait: 600 })
+  await t.tap(t.btn('Pickup on Thu 30 Oct'), { wait: 400 })
+  await t.tap(p.locator('.dock .cta'), { wait: 1800 })
+  await t.chk(s, '17 booked Thu 30 Oct', 'Thu 30 Oct · 17:00–19:00', await t.text('.booked17'))
+  await t.go(s, 'Hub', p.locator('.dock .cta'), '15-equipment-detail', { timeout: 9000 })
+  const h = await t.text()
+  await t.chk(s, '15 since 30 Oct', 'At the OutRent Hub since 30 Oct', h)
+  await t.chk(s, '15 intake 30 Oct · 19:45', '30 Oct · 19:45', h)
+  await t.chk(s, '15 date Fri 31 Oct', 'Fri 31 Oct', h)
+  await t.tap(t.btn('Bring it back'), { wait: 700 })
+  await t.chk(s, 'pooled return on the next run 2 days ahead', 'Tue 4 Nov', await t.text('.sheetx.on'))
+  await t.chk(s, 'next-day return', '1 Nov · 17:00–19:00', await t.text('.sheetx.on'))
+}

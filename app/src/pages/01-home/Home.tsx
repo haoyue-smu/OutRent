@@ -16,6 +16,7 @@ import kayaks from '@photos/01-home/assets/01-direction-cat-kayaks.webp'
 import boards from '@photos/01-home/assets/01-direction-cat-paddleboards.webp'
 import camping from '@photos/01-home/assets/01-direction-cat-camping.webp'
 import storage from '@photos/01-home/assets/01-direction-storage-promo.webp'
+import { dayLong, dm, nextDayBack, pickDay, poolBack, wd } from '../../shell/storage'
 import './home.css'
 
 // 01 Home · the fitter's line. A docket to fill in: what, to where, when. Below it what is coming up (once
@@ -82,7 +83,6 @@ export default function Home() {
   }, [])
 
   const go = (page: string) => navigate(routeFor(page))
-  const day = (t: number) => { const d = dateLabel(t).split(' '); return { b: d[1], s: d[0].toUpperCase() } }
 
   return (
     <>
@@ -138,16 +138,16 @@ export default function Home() {
                 )}
                 {st.booked && !st.hub && (
                   <button type="button" className="r9" onClick={() => go('15-equipment-detail')}>
-                    <span className="dt"><b>{day(144).b}</b><span>{day(144).s}</span></span>
+                    <span className="dt"><b>{pickDay(s)}</b><span>{wd(pickDay(s)).toUpperCase()}</span></span>
                     <span className="tx"><b>Giant Escape 3 to the Hub</b><span>{st.way === 'home' ? 'Door pickup · 17:00–19:00 · S$10' : 'Rack S drop-off · before 7:00 · S$5'}</span></span>
                     <Chev />
                   </button>
                 )}
                 {st.hub && (
                   <button type="button" className="r9" onClick={() => go('15-equipment-detail')}>
-                    <span className="dt is-ghost"><b>28</b><span>OCT</span></span>
+                    <span className="dt is-ghost"><b>{pickDay(s)}</b><span>OCT</span></span>
                     <span className="tx"><b>Giant Escape 3 at the Hub</b>
-                      <span>{st.ret ? (st.ret === 'pool' ? 'Coming home Fri 31 Oct, morning' : 'Coming home 30 Oct · 17:00–19:00') : `Since 28 Oct · S$18 / month${st.rentOn ? ' · available to rent' : ''}`}</span>
+                      <span>{st.ret ? (st.ret === 'pool' ? `Coming home ${dayLong(poolBack(s))}, morning` : `Coming home ${dm(nextDayBack(s))} · 17:00–19:00`) : `Since ${dm(pickDay(s))} · S$18 / month${st.rentOn ? ' · available to rent' : ''}`}</span>
                     </span>
                     <Chev />
                   </button>

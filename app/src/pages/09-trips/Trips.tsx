@@ -4,6 +4,7 @@ import { gsap } from 'gsap'
 import { Photo } from '../../shell/Photo'
 import { Chev, LineIcon, Mono, TabBar, TimeSkip, still, useToast } from '../../shell/direction'
 import { routeFor } from '../../pages'
+import { dayLong, dm, nextDayBack, pickDay, poolBack, wd } from '../../shell/storage'
 import { clockOf, collectAt, countdown, dateTime, deliverAt, fitNow, set, setClock, useStore } from '../../shell/store'
 import {
   CANCEL_BY, bookingsNow, collectH, deliverH, leavesH, legsLine, nextRideH, payWith, placeFull, releaseH, spotWhere, stage, trackH,
@@ -186,15 +187,15 @@ export default function Trips() {
               <div className="lbl"><b>Storage</b><Mono>Giant Escape 3</Mono></div>
               {!s.storage.hub && (
                 <button className="row9" type="button" onClick={() => go('17-hub-pickup')}>
-                  <span className="th g-dt" aria-hidden="true"><b>28</b><span>TUE</span></span>
-                  <span><b>To the OutRent Hub · Tue 28 Oct</b><span>{s.storage.way === 'home' ? 'Door pickup · 17:00–19:00 · S$10' : 'Rack S drop-off · before 7:00 · S$5'}</span></span>
+                  <span className="th g-dt" aria-hidden="true"><b>{pickDay(s)}</b><span>{wd(pickDay(s)).toUpperCase()}</span></span>
+                  <span><b>To the OutRent Hub · {dayLong(pickDay(s))}</b><span>{s.storage.way === 'home' ? 'Door pickup · 17:00–19:00 · S$10' : 'Rack S drop-off · before 7:00 · S$5'}</span></span>
                   <Chev />
                 </button>
               )}
               {s.storage.hub && (
                 <button className="row9" type="button" onClick={() => go('15-equipment-detail')}>
-                  <span className="th g-dt" aria-hidden="true"><b>{s.storage.ret === 'next' ? '30' : s.storage.ret ? '31' : '28'}</b><span>{s.storage.ret === 'next' ? 'THU' : s.storage.ret ? 'FRI' : 'OCT'}</span></span>
-                  <span><b>{s.storage.ret ? 'Coming home' : 'At the OutRent Hub'}</b><span>{s.storage.ret === 'next' ? '30 Oct · 17:00–19:00 · S$8 · to Blk 325C' : s.storage.ret ? 'Fri 31 Oct, morning · shared run · free' : 'Since 28 Oct · S$18 / month'}</span></span>
+                  <span className="th g-dt" aria-hidden="true"><b>{s.storage.ret === 'next' ? nextDayBack(s) % 31 || 31 : s.storage.ret ? poolBack(s) % 31 || 31 : pickDay(s)}</b><span>{s.storage.ret === 'next' ? wd(nextDayBack(s)).toUpperCase() : s.storage.ret ? wd(poolBack(s)).toUpperCase() : 'OCT'}</span></span>
+                  <span><b>{s.storage.ret ? 'Coming home' : 'At the OutRent Hub'}</b><span>{s.storage.ret === 'next' ? `${dm(nextDayBack(s))} · 17:00–19:00 · S$8 · to Blk 325C` : s.storage.ret ? `${dayLong(poolBack(s))}, morning · shared run · free` : `Since ${dm(pickDay(s))} · S$18 / month`}</span></span>
                   <Chev />
                 </button>
               )}

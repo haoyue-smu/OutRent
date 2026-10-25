@@ -5,13 +5,15 @@ import { useBack } from '../../shell/Link'
 import { lock } from '../../shell/PageFrame'
 import { BackButton, IC_PATHS, LineIcon, Mono, TimeSkip, haptic, still } from '../../shell/direction'
 import { routeFor } from '../../pages'
-import { HUB, clockOf, offRouteNow, set, setClock, useStore, type StoreWay } from '../../shell/store'
+import { clockOf, offRouteNow, set, setClock, useStore, type StoreWay } from '../../shell/store'
+import { DOOR_DAYS, RACK_DAYS, dayLong, dm, hubNow, intakeAt, pickDay, wd } from '../../shell/storage'
 import './pickup.css'
 
 // 17 Hub pickup · the fitter's line. Choose first: door pickup (S$10, daily 17:00–19:00) or Rack S (S$5, leave it
-// before 7:00, shared courier run 7:00–10:00 Tue and Fri). A 24-hour dial shows when the courier comes on Tue 28 Oct;
+// before 7:00, shared courier run 7:00–10:00 Tue and Fri). The pickup day is a choice (PO-ANSWERS v1.8: door any day
+// Sat 25 – Fri 31 Oct, Rack S on Tue 28 or Fri 31; Tue 28 is the seeded one). A 24-hour dial shows when the courier comes;
 // booking sends a bike token round the chosen window and the centre reads "Pickup booked". The booking is kept in
-// the story state; "See it at the Hub" skips the clock to Wed 29 Oct 10:00 and opens 15 at the Hub.
+// the story state; "See it at the Hub" skips the clock to the morning after the intake (Wed 29 Oct 10:00 for Tue 28).
 // Source: the Creative Director's prototype v52 (#17).
 
 type Way = Exclude<StoreWay, ''>
@@ -24,7 +26,7 @@ const T: Record<Way, { time: string; price: string; cta: string; centre: string;
   home: { time: '17:00–19:00', price: 'S$10', cta: 'Book door pickup · S$10', centre: 'Courier at your door', at: 'Courier at your door · S$10', k: 'Pickup', dd: 'At your door, Blk 325C Sengkang East Way #11-42' },
   rack: { time: '7:00–10:00', price: 'S$5', cta: 'Book rack drop-off · S$5', centre: 'Courier at Rack S', at: 'Courier at Rack S · S$5', k: 'Leave it', dd: 'At Rack S, Blk 325C void deck, before 7:00' },
 }
-const SKIP_MARKS: [number, string][] = [[72, 'SAT'], [96, 'SUN'], [120, 'MON'], [144, 'TUE'], [168, 'WED']]
+const SKIP_MARKS: [number, string][] = [[72, 'SAT'], [96, 'SUN'], [120, 'MON'], [144, 'TUE'], [168, 'WED'], [192, 'THU'], [216, 'FRI'], [240, 'SAT']]
 
 export default function Pickup() {
   const navigate = useNavigate()
@@ -34,6 +36,8 @@ export default function Pickup() {
   const st = s.storage
   const now = offRouteNow(s)
   const [pick, setPick] = useState<Way | ''>(st.way || '')
+  const [day, setDay] = useState(pickDay(s))
+  const HUB = hubNow({ ...s, storage: { ...st, day } })
   const booked = st.booked && !!st.way
   const path = (booked ? st.way : pick) as Way | ''
   const [rolling, setRolling] = useState(false)   // the token is on its way round; the centre still shows the choice
@@ -58,6 +62,7 @@ export default function Pickup() {
   const choose = (w: Way) => {
     if (booked) return
     setPick(w); haptic()
+    if (w === 'rack' && !RACK_DAYS.includes(day)) setDay(28)
     if (still()) return
     requestAnimationFrame(() => {
       const a = root.current?.querySelector<SVGPathElement>(w === 'home' ? '.a-eve' : '.a-run')
@@ -75,7 +80,7 @@ export default function Pickup() {
       return
     }
     haptic(); lock(go.current)
-    set((x) => ({ ...x, storage: { ...x.storage, way: pick, booked: true } }))
+    set((x) => ({ ...x, storage: { ...x.storage, way: pick, booked: true, day } }))
     if (still()) { requestAnimationFrame(() => card.current && centerIn(card.current)); return }
     // the bike token rides the chosen window on the dial, then the centre reads booked
     setRolling(true)
@@ -117,6 +122,14 @@ export default function Pickup() {
             </button>
           </div>
 
+          {path && (
+            <div className="days17" role="group" aria-label="Pickup day">
+              {(path === 'home' ? DOOR_DAYS : RACK_DAYS).map((d) => (
+                <button key={d} type="button" className="d17" aria-pressed={day === d} disabled={booked && day !== d} aria-label={`Pickup on ${dayLong(d)}`}
+                  onClick={() => { if (!booked) { setDay(d); haptic() } }}><span>{wd(d).toUpperCase()}</span><b>{d}</b></button>
+              ))}
+            </div>
+          )}
           <div className={`dial17${booked ? ' booked' : ''}`} data-path={path || undefined}>
             <svg className="dsvg17" viewBox="0 0 280 280" aria-hidden="true">
               <circle className="d-ring" cx={C} cy={C} r={R} />
@@ -133,8 +146,8 @@ export default function Pickup() {
               </g>
             </svg>
             <div className="dc" aria-live="polite">
-              <Mono>{showBooked ? 'Pickup booked' : t ? 'Tue 28 Oct' : 'Pickup day'}</Mono>
-              <b>{showBooked && t ? <>28 Oct<br />{t.time}</> : t ? t.time : 'Tue 28 Oct'}</b>
+              <Mono>{showBooked ? 'Pickup booked' : t ? dayLong(day) : 'Pickup day'}</Mono>
+              <b>{showBooked && t ? <>{dm(day)}<br />{t.time}</> : t ? t.time : dayLong(day)}</b>
               <span>{showBooked && t ? t.centre : t ? t.at : 'Choose door or rack to see the time'}</span>
             </div>
           </div>
@@ -148,7 +161,7 @@ export default function Pickup() {
           {booked && t && (
             <div className="booked17" ref={card} role="status">
               <span className="mono bk-k"><LineIcon name="check" />Pickup booked</span>
-              <b className="bk-t">Tue 28 Oct · {t.time}</b>
+              <b className="bk-t">{dayLong(day)} · {t.time}</b>
               <dl className="bk-rows">
                 <div><dt>{t.k}</dt><dd>{t.dd}</dd></div>
                 <div><dt>Goes to</dt><dd>OutRent Hub, Sungei Kadut</dd></div>
@@ -160,11 +173,11 @@ export default function Pickup() {
       </main>
       <div className="dock">
         <button type="button" ref={go} className="cta s17-go" disabled={!path} onClick={book}>
-          {booked ? (st.hub ? 'See it at the Hub' : 'See it at the Hub · 29 Oct') : t ? t.cta : 'Choose door or rack'}
+          {booked ? (st.hub ? 'See it at the Hub' : `See it at the Hub · ${dm(day + 1)}`) : t ? t.cta : 'Choose door or rack'}
         </button>
       </div>
       {skipping && (
-        <TimeSkip from={now} to={HUB} marks={SKIP_MARKS} caption="The Giant Escape 3 is checked in at the Hub on 28 Oct at 19:45."
+        <TimeSkip from={now} to={HUB} marks={SKIP_MARKS} caption={`The Giant Escape 3 is checked in at the Hub on ${intakeAt(s).replace(' · ', ' at ')}.`}
           onDone={() => {
             set((x) => ({ ...x, now: Math.max(x.now, HUB), storage: { ...x.storage, hub: true } }))
             navigate(routeFor('15-equipment-detail'), { replace: true, state: { how: 'skip', back: '14-my-equipment' } })

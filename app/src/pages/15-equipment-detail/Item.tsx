@@ -5,7 +5,8 @@ import { Photo } from '../../shell/Photo'
 import { useBack } from '../../shell/Link'
 import { BackButton, Chev, LineIcon, Mono, Sheet, haptic, still, useSheet, useToast } from '../../shell/direction'
 import { routeFor } from '../../pages'
-import { HUB, clockOf, dateLabel, dayOf, offRouteNow, set, setClock, useStore, type Return } from '../../shell/store'
+import { clockOf, dateLabel, dayOf, offRouteNow, set, setClock, useStore, type Return } from '../../shell/store'
+import { dayLong, dm, hubNow, intakeAt, nextDayBack, pickDay, poolBack } from '../../shell/storage'
 import corridor from '@photos/15-equipment-detail/assets/15-direction-15-giant-corridor.webp'
 import hubPhoto from '@photos/15-equipment-detail/assets/15-direction-15-giant-hub.webp'
 import drive from '@photos/15-equipment-detail/assets/15-direction-15-intake-drive.webp'
@@ -19,10 +20,11 @@ import './item.css'
 // Source: the Creative Director's prototype v52 (#15). Rent-out and the return booking are kept in the story state.
 
 const HOME_ADDR = 'Blk 325C Sengkang East Way'
-const RET: Record<Exclude<Return, ''>, { b: string; s: string; cta: string }> = {
-  pool: { b: 'Coming home on the shared courier run', s: `Fri 31 Oct, morning · free · to ${HOME_ADDR}`, cta: 'Schedule return · free' },
-  next: { b: 'Coming home next day', s: `30 Oct · 17:00–19:00 · S$8 · to ${HOME_ADDR}`, cta: 'Schedule return · S$8' },
-}
+// the two ways back, dated from the pickup day (Tue 28: Fri 31 Oct pooled, 30 Oct next day, as VS-6 seeds)
+const retOf = (pool: number, next: number): Record<Exclude<Return, ''>, { b: string; s: string; cta: string; when: string }> => ({
+  pool: { b: 'Coming home on the shared courier run', s: `${dayLong(pool)}, morning · free · to ${HOME_ADDR}`, cta: 'Schedule return · free', when: `${dayLong(pool)}, morning · 2 days’ notice` },
+  next: { b: 'Coming home next day', s: `${dm(next)} · 17:00–19:00 · S$8 · to ${HOME_ADDR}`, cta: 'Schedule return · S$8', when: `${dm(next)} · 17:00–19:00` },
+})
 
 export default function Item() {
   const navigate = useNavigate()
@@ -32,7 +34,8 @@ export default function Item() {
   const s = useStore((x) => x)
   const st = s.storage
   const hub = st.hub
-  const now = hub ? Math.max(s.now, HUB) : offRouteNow(s)
+  const now = hub ? Math.max(s.now, hubNow(s)) : offRouteNow(s)
+  const pd = pickDay(s), RET = retOf(poolBack(s), nextDayBack(s))
   const fromSkip = (location.state as { back?: string } | null)?.back === '14-my-equipment'
   const toGear = () => navigate(routeFor('14-my-equipment'), { replace: true, state: { how: 'back' } })
   const back = useBack(() => navigate(routeFor('14-my-equipment')))
@@ -87,7 +90,7 @@ export default function Item() {
             : <Photo key="home" src={corridor} alt="The Giant Escape 3 standing across the flat’s corridor" width={393} height={290} first className="p15-home" />}
           <span className="shade" />
           <BackButton label={fromSkip ? 'Back to My gear' : 'Back'} onClick={goBack} onPhoto />
-          <div className="cap"><Mono className="state15"><i />{hub ? 'At the OutRent Hub since 28 Oct' : 'At home · corridor'}</Mono><Mono>{dateLabel(now)}</Mono></div>
+          <div className="cap"><Mono className="state15"><i />{hub ? `At the OutRent Hub since ${dm(pd)}` : 'At home · corridor'}</Mono><Mono>{dateLabel(now)}</Mono></div>
         </div>
         <div className="over pad">
           <h1 className="t-h1">Giant Escape 3</h1>
@@ -95,8 +98,8 @@ export default function Item() {
 
           <section className="idle15">
             <Mono>Last used</Mono>
-            <div className="big"><b>{hub ? '1 day ago' : '5 months ago'}</b><span>{hub ? '28 Oct · updated by the intake' : '24 May 2026'}</span></div>
-            <Ruler hub={hub} now={now} />
+            <div className="big"><b>{hub ? '1 day ago' : '5 months ago'}</b><span>{hub ? `${dm(pd)} · updated by the intake` : '24 May 2026'}</span></div>
+            <Ruler hub={hub} now={now} pd={pd} />
             <div className="auto15"><LineIcon name="auto" /><span>Dates update on their own when this item moves through OutRent.</span></div>
           </section>
 
@@ -118,16 +121,16 @@ export default function Item() {
               {st.booked && (
                 <div className="done15" role="status">
                   <b>Pickup booked</b>
-                  <span>{st.way === 'rack' ? 'Tue 28 Oct · leave it at Rack S before 7:00 · S$5' : 'Tue 28 Oct · 17:00–19:00 at your door · S$10'}</span>
+                  <span>{st.way === 'rack' ? `${dayLong(pd)} · leave it at Rack S before 7:00 · S$5` : `${dayLong(pd)} · 17:00–19:00 at your door · S$10`}</span>
                 </div>
               )}
             </div>
           ) : (
             <div>
-              <div className="costrun"><span><Mono>Storage</Mono><br /><span className="small">Running since 28 Oct · OutRent Hub, Sungei Kadut</span></span><b>S$18 / month</b></div>
-              {st.way && <div className="kv"><b>Got there</b><span className="v">{st.way === 'home' ? 'S$10' : 'S$5'}</span><span className="s">{st.way === 'home' ? 'Door pickup · 28 Oct · 17:00–19:00' : 'Rack S drop-off · 28 Oct · shared courier run 7:00–10:00'}</span></div>}
+              <div className="costrun"><span><Mono>Storage</Mono><br /><span className="small">Running since {dm(pd)} · OutRent Hub, Sungei Kadut</span></span><b>S$18 / month</b></div>
+              {st.way && <div className="kv"><b>Got there</b><span className="v">{st.way === 'home' ? 'S$10' : 'S$5'}</span><span className="s">{st.way === 'home' ? `Door pickup · ${dm(pd)} · 17:00–19:00` : `Rack S drop-off · ${dm(pd)} · shared courier run 7:00–10:00`}</span></div>}
               <article className="intake">
-                <header className="intake-h"><Mono>Intake record</Mono><Mono>28 Oct · 19:45 · OutRent Hub</Mono></header>
+                <header className="intake-h"><Mono>Intake record</Mono><Mono>{intakeAt(s)} · OutRent Hub</Mono></header>
                 <div className="intake-ph">
                   <figure><div className="ph"><Photo src={drive} alt="Intake photo: the drivetrain, chain worn" width={106} height={106} /></div><figcaption><b>Drivetrain</b><span className="intake-note">Chain worn</span></figcaption></figure>
                   <figure><div className="ph"><Photo src={left} alt="Intake photo: the frame, left side" width={106} height={106} /></div><figcaption><b>Frame</b>Left side</figcaption></figure>
@@ -148,14 +151,14 @@ export default function Item() {
       </main>
       <div className="dock">
         <button type="button" className="cta s15-go" onClick={dock}>
-          {hub ? (st.ret ? 'Back to My gear' : 'Bring it back') : st.booked ? 'See the pickup · Tue 28 Oct' : 'Store it at the Hub'}
+          {hub ? (st.ret ? 'Back to My gear' : 'Bring it back') : st.booked ? `See the pickup · ${dayLong(pd)}` : 'Store it at the Hub'}
         </button>
       </div>
 
       <Sheet sheet={rent} label="Rent-out terms" title="Rent it out while stored" closeLabel="Close, back to the Giant Escape 3">
         <Split />
         <div className="terms18 s15-terms">
-          <div><LineIcon name="check" /><span>Its condition is <b>re-checked after every rental</b> against the intake record of 28 Oct.</span></div>
+          <div><LineIcon name="check" /><span>Its condition is <b>re-checked after every rental</b> against the intake record of {dm(pd)}.</span></div>
           <div><LineIcon name="check" /><span>You opt in yourself and can see earnings to date on this page.</span></div>
         </div>
         <label className="ack15"><input type="checkbox" checked={ack} onChange={(e) => setAck(e.target.checked)} tabIndex={rent.open ? 0 : -1} /><span>I agree to the rent-out terms.</span></label>
@@ -164,8 +167,8 @@ export default function Item() {
 
       <Sheet sheet={bring} label="Bring it back" title="Bring it back" closeLabel="Close, back to the Giant Escape 3">
         <div className="fromto"><Mono>From</Mono><span>OutRent Hub, Sungei Kadut</span><Mono>To</Mono><span>Blk 325C Sengkang East Way #11-42</span></div>
-        <button type="button" className="opt" aria-pressed={ret === 'pool'} onClick={() => { setRet('pool'); haptic() }}><span className="rad" /><b>Shared courier run</b><span className="pr">Free</span><span className="s">Fri 31 Oct, morning · 2 days’ notice</span></button>
-        <button type="button" className="opt" aria-pressed={ret === 'next'} onClick={() => { setRet('next'); haptic() }}><span className="rad" /><b>Next day, to your door</b><span className="pr">S$8</span><span className="s">30 Oct · 17:00–19:00</span></button>
+        <button type="button" className="opt" aria-pressed={ret === 'pool'} onClick={() => { setRet('pool'); haptic() }}><span className="rad" /><b>Shared courier run</b><span className="pr">Free</span><span className="s">{RET.pool.when}</span></button>
+        <button type="button" className="opt" aria-pressed={ret === 'next'} onClick={() => { setRet('next'); haptic() }}><span className="rad" /><b>Next day, to your door</b><span className="pr">S$8</span><span className="s">{RET.next.when}</span></button>
         <button type="button" className="cta s15-ret" onClick={schedule}>{RET[ret].cta}</button>
       </Sheet>
       {toastNode}
@@ -184,7 +187,7 @@ function Split() {
 }
 
 // May to October on one line: the last ride on 24 May, the gap since, and today (or the Hub intake on 28 Oct).
-function Ruler({ hub, now }: { hub: boolean; now: number }) {
+function Ruler({ hub, now, pd }: { hub: boolean; now: number; pd: number }) {
   const box = useRef<HTMLDivElement>(null)
   const [W, setW] = useState(353)
   useLayoutEffect(() => { if (box.current?.clientWidth) setW(box.current.clientWidth) }, [])
@@ -192,7 +195,7 @@ function Ruler({ hub, now }: { hub: boolean; now: number }) {
   const day = (m: number, d: number) => Date.UTC(2026, m, d)
   const x = (t: number) => 6 + ((t - t0) / (t1 - t0)) * (W - 12)
   const today = dayOf(now)
-  const a = x(day(4, 24)), nowX = x(day(today.m === 'Nov' ? 10 : 9, today.d)), intake = x(day(9, 28))
+  const a = x(day(4, 24)), nowX = x(day(today.m === 'Nov' ? 10 : 9, today.d)), intake = x(day(9, pd))
   const end = hub ? intake : nowX
   return (
     <div className="ruler15" ref={box}>
@@ -209,11 +212,11 @@ function Ruler({ hub, now }: { hub: boolean; now: number }) {
         })}
         <g className="gap15"><path className="r-gap" d={`M${a} 26 H${end}`} /><text x={(a + end) / 2} y={21} textAnchor="middle">{hub ? 'IDLE 5 MONTHS' : '5 MONTHS UNUSED'}</text></g>
         <circle className="r-a" cx={a} cy={40} r={5} /><text className="k" x={a} y={74} textAnchor="middle">24 MAY</text>
-        {hub && <g className="in15"><circle className="r-in" cx={intake} cy={40} r={6} /><text className="f" x={intake} y={74} textAnchor="end">28 OCT · HUB INTAKE</text></g>}
+        {hub && <g className="in15"><circle className="r-in" cx={intake} cy={40} r={6} /><text className="f" x={intake} y={74} textAnchor="end">{pd} OCT · HUB INTAKE</text></g>}
         <line className="r-now" x1={nowX} x2={nowX} y1={26} y2={50} />
         {!hub && <text className="f" x={nowX} y={20} textAnchor="end">NOW</text>}
       </svg>
-      <span className="sr-only">{hub ? 'Last used 24 May; checked in at the Hub on 28 Oct after five months idle.' : 'Last used 24 May; five months unused until today.'}</span>
+      <span className="sr-only">{hub ? `Last used 24 May; checked in at the Hub on ${dm(pd)} after five months idle.` : 'Last used 24 May; five months unused until today.'}</span>
     </div>
   )
 }

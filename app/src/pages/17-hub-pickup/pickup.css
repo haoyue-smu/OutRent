@@ -49,3 +49,13 @@
 
 /* Narrow phones (360 px): the window labels sit outside the 280 px dial, so the dial gives a little room. */
 @media (max-width: 380px) { .dial17 { transform: scale(0.92); } }
+
+/* the pickup day: door any day of the week ahead, Rack S on the two pooled runs */
+.days17 { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; margin-top: 14px; }
+.d17 { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; height: 52px; padding: 0; border: var(--hair) solid var(--rule); border-radius: 14px; background: var(--sheet); color: var(--ink); cursor: pointer; transition: background-color 0.2s, color 0.2s, border-color 0.2s, transform var(--t-press) var(--ease); }
+.d17 span { font-family: var(--mono); font-size: 9px; letter-spacing: 0.08em; color: var(--ink-3); }
+.d17 b { font-size: 17px; line-height: 20px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.d17:active { transform: scale(0.96); }
+.d17[aria-pressed="true"] { border-color: var(--forest); background: var(--forest); color: var(--white); }
+.d17[aria-pressed="true"] span { color: var(--on-forest-label); }
+.d17:disabled { opacity: 0.45; cursor: default; }

@@ -6,7 +6,7 @@ const J = { ...J1, ...J2 }
 
 const PERSONA = {
   E1: 'Daniel · first rental, default choices', E2: 'Daniel · different choices', E3: 'Beginner from Home',
-  E4: 'Careful renter, back and forth', E5: 'Weekly regular', E6: 'Owner of the Giant Escape 3 · door, next-day return', E6b: 'Owner · Rack S, pooled return', E7: 'Chaos', E7r: 'Chaos · reduced motion',
+  E4: 'Careful renter, back and forth', E5: 'Weekly regular', E6: 'Owner of the Giant Escape 3 · door, next-day return', E6b: 'Owner · Rack S, pooled return', E6c: 'Owner · picks another pickup day', E7: 'Chaos', E7r: 'Chaos · reduced motion',
 }
 const want = process.argv.slice(2).length ? process.argv.slice(2) : Object.keys(PERSONA).filter((k) => J[k] && k !== 'book')
 const out = []

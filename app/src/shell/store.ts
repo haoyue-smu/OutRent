@@ -18,7 +18,7 @@ export type State = {
   record: { shots: string[]; marks: string[]; saved: boolean }   // 11
   closed: boolean                            // 12: returned, deposit released
   weekly: boolean                            // 13: every Saturday from 1 Nov
-  storage: { way: StoreWay; booked: boolean; hub: boolean; rentOn: boolean; ret: Return }
+  storage: { way: StoreWay; booked: boolean; hub: boolean; rentOn: boolean; ret: Return; day?: number }   // day: pickup day in Oct (17)
   added: null | { type: string; where: string; name?: string }   // 14: the track pump
   rackLeft: boolean                          // 18: on the rain day the Marlin 7 was left at Rack C instead
 }
@@ -115,7 +115,7 @@ export const offRouteNow = (s: State = state) => Math.max(s.now, FRI)
 export const homeNow = (s: State = state) => (s.paid || s.now > FRI ? Math.max(s.now, FRI) : s.now)
 // The rental is over once the deposit is released (25 Oct · 14:05). A story that has moved past it
 // (the storage skip to 29 Oct) counts it as closed too.
-export const isClosed = (s: State = state) => s.paid && (s.closed || s.now >= HUB)
+export const isClosed = (s: State = state) => s.paid && (s.closed || s.now >= SAT + 14 + 5 / 60)
 
 const DAYS = ['Wed', 'Thu', 'Fri', 'Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 export function dayOf(t: number) {

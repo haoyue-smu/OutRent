@@ -69,8 +69,8 @@ export function haptic() {
 // with the days and Saturday's times marked on a line; then onDone opens the next page.
 // 08 -> 10 (Wed 9:12 -> Sat 7:22) and 11 -> 12 (Sat 7:40 -> 14:05).
 export const SKIP_MARKS: [number, string][] = [[24, 'THU'], [48, 'FRI'], [72, 'SAT'], [79 + 40 / 60, '7:40'], [80, '8:00'], [84.5, '12:30'], [85.5, '13:30']]
-const SKIP_DAYS = ['WED 22 OCT', 'THU 23 OCT', 'FRI 24 OCT', 'SAT 25 OCT', 'SUN 26 OCT', 'MON 27 OCT', 'TUE 28 OCT', 'WED 29 OCT']
-const skipFmt = (t: number) => [SKIP_DAYS[Math.min(7, Math.floor(t / 24))], `${Math.floor(t % 24)}:${String(Math.floor((t * 60) % 60)).padStart(2, '0')}`]
+const SKIP_DAYS = ['WED 22 OCT', 'THU 23 OCT', 'FRI 24 OCT', 'SAT 25 OCT', 'SUN 26 OCT', 'MON 27 OCT', 'TUE 28 OCT', 'WED 29 OCT', 'THU 30 OCT', 'FRI 31 OCT', 'SAT 1 NOV']
+const skipFmt = (t: number) => [SKIP_DAYS[Math.min(10, Math.floor(t / 24))], `${Math.floor(t % 24)}:${String(Math.floor((t * 60) % 60)).padStart(2, '0')}`]
 export function TimeSkip({ from, to, caption, onDone, marks = SKIP_MARKS }: { from: number; to: number; caption: string; onDone: () => void; marks?: [number, string][] }) {
   const done = useRef(onDone)
   const root = useRef<HTMLDivElement>(null)

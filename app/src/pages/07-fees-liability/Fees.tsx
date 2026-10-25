@@ -96,7 +96,7 @@ export default function Fees() {
               {LINES.map(([k, v]) => <div key={k} className="ln"><dt>{k}</dt><i aria-hidden="true" /><dd className="num">{v}</dd></div>)}
               <p className="small s7-flat">Nothing else is charged.</p>
             </dl>
-            <div className="dep2"><Icon name="lock-simple" /><span><b>Plus a S$150 deposit, held</b>It is not charged. Released after the return check on 25&nbsp;Oct.</span></div>
+            <div className="dep2"><Icon name="lock-simple" /><span><b>Plus a S$150 deposit, held on Visa ···4821</b>It is not charged. Released after the return check on 25&nbsp;Oct.</span></div>
             <section className="terms2">
               <h2 className="t-h2">The terms, in short</h2>
               <ul>

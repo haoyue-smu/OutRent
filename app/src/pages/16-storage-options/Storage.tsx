@@ -6,7 +6,8 @@ import { Icon } from '../../shell/Icon'
 import { useBack } from '../../shell/Link'
 import { BackButton, LineIcon, Mono, Sheet, haptic, still, useSheet } from '../../shell/direction'
 import { routeFor } from '../../pages'
-import { HUB, clockOf, offRouteNow, set, setClock, useStore } from '../../shell/store'
+import { clockOf, offRouteNow, set, setClock, useStore } from '../../shell/store'
+import { dayLong, hubNow, pickDay } from '../../shell/storage'
 import hubPhoto from '@photos/16-storage-options/assets/16-direction-16-hub.webp'
 import './storage.css'
 
@@ -22,7 +23,7 @@ export default function Storage() {
   const s = useStore((x) => x)
   const st = s.storage
   const on = st.rentOn
-  const now = st.hub ? Math.max(s.now, HUB) : offRouteNow(s)
+  const now = st.hub ? Math.max(s.now, hubNow(s)) : offRouteNow(s)
 
   useEffect(() => { setClock(clockOf(now)) }, [now])
 
@@ -44,7 +45,7 @@ export default function Storage() {
 
   const dock = st.hub
     ? { label: 'See it at the Hub', to: '15-equipment-detail' }
-    : st.booked ? { label: 'See the pickup · Tue 28 Oct', to: '17-hub-pickup' } : { label: 'Send the Giant Escape 3', to: '17-hub-pickup' }
+    : st.booked ? { label: `See the pickup · ${dayLong(pickDay(s))}`, to: '17-hub-pickup' } : { label: 'Send the Giant Escape 3', to: '17-hub-pickup' }
 
   return (
     <>
