@@ -43,7 +43,7 @@
 .fps { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s-2); }
 .fp { display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 11.5px; color: var(--ink-2); white-space: nowrap; }
 .fpp { position: relative; width: 76px; height: 52px; }
-.fpp .photo { position: absolute; width: 54px; height: 40px; object-fit: cover; border-radius: var(--r-tick); box-shadow: var(--shadow-photo-edge); }
+.fpp .photo { position: absolute; width: 54px; height: 40px; object-fit: cover; border-radius: 7px; box-shadow: var(--shadow-photo-edge); }
 .fpp .photo:first-child { left: 0; top: 0; filter: saturate(0.7); }
 .fpp .photo:last-child { right: 0; bottom: 0; }
 .fsum b { display: block; font-size: var(--fs-body); font-weight: 600; color: var(--forest); }
@@ -51,7 +51,7 @@
 .fsum .fsum-l { display: block; }
 .reopen { align-self: flex-start; min-height: 40px; margin-top: 2px; padding: 0 14px; border: var(--hair) solid var(--rule); border-radius: var(--r-pill); background: none; color: var(--ink); font: inherit; font-size: 13.5px; font-weight: 600; cursor: pointer; }
 
-.reportrow { display: grid; grid-template-columns: 22px 1fr 14px; gap: var(--s-3); align-items: center; width: 100%; margin-top: 18px; padding: 14px var(--s-4); border: 1.5px solid var(--rule); border-radius: var(--r-thumb); background: var(--sheet); color: var(--ink); font: inherit; text-align: left; cursor: pointer; }
+.reportrow { display: grid; grid-template-columns: 22px 1fr 14px; gap: var(--s-3); align-items: center; width: 100%; margin-top: 18px; padding: 14px var(--s-4); border: 1.5px solid var(--rule); border-radius: 16px; background: var(--sheet); color: var(--ink); font: inherit; text-align: left; cursor: pointer; }
 .reportrow:active { transform: scale(0.98); }
 .reportrow .icon { width: 20px; height: 20px; }
 .reportrow .icon:last-child { width: 14px; height: 14px; color: var(--ink-3); }
