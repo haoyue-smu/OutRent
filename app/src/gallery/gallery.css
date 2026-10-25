@@ -1,0 +1,39 @@
+/* The components page: gallery layout only. Every piece shown comes from the app's own CSS. */
+.gallery-page { position: fixed; inset: 0; overflow-y: auto; background: var(--paper); color: var(--ink); }
+.gallery { display: flex; flex-direction: column; gap: 48px; max-width: 1120px; margin: 0 auto; padding: 40px max(16px, env(safe-area-inset-right, 0px)) 80px max(16px, env(safe-area-inset-left, 0px)); }
+.g-head { display: flex; flex-direction: column; gap: var(--s-2); max-width: 680px; }
+.g-toc { display: flex; flex-wrap: wrap; gap: var(--s-1) var(--s-4); margin-top: var(--s-2); }
+.g-toc a { min-height: 32px; color: var(--forest); font-family: var(--mono); font-size: var(--fs-mono); letter-spacing: var(--track-label); text-transform: uppercase; text-decoration: none; }
+.g-sec { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: var(--s-6); scroll-margin-top: 24px; }
+.g-sec > header { display: flex; flex-direction: column; gap: 6px; }
+.g-sec > header p { margin: 0; }
+.g-panel { display: flex; flex-direction: column; gap: 20px; min-width: 0; padding: var(--s-5); border: var(--hair) solid var(--rule); border-radius: var(--r-card); background: var(--sheet); }
+.g-row { display: flex; flex-wrap: wrap; gap: var(--s-4); align-items: flex-end; }
+.g-state { display: flex; flex-direction: column; align-items: flex-start; gap: var(--s-2); }
+.g-narrow { display: flex; flex-direction: column; gap: var(--s-3); width: 100%; max-width: 353px; }
+.g-w240 { width: 240px; }
+.g-rules { gap: var(--s-4); padding: var(--s-2) 0; }
+.g-group { display: flex; flex-direction: column; gap: 10px; }
+.swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: var(--s-3); }
+.sw { display: flex; flex-direction: column; gap: 2px; min-width: 0; font-size: var(--fs-label); line-height: 16px; }
+.sw i { display: block; height: 52px; margin-bottom: 4px; border: var(--hair) solid var(--rule); border-radius: var(--r-lens); }
+.sw b { font-family: var(--mono); font-size: 11.5px; font-weight: 500; overflow-wrap: anywhere; }
+.sw span { color: var(--ink-2); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.g-type { display: flex; flex-direction: column; gap: 6px; padding-bottom: var(--s-3); border-bottom: var(--hair) solid var(--rule-2); }
+.g-onphoto { position: relative; width: 120px; height: 80px; border-radius: var(--r-thumb); overflow: hidden; }
+.g-onphoto .photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.g-onphoto .back { position: absolute; left: 8px; top: 18px; }
+/* a slice of the phone, for the pieces that sit on its edges */
+.g-phone { position: relative; width: 100%; max-width: 393px; height: 190px; overflow: hidden; border: var(--hair) solid var(--rule); border-radius: var(--r-sheet); background: var(--paper); --top-safe: 10px; --bottom-float: 22px; --bottom-tab: 24px; }
+.g-phone.g-short { height: 96px; }
+.g-phone.g-tall { height: 520px; }
+.g-phone-copy { padding-top: 24px; }
+.g-photo { position: relative; width: 240px; height: 150px; border-radius: var(--r-lens); overflow: hidden; }
+.g-photo .photo { width: 100%; height: 100%; object-fit: cover; }
+.g-stamp { position: relative; width: 140px; height: 120px; border-radius: var(--r-inset); background: var(--tag-paper); cursor: pointer; }
+.g-stamp .stamp { right: 28px; bottom: 18px; }
+.g-stamp .stamp.g-land { animation: g-land 0.35s cubic-bezier(0.7, 0, 0.84, 0); }
+@keyframes g-land { from { transform: scale(2.2) rotate(-30deg); opacity: 0; } to { transform: rotate(-14deg); opacity: 0.9; } }
+.g-flash dd { animation: flash 1.1s var(--ease); }
+@media (max-width: 760px) { .g-sec { grid-template-columns: 1fr; } }
+@media (prefers-reduced-motion: reduce) { .g-stamp .stamp.g-land, .g-flash dd { animation: none; } }
