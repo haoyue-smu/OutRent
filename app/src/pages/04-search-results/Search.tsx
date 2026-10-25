@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { gsap } from 'gsap'
 import { GoTo, useBack } from '../../shell/Link'
@@ -6,19 +6,20 @@ import { Icon } from '../../shell/Icon'
 import { Photo } from '../../shell/Photo'
 import { BackButton, Mono, still, useToast } from '../../shell/direction'
 import { routeFor } from '../../pages'
+import { fitNow, getState, setClock, useStore } from '../../shell/store'
 import m7 from '@photos/04-search-results/assets/04-direction-marlin-7.webp'
 import m6 from '@photos/04-search-results/assets/04-direction-marlin-6.webp'
 import scott from '@photos/04-search-results/assets/04-direction-scott-aspect-950.webp'
 import './search.css'
 
-// 04 Search results · the fitter's line. Each result is one object: photo, price, and its own time scale
-// against the 8:00 start. Source: the Creative Director's prototype "OutRent · direction" (#04), approved 25 Oct 00:25.
+// 04 Search results · the fitter's line (v52). Each result is one object: photo, price, and its own time scale
+// against the 8:00 start. The frame size in the query and on every result is the one from 03.
 
 type Result = { id: string; src: string; alt: string; name: string; price: string; who: string; rating: string; reviews: string; at: number; fits: boolean; open?: boolean }
 const RESULTS: Result[] = [
-  { id: 'm7', src: m7, alt: 'This Trek Marlin 7 on the Timah Cycles stand', name: 'Trek Marlin 7 · M', price: 'S$50', who: 'Timah Cycles · shop', rating: '4.9', reviews: '23', at: 7 + 40 / 60, fits: true, open: true },
-  { id: 'm6', src: m6, alt: 'This Trek Marlin 6 at Rodalink', name: 'Trek Marlin 6 · M', price: 'S$46', who: 'Rodalink · shop', rating: '4.7', reviews: '58', at: 7 + 40 / 60, fits: true },
-  { id: 'scott', src: scott, alt: 'This Scott Aspect 950 at the owner’s void deck', name: 'Scott Aspect 950 · M', price: 'S$45', who: 'Marcus T. · owner', rating: '4.6', reviews: '9', at: 8.5, fits: false },
+  { id: 'm7', src: m7, alt: 'This Trek Marlin 7 on the Timah Cycles stand', name: 'Trek Marlin 7', price: 'S$50', who: 'Timah Cycles · shop', rating: '4.8', reviews: '126', at: 7 + 40 / 60, fits: true, open: true },
+  { id: 'm6', src: m6, alt: 'This Trek Marlin 6 at Rodalink', name: 'Trek Marlin 6', price: 'S$46', who: 'Rodalink · shop', rating: '4.7', reviews: '58', at: 7 + 40 / 60, fits: true },
+  { id: 'scott', src: scott, alt: 'This Scott Aspect 950 at the owner’s void deck', name: 'Scott Aspect 950', price: 'S$45', who: 'Marcus T. · private owner', rating: '4.6', reviews: '9', at: 8.5, fits: false },
 ]
 
 export default function Search() {
@@ -26,6 +27,8 @@ export default function Search() {
   const back = useBack(() => navigate(routeFor('01-home')))
   const [toastNode, toast] = useToast()
   const list = useRef<HTMLDivElement>(null)
+  const frame = useStore((x) => fitNow(x).frame)
+  useEffect(() => { setClock(getState().paid ? '19:00' : '9:05') }, [])
 
   // Results rise in; each arrival marker slides along its scale from 7:00 to its time.
   useLayoutEffect(() => {
@@ -60,11 +63,11 @@ export default function Search() {
         <div className="pad">
           <button type="button" className="query" onClick={() => toast('Editing the search is not in this demo yet.')}>
             <Icon name="magnifying-glass" small />
-            <span className="q">Hardtail M · Chestnut · Sat 25 Oct</span>
+            <span className="q">Mountain bike, size {frame} · Chestnut · Sat 25 Oct</span>
             <span className="e">Edit</span>
           </button>
           <div className="s4-head">
-            <h1 className="t-h1">3 hardtails for Saturday</h1>
+            <h1 className="t-h1">3 mountain bikes for Saturday</h1>
             <p className="lede">All-in prices: the bike, delivery and collection.</p>
           </div>
           <div className="results" ref={list}>
@@ -73,10 +76,10 @@ export default function Search() {
                 <span className="ph"><Photo src={r.src} alt={r.alt} width={353} height={177} first={r.id === 'm7'} /></span>
                 <span className="body">
                   <span className="top">
-                    <b>{r.name}</b>
+                    <b>{r.name} · size {frame}</b>
                     <span className="pr">{r.price}</span>
                     <span className="sub">{r.who} · <b>{r.rating}</b> ({r.reviews})</span>
-                    <span className="al">all-in</span>
+                    <span className="al">all in</span>
                   </span>
                   <Ruler at={r.at} />
                   <span className={`fit${r.fits ? '' : ' no'}`}>
@@ -105,7 +108,7 @@ function Ruler({ at }: { at: number }) {
   useLayoutEffect(() => { if (box.current?.clientWidth) setW(box.current.clientWidth) }, [])
   const x = (t: number) => 2 + ((t - 7) / 2) * (W - 4)
   const ok = at < 8
-  const label = ok ? `ARRIVES ${Math.abs(at - (7 + 40 / 60)) < 0.01 ? '7:40' : ''} · BEFORE THE 8:00 START` : 'ARRIVES 8:30 · AFTER THE 8:00 START'
+  const label = ok ? `EARLIEST ${Math.abs(at - (7 + 40 / 60)) < 0.01 ? '7:40' : ''} · BEFORE THE 8:00 START` : 'EARLIEST 8:30 · AFTER THE 8:00 START'
   const ticks = []
   for (let t = 7; t <= 9.001; t += 0.25) ticks.push(<line key={t} x1={x(t)} x2={x(t)} y1={Math.abs(t % 1) < 0.01 ? 18 : 21} y2={24} className="tk" />)
   return (
@@ -120,7 +123,7 @@ function Ruler({ at }: { at: number }) {
         <text x={x(8)} y={38} textAnchor="middle">8:00</text>
         <text x={x(9)} y={38} textAnchor="end">9:00</text>
       </svg>
-      <span className="sr-only">{ok ? `Arrives ${at === 7 + 40 / 60 ? '7:40' : ''}, before the 8:00 start` : 'Arrives 8:30, after the 8:00 start'}</span>
+      <span className="sr-only">{ok ? `Earliest ${at === 7 + 40 / 60 ? '7:40' : ''}, before the 8:00 start` : 'Earliest 8:30, after the 8:00 start'}</span>
     </span>
   )
 }
