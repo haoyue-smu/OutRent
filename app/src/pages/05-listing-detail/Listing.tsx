@@ -6,6 +6,7 @@ import { Icon } from '../../shell/Icon'
 import { Photo } from '../../shell/Photo'
 import { BackButton, MeasuredGrid, Measure, Mono, still, useToast } from '../../shell/direction'
 import { routeFor } from '../../pages'
+import { fitNow, getState, setClock, useStore } from '../../shell/store'
 import u1 from '@photos/05-listing-detail/assets/05-direction-u1-stand.webp'
 import u2 from '@photos/05-listing-detail/assets/05-direction-u2-cockpit.webp'
 import u3 from '@photos/05-listing-detail/assets/05-direction-u3-drive.webp'
@@ -17,23 +18,23 @@ import shop from '@photos/05-listing-detail/assets/05-direction-shop.webp'
 import './listing.css'
 
 // 05 Listing · the fitter's line. A proof: this exact bike, its marks circled, its price measured.
-// Source: the Creative Director's prototype "OutRent · direction" (screen s05), approved 24 Oct 22:18.
+// v52. The fit numbers are the ones saved on 03.
 
 type Mark = { x: number; y: number; label: string; lx: string; ly: string }
 type Shot = { src: string; alt: string; date: string; mark?: Mark }
 const SHOTS: Shot[] = [
-  { src: u1, alt: 'This Trek Marlin 7 on the Timah Cycles stand', date: '12 Oct 2026' },
-  { src: u2, alt: 'Cockpit and fork of this bike', date: '12 Oct 2026' },
+  { src: u1, alt: 'This Trek Marlin 7 on the Timah Cycles stand', date: '12 Oct' },
+  { src: u2, alt: 'Cockpit and fork of this bike', date: '12 Oct' },
   { src: u3, alt: 'Drivetrain of this bike', date: '18 Oct · 16:20' },
   { src: u4, alt: 'Left crank arm with a small scratch', date: '18 Oct · 16:20', mark: { x: 45, y: 49, label: 'Scratch', lx: 'calc(45% + 38px)', ly: 'calc(49% - 10px)' } },
   { src: u5, alt: 'Saddle with a scuff on its edge', date: '18 Oct · 16:20', mark: { x: 46, y: 49, label: 'Scuff', lx: 'calc(46% - 30px)', ly: 'calc(49% + 40px)' } },
 ]
 const DAYS: { d: string; n: string; s?: 'you' | 'bk' }[] = [
-  { d: 'F', n: '24' }, { d: 'S', n: '25', s: 'you' }, { d: 'S', n: '26', s: 'bk' }, { d: 'M', n: '27' }, { d: 'T', n: '28' },
+  { d: 'W', n: '22' }, { d: 'T', n: '23' }, { d: 'F', n: '24' }, { d: 'S', n: '25', s: 'you' }, { d: 'S', n: '26', s: 'bk' }, { d: 'M', n: '27' }, { d: 'T', n: '28' },
   { d: 'W', n: '29' }, { d: 'T', n: '30', s: 'bk' }, { d: 'F', n: '31', s: 'bk' }, { d: 'S', n: '1' }, { d: 'S', n: '2' },
 ]
 const SPECS = [
-  ['Frame', 'M, aluminium'], ['Wheels', '29 in'], ['Front fork', '100 mm travel'], ['Gears', '1 × 10'],
+  ['Frame', 'M, aluminium'], ['Wheels', '29 in'], ['Front suspension', '100 mm travel'], ['Gears', '10 gears (1 × 10)'],
   ['Brakes', 'Hydraulic disc'], ['Weight', '13.9 kg'],
 ]
 const DIST = [[5, 91, 21], [4, 9, 2], [3, 0, 0], [2, 0, 0], [1, 0, 0]]
@@ -53,6 +54,8 @@ export default function Listing() {
   const screen = useRef<HTMLElement>(null)
   const price = useRef<HTMLElement>(null)
   const lenses = useRef<(HTMLDivElement | null)[]>([])
+  const f = useStore((x) => fitNow(x))
+  useEffect(() => { setClock(getState().paid ? '19:00' : '9:06') }, [])
 
   // 04 -> 05: the result's photo grows into the photo strip, opening from the photo's rectangle.
   useLayoutEffect(() => {
@@ -117,17 +120,17 @@ export default function Listing() {
         <div className="pad">
           <div className="l-head">
             <h1 className="t-h1">Trek Marlin 7</h1>
-            <div className="l-meta"><span>Size M hardtail</span><span>Timah Cycles</span><span><b>4.9</b> · 23 reviews</span></div>
+            <div className="l-meta"><span>Size {f.frame} mountain bike</span><span>Timah Cycles</span><span>This bike <b>4.9</b> · 23 reviews</span></div>
             <p className="small l-flat">Every photo shows this exact bike.</p>
           </div>
 
           <section className="sec" id="setfor">
             <div className="sec-h"><h2 className="t-h2">Set to your fit before delivery</h2></div>
             <MeasuredGrid items={[
-              { k: 'Saddle', v: '72', unit: 'cm' }, { k: 'Frame', v: 'M' }, { k: 'Fork sag', v: '25', unit: '%' }, { k: 'Bars', v: '+1', unit: 'cm' },
+              { k: 'Saddle', v: String(f.saddle), unit: 'cm' }, { k: 'Frame', v: f.frame }, { k: 'Fork sag', v: '25', unit: '%' }, { k: 'Handlebar', v: '+1', unit: 'cm' },
             ]} />
             <div className="sec-h is-center">
-              <span className="small">From your height 176&nbsp;cm and inside leg 81&nbsp;cm</span>
+              <span className="small">From your height {f.height}&nbsp;cm and inside leg {f.leg}&nbsp;cm</span>
               <GoTo page="03-fit-profile" className="link">Edit fit</GoTo>
             </div>
           </section>
@@ -159,12 +162,12 @@ export default function Listing() {
               </div>
               <Measure>S$50</Measure>
               <div className="fitfree"><span>Setting it to your fit</span><b>S$0, included</b></div>
-              <div className="deposit"><Icon name="lock-simple" /><span><b>S$150 deposit, held, not charged.</b> Released after the return check.</span></div>
+              <div className="deposit"><Icon name="lock-simple" /><span><b>S$150 deposit, held.</b> Released after the return check.</span></div>
             </div>
           </section>
 
           <section className="sec">
-            <div className="sec-h"><h2 className="t-h2">Free on your ride day</h2><Mono>24 Oct – 2 Nov</Mono></div>
+            <div className="sec-h"><h2 className="t-h2">Free on your ride day</h2><Mono>22 Oct – 2 Nov</Mono></div>
             <div className="days">
               {DAYS.map((d) => (
                 <div key={d.n} className={d.s}>
@@ -185,20 +188,20 @@ export default function Listing() {
                 <div className="small">Bike shop · Bukit Timah</div>
                 <div className="small"><b className="l-ink">4.8</b> · 126 reviews</div>
               </div>
-              <button type="button" className="link" onClick={() => toast('Messages with Timah Cycles are not in this slice.')}>Message</button>
+              <button type="button" className="link" onClick={() => toast('Messages with Timah Cycles are not in this demo yet.')}>Message</button>
             </div>
           </section>
 
           <section className="sec">
             <h2 className="t-h2">Specifications</h2>
             <div className="specs">
-              {SPECS.map(([k, v]) => <div key={k}><Mono>{k}</Mono><span className="v">{v}</span></div>)}
+              {SPECS.map(([k, v]) => <div key={k}><Mono>{k}</Mono><span className="v">{k === 'Frame' ? `${f.frame}, aluminium` : v}</span></div>)}
               <div className="wide"><Mono>Assembled size</Mono><span className="v">180 × 110 × 78&nbsp;cm</span></div>
             </div>
           </section>
 
           <section className="sec">
-            <div className="sec-h"><h2 className="t-h2">Reviews of this bike</h2><button type="button" className="link" onClick={() => toast('The full review list is not in this slice.')}>All 23</button></div>
+            <div className="sec-h"><h2 className="t-h2">Reviews of this bike</h2><button type="button" className="link" onClick={() => toast('The full review list is not in this demo yet.')}>All 23</button></div>
             <div className="rev">
               <span className="big num">4.9</span>
               <div className="dist">
@@ -215,7 +218,7 @@ export default function Listing() {
 
       <div className="dock l-dock-wrap">
         <div className="l-dock">
-          <div className="p"><b>S$50 <span>all-in</span></b><small>+ S$150 deposit, held</small></div>
+          <div className="p"><b>S$50 <span>all in</span></b><small>+ S$150 deposit, held</small></div>
           <GoTo page="06-delivery-return" className="cta">Choose delivery</GoTo>
         </div>
       </div>

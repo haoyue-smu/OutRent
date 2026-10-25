@@ -1,4 +1,4 @@
-import { useSyncExternalStore } from 'react'
+import { useRef, useSyncExternalStore } from 'react'
 
 // What has happened so far in Daniel's story, shared by every page and kept for the browser session
 // (a reload keeps it; a new tab starts again). Values come from product/MOCK-DATA.md; the app only records
@@ -58,8 +58,14 @@ export function set(patch: Partial<State> | ((s: State) => State)) {
 
 export function reset() { set(SEED) }
 
+const subscribe = (f: () => void) => { subs.add(f); return () => { subs.delete(f) } }
+// The picked value is kept per state object, so a pick that builds a new object does not re-render forever.
 export function useStore<T>(pick: (s: State) => T): T {
-  return useSyncExternalStore((f) => { subs.add(f); return () => { subs.delete(f) } }, () => pick(state))
+  const memo = useRef<{ s: State; v: T } | null>(null)
+  return useSyncExternalStore(subscribe, () => {
+    if (memo.current?.s !== state) memo.current = { s: state, v: pick(state) }
+    return memo.current.v
+  })
 }
 
 // ---------- values derived from the state (no new data, only the seeded rules) ----------

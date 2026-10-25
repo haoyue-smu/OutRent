@@ -48,7 +48,9 @@ export default function Search() {
   const open = (el: HTMLElement) => {
     const ph = el.querySelector('.ph')?.getBoundingClientRect()
     const frame = el.closest('.frame')?.getBoundingClientRect()
-    const rect = ph && frame ? { top: ph.top - frame.top, left: ph.left - frame.left, width: ph.width, height: ph.height } : null
+    // the frame may be zoomed to fit a short window: measure in its own pixels
+    const fr = el.closest('.frame') as HTMLElement | null, z = frame && fr ? frame.width / fr.offsetWidth : 1
+    const rect = ph && frame ? { top: (ph.top - frame.top) / z, left: (ph.left - frame.left) / z, width: ph.width / z, height: ph.height / z } : null
     navigate(routeFor('05-listing-detail'), { state: { from: 'search', how: 'morph', rect } })
   }
 
