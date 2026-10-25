@@ -2,10 +2,9 @@
 
 .d-screen { background: var(--paper); color: var(--ink); font-family: var(--sans); }
 .fit-screen { padding-bottom: 110px; }
-.fit-head { display: flex; flex-direction: column; gap: 6px; padding-top: var(--s-1); }
 
 /* The figure: paper parts, ink lines, forest for the part being set. */
-.stage { position: relative; margin: 2px -6px 6px; overflow: hidden; }
+.stage { position: relative; margin: 0; overflow: hidden; background: var(--paper); }
 .fig { position: relative;
   --b-paper: var(--white); --b-top: var(--white); --b-s0: var(--fig-s0); --b-s1: var(--fig-s1); --b-s2: var(--fig-s2); --b-s3: var(--fig-s3);
   --b-hi: var(--ink); --b-mid: var(--fig-mid); --b-lo: var(--fig-lo); --b-faint: var(--fig-faint); --b-w: 0.6px; }
@@ -37,16 +36,58 @@
 .dim rect { fill: var(--forest); }
 .dim text { fill: var(--white); font-family: var(--mono); font-size: 10.5px; font-weight: 500; letter-spacing: 0.02em; }
 
-/* The two measurements */
-.tapes { display: flex; flex-direction: column; gap: 14px; margin-top: 18px; }
-.tape-row { display: flex; flex-direction: column; gap: 6px; }
-.tape-row .lab { display: flex; justify-content: space-between; align-items: baseline; gap: var(--s-3); }
-.tape-row .val { font-size: 22px; line-height: 26px; font-weight: 600; letter-spacing: var(--track-num); white-space: nowrap; }
-.tape-row .val small { margin-left: 2px; font-size: var(--fs-small); font-weight: 500; color: var(--ink-2); letter-spacing: 0; }
+/* The session's own parts: the O-ring, the spacer, the hex key and fork dial, the sag scale, the step labels */
+.b-ring .k-side, .b-ring .k-top { fill: var(--forest); } .b-ring .k-edge { fill: none; stroke: var(--fig-ring-edge); stroke-width: 0.5; }
+.b-spacer .k-side { fill: var(--b-s1); } .b-spacer .k-top { fill: var(--white); stroke: var(--b-mid); stroke-width: 0.5; } .b-spacer .k-edge { fill: none; stroke: var(--b-mid); stroke-width: 0.5; }
+.b-part[data-on].b-spacer .k-side { fill: var(--mint); } .b-part[data-on].b-spacer .k-top, .b-part[data-on].b-spacer .k-edge { stroke: var(--forest); }
+.tool3 path { vector-effect: none; stroke-linecap: round; stroke-linejoin: round; }
+.tool3 .ko { fill: none; stroke: var(--ink); stroke-width: 1.5; }
+.tool3 .ki { fill: none; stroke: var(--ink-2); stroke-width: 1.05; }
+.tool3 .ks { fill: none; stroke: var(--fig-ghost); stroke-width: 0.22; transform: translate(-0.12px, -0.14px); }
+.tool3 .bh { fill: var(--white); stroke: var(--ink); stroke-width: 0.18; }
+.tool3 .bs { fill: var(--ink); }
+.tool3 .dl { fill: var(--b-s1); stroke: var(--forest); stroke-width: 0.2; }
+.tool3 .dt { fill: var(--white); stroke: var(--forest); stroke-width: 0.2; }
+.tool3 .kn { fill: none; stroke: var(--forest); stroke-width: 0.14; }
+.rul line { stroke: var(--b-mid); stroke-width: 0.7; vector-effect: non-scaling-stroke; } .rul line.maj { stroke: var(--ink); } .rul line.k { stroke: var(--forest); stroke-width: 1.6; }
+.lab3 { transition: opacity 0.4s; }
+.lab3 rect { fill: var(--forest); }
+.lab3 text { fill: var(--white); font-family: var(--mono); font-size: 13px; font-weight: 500; text-anchor: middle; }
 
-.riding { display: grid; grid-template-columns: auto 1fr; gap: var(--s-1) 14px; align-items: baseline; margin: var(--s-4) 0 0; padding-top: var(--s-3); border-top: var(--hair) solid var(--rule); }
-.riding .v { margin: 0; font-size: 14px; line-height: 20px; }
-.riding .v span { color: var(--ink-2); }
+/* Four steps, one panel each */
+.steps3 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+.steps3 button { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; min-height: var(--touch); padding: var(--s-2) 0 var(--s-1); border: 0; border-top: 2px solid var(--rule); background: none; color: var(--ink-3); font-size: var(--fs-small); line-height: 17px; font-weight: 500; text-align: left; cursor: pointer; transition: color 0.2s, border-color 0.3s; }
+.steps3 button b { font-family: var(--mono); font-size: 10.5px; font-weight: 500; letter-spacing: 0.06em; }
+.steps3 button.done { border-top-color: var(--glow); color: var(--ink-2); }
+.steps3 button[aria-selected="true"] { border-top-color: var(--forest); color: var(--ink); }
+.steps3 button[aria-selected="true"] b { color: var(--forest); }
+.p3 { padding-top: 14px; }
+.rd3 { display: grid; grid-template-columns: auto minmax(18px, 1fr) auto; gap: var(--s-3); align-items: end; }
+.rd3 > div { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.rd3 b { font-size: 32px; line-height: 36px; font-weight: 600; letter-spacing: -0.035em; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.rd3 b small { margin-left: 2px; font-size: 14px; font-weight: 500; letter-spacing: 0; color: var(--ink-2); }
+.rd3 .o { align-items: flex-end; text-align: right; }
+.rd3 .o .mono, .rd3 .o b, .rd3 .o b small { color: var(--forest); }
+.rd3 .fr-to { margin-bottom: 17px; }
+.rd3.ride { grid-template-columns: minmax(0, 1fr) 22px auto; align-items: center; }
+.rd3.ride .fr-to { margin-bottom: 0; }
+.rd3 b.txt { font-size: 16px; line-height: 21px; letter-spacing: -0.01em; white-space: normal; }
+.rd3 .o.two { gap: var(--s-2); }
+.rd3 .o.two > div { display: flex; flex-direction: column; align-items: flex-end; gap: 1px; }
+.rd3 .o.two b { font-size: 26px; line-height: 30px; }
+.fr-to { position: relative; min-width: 18px; height: 1px; background: var(--ink-3); }
+.fr-to::before { content: ""; position: absolute; left: 0; top: -4px; width: 1px; height: 9px; background: var(--ink-3); }
+.fr-to::after { content: ""; position: absolute; right: -1px; top: -3.5px; border: 4px solid transparent; border-left: 6px solid var(--ink-3); border-right: 0; }
+.p3 .tape { margin-top: 10px; }
+.fr-note { margin: var(--s-2) 0 0; font-size: 12.5px; line-height: 17px; color: var(--ink-2); text-wrap: pretty; }
+.link.inl { display: inline; min-height: 0; padding: 0; font-size: 12.5px; }
+.p3 .mgrid { margin-top: 2px; }
+.mgrid dd.flash, .rd3 b.flash { animation: flash 1.1s var(--ease); }
+.tape.dual { height: 66px; }
+.tape.dual svg { height: 66px; }
+.tape.dual .needle { bottom: 0; }
+.tape .sub { stroke: var(--forest); } .tape text.sub { fill: var(--forest); stroke: none; font-weight: 500; }
+.tape .mid { stroke: var(--rule); }
 
 .fit-save { width: 100%; }
 .saved-mark { display: inline-flex; align-items: center; gap: var(--s-2); }

@@ -47,6 +47,7 @@
   --fig-faint: #D8DCD7;
   --fig-shadow: #6D7771;
   --fig-ghost: #9AA39E;
+  --fig-ring-edge: #0D2A20;   /* the O-ring's edge on the fork */
 
   /* On the forest band (01) */
   --on-forest-ink: rgba(255, 255, 255, 0.75);
