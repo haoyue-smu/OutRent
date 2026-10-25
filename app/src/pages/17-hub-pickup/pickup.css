@@ -1,4 +1,4 @@
-/* 17 Hub pickup · the fitter's line (v52). Layout; shared pieces are in design/direction.css. */
+/* 17 Hub pickup · the fitter's line (v52). Layout; shared pieces are in design/components.css. */
 
 .s17-screen { padding-bottom: calc(76px + var(--bottom-float)); }   /* the dock and 12 px */
 .s17-lede { margin-top: 6px; }

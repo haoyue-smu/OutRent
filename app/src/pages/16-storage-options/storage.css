@@ -1,4 +1,4 @@
-/* 16 Storage at the OutRent Hub · the fitter's line (v52). Layout; shared pieces are in design/direction.css. */
+/* 16 Storage at the OutRent Hub · the fitter's line (v52). Layout; shared pieces are in design/components.css. */
 
 .s16-screen { padding-bottom: calc(76px + var(--bottom-float)); }   /* the dock and 12 px */
 .top16.photo-top { height: 320px; }

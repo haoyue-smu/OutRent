@@ -37,3 +37,9 @@
 .g-flash dd { animation: flash 1.1s var(--ease); }
 @media (max-width: 760px) { .g-sec { grid-template-columns: 1fr; } }
 @media (prefers-reduced-motion: reduce) { .g-stamp .stamp.g-land, .g-flash dd { animation: none; } }
+.g-minis { display: grid; grid-template-columns: repeat(auto-fill, minmax(178px, 1fr)); gap: var(--s-4); }
+.g-mini { display: flex; flex-direction: column; gap: var(--s-2); margin: 0; }
+.g-mini-ph { position: relative; width: 177px; height: 384px; overflow: hidden; border: var(--hair) solid var(--rule); border-radius: var(--r-card); background: var(--paper); }
+.g-mini-ph iframe { position: absolute; left: 0; top: 0; border: 0; transform: scale(0.45); transform-origin: 0 0; pointer-events: none; }
+.g-mini figcaption { display: flex; justify-content: space-between; align-items: center; gap: var(--s-2); }
+.g-mini figcaption .link { min-height: 32px; }

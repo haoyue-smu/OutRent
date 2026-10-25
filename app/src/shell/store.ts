@@ -38,7 +38,16 @@ export const SEED: State = {
 }
 
 const KEY = 'outrent.state.v52'
+// ?seed=<base64 JSON> opens a page in a given story state without saving it (the components page uses it to
+// show each page's done mark live, next to the others).
+const deep = (a: Record<string, unknown>, b: Record<string, unknown>): Record<string, unknown> => {
+  const o = { ...a }
+  for (const k in b) o[k] = b[k] && typeof b[k] === 'object' && !Array.isArray(b[k]) ? deep((a[k] ?? {}) as Record<string, unknown>, b[k] as Record<string, unknown>) : b[k]
+  return o
+}
+const seeded = (() => { try { const q = new URLSearchParams(location.search).get('seed'); return q ? JSON.parse(atob(q)) as Partial<State> : null } catch { return null } })()
 const load = (): State => {
+  if (seeded) return deep(SEED as unknown as Record<string, unknown>, seeded as Record<string, unknown>) as unknown as State
   try {
     const raw = sessionStorage.getItem(KEY)
     if (raw) return { ...SEED, ...JSON.parse(raw) }
@@ -54,7 +63,7 @@ export function getState() { return state }
 // set(s => ({ ...s, paid: true })) or set({ paid: true })
 export function set(patch: Partial<State> | ((s: State) => State)) {
   state = typeof patch === 'function' ? patch(state) : { ...state, ...patch }
-  try { sessionStorage.setItem(KEY, JSON.stringify(state)) } catch { /* not kept, still works */ }
+  if (!seeded) try { sessionStorage.setItem(KEY, JSON.stringify(state)) } catch { /* not kept, still works */ }
   subs.forEach((f) => f())
 }
 

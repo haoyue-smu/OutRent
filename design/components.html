@@ -4,229 +4,124 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>OutRent Components</title>
-<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="theme-color" content="#F3F4F0">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap">
 <link rel="stylesheet" href="tokens.css">
 <link rel="stylesheet" href="components.css">
 <style>
-/* Gallery layout only. Every component below comes from components.css. Light-only on purpose (OutRent ships light). */
-.gallery { max-width: 1120px; margin: 0 auto; padding-block: 40px 80px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: flex; flex-direction: column; gap: 48px; }
-.g-head { display: flex; flex-direction: column; gap: 8px; max-width: 680px; }
-.g-head p { margin: 0; color: var(--muted); }
-.g-sec { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 24px; }
-.g-sec > header { display: flex; flex-direction: column; gap: 4px; }
-.g-sec > header p { margin: 0; font-size: var(--fs-foot); line-height: var(--lh-foot); color: var(--muted); }
-.g-sec code { font-size: 12px; color: var(--sage-dark); }
-.g-panel { min-width: 0; background: var(--white); border-radius: var(--r-card); border: 1px solid var(--line); padding: 20px; display: flex; flex-direction: column; gap: 16px; }
-.g-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
-.g-narrow { max-width: 353px; display: flex; flex-direction: column; gap: 12px; }
-.swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; }
-.sw { display: flex; flex-direction: column; gap: 4px; font-size: 12px; line-height: 16px; }
-.sw i { display: block; height: 56px; border-radius: 14px; border: 1px solid var(--line); }
-.sw b { font-size: 13px; }
-.sw span { color: var(--muted); font-variant-numeric: tabular-nums; }
-.photo-swatch { position: relative; height: 120px; border-radius: var(--r-card); overflow: hidden; }
-.photo-swatch .glass { position: absolute; left: 14px; bottom: 14px; right: 14px; padding: 12px 16px; border-radius: 18px; font-size: 15px; font-weight: 600; display: flex; justify-content: space-between; box-shadow: var(--shadow-float); }
-.screens { display: flex; gap: 24px; overflow-x: auto; padding-bottom: 8px; }
-.screens .screen { flex: none; margin: 0; border-radius: 36px; box-shadow: 0 0 0 1px var(--line); }
-@media (max-width: 760px) { .g-sec { grid-template-columns: minmax(0, 1fr); gap: 12px; } }
+/* Gallery layout only. Every piece below is drawn by components.css with tokens.css: the same two files the app loads,
+   so this page cannot drift from it. The live version (every state, every motion, the pages' done marks) is the
+   app's /components route. Light only on purpose. */
+html, body { overflow: auto; }
+.gallery { max-width: 1120px; margin: 0 auto; padding: 40px max(16px, env(safe-area-inset-right, 0px)) 80px max(16px, env(safe-area-inset-left, 0px)); display: flex; flex-direction: column; gap: 44px; }
+.g-head { display: flex; flex-direction: column; gap: var(--s-2); max-width: 680px; }
+.g-sec { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: var(--s-6); }
+.g-sec > header { display: flex; flex-direction: column; gap: 6px; }
+.g-sec > header p { margin: 0; }
+.g-panel { display: flex; flex-direction: column; gap: 20px; min-width: 0; padding: var(--s-5); border: var(--hair) solid var(--rule); border-radius: var(--r-card); background: var(--sheet); }
+.g-row { display: flex; flex-wrap: wrap; gap: var(--s-4); align-items: flex-end; }
+.g-state { display: flex; flex-direction: column; align-items: flex-start; gap: var(--s-2); }
+.g-narrow { display: flex; flex-direction: column; gap: var(--s-3); width: 100%; max-width: 353px; }
+.swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: var(--s-3); }
+.sw { display: flex; flex-direction: column; gap: 2px; font-size: var(--fs-label); line-height: 16px; }
+.sw i { display: block; height: 52px; margin-bottom: 4px; border: var(--hair) solid var(--rule); border-radius: var(--r-lens); }
+.sw b { font-family: var(--mono); font-size: 11.5px; font-weight: 500; }
+.g-phone { position: relative; max-width: 393px; height: 200px; overflow: hidden; border: var(--hair) solid var(--rule); border-radius: var(--r-sheet); background: var(--paper); --top-safe: 10px; }
+.g-phone.short { height: 96px; }
+.g-photo { position: relative; width: 240px; height: 150px; border-radius: var(--r-lens); overflow: hidden; }
+.g-skip { position: relative; height: 260px; max-width: 393px; overflow: hidden; border: var(--hair) solid var(--rule); border-radius: var(--r-sheet); }
+.g-skip .skip { position: absolute; }
+.g-toast { position: relative; height: 80px; max-width: 393px; }
+.g-toast .toast { bottom: 20px; }
+@media (max-width: 760px) { .g-sec { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
-
 <main class="gallery">
   <header class="g-head">
-    <span class="t-label">Trail Glass · v0.1</span>
-    <h1 class="t-large">OutRent components</h1>
-    <p class="t-body">Everything a page is built from. Pages use these classes from <code>components.css</code> and the values in <code>tokens.css</code>; nothing else. The rules behind them are in <code>DESIGN.md</code>.</p>
+    <span class="mono">OutRent · the fitter’s line · v52</span>
+    <h1 class="t-h1">Components</h1>
+    <p class="lede">The shared pieces of the app, drawn by the app’s own stylesheet (components.css on tokens.css). For every state and its motion, live, and the pages’ done marks (the slip, the ring, the intake dot, the dial token), open the app’s <a class="link" href="http://localhost:5191/components">/components</a> page (<code>npm run app:dev</code>).</p>
+    <p class="small">DESIGN.md still describes v0.3 (Trail Glass); this page, the app and prototype/v52/DIRECTION.md are current.</p>
   </header>
 
-  <section class="g-sec" aria-labelledby="h-colour">
-    <header><h2 class="t-title" id="h-colour">Colour scheme</h2><p>The only ten colours. Glass and placeholders are built from them.</p></header>
+  <section class="g-sec" aria-labelledby="c-h"><header><h2 class="t-h2" id="c-h">Colour</h2><p class="small">Paper and ink, one forest green for the primary action and good news only. #666F6A is the text grey; #7F8883 is for ticks only.</p></header>
+    <div class="g-panel"><div class="swatches">
+      <div class="sw"><i style="background:var(--paper)"></i><b>--paper</b><span>page</span></div>
+      <div class="sw"><i style="background:var(--sheet)"></i><b>--sheet</b><span>white cards, sheets</span></div>
+      <div class="sw"><i style="background:var(--ink)"></i><b>--ink</b><span>text, rules that measure</span></div>
+      <div class="sw"><i style="background:var(--ink-2)"></i><b>--ink-2</b><span>second text</span></div>
+      <div class="sw"><i style="background:var(--ink-3)"></i><b>--ink-3</b><span>small text grey</span></div>
+      <div class="sw"><i style="background:var(--tick)"></i><b>--tick</b><span>scale ticks only</span></div>
+      <div class="sw"><i style="background:var(--rule)"></i><b>--rule</b><span>hairlines</span></div>
+      <div class="sw"><i style="background:var(--rule-2)"></i><b>--rule-2</b><span>light hairlines</span></div>
+      <div class="sw"><i style="background:var(--forest)"></i><b>--forest</b><span>primary, good news</span></div>
+      <div class="sw"><i style="background:var(--forest-2)"></i><b>--forest-2</b><span>forest, lifted</span></div>
+      <div class="sw"><i style="background:var(--mint)"></i><b>--mint</b><span>a part being set</span></div>
+      <div class="sw"><i style="background:var(--glow)"></i><b>--glow</b><span>done steps</span></div>
+      <div class="sw"><i style="background:var(--tag-paper)"></i><b>--tag-paper</b><span>the job tag</span></div>
+    </div></div>
+  </section>
+
+  <section class="g-sec" aria-labelledby="t-h"><header><h2 class="t-h2" id="t-h">Type</h2><p class="small">Geist for the interface, Geist Mono for small measured labels.</p></header>
     <div class="g-panel">
-      <div class="swatches">
-        <div class="sw"><i style="background:var(--sage)"></i><b>Sage</b><span>#3E6A5A · actions</span></div>
-        <div class="sw"><i style="background:var(--sage-dark)"></i><b>Sage dark</b><span>#2F5246 · text on tint</span></div>
-        <div class="sw"><i style="background:var(--sage-tint)"></i><b>Sage tint</b><span>#E3ECE7 · selected</span></div>
-        <div class="sw"><i style="background:var(--ink)"></i><b>Ink</b><span>#1E2622 · text</span></div>
-        <div class="sw"><i style="background:var(--muted)"></i><b>Muted</b><span>#5C6863 · secondary</span></div>
-        <div class="sw"><i style="background:var(--mist)"></i><b>Mist</b><span>#F2F4F1 · background</span></div>
-        <div class="sw"><i style="background:var(--line)"></i><b>Line</b><span>#DDE2DE · borders</span></div>
-        <div class="sw"><i style="background:var(--white)"></i><b>White</b><span>#FFFFFF · sheets</span></div>
-        <div class="sw"><i style="background:var(--error)"></i><b>Error</b><span>#B0473B</span></div>
-        <div class="sw"><i style="background:var(--error-tint)"></i><b>Error tint</b><span>#F6E4E1</span></div>
-      </div>
-      <div class="photo-swatch">
-        <svg class="scene" viewBox="0 0 400 120" preserveAspectRatio="none" role="img" aria-label="Photo placeholder"><rect width="400" height="120" fill="#DCE6E0"/><path d="M0 60 Q90 40 190 55 T400 50 V120 H0Z" fill="#B9CCC0"/><path d="M0 86 Q110 70 220 82 T400 78 V120 H0Z" fill="#8FAE9C"/><path d="M0 108 Q120 96 240 104 T400 100 V120 H0Z" fill="#5E8574"/></svg>
-        <div class="glass"><span>Glass over a photo</span><span class="t-foot">white 64% · blur 24</span></div>
-      </div>
+      <div class="g-state"><span class="mono">Hero number · 76 / 76</span><span class="hero-num">S$150</span></div>
+      <div class="g-state"><span class="mono">Heading 1 · 32 / 36</span><h3 class="t-h1">Delivery and collection</h3></div>
+      <div class="g-state"><span class="mono">Heading 2 · 19 / 24</span><h3 class="t-h2">Set to your fit before delivery</h3></div>
+      <div class="g-state"><span class="mono">Lede · 15 / 22</span><p class="lede">All-in prices: the bike, delivery and collection.</p></div>
+      <div class="g-state"><span class="mono">Small · 13 / 18</span><p class="small">Recorded by the shop before your rental.</p></div>
+      <div class="g-state"><span class="mono">Measured label · Geist Mono 11 / 14, uppercase</span><span class="mono">Photo 1 of 5 · 12 Oct</span></div>
     </div>
   </section>
 
-  <section class="g-sec" aria-labelledby="h-type">
-    <header><h2 class="t-title" id="h-type">Type · Onest</h2><p>Seven styles. One display number and one large title per screen.</p></header>
-    <div class="g-panel">
-      <div class="t-display">72<span class="unit"> cm</span></div>
-      <h3 class="t-large">Your bike, set up before it arrives.</h3>
-      <h3 class="t-title">Set up for you before delivery</h3>
-      <p class="t-body">We set the saddle from your 81 cm inside leg and soften the fork for your first ride on dirt.</p>
-      <span class="t-callout">Hardtail · 29" wheels · Timah Cycles</span>
-      <span class="t-foot">S$150 deposit, refunded after return</span>
-      <span class="t-label">Coach's kit</span>
-    </div>
+  <section class="g-sec" aria-labelledby="m-h"><header><h2 class="t-h2" id="m-h">The fitter’s line</h2><p class="small">The measured line, the measured grid (03, 05, 12) and hairline rules.</p></header>
+    <div class="g-panel"><div class="g-narrow">
+      <div class="measure"><b>S$50</b></div>
+      <dl class="mgrid"><div><dt class="mono">Saddle</dt><dd>72<small>cm</small></dd></div><div><dt class="mono">Frame</dt><dd>M</dd></div><div><dt class="mono">Fork sag</dt><dd>25<small>%</small></dd></div><div><dt class="mono">Handlebar</dt><dd>+1<small>cm</small></dd></div></dl>
+      <hr class="rule"><hr class="rule is-ink">
+    </div></div>
   </section>
 
-  <section class="g-sec" aria-labelledby="h-act">
-    <header><h2 class="t-title" id="h-act">Actions</h2><p><code>.btn</code> <code>.is-secondary</code> <code>.is-text</code> <code>.icon-btn</code> <code>.chip</code>. One primary per screen.</p></header>
+  <section class="g-sec" aria-labelledby="b-h"><header><h2 class="t-h2" id="b-h">Buttons</h2><p class="small">One forest pill per page; pressed scales to 0.97 in 120 ms; disabled says what is missing. A ghost button for a second action. Links are forest text.</p></header>
     <div class="g-panel">
       <div class="g-row">
-        <button type="button" class="btn">Choose delivery</button>
-        <button type="button" class="btn is-secondary">Save for later</button>
-        <button type="button" class="btn is-text">See all bikes</button>
-        <button type="button" class="btn" disabled>Choose delivery</button>
+        <div class="g-state"><span class="mono">Default</span><button class="cta" type="button">Choose delivery</button></div>
+        <div class="g-state"><span class="mono">Pressed</span><button class="cta is-pressed" type="button">Choose delivery</button></div>
+        <div class="g-state"><span class="mono">Disabled</span><button class="cta" type="button" disabled>Pick a delivery time</button></div>
       </div>
       <div class="g-row">
-        <button type="button" class="icon-btn" aria-label="Back"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-arrow-left"/></svg></button>
-        <button type="button" class="icon-btn" aria-label="Save"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-heart"/></svg></button>
-        <span class="chip"><svg class="icon is-sm" aria-hidden="true"><use href="icons.svg#i-check-circle"/></svg>Fits you · M</span>
-        <span class="chip is-quiet">Hardtail</span>
-        <span class="chip is-quiet">Under S$40</span>
+        <div class="g-state" style="width:240px"><span class="mono">Ghost</span><button class="ghostbtn" type="button">Back to Home</button></div>
+        <div class="g-state"><span class="mono">Link</span><button class="link" type="button">Edit fit</button></div>
+        <div class="g-state"><span class="mono">Back</span><button class="back" type="button" aria-label="Back"><svg viewBox="0 0 256 256" aria-hidden="true"><path fill="currentColor" d="M224 128a8 8 0 0 1-8 8H59.3l58.4 58.3a8 8 0 0 1-11.4 11.4l-72-72a8 8 0 0 1 0-11.4l72-72a8 8 0 0 1 11.4 11.4L59.3 120H216a8 8 0 0 1 8 8Z"/></svg></button></div>
+        <div class="g-state"><span class="mono">Sheet close</span><button class="xbtn" type="button" aria-label="Close"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
       </div>
     </div>
   </section>
 
-  <section class="g-sec" aria-labelledby="h-in">
-    <header><h2 class="t-title" id="h-in">Inputs</h2><p><code>.field</code> <code>.segmented</code> <code>.field-error</code>. Chosen field gets the sage border.</p></header>
+  <section class="g-sec" aria-labelledby="bar-h"><header><h2 class="t-h2" id="bar-h">Bars</h2><p class="small">Top bar with Back and a mono title; the dock holds the one action over a paper fade; the tab bar marks the current tab with a forest tick.</p></header>
     <div class="g-panel">
-      <div class="g-narrow">
-        <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px">
-          <label class="field" for="f-h">Height<span class="value"><input id="f-h" inputmode="numeric" value="176" aria-label="Height in centimetres"><span class="unit">cm</span></span></label>
-          <label class="field is-chosen" for="f-l">Inside leg<span class="value"><input id="f-l" inputmode="numeric" value="81" aria-label="Inside leg in centimetres"><span class="unit">cm</span></span></label>
-        </div>
-        <div class="segmented" role="radiogroup" aria-label="Trail experience" id="seg">
-          <button type="button" role="radio" aria-checked="true">New to trails</button>
-          <button type="button" role="radio" aria-checked="false">Some</button>
-          <button type="button" role="radio" aria-checked="false">Confident</button>
-        </div>
-        <label class="field is-error" for="f-e">Inside leg<span class="value"><input id="f-e" inputmode="numeric" value="18" aria-invalid="true" aria-describedby="f-e-msg"><span class="unit">cm</span></span></label>
-        <div class="field-error" id="f-e-msg"><svg class="icon is-sm" aria-hidden="true"><use href="icons.svg#i-warning-circle"/></svg>That looks short for an inside leg. Measure from the floor to your crotch, usually 70–90 cm.</div>
-      </div>
+      <div class="g-phone"><div class="bar-top"><button class="back" type="button" aria-label="Back"><svg viewBox="0 0 256 256" aria-hidden="true"><path fill="currentColor" d="M224 128a8 8 0 0 1-8 8H59.3l58.4 58.3a8 8 0 0 1-11.4 11.4l-72-72a8 8 0 0 1 0-11.4l72-72a8 8 0 0 1 11.4 11.4L59.3 120H216a8 8 0 0 1 8 8Z"/></svg></button><span class="mono mid">Fit profile</span><span></span></div><div class="dock"><button class="cta" type="button" style="width:100%">Save fit</button></div></div>
     </div>
   </section>
 
-  <section class="g-sec" aria-labelledby="h-content">
-    <header><h2 class="t-title" id="h-content">Content</h2><p><code>.row</code> <code>.card</code> <code>.stats</code> <code>.steps</code></p></header>
+  <section class="g-sec" aria-labelledby="o-h"><header><h2 class="t-h2" id="o-h">Rows and options</h2><p class="small">A booking on a line; options picked like radios; a key and its value.</p></header>
+    <div class="g-panel"><div class="g-narrow">
+      <button class="r9" type="button"><span class="dt"><b>25</b><span>SAT</span></span><span class="tx"><b>Trek Marlin 7 · size M</b><span>Delivered 7:40 · collected 13:30</span><span class="ok">In 12 h 40 min</span></span><svg class="chev" viewBox="0 0 256 256" aria-hidden="true"><path fill="currentColor" d="M181.7 133.7l-80 80a8 8 0 0 1-11.4-11.4L164.7 128 90.3 53.7a8 8 0 0 1 11.4-11.4l80 80a8 8 0 0 1 0 11.4Z"/></svg></button>
+      <button class="opt" type="button" aria-pressed="true"><span class="rad"></span><b>Door pickup</b><span class="pr">S$10</span><span class="s">Daily, 17:00–19:00 only.</span></button>
+      <button class="opt" type="button" aria-pressed="false"><span class="rad"></span><b>Rack drop-off · Rack S</b><span class="pr">S$5</span><span class="s">Leave it at the void deck rack before 7:00.</span></button>
+      <div class="kv"><b>Shared courier run</b><span class="v">Free</span><span class="s">With 2 days’ notice</span></div>
+    </div></div>
+  </section>
+
+  <section class="g-sec" aria-labelledby="f-h"><header><h2 class="t-h2" id="f-h">Feedback</h2><p class="small">A toast says one short thing for 2.2 s. The time skip runs the clock to the next thing that happens. Photos still to come are a hatched plate that names them.</p></header>
     <div class="g-panel">
-      <div class="g-narrow">
-        <a class="row" href="#"><span class="thumb"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-backpack"/></svg></span><span class="body"><span class="meta">Coach's kit · First trail ride</span><span class="name">What to rent for Chestnut</span></span><svg class="icon is-sm" aria-hidden="true" style="color:var(--muted)"><use href="icons.svg#i-caret-right"/></svg></a>
-        <hr class="divider">
-        <a class="row" href="#"><span class="thumb" style="background:var(--mist);color:var(--ink)"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-ruler"/></svg></span><span class="body"><span class="meta">1 minute</span><span class="name">Add your fit profile</span></span><svg class="icon is-sm" aria-hidden="true" style="color:var(--muted)"><use href="icons.svg#i-caret-right"/></svg></a>
-        <div class="stats">
-          <div class="stat"><span class="v">72<small> cm</small></span><span class="k">Saddle</span></div>
-          <div class="stat"><span class="v">25<small>%</small></span><span class="k">Fork sag</span></div>
-          <div class="stat"><span class="v">+1<small> cm</small></span><span class="k">Bars</span></div>
-        </div>
-        <div class="card"><div style="display:flex;gap:12px;align-items:center"><svg class="icon" aria-hidden="true" style="color:var(--sage)"><use href="icons.svg#i-map-pin"/></svg><span style="display:flex;flex-direction:column"><b class="t-callout" style="font-weight:600">Chestnut Nature Park trailhead</b><span class="t-foot">Sat 25 Oct · 7:40 am · assembled on arrival</span></span></div></div>
-        <ol class="steps" aria-label="Booking progress">
-          <li class="is-done">Pick</li><li aria-current="step">Fit</li><li>Deliver</li><li>Ride</li><li>Return</li>
-        </ol>
-      </div>
-    </div>
-  </section>
-
-  <section class="g-sec" aria-labelledby="h-exp">
-    <header><h2 class="t-title" id="h-exp">Explainer plate</h2><p><code>.explainer</code> <code>.has-ruler</code> <code>.explain-steps</code>. Figures are supplied by Haoyue; your pages keep the placeholder.</p></header>
-    <div class="g-panel">
-      <div class="g-narrow">
-        <figure class="explainer" style="margin:0">
-          <span class="corner fig">Fig 1</span><span class="corner title">Fit setup</span>
-          <div class="placeholder">Explainer figure · bike on a fitting plate</div>
-          <span class="corner hint">Tap a step</span><span class="corner readout">Saddle 72 cm</span>
-        </figure>
-        <p class="t-foot" style="margin:0">Ruler edge: only when the person sets a length.</p>
-        <figure class="explainer has-ruler" style="margin:0">
-          <svg class="ruler" viewBox="0 0 353 64" role="img" aria-label="Ruler at 81 cm"><line class="major" x1="22.0" x2="22.0" y1="40" y2="52"/><text x="22.0" y="62" text-anchor="middle">60</text><line class="minor" x1="30.8" x2="30.8" y1="40" y2="47"/><line class="minor" x1="39.7" x2="39.7" y1="40" y2="47"/><line class="minor" x1="48.5" x2="48.5" y1="40" y2="47"/><line class="minor" x1="57.3" x2="57.3" y1="40" y2="47"/><line class="major" x1="66.1" x2="66.1" y1="40" y2="52"/><text x="66.1" y="62" text-anchor="middle">65</text><line class="minor" x1="75.0" x2="75.0" y1="40" y2="47"/><line class="minor" x1="83.8" x2="83.8" y1="40" y2="47"/><line class="minor" x1="92.6" x2="92.6" y1="40" y2="47"/><line class="minor" x1="101.5" x2="101.5" y1="40" y2="47"/><line class="major" x1="110.3" x2="110.3" y1="40" y2="52"/><text x="110.3" y="62" text-anchor="middle">70</text><line class="minor" x1="119.1" x2="119.1" y1="40" y2="47"/><line class="minor" x1="127.9" x2="127.9" y1="40" y2="47"/><line class="minor" x1="136.8" x2="136.8" y1="40" y2="47"/><line class="minor" x1="145.6" x2="145.6" y1="40" y2="47"/><line class="major" x1="154.4" x2="154.4" y1="40" y2="52"/><text x="154.4" y="62" text-anchor="middle">75</text><line class="minor" x1="163.3" x2="163.3" y1="40" y2="47"/><line class="minor" x1="172.1" x2="172.1" y1="40" y2="47"/><line class="minor" x1="180.9" x2="180.9" y1="40" y2="47"/><line class="minor" x1="189.7" x2="189.7" y1="40" y2="47"/><line class="major" x1="198.6" x2="198.6" y1="40" y2="52"/><text x="198.6" y="62" text-anchor="middle" class="on">80</text><line class="minor" x1="207.4" x2="207.4" y1="40" y2="47"/><line class="minor" x1="216.2" x2="216.2" y1="40" y2="47"/><line class="minor" x1="225.1" x2="225.1" y1="40" y2="47"/><line class="minor" x1="233.9" x2="233.9" y1="40" y2="47"/><line class="major" x1="242.7" x2="242.7" y1="40" y2="52"/><text x="242.7" y="62" text-anchor="middle">85</text><line class="minor" x1="251.5" x2="251.5" y1="40" y2="47"/><line class="minor" x1="260.4" x2="260.4" y1="40" y2="47"/><line class="minor" x1="269.2" x2="269.2" y1="40" y2="47"/><line class="minor" x1="278.0" x2="278.0" y1="40" y2="47"/><line class="major" x1="286.9" x2="286.9" y1="40" y2="52"/><text x="286.9" y="62" text-anchor="middle">90</text><line class="minor" x1="295.7" x2="295.7" y1="40" y2="47"/><line class="minor" x1="304.5" x2="304.5" y1="40" y2="47"/><line class="minor" x1="313.3" x2="313.3" y1="40" y2="47"/><line class="minor" x1="322.2" x2="322.2" y1="40" y2="47"/><line class="major" x1="331.0" x2="331.0" y1="40" y2="52"/><text x="331.0" y="62" text-anchor="middle">95</text><line class="needle" x1="207.4" x2="207.4" y1="30" y2="54"/><rect class="bubble" x="181.4" y="8" width="52" height="22" rx="11"/><text class="bubble-t" x="207.4" y="23" text-anchor="middle">81 cm</text></svg>
-          <div class="placeholder">Explainer figure · rider on the bike</div>
-          <span class="corner hint">Drag the ruler</span><span class="corner readout">Saddle 72 cm</span>
-        </figure>
-        <ol class="explain-steps">
-          <li aria-current="true"><span class="n">1</span><span><b>Saddle 72 cm</b><span class="d">From the crank centre. Your 81 cm inside leg × 0.883.</span></span></li>
-          <li><span class="n">2</span><span><b>Fork sag 25%</b><span class="d">Softer for a first ride on dirt.</span></span></li>
-          <li><span class="n">3</span><span><b>Bars +1 cm</b><span class="d">One spacer under the stem, so you sit more upright.</span></span></li>
-        </ol>
-      </div>
-    </div>
-  </section>
-
-  <section class="g-sec" aria-labelledby="h-screens">
-    <header><h2 class="t-title" id="h-screens">Composed screens</h2><p>Three pages built only from the classes above, at 393 × 852. Scroll sideways on a phone.</p></header>
-    <div class="screens">
-      <!-- Home: photo top, sheet, tab bar -->
-      <div class="screen is-white" aria-label="Home screen example">
-        <div class="photo-top" style="height:520px">
-          <svg class="scene" viewBox="0 0 393 520" preserveAspectRatio="none" aria-hidden="true"><rect width="393" height="520" fill="#DCE6E0"/><path d="M0 280 Q90 230 190 265 T393 250 V520 H0Z" fill="#B9CCC0"/><path d="M0 360 Q110 320 220 350 T393 340 V520 H0Z" fill="#8FAE9C"/><path d="M0 440 Q120 410 240 430 T393 420 V520 H0Z" fill="#5E8574"/></svg>
-          <div class="float-top"><span class="chip glass">Sat 25 Oct</span><button type="button" class="icon-btn glass" aria-label="Profile"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-user"/></svg></button></div>
-          <h2 class="t-large" style="position:absolute;top:112px;left:20px;right:20px;z-index:2;font-size:38px;line-height:41px">Ride the trail.<br><span class="t-accent">We bring the bike.</span></h2>
-          <div class="glass" style="position:absolute;left:20px;right:20px;bottom:56px;z-index:2;display:flex;align-items:center;gap:10px;height:54px;padding:0 18px;border-radius:27px"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-magnifying-glass"/></svg><span>What do you need this weekend?</span></div>
-        </div>
-        <div class="sheet">
-          <a class="row" href="#"><span class="thumb"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-backpack"/></svg></span><span class="body"><span class="meta">Coach's kit · First trail ride</span><span class="name">What to rent for Chestnut</span></span></a>
-          <hr class="divider">
-          <a class="row" href="#"><span class="thumb" style="background:var(--mist);color:var(--ink)"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-ruler"/></svg></span><span class="body"><span class="meta">1 minute</span><span class="name">Add your fit profile</span></span></a>
-        </div>
-        <nav class="tabbar glass" aria-label="Main">
-          <a href="#" aria-current="page"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-house-fill"/></svg><span class="label">Home</span></a>
-          <a href="#" aria-label="Explore"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-compass"/></svg><span class="label">Explore</span></a>
-          <a href="#" aria-label="Trips"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-calendar-blank"/></svg><span class="label">Trips</span></a>
-          <a href="#" aria-label="My gear"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-backpack"/></svg><span class="label">My gear</span></a>
-        </nav>
-      </div>
-
-      <!-- Fit: form screen -->
-      <div class="screen" aria-label="Fit profile screen example">
-        <div class="topbar"><button type="button" class="icon-btn" aria-label="Back"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-arrow-left"/></svg></button><span class="name">Fit profile</span><span></span></div>
-        <div class="content" style="padding-top:20px">
-          <ol class="steps" aria-label="Booking progress"><li class="is-done">Pick</li><li aria-current="step">Fit</li><li>Deliver</li><li>Ride</li><li>Return</li></ol>
-          <h2 class="t-large">Your bike, set up before it arrives.</h2>
-          <figure class="explainer has-ruler" style="margin:0;min-height:0">
-            <svg class="ruler" viewBox="0 0 353 64" role="img" aria-label="Ruler at 81 cm"><line class="major" x1="22.0" x2="22.0" y1="40" y2="52"/><text x="22.0" y="62" text-anchor="middle">60</text><line class="minor" x1="30.8" x2="30.8" y1="40" y2="47"/><line class="minor" x1="39.7" x2="39.7" y1="40" y2="47"/><line class="minor" x1="48.5" x2="48.5" y1="40" y2="47"/><line class="minor" x1="57.3" x2="57.3" y1="40" y2="47"/><line class="major" x1="66.1" x2="66.1" y1="40" y2="52"/><text x="66.1" y="62" text-anchor="middle">65</text><line class="minor" x1="75.0" x2="75.0" y1="40" y2="47"/><line class="minor" x1="83.8" x2="83.8" y1="40" y2="47"/><line class="minor" x1="92.6" x2="92.6" y1="40" y2="47"/><line class="minor" x1="101.5" x2="101.5" y1="40" y2="47"/><line class="major" x1="110.3" x2="110.3" y1="40" y2="52"/><text x="110.3" y="62" text-anchor="middle">70</text><line class="minor" x1="119.1" x2="119.1" y1="40" y2="47"/><line class="minor" x1="127.9" x2="127.9" y1="40" y2="47"/><line class="minor" x1="136.8" x2="136.8" y1="40" y2="47"/><line class="minor" x1="145.6" x2="145.6" y1="40" y2="47"/><line class="major" x1="154.4" x2="154.4" y1="40" y2="52"/><text x="154.4" y="62" text-anchor="middle">75</text><line class="minor" x1="163.3" x2="163.3" y1="40" y2="47"/><line class="minor" x1="172.1" x2="172.1" y1="40" y2="47"/><line class="minor" x1="180.9" x2="180.9" y1="40" y2="47"/><line class="minor" x1="189.7" x2="189.7" y1="40" y2="47"/><line class="major" x1="198.6" x2="198.6" y1="40" y2="52"/><text x="198.6" y="62" text-anchor="middle" class="on">80</text><line class="minor" x1="207.4" x2="207.4" y1="40" y2="47"/><line class="minor" x1="216.2" x2="216.2" y1="40" y2="47"/><line class="minor" x1="225.1" x2="225.1" y1="40" y2="47"/><line class="minor" x1="233.9" x2="233.9" y1="40" y2="47"/><line class="major" x1="242.7" x2="242.7" y1="40" y2="52"/><text x="242.7" y="62" text-anchor="middle">85</text><line class="minor" x1="251.5" x2="251.5" y1="40" y2="47"/><line class="minor" x1="260.4" x2="260.4" y1="40" y2="47"/><line class="minor" x1="269.2" x2="269.2" y1="40" y2="47"/><line class="minor" x1="278.0" x2="278.0" y1="40" y2="47"/><line class="major" x1="286.9" x2="286.9" y1="40" y2="52"/><text x="286.9" y="62" text-anchor="middle">90</text><line class="minor" x1="295.7" x2="295.7" y1="40" y2="47"/><line class="minor" x1="304.5" x2="304.5" y1="40" y2="47"/><line class="minor" x1="313.3" x2="313.3" y1="40" y2="47"/><line class="minor" x1="322.2" x2="322.2" y1="40" y2="47"/><line class="major" x1="331.0" x2="331.0" y1="40" y2="52"/><text x="331.0" y="62" text-anchor="middle">95</text><line class="needle" x1="207.4" x2="207.4" y1="30" y2="54"/><rect class="bubble" x="181.4" y="8" width="52" height="22" rx="11"/><text class="bubble-t" x="207.4" y="23" text-anchor="middle">81 cm</text></svg>
-            <div class="placeholder" style="min-height:120px">Explainer figure · rider on the bike</div>
-            <span class="corner hint">Drag the ruler</span><span class="corner readout">72 cm</span>
-          </figure>
-          <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px">
-            <label class="field">Height<span class="value"><input value="176" inputmode="numeric" aria-label="Height in centimetres"><span class="unit">cm</span></span></label>
-            <label class="field is-chosen">Inside leg<span class="value"><input value="81" inputmode="numeric" aria-label="Inside leg in centimetres"><span class="unit">cm</span></span></label>
-          </div>
-          <div class="segmented" role="radiogroup" aria-label="Trail experience"><button type="button" role="radio" aria-checked="true">New to trails</button><button type="button" role="radio" aria-checked="false">Some</button><button type="button" role="radio" aria-checked="false">Confident</button></div>
-        </div>
-        <div class="actionbar glass is-single"><button type="button" class="btn is-block">Show bikes that fit</button></div>
-      </div>
-
-      <!-- Listing: photo top, sheet, action bar -->
-      <div class="screen is-white" aria-label="Listing screen example">
-        <div class="photo-top">
-          <svg class="scene" viewBox="0 0 393 420" preserveAspectRatio="none" aria-hidden="true"><rect width="393" height="420" fill="#DCE6E0"/><path d="M0 230 Q90 190 190 220 T393 205 V420 H0Z" fill="#B9CCC0"/><path d="M0 300 Q110 270 220 292 T393 280 V420 H0Z" fill="#8FAE9C"/><path d="M0 360 Q120 335 240 352 T393 345 V420 H0Z" fill="#5E8574"/></svg>
-          <div class="float-top"><button type="button" class="icon-btn glass" aria-label="Back"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-arrow-left"/></svg></button><button type="button" class="icon-btn glass" aria-label="Save"><svg class="icon" aria-hidden="true"><use href="icons.svg#i-heart"/></svg></button></div>
-          <span class="chip glass" style="position:absolute;left:20px;bottom:50px;z-index:2"><svg class="icon is-sm" aria-hidden="true" style="color:var(--sage)"><use href="icons.svg#i-check-circle"/></svg>Fits you · frame M</span>
-        </div>
-        <div class="sheet">
-          <div style="display:flex;flex-direction:column;gap:4px"><span class="t-foot">Timah Cycles · Bukit Timah</span><h2 class="t-large">Trek Marlin 7</h2><span class="t-callout" style="color:var(--muted)">Hardtail · 29" wheels</span></div>
-          <div style="display:flex;flex-direction:column;gap:10px"><span class="t-callout" style="font-weight:600">Set up for you before delivery</span>
-            <div class="stats"><div class="stat"><span class="v">72<small> cm</small></span><span class="k">Saddle</span></div><div class="stat"><span class="v">25<small>%</small></span><span class="k">Fork sag</span></div><div class="stat"><span class="v">+1<small> cm</small></span><span class="k">Bars</span></div></div>
-          </div>
-        </div>
-        <div class="actionbar glass"><span class="price"><b>S$38 <span>/ day</span></b><small>S$150 deposit, refunded</small></span><button type="button" class="btn">Choose delivery</button></div>
-      </div>
+      <div class="g-toast"><div class="toast on" role="status">Profile is not in this demo yet.</div></div>
+      <div class="g-skip"><div class="skip" style="visibility:visible"><span class="day-l">FRI 24 OCT</span><span class="clock num">19:00</span><div class="run"><span class="base"></span><span class="fill" style="width:100%"></span><i style="left:25%"></i><em style="left:25%">THU</em><i style="left:75%"></i><em style="left:75%">FRI</em></div><p class="small">Friday evening. Set to your fit at 17:30, done at 18:10.</p></div></div>
+      <div class="g-photo"><span class="todo" role="img" aria-label="Photo to come"><span class="mono">Image to come</span><span class="w">Blk 325C Sengkang East Way, your home address</span></span></div>
     </div>
   </section>
 </main>
-<script>
-document.querySelectorAll('[role="radiogroup"]').forEach((g) => g.addEventListener("click", (e) => {
-  const b = e.target.closest('[role="radio"]'); if (!b) return;
-  g.querySelectorAll('[role="radio"]').forEach((x) => x.setAttribute("aria-checked", String(x === b)));
-}));
-</script>
 </body>
 </html>

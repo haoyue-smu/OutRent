@@ -137,8 +137,11 @@ function checkAppFile(file) {
   if (/\.(png|jpe?g|webp|gif|avif|heic)$/i.test(file)) { add(file, "error", `image file in app/src. Images are managed by Haoyue; use .img-ph and list it in the page's HANDOFF.`); return; }
   if (!/\.(tsx|ts|jsx|js)$/.test(file)) return;
   // Haoyue's photos: only shell/Photo.tsx renders <img>, and only WebP copies from work/haoyue/<page>/assets/ may be imported.
-  const isPhoto = relative(join(ROOT, "app", "src"), file).split(sep).join("/") === "shell/Photo.tsx";
-  for (const m of text.matchAll(/<(img|picture|video|iframe)\b/gi)) if (!(isPhoto && m[1].toLowerCase() === "img")) add(file, "error", `line ${lineOf(text, m.index)}: <${m[1]}> found. Images must be <div className="img-ph" role="img" aria-label="Photo: …">, or Haoyue's photo through <Photo>.`);
+  const rel = relative(join(ROOT, "app", "src"), file).split(sep).join("/");
+  const isPhoto = rel === "shell/Photo.tsx";
+  // The components gallery shows the app's own pages, scaled down, in iframes (not images).
+  const isGallery = rel === "gallery/Gallery.tsx";
+  for (const m of text.matchAll(/<(img|picture|video|iframe)\b/gi)) if (!(isPhoto && m[1].toLowerCase() === "img") && !(isGallery && m[1].toLowerCase() === "iframe")) add(file, "error", `line ${lineOf(text, m.index)}: <${m[1]}> found. Images must be <div className="img-ph" role="img" aria-label="Photo: …">, or Haoyue's photo through <Photo>.`);
   for (const m of text.matchAll(/from\s+["']([^"']+\.(?:png|jpe?g|webp|gif|avif|heic))["']/gi)) if (!/^@photos\/[\w-]+\/assets\/[\w-]+\.webp$/.test(m[1])) add(file, "error", `line ${lineOf(text, m.index)}: image import ${m[1]}. Only Haoyue's WebP copies (@photos/<page>/assets/*.webp) may be used.`);
   for (const m of text.matchAll(/\s(fill|stroke|stopColor)=["{]+(#[0-9a-fA-F]{3,8}|rgb[^"}]*|[a-z]+)["}]+/g)) {
     if (/^(none|currentColor|transparent)$/i.test(m[2])) continue;

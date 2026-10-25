@@ -1,4 +1,4 @@
-/* 15 Giant Escape 3 · the fitter's line (v52). Layout; shared pieces are in design/direction.css. */
+/* 15 Giant Escape 3 · the fitter's line (v52). Layout; shared pieces are in design/components.css. */
 
 .s15-screen { padding-bottom: calc(76px + var(--bottom-float)); }   /* the dock and 12 px */
 .top15.photo-top { height: 290px; }

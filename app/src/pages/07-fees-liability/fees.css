@@ -1,5 +1,5 @@
 /* 07 Fees & liability · the fitter's line. The bike photo behind; the bill as a drawer over it.
-   Layout here; shared pieces are in design/direction.css. */
+   Layout here; shared pieces are in design/components.css. */
 
 .frame[data-page="07-fees-liability"] .frame-stage { background: var(--deep); }
 .bg07 { position: absolute; inset: 0; overflow: hidden; }

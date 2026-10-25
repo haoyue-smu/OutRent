@@ -1,4 +1,4 @@
-/* 10 Delivery tracking · the fitter's line. Map behind, drawer in front. Shared pieces are in design/direction.css. */
+/* 10 Delivery tracking · the fitter's line. Map behind, drawer in front. Shared pieces are in design/components.css. */
 
 .frame[data-page="10-delivery-tracking"] .frame-stage { background: var(--map-ground); }
 .s10-screen { position: relative; overflow: hidden !important; color: var(--ink); font-family: var(--sans); }

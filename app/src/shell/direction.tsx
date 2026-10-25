@@ -4,7 +4,7 @@ import { routeFor } from '../pages'
 import { gsap } from 'gsap'
 import { Icon } from './Icon'
 
-// The fitter's line: the shared pieces 03, 05 and 12 reuse (styles in design/direction.css).
+// The fitter's line: the shared pieces 03, 05 and 12 reuse (styles in design/components.css).
 
 // Motion is feedback, a measurement being taken; with reduced motion everything lands at once.
 export const still = () => typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches

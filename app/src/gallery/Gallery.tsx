@@ -14,7 +14,7 @@ import '../pages/03-fit-profile/fit.css'
 import './gallery.css'
 
 // The components page: every shared piece of the app, live, from the same CSS and React components the pages use
-// (design/tokens.css, design/direction.css, shell/direction.tsx and the pages' own done marks). Nothing here is
+// (design/tokens.css, design/components.css, shell/direction.tsx and the pages' own done marks). Nothing here is
 // redrawn, so the page cannot drift from the app. Colours and type are read from tokens.css itself.
 
 type Tok = { name: string; value: string; group: string }
@@ -38,6 +38,26 @@ const TYPE: { cls: string; label: string; spec: string; text: string }[] = [
   { cls: 'small', label: 'Small', spec: '13 / 18 · ink-2', text: 'Recorded by the shop before your rental.' },
   { cls: 'mono', label: 'Measured label · Geist Mono', spec: '11 / 14 · 500 · 0.08em · uppercase', text: 'Photo 1 of 5 · 12 Oct' },
 ]
+
+// The pages themselves, opened in a given story state (?seed=), scaled down. Nothing is redrawn.
+const MINIS: { page: string; label: string; y: number; seed: object }[] = [
+  { page: '11-handover-check', label: '11 · the record folds into a slip', y: 120, seed: { paid: true, now: 79 + 40 / 60, arrived: true, record: { shots: ['crank', 'saddle', 'drive'], marks: ['crank', 'saddle'], saved: true } } },
+  { page: '13-weekly-ride', label: '13 · the ring ties the series', y: 0, seed: { paid: true, closed: true, weekly: true, now: 86.1, arrived: true, record: { shots: ['crank', 'saddle', 'drive'], marks: ['crank', 'saddle'], saved: true } } },
+  { page: '15-equipment-detail', label: '15 · the forest intake dot', y: 250, seed: { now: 178, storage: { way: 'home', booked: true, hub: true } } },
+  { page: '17-hub-pickup', label: '17 · the token on the dial', y: 260, seed: { storage: { way: 'home', booked: true } } },
+]
+function Mini({ page, label, y, seed }: { page: string; label: string; y: number; seed: object }) {
+  const src = `/${page}?seed=${btoa(JSON.stringify(seed))}`
+  return (
+    <figure className="g-mini">
+      <div className="g-mini-ph">
+        <iframe title={label} src={src} width={393} height={852} loading="lazy"
+          onLoad={(e) => { const d = (e.target as HTMLIFrameElement).contentDocument; window.setTimeout(() => { const sc = d?.querySelector('.frame-stage > .screen'); if (sc) sc.scrollTop = y }, 900) }} />
+      </div>
+      <figcaption><Mono>{label}</Mono><a className="link" href={src}>Open</a></figcaption>
+    </figure>
+  )
+}
 
 function Sec({ id, title, note, children }: { id: string; title: string; note: ReactNode; children: ReactNode }) {
   return (
@@ -79,7 +99,7 @@ export default function Gallery() {
         <header className="g-head">
           <Mono>OutRent · the fitter’s line · v52</Mono>
           <h1 className="t-h1">Components</h1>
-          <p className="lede">Every shared piece of the app as it is now, live and with its states. Built from the same files the app uses: design/tokens.css, design/direction.css, the shell’s React components and the pages’ own done marks. Tap anything: it behaves as in the app.</p>
+          <p className="lede">Every shared piece of the app as it is now, live and with its states. Built from the same files the app uses: design/tokens.css, design/components.css, the shell’s React components and the pages’ own done marks. Tap anything: it behaves as in the app.</p>
           <nav className="g-toc" aria-label="Sections">
             {['colour', 'type', 'measure', 'buttons', 'bars', 'cards', 'chips', 'tape', 'sheets', 'photos', 'done'].map((s) => <a key={s} href={`#${s}`}>{s}</a>)}
           </nav>
@@ -208,7 +228,10 @@ export default function Gallery() {
               </div>
             </State>
           </div>
-          <p className="small" id="done-more">The slip (11), the ring (13), the intake dot (15) and the dial token (17) join this section when those pages are merged in.</p>
+          <p className="small">The others live in their pages: below, the pages themselves at the moment each says done (the app, opened in that state).</p>
+          <div className="g-minis">
+            {MINIS.map((m) => <Mini key={m.page} {...m} />)}
+          </div>
         </Sec>
       </div>
     </div>
