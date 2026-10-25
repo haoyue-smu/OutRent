@@ -7,7 +7,7 @@ body { background: var(--desk); font-family: var(--font); color: var(--ink); -we
 button { -webkit-touch-callout: none; }
 
 .frame { position: relative; isolation: isolate; flex: none; width: 393px; height: 852px; overflow: hidden; overflow: clip; border-radius: var(--r-phone); background: var(--paper); box-shadow: var(--shadow-phone); }
-.frame-stage { position: absolute; inset: 0; background: var(--paper); }
+.frame-stage { position: absolute; inset: 0; background: var(--paper); font-size: 14px; line-height: normal; }
 .frame-stage > .screen { width: 100%; height: 100%; overflow-y: auto; overflow-x: hidden; overscroll-behavior: contain; scrollbar-width: none; }
 .frame-stage > .screen::-webkit-scrollbar { display: none; }
 .frame-empty { padding: var(--top-safe) var(--gutter) 0; }

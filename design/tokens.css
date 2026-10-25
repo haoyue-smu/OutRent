@@ -55,6 +55,9 @@
   --on-forest-line: rgba(255, 255, 255, 0.22);
   --on-forest-dot: #CFE5D6;
   --tabbar-bg: rgba(243, 244, 240, 0.9);
+  --signed-bg: rgba(18, 36, 29, 0.78);      /* the "Signed up" pill on the post photo */
+  --shadow-off: 0 6px 14px -6px rgba(28, 74, 58, 0.6);   /* the -10% price cut */
+  --shadow-disc: 0 14px 24px -16px rgba(18, 24, 21, 0.55);
 
   /* The job tag (08): the kraft tag a bike shop hangs on a bike */
   --tag-paper: #EFE7D6;
@@ -166,6 +169,7 @@
   /* Shape */
   --r-bar: 3px;
   --r-tick: 6px;
+  --r-chip: 8px;     /* small flags and price cuts */
   --r-thumb: 10px;
   --r-inset: 13px;   /* a photo inside a sheet */
   --r-lens: 14px;

@@ -7,7 +7,7 @@ export function Photo({ src, alt, className, width, height, first }: {
     <img
       className={['photo', className ?? ''].filter(Boolean).join(' ')}
       src={src} alt={alt} width={width} height={height} decoding="async"
-      fetchPriority={first ? 'high' : undefined}
+      fetchPriority={first ? 'high' : undefined} loading={first ? 'eager' : 'lazy'}
     />
   )
 }

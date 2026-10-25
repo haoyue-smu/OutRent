@@ -1,10 +1,14 @@
-import { useLayoutEffect, useRef } from 'react'
+import { useEffect, useLayoutEffect, useRef } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { gsap } from 'gsap'
 import lockup from '@design/brand/outrent-lockup-white.svg?raw'
-import { GoTo } from '../../shell/Link'
 import { Icon } from '../../shell/Icon'
 import { Photo } from '../../shell/Photo'
-import { Mono, still, useToast } from '../../shell/direction'
-import { gsap } from 'gsap'
+import { Chev, Mono, TabBar, still, useToast } from '../../shell/direction'
+import { routeFor } from '../../pages'
+import {
+  SAT, clockOf, collectAt, countdown, dateLabel, deliverAt, fitNow, hm, homeNow, isClosed, placeShort, setClock, useStore,
+} from '../../shell/store'
 import post from '@photos/01-home/assets/01-direction-02-coach-post.webp'
 import aisyah from '@photos/01-home/assets/01-direction-aisyah-avatar.webp'
 import bikes from '@photos/01-home/assets/01-direction-cat-bikes.webp'
@@ -14,33 +18,40 @@ import camping from '@photos/01-home/assets/01-direction-cat-camping.webp'
 import storage from '@photos/01-home/assets/01-direction-storage-promo.webp'
 import './home.css'
 
-// 01 Home · the fitter's line. A docket to fill in: what, to where, when. Below it a coach's post,
-// the kinds of gear, and two ways to get more from it.
-// Source: the Creative Director's prototype "OutRent · direction" (no hash), approved 25 Oct 00:56.
-// Category and promo values without MOCK-DATA behind them are gaps (FIXES.md #3-#6): built as drawn, nothing invented.
+// 01 Home · the fitter's line. A docket to fill in: what, to where, when. Below it what is coming up (once
+// something is booked), the coach's post, activities to rent for, and two ways to get more from it.
+// Source: the Creative Director's prototype v52 (no hash). The "Up next" rows are the app's: they show what has
+// happened (booking made, weekly ride set up, the Giant Escape 3 going to or at the Hub), from the story state.
 
 const SEARCH_LATER = 'Search starts from the coach’s post in this demo.'
 const FIELDS = [
-  { k: 'What', v: 'Bike, kayak, board, tent' },
+  { k: 'What', v: 'Bike, kayak, paddleboard, tent' },
   { k: 'To', v: 'Where you’ll use it' },
   { k: 'When', v: 'Pick a day' },
 ]
-const CATS = [
-  { src: bikes, alt: 'A mountain bike by a trail marker', label: 'Bikes', pos: '50% 50%' },
-  { src: kayaks, alt: 'Two kayaks at a reservoir launch', label: 'Kayaks', pos: '50% 60%' },
-  { src: boards, alt: 'A paddleboard on the beach', label: 'Paddleboards', pos: '50% 65%' },
-  { src: camping, alt: 'A tent under trees', label: 'Camping', pos: '50% 60%' },
-]
-const TABS = [
-  { label: 'Home', icon: 'house-fill', current: true },
-  { label: 'Bookings', icon: 'calendar-blank', toast: 'Bookings is not in this demo yet.' },
-  { label: 'My gear', icon: 'backpack', toast: 'My gear is not in this demo yet.' },
-  { label: 'Profile', icon: 'user', toast: 'Profile is not in this demo yet.' },
+const MEDS = [
+  { src: bikes, b: 'Cycling', gl: 'Bikes', pos: '40% 50%' },
+  { src: kayaks, b: 'Kayaking', gl: 'Kayaks', pos: '50% 70%' },
+  { src: boards, b: 'Paddleboarding', gl: 'Boards', pos: '50% 72%' },
+  { src: camping, b: 'Camping', gl: 'Tents, mats', pos: '60% 65%' },
 ]
 
 export default function Home() {
+  const navigate = useNavigate()
   const [toastNode, toast] = useToast()
   const root = useRef<HTMLElement>(null)
+  const meds = useRef<HTMLDivElement>(null)
+  const s = useStore((x) => x)
+  const now = homeNow(s)
+  const h = now % 24
+  const hello = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening'
+  const closed = isClosed(s)
+  const upcoming = s.paid && !closed
+  const st = s.storage
+  const hasNext = upcoming || (closed && s.weekly) || st.booked
+  const f = fitNow(s)
+
+  useEffect(() => { setClock(s.paid || s.now > 67 ? clockOf(now) : '9:01') }, [now, s.paid, s.now])
 
   // The docket settles, its three lines slide in, the sections below rise in turn.
   useLayoutEffect(() => {
@@ -53,69 +64,140 @@ export default function Home() {
     return () => ctx.revert()
   }, [])
 
+  // When the activities come into view, each medallion's arc is drawn in turn, like a fitter's line closing round it.
+  useEffect(() => {
+    const el = meds.current, sc = root.current
+    if (!el || !sc || still()) return
+    let ctx: gsap.Context | null = null
+    const io = new IntersectionObserver((es) => {
+      if (!es[0].isIntersecting) return
+      io.disconnect()
+      ctx = gsap.context(() => {
+        gsap.fromTo('.arc circle', { strokeDashoffset: 239 }, { strokeDashoffset: 0, duration: 0.7, stagger: 0.12, ease: 'power2.inOut' })
+        gsap.fromTo('.med', { y: 10, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, stagger: 0.07, ease: 'back.out(1.8)' })
+      }, el)
+    }, { root: sc, threshold: 0.6 })
+    io.observe(el)
+    return () => { io.disconnect(); ctx?.revert() }
+  }, [])
+
+  const go = (page: string) => navigate(routeFor(page))
+  const day = (t: number) => { const d = dateLabel(t).split(' '); return { b: d[1], s: d[0].toUpperCase() } }
+
   return (
     <>
       <main className="screen d-screen h1-screen" ref={root}>
         <div className="band01">
           <div className="home-top">
-            <span className="lockup" dangerouslySetInnerHTML={{ __html: lockup }} />
+            <span className="lockup" role="img" aria-label="OutRent" dangerouslySetInnerHTML={{ __html: lockup }} />
             <button type="button" className="ibtn" aria-label="Notifications, 1 unseen" onClick={() => toast('Notifications are not in this demo yet.')}>
               <Icon name="bell" /><span className="dot" aria-hidden="true" />
             </button>
           </div>
           <div className="pad">
             <div className="hello">
-              <Mono>Wed 22 Oct</Mono>
-              <h1 className="t-h1">Good morning, Daniel</h1>
+              <Mono>{dateLabel(now)}</Mono>
+              <h1 className="t-h1">{hello}, Daniel</h1>
               <span className="sub">What are you heading out to do?</span>
             </div>
             <div className="docket" role="search">
-              {FIELDS.map((f) => (
-                <button key={f.k} type="button" className="f" onClick={() => toast(SEARCH_LATER)}>
-                  <Mono>{f.k}</Mono><span className="v">{f.v}</span><Icon name="caret-right" small />
+              {FIELDS.map((x) => (
+                <button key={x.k} type="button" className="f" onClick={() => toast(SEARCH_LATER)}>
+                  <Mono>{x.k}</Mono><span className="v">{x.v}</span><Icon name="caret-right" small />
                 </button>
               ))}
               <button type="button" className="cta" onClick={() => toast(SEARCH_LATER)}><Icon name="magnifying-glass" />Search</button>
             </div>
-            <div className="promise" aria-label="Delivered, set to you, collected">
-              <Mono>Delivered</Mono><Mono>·</Mono><Mono>Set to you</Mono><Mono>·</Mono><Mono>Collected</Mono>
+            <div className="promise" aria-label="Delivered, set to your fit, collected">
+              <Mono>Delivered</Mono><Mono>·</Mono><Mono>Set to your fit</Mono><Mono>·</Mono><Mono>Collected</Mono>
             </div>
           </div>
         </div>
 
         <div className="pad">
+          {hasNext && (
+            <section className="sec01">
+              <div className="sech"><h2 className="t-h2">Up next</h2><button className="link" type="button" onClick={() => go('09-trips')}>All bookings</button></div>
+              <div>
+                {upcoming && (
+                  <button type="button" className="r9" onClick={() => go('09-trips')}>
+                    <span className="dt"><b>25</b><span>SAT</span></span>
+                    <span className="tx"><b>Trek Marlin 7 · size {f.frame}</b>
+                      <span>{s.arrived ? `At ${placeShort(s.book.place.d)} now` : `Delivered ${deliverAt(s)}`} · collected {collectAt(s)}</span>
+                      {!s.arrived && <span className="ok">In {(() => { const c = countdown(now, SAT + hm(deliverAt(s))); return `${c.a} ${c.au} ${c.b} ${c.bu}` })()}</span>}
+                    </span>
+                    <Chev />
+                  </button>
+                )}
+                {closed && s.weekly && (
+                  <button type="button" className="r9" onClick={() => go('09-trips')}>
+                    <span className="dt"><b>1</b><span>NOV</span></span>
+                    <span className="tx"><b>Every Saturday, from 1 Nov</b><span>Trek Marlin 7 · {deliverAt(s)} to {collectAt(s)} · S$45 a ride</span></span>
+                    <Chev />
+                  </button>
+                )}
+                {st.booked && !st.hub && (
+                  <button type="button" className="r9" onClick={() => go('15-equipment-detail')}>
+                    <span className="dt"><b>{day(144).b}</b><span>{day(144).s}</span></span>
+                    <span className="tx"><b>Giant Escape 3 to the Hub</b><span>{st.way === 'home' ? 'Door pickup · 17:00–19:00 · S$10' : 'Rack S drop-off · before 7:00 · S$5'}</span></span>
+                    <Chev />
+                  </button>
+                )}
+                {st.hub && (
+                  <button type="button" className="r9" onClick={() => go('15-equipment-detail')}>
+                    <span className="dt is-ghost"><b>28</b><span>OCT</span></span>
+                    <span className="tx"><b>Giant Escape 3 at the Hub</b>
+                      <span>{st.ret ? (st.ret === 'pool' ? 'Coming home Fri 31 Oct, morning' : 'Coming home 30 Oct · 17:00–19:00') : `Since 28 Oct · S$18 / month${st.rentOn ? ' · available to rent' : ''}`}</span>
+                    </span>
+                    <Chev />
+                  </button>
+                )}
+              </div>
+            </section>
+          )}
+
           <section className="sec01">
-            <h2 className="t-h2">This weekend</h2>
-            <GoTo page="02-coach-kit" className="post" aria-label="Open Coach Aisyah’s post: First ride at Chestnut">
+            <div className="sech"><h2 className="t-h2">From coaches</h2><button className="link" type="button" onClick={() => toast('More coach posts are not in this demo yet.')}>All posts</button></div>
+            <button type="button" className="post" onClick={() => go('02-coach-kit')} aria-label="Open Coach Aisyah’s post: First ride at Chestnut">
               <span className="who">
                 <span className="av"><Photo src={aisyah} alt="Coach Aisyah" width={36} height={36} className="av-img" /></span>
                 <span><b>Coach Aisyah</b><span className="small">Mountain bike coach · posted a kit list</span></span>
               </span>
-              <span className="ph"><Photo src={post} alt="Hardtails and helmets lined up at the Chestnut trailhead on a Saturday morning" width={325} height={203} className="post-img" /></span>
+              <span className="ph">
+                <Photo src={post} alt="Hardtails and helmets lined up at the Chestnut trailhead on a Saturday morning" width={325} height={203} className="post-img" />
+                <span className="signed1"><span className="seal"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" /></svg></span>{closed ? 'Ridden 25 Oct' : 'Signed up'}</span>
+              </span>
               <span className="post-tx"><span className="h3">First ride at Chestnut</span><span className="small">Sat 25 Oct · 8:00–12:30 · what to rent, what to bring</span></span>
-            </GoTo>
+            </button>
           </section>
 
           <section className="sec01">
-            <h2 className="t-h2">Rent for your next outing</h2>
-            <div className="cats">
-              {CATS.map((c) => (
-                <button key={c.label} type="button" className="cat" onClick={() => toast('Browsing is not in this demo yet.')}>
-                  <span className="ph"><Photo src={c.src} alt={c.alt} width={118} height={118} className="cat-img" /></span>
-                  <b>{c.label}</b>
+            <div className="sech"><h2 className="t-h2">Rent gear for</h2><button className="link" type="button" onClick={() => toast('All activities are not in this demo yet.')}>See all</button></div>
+            <div className="meds" ref={meds} aria-label="Rent gear for an activity">
+              {MEDS.map((m) => (
+                <button key={m.b} type="button" className="med" onClick={() => toast('Browsing is not in this demo yet.')}>
+                  <span className="disc">
+                    <Photo src={m.src} alt="" width={68} height={68} className="med-img" />
+                    <svg className="arc" viewBox="0 0 80 80" aria-hidden="true"><circle cx="40" cy="40" r="38" /></svg>
+                  </span>
+                  <b>{m.b}</b><span className="gl">{m.gl}</span>
                 </button>
               ))}
+              <button type="button" className="med more" onClick={() => toast('More activities are not in this demo yet.')}>
+                <span className="disc"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 6v12M6 12h12" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" /></svg></span>
+                <b>More</b><span className="gl">Activities</span>
+              </button>
             </div>
           </section>
 
           <section className="sec01">
             <h2 className="t-h2">Make more of it</h2>
             <div className="promos">
-              <button type="button" className="promo weekly" onClick={() => toast('Weekly rides are set up after a first rental.')}>
-                <span className="tx"><Mono>Weekly rides</Mono><b>Same gear every Saturday, 10% less than one-off</b><span className="small">Skip or pause any week.</span></span>
-                <span className="weeks5" aria-hidden="true"><span>SAT</span><span>SAT</span><span>SAT</span><span>SAT</span></span>
+              <button type="button" className="promo multi" onClick={() => toast('Longer rentals are not in this demo yet.')}>
+                <span className="tx"><Mono>Rent 3 days or more</Mono><b>10% off the day rate</b><span className="small">On rentals of 3 days or more. Delivery, collection and set-up stay the same.</span></span>
+                <span className="sale" aria-label="S$38 a day becomes S$34.20 a day"><span className="off">−10%</span><span className="was">S$38</span><span className="now">S$34.20<small> a day</small></span></span>
               </button>
-              <button type="button" className="promo" onClick={() => toast('Storage is not in this demo yet.')}>
+              <button type="button" className="promo" onClick={() => go('16-storage-options')} aria-label="Make room at home: storage at the OutRent Hub">
                 <span className="tx"><Mono>Storage</Mono><b>Make room at home</b><span className="small">Keep a bike at the OutRent Hub from S$18&nbsp;/&nbsp;month.</span></span>
                 <span className="ph"><Photo src={storage} alt="A bike stored at the OutRent Hub" width={112} height={112} className="promo-img" /></span>
               </button>
@@ -124,13 +206,7 @@ export default function Home() {
         </div>
       </main>
 
-      <nav className="tabbar01" aria-label="Tabs">
-        {TABS.map((t) => (
-          <button key={t.label} type="button" aria-current={t.current ? 'page' : undefined} onClick={() => t.toast && toast(t.toast)}>
-            <Icon name={t.icon} />{t.label}
-          </button>
-        ))}
-      </nav>
+      <TabBar current="01-home" onToast={toast} />
       {toastNode}
     </>
   )
