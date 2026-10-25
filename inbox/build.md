@@ -1,6 +1,24 @@
 # Inbox · Build (Claude Code)
 
-Last updated 25 Oct 2026 15:35 by the management chat. **This replaces every earlier task in this file.**
+Last updated 25 Oct 2026 16:05 by the management chat. **This replaces every earlier task in this file.**
+
+## Three Build windows from 25 Oct 16:05 (Haoyue chose to build in parallel)
+
+Done so far (local, window Build-1): build/v52-system bed27dc, build/v52-01 0a39180.
+
+| Window | Pages | Where it works | Its branch |
+|---|---|---|---|
+| **Build-1** (the original window, worktree D:\YUE\c_project\outrent-skel) | 02 → 03 → 04 → 05 → 06 → 07 → 08, then the merge, Task 2, Task 3 and Acceptance | its current worktree | build/v52-02-08 (or one branch per page, as now) |
+| **Build-2** (new) | 09 → 10 → 11 → 12 → 13 | new worktree D:\YUE\c_project\outrent-b | build/v52-09-13, from build/v52-01 |
+| **Build-3** (new) | 14 → 15 → 16 → 17, then 18 | new worktree D:\YUE\c_project\outrent-c | build/v52-14-18, from build/v52-01 |
+
+Rules for working side by side:
+- Each window works only in its own worktree and branch, and starts from **build/v52-01** (it holds the system: tokens, the shared state store, the shell). Create the worktree yourself: from D:\YUE\c_project\outrent run `git worktree add <path> -b <branch> build/v52-01`. Keep npm caches on drive D (`$env:npm_config_cache = "D:\YUE\npm-cache"`); nothing on drive C.
+- Touch only your own pages' folders. Shared files (the state store, routes, shell, tokens) only by small, additive edits: add fields, never rename or remove; put each addition in your commit message under "Shared changes".
+- Pages that read state written by another window's pages (09–13 read the booking made on 03–08; 01, 09 and 14 reflect storage on 15–17): write against the store's fields; if a field you need does not exist yet, add it (additive) and say so.
+- Each window runs its own dev server on its own port (Build-1 5173, Build-2 5174, Build-3 5175).
+- **Build-1 merges** build/v52-09-13 and build/v52-14-18 into its line when all three are done, resolves conflicts, then does Task 2, Task 3 and the Acceptance runs on the merged app. Build-2 and Build-3 stop after their pages and report.
+
 
 ## Rules (unchanged)
 
@@ -22,7 +40,7 @@ Any page you built from an older prototype version must be brought up to v52 (03
 
 ## Task 1 · the whole app from v52
 
-Build all pages in the React app, in route order: system → 01 → 02 → 03 → 04 → 05 → 06 → 07 → 08 → 09 → 10 → 11 → 12 → 13 → 14 → 15 → 16 → 17, then 18 last (out of the demo scope; lowest priority). One local branch per page or batch, as before.
+Build all pages in the React app (split across three windows, see the table above), in route order: system → 01 → 02 → 03 → 04 → 05 → 06 → 07 → 08 → 09 → 10 → 11 → 12 → 13 → 14 → 15 → 16 → 17, then 18 last (out of the demo scope; lowest priority). One local branch per page or batch, as before.
 
 **One difference from the prototype: real state.** The prototype is a fixed demo route (other choices only show a note). The app must carry every choice through to every later page that shows it: the fit numbers from 03, the hand-over place, delivery and collection times, payment method, the weekly ride, the storage way (door / Rack S), rent-out on/off, the return booking. Home, Bookings and My gear must reflect what has happened (booking made, ride closed, weekly ride set up, bike at the Hub). Values not seeded in MOCK-DATA: do not invent them; write the gap in your commit message.
 
