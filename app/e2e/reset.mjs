@@ -56,8 +56,27 @@ async function isSeed(p, label) {
   ok('short click keeps the story', (await p.evaluate((k) => localStorage.getItem(k), KEY)) !== null)
   await p.mouse.down(); await p.waitForTimeout(1500); await p.mouse.move(box.x + 60, box.y + 10); await p.waitForTimeout(2000); await p.mouse.up()
   ok('moving away cancels the hold', (await p.evaluate((k) => localStorage.getItem(k), KEY)) !== null)
-  await p.mouse.move(box.x + 20, box.y + 10); await p.mouse.down(); await p.waitForTimeout(3300); await p.mouse.up()
+  ok('logo hit area at least 44 px tall', box.height >= 44, String(box.height))
+  await p.mouse.move(box.x + 20, box.y + 22); await p.mouse.down(); await p.waitForTimeout(2000)
+  const op = Number(await p.locator('.lockup').evaluate((e) => getComputedStyle(e).opacity))
+  ok('the logo fades while the hold counts', op < 0.8 && op > 0.3, String(op))
+  await p.waitForTimeout(1300); await p.mouse.up()
   await p.waitForLoadState(); await isSeed(p, 'mouse hold')
+  await ctx.close()
+}
+// 4b · taps: 2 clicks do nothing, 3 clicks about 0.5 s apart reset; taps more than 1 s apart do not count
+{
+  const ctx = await b.newContext({ viewport: { width: 1100, height: 940 } })
+  const p = await seeded(ctx)
+  await p.goto(BASE + '/01-home'); await p.waitForTimeout(1500)
+  const box = await p.locator('.lockup').boundingBox()
+  const click = async () => { await p.mouse.click(box.x + 20, box.y + 22); }
+  await click(); await p.waitForTimeout(500); await click(); await p.waitForTimeout(1500)
+  ok('2 clicks keep the story', (await p.evaluate((k) => localStorage.getItem(k), KEY)) !== null)
+  await click(); await p.waitForTimeout(1300); await click(); await p.waitForTimeout(1300); await click(); await p.waitForTimeout(1200)
+  ok('3 clicks 1.3 s apart keep the story', (await p.evaluate((k) => localStorage.getItem(k), KEY)) !== null)
+  await click(); await p.waitForTimeout(500); await click(); await p.waitForTimeout(500); await click()
+  await p.waitForLoadState(); await isSeed(p, '3 clicks')
   await ctx.close()
 }
 // 5 · the hold with a finger at 393 × 852 (real touch events through the browser's input pipeline)
@@ -72,6 +91,16 @@ async function isSeed(p, label) {
   await p.waitForTimeout(3300)
   await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] }).catch(() => {})
   await p.waitForLoadState(); await isSeed(p, 'touch hold')
+  await ctx.close()
+}
+// 5b · 3 finger taps
+{
+  const ctx = await b.newContext({ viewport: { width: 393, height: 852 }, isMobile: true, hasTouch: true, deviceScaleFactor: 2 })
+  const p = await seeded(ctx)
+  await p.goto(BASE + '/01-home'); await p.waitForTimeout(1500)
+  const box = await p.locator('.lockup').boundingBox()
+  for (let i = 0; i < 3; i++) { await p.touchscreen.tap(box.x + 20, box.y + 22); await p.waitForTimeout(450) }
+  await p.waitForLoadState(); await isSeed(p, '3 finger taps')
   await ctx.close()
 }
 await b.close()

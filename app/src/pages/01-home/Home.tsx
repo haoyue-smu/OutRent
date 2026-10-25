@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, type DragEvent, type MouseEvent, type PointerEvent } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState, type DragEvent, type MouseEvent, type PointerEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { gsap } from 'gsap'
 import lockup from '@design/brand/outrent-lockup-white.svg?raw'
@@ -57,15 +57,29 @@ export default function Home() {
     try { if (sessionStorage.getItem(RESTARTED)) { sessionStorage.removeItem(RESTARTED); window.setTimeout(() => toast('Demo restarted'), 400) } } catch { /* storage blocked */ }
   }, [toast])
 
-  // Hidden: holding the logo for 3 s restarts the demo, with a mouse, a finger or a pen (pointer events).
-  // A short tap does nothing; lifting, leaving or moving more than 10 px cancels the hold. No hint while held.
-  const holdRef = useRef<{ t: number; x: number; y: number } | null>(null)
-  const cancelHold = () => { if (holdRef.current) { clearTimeout(holdRef.current.t); holdRef.current = null } }
-  useEffect(() => cancelHold, [])
+  // Hidden reset on the logo, with a mouse, a trackpad (tap-to-click too), a finger or a pen (pointer events):
+  // either hold it for 3 s (the logo fades to 40% while it counts; lifting, leaving or moving more than 10 px
+  // cancels it), or tap it 3 times, each within 1 s of the one before. A single tap does nothing.
+  const holdRef = useRef<{ t: number; x: number; y: number; at: number } | null>(null)
+  const taps = useRef<{ n: number; last: number }>({ n: 0, last: 0 })
+  const [holding, setHolding] = useState(false)
+  const cancelHold = () => { if (holdRef.current) { clearTimeout(holdRef.current.t); holdRef.current = null } setHolding(false) }
+  useEffect(() => () => { if (holdRef.current) clearTimeout(holdRef.current.t) }, [])
   const hold = {
-    onPointerDown: (e: PointerEvent) => { cancelHold(); holdRef.current = { t: window.setTimeout(restart, 3000), x: e.clientX, y: e.clientY } },
+    onPointerDown: (e: PointerEvent) => {
+      if (holdRef.current) clearTimeout(holdRef.current.t)
+      holdRef.current = { t: window.setTimeout(restart, 3000), x: e.clientX, y: e.clientY, at: performance.now() }
+      setHolding(true)
+    },
     onPointerMove: (e: PointerEvent) => { const h = holdRef.current; if (h && Math.hypot(e.clientX - h.x, e.clientY - h.y) > 10) cancelHold() },
-    onPointerUp: cancelHold, onPointerCancel: cancelHold, onPointerLeave: cancelHold,
+    onPointerUp: () => {
+      const now = performance.now(), short = holdRef.current && now - holdRef.current.at < 700
+      cancelHold()
+      if (!short) { taps.current = { n: 0, last: 0 }; return }
+      taps.current = { n: now - taps.current.last <= 1000 ? taps.current.n + 1 : 1, last: now }
+      if (taps.current.n >= 3) restart()
+    },
+    onPointerCancel: cancelHold, onPointerLeave: cancelHold,
     onContextMenu: (e: MouseEvent) => e.preventDefault(),
     onDragStart: (e: DragEvent) => e.preventDefault(),
   }
@@ -107,7 +121,7 @@ export default function Home() {
       <main className="screen d-screen h1-screen" ref={root}>
         <div className="band01">
           <div className="home-top">
-            <span className="lockup" role="img" aria-label="OutRent" draggable={false} dangerouslySetInnerHTML={{ __html: lockup }} {...hold} />
+            <span className={`lockup${holding ? ' is-holding' : ''}`} role="img" aria-label="OutRent" draggable={false} dangerouslySetInnerHTML={{ __html: lockup }} {...hold} />
             <button type="button" className="ibtn" aria-label="Notifications, 1 unseen" onClick={() => toast('Notifications are not in this demo yet.')}>
               <Icon name="bell" /><span className="dot" aria-hidden="true" />
             </button>
