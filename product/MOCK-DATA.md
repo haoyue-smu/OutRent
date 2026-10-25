@@ -1,6 +1,6 @@
 # OutRent mock data and seeded world
 
-Version 1.6 · 25 Oct 2026 · Owner: Haoyue. Status: **approved as the extension to DESIGN.md section 8** (consistency is the standard: a value may change, but it must change everywhere at once, through the PO window). This file is the single source for every value, name, date and starting state in the prototype. DESIGN.md section 8 values are repeated here unchanged and stay locked.
+Version 1.7 · 25 Oct 2026 · Owner: Haoyue. Status: **approved as the extension to DESIGN.md section 8** (consistency is the standard: a value may change, but it must change everywhere at once, through the PO window). This file is the single source for every value, name, date and starting state in the prototype. DESIGN.md section 8 values are repeated here unchanged and stay locked.
 
 v1.1 answers DESIGN-GAPS-v1.0 from the design window. Changed: supplier corrected to Timah Cycles per DESIGN.md §8 (v1.0 had an outdated name); SEED-RIDE added to §4; slots, listing facts and fulfilment timeline added to §4; §3 notes on inside leg and plain-language labels; §5 kit wear line; §7 no-reviews item; §9 transfer costs and corrected rack locations; VS-1 supplier facts; FD-RECURRING weekly price.
 
@@ -13,6 +13,8 @@ v1.4 (product/PO-ANSWERS-v1.5.md): answers the 06 Delivery & Return gaps. Added:
 v1.5 (product/PO-ANSWERS-v1.6.md): answers the Creative Director's gaps 3, 4, 5, 6, 9, 14, 15 and the batch-5 value check. Added: §1 demo-route clock; §4 mark time and the courier's name; §6 item types and sizes; §9 the rack nearest home and the pooled-run window; VS-6 intake record detail; new §12 catalogue and pricing rules (categories, weekly and multi-day prices). Changed: §5 coach's note shortened (Haoyue, 25 Oct). New values are set by the PO and listed in REQUIREMENTS.md open question 11 until Haoyue accepts them.
 
 v1.6 (product/PO-ANSWERS-v1.7.md): Haoyue accepted every PO-set value of v1.4–v1.5 (open question 11 closed) and chose four Home categories (open question 13 closed). §12 now lists Bikes, Kayaks, Paddleboards, Camping, with one seeded item each for Paddleboards and Camping.
+
+v1.7 (product/PO-ANSWERS-v1.8.md): deposit rule (held on the card on file; PayNow pays the amount due), payment lines for 07 and 08, VS-3 deposit fallback; §9 home-collection slots and pooled runs by date; FD-RECURRING set up from an upcoming or closed booking, created 25 Oct · 14:07, first charge 30 Oct · 20:00; §1 relative-label rule. No existing value changed.
 
 Rules:
 
@@ -28,7 +30,7 @@ Rules:
 
 > **Fri 24 Oct 2026, 19:00** (Singapore time)
 
-Every relative label derives from it. Do not compute from the real date.
+Every relative label derives from it. Do not compute from the real date. Relative day labels count calendar days from the current "now" (22 Oct seen from 24 Oct is "2 days ago"; 28 Oct seen from 29 Oct is "1 day ago"); hours within a day are written as a countdown only where a story asks for one ("in 12 h 40 min"). Calling "1 day ago" "yesterday" is copy.
 
 | Derived fact | Value |
 |---|---|
@@ -49,6 +51,7 @@ The prototype opens signed in. There is no sign-up or sign-in flow (REQUIREMENTS
 - Name: Daniel Lim, 29, Singapore
 - Member since Aug 2026
 - Payment on file: PayNow (default), Visa ending 4821
+- Deposit rule (v1.7): the amount due is paid by the chosen method (PayNow by default); the deposit is **held on the card on file, Visa ···4821, not charged**, and released after the return check. A PayNow transfer cannot hold money, so a deposit is never held on PayNow. If no card can take the hold (VS-3), the deposit is paid by PayNow and **refunded** after the return check; the word changes from "released" to "refunded" on every page of that booking.
 - Renter rating: none yet (first-time renter); this is shown as the absence of history, in whatever way the designer chooses
 - Home address (set by PO, v1.4): Blk 325C Sengkang East Way #11-42, Singapore 543325. One-line form: "Blk 325C Sengkang East Way #11-42". This is the "home address" option at booking (§4) and the home-collection address for storage (FD-STORAGE-BOOKING).
 
@@ -77,7 +80,11 @@ Booking **OR-10482**, confirmed 22 Oct · 9:12.
 | Delivery and collection | S$12 |
 | Set-up to rider's fit | S$0, included |
 | **All-in total paid** | **S$50** |
-| Deposit | S$150, held, released after return check |
+| Deposit | S$150, held on Visa ···4821, not charged, released after return check |
+
+**Payment lines** (07 before paying, 08 after; values, labels are copy):
+- 07: "Pay now · S$50 · PayNow" and "Deposit · S$150 · held on Visa ···4821, not charged · released after the return check".
+- 08: "Paid · S$50 · PayNow" and "Deposit · S$150 · held on Visa ···4821 · released after the return check".
 
 **Slot options at booking** (the "choosing" states):
 - Delivery place: Chestnut trailhead carpark (chosen) or home address (§2). Hand-over spot at the carpark (set by PO, v1.4): "By the park entrance sign"; it is part of the carpark value wherever the carpark is the hand-over point, including FD-RECURRING.
@@ -172,7 +179,7 @@ Later in the flow: one "Rental closed, S$150 deposit released" notification at 2
 
 OutRent Hub (Sungei Kadut):
 - Bike storage S$18 / month, includes intake condition record and basic upkeep
-- Getting it there: home collection S$10, daily 5–7 pm only; or drop at a nearby public rack S$5, picked up on a pooled courier run (runs Tue and Fri mornings, 7:00–10:00; the bike is dropped before 7:00 that day). From the mock clock the next runs are Tue 28 Oct and Fri 31 Oct. Rack nearest Daniel's home (set by PO, v1.5): Rack S, Sengkang East Way, Blk 325C void deck, 60 m away.
+- Getting it there: home collection S$10, daily 5–7 pm only; or drop at a nearby public rack S$5, picked up on a pooled courier run (runs Tue and Fri mornings, 7:00–10:00; the bike is dropped before 7:00 that day). Slots shown from the mock clock, seven days ahead: home collection Sat 25, Sun 26, Mon 27, **Tue 28 (chosen)**, Wed 29, Thu 30, Fri 31 Oct, each 17:00–19:00; pooled runs Tue 28 Oct and Fri 31 Oct. Daniel's choice of Tue 28 is his; the other dates are selectable. Rack nearest Daniel's home (set by PO, v1.5): Rack S, Sengkang East Way, Blk 325C void deck, 60 m away.
 - Getting it back: free on a pooled run with 2 days' notice; next-day return to home S$8
 - Rent-out while stored: owner opts in, owner receives 70% of each rental, item condition re-checked after every rental
 
@@ -190,7 +197,7 @@ Each variant is the seeded world plus the change below. A story that depends on 
   - Rodalink (shop, Bukit Panjang), Trek Marlin 6, size M: S$34 / day + S$12 delivery = **S$46 all-in**, can deliver 25 Oct · 7:40, set to fit included.
   - Marcus T. (private owner, Yishun; member since Mar 2026, usually replies within 2 h), Scott Aspect 950, size M: S$30 / day + S$15 pooled delivery = **S$45 all-in**, earliest delivery 25 Oct · 8:30, after the ride starts. Not set to fit: Marcus T. offers no set-up, and the result says so (this is the "cannot be set to fit" case for E2-4).
 - **VS-2 Delivery delay.** 25 Oct · 7:12: courier held up, new arrival 25 Oct · 8:05 (+25 min). Stage times: set to fit and leaves the shop unchanged (24 Oct · 17:30–18:10, 25 Oct · 7:05); arriving from 7:55; delivered 25 Oct · 8:05. Collection unchanged. Daniel can see the new time, message the shop, or cancel under the booking's terms.
-- **VS-3 Payment declined.** The Visa payment fails with "Card declined by the bank". PayNow remains available. No charge was made.
+- **VS-3 Payment declined.** Daniel pays the S$50 by Visa ···4821; the bank declines the card ("Card declined by the bank"), so neither the S$50 charge nor the S$150 hold was made. Options: retry the card, or switch to PayNow. On PayNow the S$50 is paid and, with no card to hold it, the S$150 deposit is also paid by PayNow and refunded after the return check: 08 then shows "Paid · S$200 · PayNow" with the lines "Rental S$50" and "Deposit S$150 · refunded after the return check", and every later page of this booking says "refunded", not "released".
 - **VS-4 Empty search.** Query: kayak, Sat 25 Oct, delivery to Chestnut. Zero results. True alternatives in the data: 3 kayaks free on Sun 26 Oct; 2 kayaks available Sat as pickup-only.
 - **VS-5 Early end, rack return** (rain variant). Sat 25 Oct: rain ends the ride at 25 Oct · 11:05 at the Zhenghua Park side, far from the 13:30 trailhead collection. The bike returned is the **rental, Trek Marlin 7 (OR-10482)**; the Giant Escape 3 is at home that day. Rack A (200 m) is full, Rack C (650 m) has space (section 9 data). Rack-return terms:
   - No extra charge; the S$12 delivery and collection already covers it.
@@ -203,7 +210,7 @@ Each variant is the seeded world plus the change below. A story that depends on 
 
 Values a flow produces, so later screens agree:
 
-- **FD-RECURRING**: weekly ride created from the closed OR-10482. Every Sat, delivery 7:40 Chestnut trailhead carpark, collection 13:30 (on a dated occurrence: "1 Nov · 7:40"), **S$45 / ride** (10% below the one-off S$50), skip or pause until Thu · 20:00 each week. First occurrence Sat 1 Nov.
+- **FD-RECURRING**: weekly ride set up from OR-10482, offered both on the closed rental (E5-8) and on the upcoming booking in trips; either way the series starts the Saturday after the booked ride. In the demo it is created at 25 Oct · 14:07 from the closed rental. Derived from the mock clock before the ride: "First ride in 7 days 12 h" (Fri 24 Oct 19:00 → Sat 1 Nov 7:40); after setup: "Next ride, Sat 1 Nov, in 6 days 17 h" (from 25 Oct 14:07); first charge "30 Oct · 20:00 · S$45". Every Sat, delivery 7:40 Chestnut trailhead carpark, collection 13:30 (on a dated occurrence: "1 Nov · 7:40"), **S$45 / ride** (10% below the one-off S$50), skip or pause until Thu · 20:00 each week. First occurrence Sat 1 Nov.
   - Money: nothing is charged at setup. Each ride is charged S$45 at its skip deadline (Thu · 20:00), and the S$150 deposit is held for that ride at the same point and released after that ride's return check.
   - Skip: the next ride only; free before its Thu · 20:00 deadline.
   - Pause and stop: apply from the next Saturday whose deadline has not passed (at setup, Sat 1 Nov) and charge nothing. If that Saturday's deadline has passed, that ride goes ahead and is charged S$45, and the pause or stop applies from the Saturday after. A pause lasts until Daniel resumes; it does not end on its own.

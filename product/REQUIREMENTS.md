@@ -1,6 +1,6 @@
 # OutRent product requirements (Iter2 prototype)
 
-Version 1.7 · 25 Oct 2026 · Product owner window. Consumed by the UX design window and the implementation window.
+Version 1.8 · 25 Oct 2026 · Product owner window. Consumed by the UX design window and the implementation window.
 
 ## 0. How to use this document
 
@@ -51,6 +51,7 @@ The design and implementation windows do not add features and do not change requ
 | 1.5 | 24 Oct 2026 | Answers the 06 Delivery & Return gaps (product/PO-ANSWERS-v1.5.md). Changed stories: E4-2 (collection place chosen separately; may differ from delivery), E5-5 (hand-over views rule), E5-6 (submitted state is timed). MOCK-DATA.md at 1.4: home address, hand-over spot, shop record time, hand-over views and report time added, set by PO (open questions 11–12); house date format "25 Oct · 7:40" applied throughout (tasks A, B, C of 24 Oct). |
 | 1.6 | 25 Oct 2026 | Answers the Creative Director's gaps 3, 4, 5, 6, 9, 14, 15 and the batch-5 value check (product/PO-ANSWERS-v1.6.md). No story text changed. MOCK-DATA.md at 1.5: demo-route clock, courier, mark time, item types and sizes, rack nearest home, intake record detail, §12 catalogue and pricing rules; coach's note shortened. Open questions 11, 13 updated. |
 | 1.7 | 25 Oct 2026 | Haoyue's answers of 25 Oct 02:39 (product/PO-ANSWERS-v1.7.md): open question 11 closed, all PO-set values accepted; open question 13 closed, Home keeps four categories. No story text changed. MOCK-DATA.md at 1.6: §12 seeds Paddleboards and Camping with one item each. |
+| 1.8 | 25 Oct 2026 | Answers the persona-review deposit question and FIXES 19–22 (product/PO-ANSWERS-v1.8.md). Changed stories: E4-9 (PayNow deposit fallback), E6-1 (setup also from an upcoming booking). MOCK-DATA.md at 1.7. |
 
 ## 3. Won't build
 
@@ -303,7 +304,7 @@ States: replacement results.
 Seed: VS-3
 As a payer, Daniel wants a failed payment to say what happened and what works, so failure is a step, not a wall.
 1. The declined state says what failed, that no charge was made, and in plain language what Daniel can do: retry or switch to PayNow. `[D]`
-2. Switching method and completing leads to the normal confirmation. `[B]`
+2. Switching method and completing leads to the normal confirmation; with PayNow and no card to hold it, the deposit is paid and later refunded, and the confirmation and every later page of the booking say so (MOCK-DATA §2 deposit rule, VS-3). `[B]`
 States: payment declined.
 
 ## E5 · Rental management and fulfilment
@@ -375,7 +376,7 @@ States: offer within closed summary.
 ### E6-1 Set up the weekly ride · Must
 `B1` `Idea 3` · Seed: FD-RECURRING
 As a weekly rider, Daniel wants a standing arrangement, so logistics stop being a weekly task.
-1. Setup shows what will recur: every Sat, delivery 7:40 Chestnut trailhead, collection 13:30, S$45 / ride (below the one-off S$50), first occurrence Sat 1 Nov. `[D]`
+1. Setup shows what will recur: every Sat, delivery 7:40 Chestnut trailhead, collection 13:30, S$45 / ride (below the one-off S$50), first occurrence Sat 1 Nov. Setup is reachable from the closed rental (E5-8) and from the upcoming booking in trips; the first occurrence is the Saturday after the booked ride either way (MOCK-DATA FD-RECURRING). `[D]`
 2. Setup states when money moves: nothing is charged at setup; each ride is charged S$45 at its skip deadline (Thu 20:00), and the S$150 deposit is held for each ride at that point and released after that ride's return check (MOCK-DATA FD-RECURRING). `[D]`
 3. Confirming creates the weekly ride; it appears in trips. `[B]`
 States: setup review, created.
