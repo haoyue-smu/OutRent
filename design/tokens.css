@@ -95,6 +95,26 @@
   --tag-paper-3: #DCD1BA;
   --shadow-tag-front: 0 14px 20px rgba(40, 30, 10, 0.2);
 
+  /* My gear and the Hub (14–18) */
+  --fs-idle: 48px; --lh-idle: 50px;   /* "5 months ago" on 15: the item's own big figure */
+  --shadow-photo-card:0 1px 0 var(--rule), 0 18px 36px -26px rgba(18, 24, 21, 0.45);   /* a photo card you can open (14) */
+  --box-face: #F7F8F5;     /* the lit face of the drawn box (15) */
+  --split-rest: #B9C2BD;   /* the 30% OutRent keeps, on the rent-out bar */
+  --dial-win: #C9D1CB;     /* a courier window on the 24-hour dial (17), before it is chosen */
+  --on-forest-rule: rgba(255, 255, 255, 0.14);
+  --on-forest-dt: rgba(255, 255, 255, 0.65);
+  --on-forest-k: rgba(255, 255, 255, 0.7);
+  --map18-ground: #E7EBE6;   /* the rain-day map (18) */
+  --map18-park: #D2DECF;
+  --map18-block: #DDE2DB;
+  --map18-casing: #D3D8D1;
+  --map18-full: #C9CFC8;
+  --map18-you: #3D6EDB;      /* "you" on a map: the one blue, as maps draw it */
+  --map18-you-ink: #2B4A9A;
+  --rain: linear-gradient(transparent, rgba(70, 90, 82, 0.55));
+  --pill18-bg: rgba(255, 255, 255, 0.82);
+  --shadow-pill: 0 4px 14px -6px rgba(0, 0, 0, 0.25);
+
   /* On photos */
   --on-photo-bg: rgba(255, 255, 255, 0.72);
   --on-photo-border: rgba(255, 255, 255, 0.55);

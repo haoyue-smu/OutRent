@@ -38,11 +38,11 @@ export function PageFrame({ meta, children }: { meta: PageMeta; children?: React
   useLayoutEffect(() => {
     // The page the app opens on (router key 'default') just appears; StrictMode's second effect run sees the same key.
     const first = location.key === 'default'
-    if (first || still() || !stage.current || (how && how !== 'fade')) return
+    if (first || still() || !stage.current || (how && how !== 'fade' && how !== 'back')) return
     const el = stage.current, w = el.offsetWidth || 393
     const tween = how === 'fade'
       ? gsap.fromTo(el, { opacity: 0 }, { opacity: 1, duration: 0.35, clearProps: 'opacity' })
-      : nav === 'POP'
+      : nav === 'POP' || how === 'back'
       ? gsap.fromTo(el, { x: -60, opacity: 0.6 }, { x: 0, opacity: 1, duration: 0.42, ease: 'power3.out', clearProps: 'transform,opacity' })
       : gsap.fromTo(el, { x: w }, { x: 0, duration: 0.5, ease: 'expo.out', clearProps: 'transform' })
     return () => { tween.kill() }
