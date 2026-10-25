@@ -34,7 +34,8 @@ Bring `design/components.html` (with `components.css`, `tokens.css`, `recipes.ht
 
 - **Phone:** the app works as a home-screen web app: web app manifest (name OutRent, icons from design/brand, display standalone, theme colour #F3F4F0), apple-touch-icon, `viewport-fit=cover`, safe-area insets, no browser bounce. Opened on an iPhone it fills the screen like a native app.
 - **Computer:** the same URL on a wide screen shows **only an iPhone 16 frame (393 × 852) centred on a plain page, with the app inside and fully clickable. Nothing else on the page** (no side notes, no labels, no page list). The prototype's own desk view is not this: drop its side notes.
-- Prepare static hosting (Vite build; an SPA rewrite config for Vercel). Do not deploy and do not push: deploying needs Haoyue's Vercel sign-in and his go-ahead.
+- **Deploy with the Vercel CLI from this machine** (Haoyue 25 Oct 15:26), so nothing is pushed to GitHub: add an SPA rewrite (`vercel.json`) and make `npm run build` produce the static site; then, when Haoyue says go, run `npx vercel` (preview) / `npx vercel --prod` from the app folder. The first run asks Haoyue to log in to Vercel in the browser (he does that step himself; never create an account or type a password for him). Report the URL. No GitHub integration, no push.
+- **Not drawn, not built (Haoyue 25 Oct 15:26):** 10 delay, 11 report a problem, 13 skip / pause / stop, 09 booking detail, 14 other items. Keep them as the prototype has them (a short "not in this demo yet" note).
 
 ## Acceptance
 
