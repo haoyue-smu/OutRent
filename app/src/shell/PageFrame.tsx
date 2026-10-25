@@ -12,7 +12,7 @@ import { useClockText } from './store'
 // state.how 'fade' cross-fades instead (07 -> 08 after paying, the tabs).
 
 // Pages whose top is a dark photo or the forest band: the status bar turns white.
-const DARK_TOP = new Set(['01-home', '05-listing-detail', '07-fees-liability', '15-equipment-detail', '16-storage-options'])
+const DARK_TOP = new Set(['01-home', '05-listing-detail', '15-equipment-detail', '16-storage-options'])
 
 // A tap right after a page change, or right after a button changed its own label (data-lock-at), is the second
 // half of a double tap: it is dropped, so it cannot press the next page's button in the same place.

@@ -3,7 +3,7 @@
 
 .frame[data-page="07-fees-liability"] .frame-stage { background: var(--deep); }
 .bg07 { position: absolute; inset: 0; overflow: hidden; }
-.bg07 .photo { width: 100%; height: 100%; object-fit: cover; object-position: 40% 45%; transform: scale(1.06); will-change: filter; }
+.bg07 .photo { width: 100%; height: 100%; object-fit: cover; object-position: 50% 50%; transform: translateY(-21%) scale(1.06); will-change: filter; }
 .dim07 { position: absolute; inset: 0; background: var(--photo-dim); opacity: 0.6; }
 .s7-screen { position: relative; z-index: 1; padding-bottom: 0; background: var(--sheet-below); color: var(--ink); font-family: var(--sans); overscroll-behavior: none; }
 .s7-title { color: var(--on-photo-ink); }
@@ -39,7 +39,7 @@
 .terms2 li b { font-weight: 600; }
 .terms2 li > span { color: var(--ink-2); text-wrap: pretty; }
 .nb { white-space: nowrap; }
-.readall { display: inline-flex; align-items: center; gap: 6px; align-self: flex-start; min-height: var(--touch); padding: 0; border: 0; background: none; color: var(--forest); font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; }
+.readall { display: inline-flex; align-items: center; gap: 6px; align-self: flex-start; min-height: 40px; padding: 0; border: 0; background: none; color: var(--forest); font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; }
 .readall .icon { width: 13px; height: 13px; }
 .ack { position: relative; display: grid; grid-template-columns: 26px 1fr; gap: var(--s-3); align-items: center; min-height: var(--touch); padding: 6px 0; font-size: 14px; font-weight: 500; cursor: pointer; }
 .ack input { position: absolute; opacity: 0; pointer-events: none; }
@@ -68,3 +68,5 @@
 .ft-body { flex: 1; overflow-y: auto; padding: var(--s-2) var(--gutter) var(--s-10); }
 .ft-body .t-h2 { margin-top: var(--s-5); font-size: var(--fs-body); line-height: 22px; }
 .ft-body p { margin: var(--s-2) 0 0; font-size: var(--fs-callout); line-height: 22px; color: var(--ink-2); text-wrap: pretty; }
+
+.s7-paynote { margin: 14px 0 0; }

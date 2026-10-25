@@ -1,27 +1,35 @@
-import { useLayoutEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { gsap } from 'gsap'
 import { useBack } from '../../shell/Link'
 import { Icon } from '../../shell/Icon'
 import { Photo } from '../../shell/Photo'
-import { BackButton, Mono, still } from '../../shell/direction'
+import { BackButton, Mono, Sheet, haptic, still, useSheet } from '../../shell/direction'
+import { lock } from '../../shell/PageFrame'
+import { deliverAt, getState, payLabel, set, setClock, useStore, type Pay } from '../../shell/store'
 import { routeFor } from '../../pages'
-import bike from '@photos/01-home/assets/01-direction-cat-bikes.webp'
+import bike from '@photos/07-fees-liability/assets/07-direction-backdrop-marlin7.webp'
 import './fees.css'
 
 // 07 Fees & liability · the fitter's line. The bike behind; the bill as a drawer that blurs it as it rises:
 // a statement with dotted leaders, the deposit held, the terms in short and ticked by hand.
-// Source: the Creative Director's prototype "OutRent · direction" (#07, v4 drawer), approved 25 Oct 01:40.
+// v52 (the v4 drawer). The payment method is a real choice (PayNow or Visa ending 4821) and carries on to 08 and 09;
+// the tick belongs to this checkout only, so a new booking starts unticked.
 
 const LINES = [['This bike, 1 day', 'S$38'], ['Delivery and collection', 'S$12'], ['Setting it to your fit', 'S$0']]
-const METHODS = [{ name: 'PayNow', ic: 'PN' }, { name: 'Visa ·4821', ic: 'VISA' }]
+const IC: Record<Pay, string> = { PayNow: 'PN', Visa: 'VISA' }
 
 export default function Fees() {
   const navigate = useNavigate()
   const back = useBack(() => navigate(routeFor('06-delivery-return')))
-  const [ack, setAck] = useState(false)
-  const [method, setMethod] = useState(0)
+  const ack = useStore((s) => s.book.ack)
+  const method = useStore((s) => s.book.pay)
+  const d = useStore((s) => deliverAt(s))
+  const setAck = (v: boolean) => set((s) => ({ ...s, book: { ...s.book, ack: v } }))
+  const payWith = useSheet()
   const [paying, setPaying] = useState(false)
+  const payBtn = useRef<HTMLButtonElement>(null)
+  useEffect(() => { setClock(getState().paid ? '19:00' : '9:09') }, [])
   const [terms, setTerms] = useState(false)
   const screen = useRef<HTMLElement>(null)
   const img = useRef<HTMLDivElement>(null)
@@ -53,12 +61,16 @@ export default function Fees() {
 
   const pay = () => {
     if (!ack || paying) return
-    setPaying(true)
-    const done = () => { navigate(routeFor('08-booking-confirmation'), { state: { how: 'fade' } }) }
+    setPaying(true); lock(payBtn.current)
+    // paid: OR-10482 is confirmed at 22 Oct · 9:12 with the chosen times, places, fit and method
+    const done = () => {
+      set((s) => ({ ...s, paid: true, now: 9.2, book: { ...s.book, ack: false }, arrived: false, closed: false, record: { shots: [], marks: [], saved: false } }))
+      navigate(routeFor('08-booking-confirmation'), { state: { how: 'fade' } })
+    }
     if (still() || !bar.current) { done(); return }
     gsap.fromTo(bar.current, { width: '0%' }, { width: '100%', duration: 0.9, ease: 'power1.inOut', onComplete: done })
   }
-  const m = METHODS[method]
+  const m = { name: payLabel(method), ic: IC[method] }
 
   return (
     <>
@@ -84,7 +96,7 @@ export default function Fees() {
               {LINES.map(([k, v]) => <div key={k} className="ln"><dt>{k}</dt><i aria-hidden="true" /><dd className="num">{v}</dd></div>)}
               <p className="small s7-flat">Nothing else is charged.</p>
             </dl>
-            <div className="dep2"><Icon name="lock-simple" /><span><b>Plus a S$150 deposit, held</b>It is not charged. It comes back after the return check on 25&nbsp;Oct.</span></div>
+            <div className="dep2"><Icon name="lock-simple" /><span><b>Plus a S$150 deposit, held</b>It is not charged. Released after the return check on 25&nbsp;Oct.</span></div>
             <section className="terms2">
               <h2 className="t-h2">The terms, in short</h2>
               <ul>
@@ -96,30 +108,38 @@ export default function Fees() {
               <label className="ack">
                 <input type="checkbox" name="ack" checked={ack} onChange={(e) => setAck(e.target.checked)} />
                 <span className="box" aria-hidden="true"><Icon name="check" /></span>
-                <span>I have read the damage and liability terms.</span>
+                <span>I agree to the damage and liability terms.</span>
               </label>
             </section>
             <div className="pm1">
               <span className="pm-ic" aria-hidden="true">{m.ic}</span>
               <span className="pm-tx"><Mono>Pay with</Mono><b>{m.name}</b></span>
-              <button type="button" className="link" onClick={() => setMethod((i) => 1 - i)} aria-label={`Change payment method, now ${m.name}`}>Change</button>
+              <button type="button" className="link" onClick={payWith.show} aria-label={`Change payment method, now ${m.name}`}>Change</button>
             </div>
           </div>
         </div>
       </main>
       <div className="dock dock07">
-        <button type="button" className="cta s7-pay" disabled={!ack} onClick={pay} aria-live="polite">
+        <button type="button" className="cta s7-pay" ref={payBtn} disabled={!ack} onClick={pay} aria-live="polite">
           {paying ? 'Paying…' : ack ? `Pay S$50 with ${m.name}` : 'Tick the terms to pay'}
           <span className="bar" ref={bar} aria-hidden="true" />
         </button>
       </div>
-      {terms && <FullTerms onClose={() => setTerms(false)} />}
+      {terms && <FullTerms onClose={() => setTerms(false)} d={d} />}
+      <Sheet sheet={payWith} label="Pay with" title="Pay with" closeLabel="Close, keep the payment method">
+        {(['PayNow', 'Visa'] as Pay[]).map((p) => (
+          <button key={p} type="button" className="opt" aria-pressed={method === p} onClick={() => { set((s) => ({ ...s, book: { ...s.book, pay: p } })); haptic(); payWith.hide() }}>
+            <span className="rad" /><b>{payLabel(p)}</b><span /><span className="s">{p === 'PayNow' ? 'Your default. Pays the S$50 now.' : 'Card on file. Pays the S$50 now.'}</span>
+          </button>
+        ))}
+        <p className="small s7-paynote">The S$150 deposit is held on your card on file, Visa ···4821, either way. It is not charged.</p>
+      </Sheet>
     </>
   )
 }
 
 // The full damage and liability terms, as a sheet over the page.
-function FullTerms({ onClose }: { onClose: () => void }) {
+function FullTerms({ onClose, d }: { onClose: () => void; d: string }) {
   const el = useRef<HTMLDivElement>(null)
   const closing = useRef(false)
   useLayoutEffect(() => {
@@ -137,10 +157,10 @@ function FullTerms({ onClose }: { onClose: () => void }) {
       <div className="ft-head"><Mono>Damage and liability terms</Mono><BackButton label="Close the terms" onClick={close} icon="x" /></div>
       <div className="ft-body">
         <h2 className="t-h2">Damage</h2>
-        <p>Damage recorded at hand-over is not chargeable. The hand-over record is the shop’s photos of <span className="nb">18 Oct · 16:20</span> and your own photos at <span className="nb">25 Oct · 7:40</span>: crank arm, saddle edge and drivetrain.</p>
+        <p>Damage recorded at hand-over is not chargeable. The hand-over record is the shop’s photos of <span className="nb">18 Oct · 16:20</span> and your own photos at <span className="nb">25 Oct · {d}</span>: crank arm, saddle edge and drivetrain.</p>
         <p>New damage is assessed against the S$150 deposit, using that record.</p>
         <h2 className="t-h2">Deposit</h2>
-        <p>S$150 is held on your payment method and not charged. It is released after the return check, which happens when the bike is collected.</p>
+        <p>S$150 is held on your card on file, Visa ···4821, and not charged. It is released after the return check, which happens when the bike is collected.</p>
         <h2 className="t-h2">Cancelling</h2>
         <p>You can cancel free until <span className="nb">24 Oct · 20:00</span>. After that the day rate of S$38 is kept, and the deposit is always released.</p>
         <p>If Timah Cycles cancels, everything is refunded and the deposit hold is released at once.</p>
