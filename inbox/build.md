@@ -2,14 +2,15 @@
 
 Last updated 25 Oct 2026 16:05 by the management chat. **This replaces every earlier task in this file.**
 
-## NOW (25 Oct 20:30) · Build-1: a full reset, then redeploy
+## NOW (25 Oct 20:35) · Build-1: keep progress until a reset link, then redeploy
 
-Bug Haoyue found on the deployed app (outrent-g14t3.vercel.app): after he saves anything (fit profile, delivery times, …) there is no way back to the starting state. Cause: `app/src/shell/store.ts` keeps the story in sessionStorage (a reload keeps it; on the iPhone home-screen app it never clears), and `reset()` exists but nothing calls it.
+Bug Haoyue found on the deployed app (outrent-g14t3.vercel.app): after he saves anything (fit, delivery times, …) there is no way back to the starting state. `app/src/shell/store.ts` keeps the story in sessionStorage and `reset()` is never called. Haoyue (20:28): **no visible button or tab for this.** Progress should stay until he deliberately resets it with a link.
 
-1. **Profile tab → "Restart the demo".** The Profile tab (today a "not in this demo yet" toast, app/src/shell/direction.tsx) opens a small sheet in the v52 style: title "Restart the demo", one line "Clears the fit, the booking, the weekly ride and the storage, and starts again on Wed 22 Oct at Home.", then two buttons of equal weight told apart by text colour only, the option to stay on top ("Keep my progress"), the leaving one at the bottom ("Restart"). Restart = `reset()`, clear the navigation history/back stack, remove the sessionStorage key, and land on 01 Home with its first-visit intros playing as on a fresh open.
-2. **Backstop:** opening any URL with `?reset` does the same and then removes `?reset` from the address bar.
-3. Check: save a fit and make a booking, Restart, then 03 opens empty on step 01, 06 has no times chosen, 09/14 show the seed state; same on a phone-width home-screen launch.
-4. npm run check; commit as Haoyue (no AI attribution); push main; `npx vercel --prod`. Reply one line: "done, main <hash>, <URL>".
+1. **Progress is kept for good:** move the store from sessionStorage to localStorage (same key). Closing the tab, reopening the link, a new tab and the iPhone home-screen app all continue where he left off.
+2. **Reset by link:** opening `https://outrent-g14t3.vercel.app/reset` (and `/?reset` as an alias) clears the stored state and any saved navigation, then replaces the URL with `/` and opens 01 Home in the seed state (Wed 22 Oct, no fit, no booking), with first-visit intros as on a fresh open. Add the `/reset` route to the Vercel SPA rewrite so it does not 404. Nothing on screen links to it.
+3. **iPhone home-screen app** has no address bar and its storage is separate from Safari, so the link cannot reach it. Give it one hidden way only: pressing and holding the OutRent logo at the top of 01 Home for 3 seconds does the same reset (no visual hint, no toast before; after the reset a short toast "Demo restarted"). Nothing else in the UI changes; the Profile tab stays as it is.
+4. Check: save a fit and book, close and reopen → still there; open /reset → Home in the seed state, 03 empty on step 01, 06 no times, 09 and 14 in the seed state; long-press on the logo does the same.
+5. npm run check; commit as Haoyue (no AI attribution); push main; `npx vercel --prod`. Reply one line: "done, main <hash>, <URL>".
 
 ## NOW (25 Oct 18:00) · Build-1 only: finish, put it on GitHub main, deploy
 
