@@ -2,6 +2,31 @@
 
 Last updated 25 Oct 2026 16:05 by the management chat. **This replaces every earlier task in this file.**
 
+## NOW (30 Oct 19:10) · Build-1: port prototype v60, make /components the full design library, push main, deploy
+
+Haoyue approved the Creative Director's answer to the team feedback (prototype v60). Also: the components page is graded — the teaching team will look at it — so it must be a complete, formal design library.
+
+### 1 · Port v60 (prototype/v60/, see prototype/v60/CHANGES.md)
+Bring 02, 04, 05, 06, 14 and 17 in the app to v60 exactly (open prototype/v60/index.html #02, #04 … to compare), keeping the app's real state. Nothing else changes. npm run check and outrent-ui-review on each changed page.
+
+### 2 · /components = the OutRent design library (IS211 grading)
+What the course grades (team/COURSE-BRIEF §1, §7): "detail and polish, consistent look"; a design system with a limited palette (about two main colours, the rest accents); a component library; every colour used is recorded in the colour scheme (the grader's own rule); contrast ≥ 4.5:1; one dominant colour + accents; never colour alone; 44 px targets; motion only as feedback.
+Make https://outrent-g14t3.vercel.app/components one long, well-organised page, built from the app's own tokens and components (so it cannot drift), in the app's own look, readable on desktop:
+- **Header**: OutRent design library, version and date, one paragraph on the idea (the fitter's line), a contents list linking to each section.
+- **Colour**: **every** colour the app uses (search the CSS for every literal colour, gradient and rgba; anything not a token becomes a token or is listed). For each: swatch, token name, hex, role (main / accent / neutral / feedback / photo overlay), where it is used, and its contrast ratio against paper and white with AA pass/fail. Show the two main colours first (paper + forest) and say which are accents.
+- **Typography**: Geist and Geist Mono; the full type scale with size / line height / weight / tracking for each role (display numbers, titles, body, small, mono labels), shown as real samples.
+- **Spacing, layout and grid**: 393 × 852 frame, gutters, the spacing steps, safe areas.
+- **Radii, rules and elevation**: every radius, hairline and shadow, with where each is used.
+- **Iconography**: every icon the app uses, at size, with its name.
+- **Components**, each as a live specimen with its states (default, pressed, selected, disabled, focus) and a one-line "use it for / don't use it for": buttons (primary pill, secondary, text link), the dock, back button (plain and on-photo), top bar, tab bar, white cards (result, post, docket, record, booking), chips (incl. v60's scrolling time chips), the tape (ruler input), the measured line and measured grid, sheets and drawers (incl. 02's drawer), toast, photo frame + dated caption + "Image to come" stand-in, list rows, the done marks (08 stamp, 11 slip, 13 ring, 17 dial token, 15 intake dot), map pieces.
+- **Motion**: the motion tokens (durations, easings), what each motion explains, reduced-motion behaviour.
+- **Writing**: the wording rules (no "we", labels over sentences, say when it happens, money says what it is, date form "25 Oct · 7:40").
+- Keep the existing live-preview idea (`?seed=`) where it helps.
+Also keep `design/components.html`, `components.css`, `tokens.css` and `recipes.html` in step with it. Do not edit design/DESIGN.md text; say in the commit that it is out of date.
+
+### 3 · Ship
+npm run check; commit as Haoyue (no AI attribution); push **main**; `npx vercel --prod`; `vercel alias set <deployment> outrent-g14t3.vercel.app`; open https://outrent-g14t3.vercel.app/components and /02-coach-kit to confirm. Reply one line: "done, main <hash>, /components".
+
 ## NOW (25 Oct 20:55) · Build-1: make the hidden reset work for Haoyue
 
 Haoyue (20:52) cannot trigger the 3-second hold on the Home logo on his laptop, although Management's Playwright mouse hold on the live site works (toast shown, storage cleared). Likely cause: he uses touchpad tap-to-click, which sends a short click, never a held button; a held press also gives no sign it is counting.
