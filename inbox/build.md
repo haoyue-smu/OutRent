@@ -2,6 +2,25 @@
 
 Last updated 25 Oct 2026 16:05 by the management chat. **This replaces every earlier task in this file.**
 
+## NOW (31 Oct 00:05) · Build-1: trim /components to what the grader needs (do together with the drag fix below, one deploy)
+
+Haoyue (31 Oct 00:00): /components is far too long (~30,000 px, ~35 screens) and holds things nobody grading it needs. The grader looks for: a limited palette (two main colours + few accents) with every UI colour recorded, the type scale, a consistent component library, and overall consistency. Aim for about half the length.
+
+**Colour**
+- Remove these sections entirely: "Photo overlays", "Map pieces", "Drawings" (illustration / generated-image colours are not the UI palette), "Outside the tokens", "Defined, not used by the app".
+- Remove the long "Text on its real ground" table. Instead, in the colour tables, contrast is checked **against the backgrounds each colour is actually used on as text** (e.g. white on forest 10.05 Pass; forest on paper, white, mint and the tag). Colours never used as text (paper, sheet, rules, ticks, fills) show "— not used as text", never Pass/Fail. One line above the tables: "Contrast is checked against the backgrounds each colour is used on as text; WCAG AA 4.5:1."
+- Fold "The job tag" and "Text and lines on forest" into the accents group. Keep: the two main colours, neutrals, accents, feedback.
+
+**Typography**: keep "Roles" (the type scale with samples); remove "Every size in use".
+
+**Radii, rules and elevation**: keep radii and rules; elevation shows only shadows the app actually uses, compact (one row of small specimens).
+
+**Components**: keep all groups, but White cards shows 2 representative cards (not 5); remove the "Map pieces" component group; the specimen heading "Pay with" must not appear as a section heading (use a non-heading element); keep Photos (photo frame, dated caption, "Image to come" stand-in), Done marks, Scrolling rows.
+
+**Motion**: keep the tokens; replace "Every motion" with ~5 key motions (page change, sheet, time skip, done mark, fit set-up) in one short table.
+
+Keep the contents list and Principles. The page must still read everything from the app's own files. Then do the drag task below, check both, and ship once: npm run check; commit as Haoyue; push main; `npx vercel --prod`; `vercel alias set <deployment> outrent-g14t3.vercel.app`. Reply "done, main <hash>".
+
 ## NOW (30 Oct 21:10) · Build-1: sideways rows cannot be dragged with a mouse
 
 Haoyue (20:59): on his laptop the 05 photos do not slide. Management's sweep of every live page (desktop 1536 × 864 and phone 393 × 852): no console errors and no broken images anywhere, but **every horizontal row ignores a mouse drag**: 01 the "Rent gear for" medallions (`.meds`), 05 the photo strip (`.rail`), 06 both time-chip rows (`.chips6 .row6`). They move only with a trackpad two-finger swipe or touch. The demo is shown on a laptop inside the iPhone frame, so a click-and-drag must work.
