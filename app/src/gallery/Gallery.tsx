@@ -15,8 +15,8 @@ import m7 from '@photos/04-search-results/assets/04-direction-marlin-7.webp'
 import bike from '@photos/01-home/assets/01-direction-cat-bikes.webp'
 import helmet from '@photos/02-coach-kit/assets/02-direction-kit-helmet.webp'
 import {
-  FONT_SIZES, ICON_IDS, MOTION, OUTSIDE, PAIRS, RADII, RADIUS_USE, SHADOWS, SHADOW_USE, SPACES, TOKENS, WRITING,
-  colourGroups, contrast, iconUse, legacy, lineUse, unfiled, type Row,
+  ICON_IDS, MOTION, PAIRS, RADII, RADIUS_USE, SHADOWS, SHADOW_USE, SPACES, TOKENS, WRITING,
+  colourGroups, contrast, iconUse, lineUse, unfiled, type Row,
 } from './data'
 import './gallery.css'
 
@@ -42,9 +42,9 @@ function Sub({ title, note, children }: { title: string; note?: ReactNode; child
   return <div className="g-sub"><h3 className="t-h2">{title}</h3>{note && <p className="small">{note}</p>}{children}</div>
 }
 // One component: what it is for, what it is not for, its states.
-function Comp({ name, yes, no, children }: { name: string; yes: string; no: string; children: ReactNode }) {
+function Comp({ name, yes, no, wide, children }: { name: string; yes: string; no: string; wide?: boolean; children: ReactNode }) {
   return (
-    <article className="g-comp" aria-label={name}>
+    <article className={`g-comp${wide ? ' is-wide' : ''}`} aria-label={name}>
       <header><h4>{name}</h4><dl className="g-usefor"><div><dt>Use it for</dt><dd>{yes}</dd></div><div><dt>Don’t use it for</dt><dd>{no}</dd></div></dl></header>
       <div className="g-spec">{children}</div>
     </article>
@@ -65,20 +65,23 @@ function Ratio({ fg, bg, under }: { fg: string; bg: string; under?: string }) {
 function ColourTable({ rows }: { rows: Row[] }) {
   return (
     <div className="g-scroll"><table className="g-table">
-      <thead><tr><th>Colour</th><th>Token</th><th>Value</th><th>Role</th><th>Where it is used</th><th>On paper</th><th>On white</th><th>Text?</th></tr></thead>
+      <thead><tr><th>Colour</th><th>Token</th><th>Value</th><th>Role</th><th>Where it is used</th><th>Contrast as text</th></tr></thead>
       <tbody>
-        {rows.map((r) => (
-          <tr key={r.name}>
-            <td><i className="g-swatch" style={{ background: `var(${r.name})` }} /></td>
-            <td><code>{r.name}</code></td>
-            <td className="g-val">{r.value}</td>
-            <td>{r.filed?.role}</td>
-            <td>{r.filed?.use}<span className="g-pages">Pages: <Where w={r.where} via={r.via} /></span></td>
-            <td><Ratio fg={r.name} bg="--paper" /></td>
-            <td><Ratio fg={r.name} bg="--sheet" under="--sheet" /></td>
-            <td className="g-text">{r.filed?.text ? `Yes, on ${r.filed.text}` : 'No: fill or line'}</td>
-          </tr>
-        ))}
+        {rows.map((r) => {
+          const on = PAIRS.filter((p) => p.fg === r.name)
+          return (
+            <tr key={r.name}>
+              <td><i className="g-swatch" style={{ background: `var(${r.name})` }} /></td>
+              <td><code>{r.name}</code></td>
+              <td className="g-val">{r.value}</td>
+              <td>{r.filed?.role}</td>
+              <td>{r.filed?.use}<span className="g-pages">Pages: <Where w={r.where} via={r.via} /></span></td>
+              <td className="g-contrast">{on.length
+                ? on.map((p) => <span key={p.bg}>On {p.on} <Ratio fg={p.fg} bg={p.bg} under={p.under} /></span>)
+                : <span className="g-na">— not used as text</span>}</td>
+            </tr>
+          )
+        })}
       </tbody>
     </table></div>
   )
@@ -131,7 +134,8 @@ export default function Gallery() {
   const tape2 = useRef<HTMLDivElement>(null)
   const row = useRef<HTMLDivElement>(null)
   const rail = useRef<HTMLDivElement>(null)
-  useDragScroll(() => [row.current, rail.current])
+  const shadows = useRef<HTMLDivElement>(null)
+  useDragScroll(() => [row.current, rail.current, shadows.current])
   const [h, setH] = useState(176)
   const [leg, setLeg] = useState(81)
 
@@ -173,35 +177,14 @@ export default function Gallery() {
           </ul>
         </Sec>
 
-        <Sec id="colour" title="Colour" intro={<>Every colour the app uses, read from <code>design/tokens.css</code>. Pages use the names, never the values; the check blocks anything else. Where it is used comes from the source of each page. Contrast is computed against paper and white, passing at 4.5:1; a fail matters only where the colour is used as text, which the last column says.</>}>
+        <Sec id="colour" title="Colour" intro={<>Every colour of the interface, read from <code>design/tokens.css</code>. Pages use the names, never the values; the check blocks anything else. Where it is used comes from the source of each page. Colours that live only inside photos, maps and drawings are not part of the UI palette.</>}>
           <div className="g-mains">
             <div className="g-main is-paper"><span>Paper</span><code>--paper {TOKENS['--paper']}</code><small>Main · the ground of every page</small></div>
             <div className="g-main is-forest"><span>Forest</span><code>--forest {TOKENS['--forest']}</code><small>Main · the primary action and good news</small></div>
           </div>
+          <p className="g-contrast-rule">Contrast is checked against the backgrounds each colour is used on as text; WCAG AA 4.5:1.</p>
           {colourGroups.map((g) => <Sub key={g.title} title={g.title} note={g.note}><ColourTable rows={g.rows} /></Sub>)}
-          <Sub title="Outside the tokens" note="The logo and the app icon are drawn files in design/brand, and the iPhone frame is only drawn on a computer. They are recorded here because they appear on screen.">
-            <div className="g-scroll"><table className="g-table">
-              <thead><tr><th>Colour</th><th>Name</th><th>Value</th><th>Role</th><th>Where it is used</th><th>On paper</th><th>On white</th></tr></thead>
-              <tbody>{OUTSIDE.map((o) => (
-                <tr key={o.value}><td><i className="g-swatch" style={{ background: o.value }} /></td><td>{o.name}</td><td className="g-val">{o.value}</td><td>{o.role}</td><td>{o.use}</td><td><Ratio fg={o.value} bg="--paper" /></td><td><Ratio fg={o.value} bg="--sheet" under="--sheet" /></td></tr>
-              ))}</tbody>
-            </table></div>
-          </Sub>
-          <Sub title="Text on its real ground" note="The test that matters: every text colour on the ground it actually sits on in the app.">
-            <div className="g-scroll"><table className="g-table">
-              <thead><tr><th>Sample</th><th>Text</th><th>On</th><th>Where</th><th>Contrast</th></tr></thead>
-              <tbody>{PAIRS.map((p) => (
-                <tr key={p.fg + p.bg}>
-                  <td><span className="g-pair" style={{ color: `var(${p.fg})`, background: p.under ? `linear-gradient(var(${p.bg}), var(${p.bg})), var(${p.under})` : `var(${p.bg})` }}>Aa 72 cm</span></td>
-                  <td><code>{p.fg}</code></td><td><code>{p.bg}</code></td><td>{p.where}{p.note && <span className="g-pages">{p.note}</span>}</td><td><Ratio fg={p.fg} bg={p.bg} under={p.under} /></td>
-                </tr>
-              ))}</tbody>
-            </table></div>
-          </Sub>
           {unfiled.length > 0 && <Sub title="Not filed yet" note="Colour tokens with no recorded role."><ColourTable rows={unfiled} /></Sub>}
-          <Sub title="Defined, not used by the app" note="Kept only for the older static pages in work/ (the earlier system’s names). No page of this app uses them.">
-            <p className="g-legacy">{legacy.filter((l) => !l.where.length).map((l) => <code key={l.name}>{l.name}</code>)}</p>
-          </Sub>
         </Sec>
 
         <Sec id="type" title="Typography" intro={<>Two families: <b>Geist</b> for the interface, <b>Geist Mono</b> for small measured labels. Sizes are read from the samples themselves: size / line height · weight · tracking.</>}>
@@ -219,15 +202,7 @@ export default function Gallery() {
             <TypeRow role="Mono label" use="Measured labels, always uppercase"><span className="mono" data-m>Photo 1 of 5 · 12 Oct</span></TypeRow>
             <TypeRow role="Mono scale" use="Ticks on a scale"><span className="mono g-monos" data-m>7:00 · Your ride 8:00</span></TypeRow>
           </Sub>
-          <Sub title="Every size in use" note="Read from the pages’ CSS, largest first. Half sizes are optical steps inside a card, always with their role above.">
-            <div className="g-scroll"><table className="g-table">
-              <thead><tr><th>Sample</th><th>Size</th><th>Pages</th></tr></thead>
-              <tbody>{FONT_SIZES.map((f) => (
-                <tr key={f.value}><td className="g-size"><span style={{ fontSize: f.value }}>Aa 72</span></td><td className="g-val">{f.value}{f.value.startsWith('var') ? ` = ${TOKENS[f.value.slice(4, -1)] ?? ''}` : ''}</td><td>{f.where.join(', ')}</td></tr>
-              ))}</tbody>
-            </table></div>
-          </Sub>
-        </Sec>
+          </Sec>
 
         <Sec id="space" title="Spacing, layout and grid" intro="One phone, one gutter, a 4 px spacing grid. Designed at 393 × 852 (iPhone 16) and checked at 360 px.">
           <div className="g-layout">
@@ -268,9 +243,9 @@ export default function Gallery() {
               <div><Measure>A value</Measure><span className="small"><b>The fitter’s line</b> · two ticks and a value.</span></div>
             </div>
           </Sub>
-          <Sub title="Elevation" note="Every shadow, with its colour and where it is used. Besides these, small badges and dots carry a 1.5 to 2 px ring of forest or white, drawn with a shadow (01, 02, 13).">
-            <div className="g-shadows">
-              {SHADOWS.map((s) => <div key={s.name}><i style={{ boxShadow: `var(${s.name})` }} /><code>{s.name}</code><span className="small">{SHADOW_USE[s.name] ?? 'Not used by the app'}</span><span className="g-val">{s.value}</span></div>)}
+          <Sub title="Elevation" note="Only where one thing sits over another. Every shadow in use; drag the row for the rest.">
+            <div className="g-shadowrow" ref={shadows}>
+              {SHADOWS.map((x) => <div key={x.name}><i style={{ boxShadow: `var(${x.name})` }} /><code>{x.name.replace('--shadow-', '')}</code><span>{SHADOW_USE[x.name] ?? ''}</span></div>)}
             </div>
           </Sub>
         </Sec>
@@ -330,32 +305,17 @@ export default function Gallery() {
             </Comp>
           </Sub>
 
-          <Sub title="White cards" note="White only where one object must read as one.">
-            <Comp name="Result" yes="One thing you can pick: photo with its status, price, its own time scale (04)." no="A list of facts.">
+          <Sub title="White cards" note="White only where one object must read as one. These two stand for all of them; the booking and the record are the same card with their own content.">
+            <Comp name="Result and post" yes="Result: one thing you can pick, with its status and price (04). Post: something a person wrote (01, 02)." no="A list of facts, or OutRent’s own offers: those are promos.">
               <div className="g-w353"><button type="button" className="res">
                 <span className="ph"><Photo src={m7} alt="This Trek Marlin 7 on the Timah Cycles stand" width={333} height={166} /><span className="fitchip"><Icon name="check" />Set to your fit before delivery</span></span>
                 <span className="body"><span className="top"><b>Trek Marlin 7 · size M</b><span className="pr">S$50</span><span className="sub">Timah Cycles · shop · <b>4.8</b> (126)</span><span className="al">all in</span></span></span>
               </button></div>
-            </Comp>
-            <Comp name="Post" yes="Something a person wrote (01, 02)." no="OutRent’s own offers: those are promos.">
               <div className="g-w353"><button type="button" className="post">
                 <span className="who"><span className="av"><Photo src={aisyah} alt="Coach Aisyah" width={36} height={36} className="av-img" /></span><span><b>Coach Aisyah</b><span className="small">Mountain bike coach · posted a kit list</span></span></span>
                 <span className="ph"><Photo src={post} alt="Hardtails and helmets at the Chestnut trailhead" width={325} height={203} className="post-img" /><span className="signed1"><span className="seal"><Icon name="check" /></span>Signed up</span></span>
                 <span className="post-tx"><span className="h3">First ride at Chestnut</span><span className="small">Sat 25 Oct · 8:00–12:30 · what to rent, what to bring</span></span>
               </button></div>
-            </Comp>
-            <Comp name="Docket" yes="Starting a search: what, to where, when (01)." no="A form with more than three lines.">
-              <div className="g-w353 g-forest"><div className="docket" role="search">
-                <button type="button" className="f"><Mono>What</Mono><span className="v">Bike, kayak, paddleboard, tent</span><Icon name="caret-right" small /></button>
-                <button type="button" className="f"><Mono>When</Mono><span className="v">Pick a day</span><Icon name="caret-right" small /></button>
-                <button type="button" className="cta"><Icon name="magnifying-glass" />Search</button>
-              </div></div>
-            </Comp>
-            <Comp name="Record and booking" yes="The hand-over record (11), the running booking (09): one card per object, live here from the pages." no="Grouping unrelated rows.">
-              <div className="g-minis">
-                <Mini page="11-handover-check" label="Record, open · 11" y={150} seed={{ paid: true, now: 79.67, arrived: true, book: { d: '7:40', c: '13:30' } }} />
-                <Mini page="09-trips" label="Booking · 09" y={60} seed={{ paid: true, now: 67, book: { d: '7:40', c: '13:30' } }} />
-              </div>
             </Comp>
           </Sub>
 
@@ -369,7 +329,7 @@ export default function Gallery() {
               <St label="Default"><button type="button" className="c6 g-chip">7:20</button></St>
               <St label="Pressed"><button type="button" className="c6 g-chip is-pressed">7:20</button></St>
               <St label="Selected"><button type="button" className="c6 g-chip" aria-pressed>7:40</button></St>
-              <St label="Disabled: dashed and grey"><button type="button" className="c6 g-chip" disabled>7:00</button></St>
+              <St label="Disabled"><button type="button" className="c6 g-chip" disabled>7:00</button></St>
               <St label="Focus"><button type="button" className="c6 g-chip is-focus">7:20</button></St>
             </Comp>
             <Comp name="Day chips" yes="A day from a week (17)." no="Dates far apart.">
@@ -417,7 +377,7 @@ export default function Gallery() {
           <Sub title="Sheets, drawers and messages">
             <Comp name="Sheet" yes="A short choice over the page. The scrim, its X and Escape close it; focus goes in and comes back." no="A whole step of a flow.">
               <div className="g-phone g-tall"><div className="pad g-phone-copy"><button type="button" className="ghostbtn" onClick={sheet.show}>Open the sheet</button></div>
-                <Sheet sheet={sheet} label="Pay with" title="Pay with" closeLabel="Close">
+                <Sheet sheet={sheet} label="Pay with" title="Pay with" closeLabel="Close" plainTitle>
                   <button type="button" className="opt" aria-pressed><span className="rad" /><b>PayNow</b><span /><span className="s">Your default. Pays the S$50 now.</span></button>
                   <button type="button" className="opt" aria-pressed={false}><span className="rad" /><b>Visa ending 4821</b><span /><span className="s">Card on file. Pays the S$50 now.</span></button>
                 </Sheet>
@@ -468,7 +428,7 @@ export default function Gallery() {
           </Sub>
 
           <Sub title="Done marks" note="Each page says done its own way. The stamp is live (tap it); the others are the pages themselves, opened at that moment.">
-            <Comp name="08 stamp, 11 slip, 13 ring, 15 intake dot, 17 dial token" yes="The one moment a page’s job is finished. One mark per page." no="Repeating a mark from another page, or anything still in progress.">
+            <Comp wide name="08 stamp, 11 slip, 13 ring, 15 intake dot, 17 dial token" yes="The one moment a page’s job is finished. One mark per page." no="Repeating a mark from another page, or anything still in progress.">
               <St label="08 · Paid stamp">
                 <button type="button" className="g-stamp" aria-label="Replay the Paid stamp" onClick={() => setStampKey((k) => k + 1)}>
                   <div key={stampKey} className={`stamp${stampKey ? ' g-land' : ''}`} role="img" aria-label="Paid S$50 on 22 Oct"><span>Paid</span><b>S$50</b><span>22 Oct</span></div>
@@ -484,26 +444,7 @@ export default function Gallery() {
             </Comp>
           </Sub>
 
-          <Sub title="Map pieces">
-            <Comp name="Route, pins, van" yes="Showing where a thing is on a real route (10, 18): the shop as a square, the destination as a ring, the van on a halo, the route forest where it has run." no="Decoration; a map with no moving thing or decision on it.">
-              <St label="Pieces">
-                <svg className="map10 g-mapspec" viewBox="0 0 330 120" role="img" aria-label="The map pieces: shop square, route, van, destination ring and north mark">
-                  <rect className="m-ground" width="330" height="120" />
-                  <path className="route-todo" d="M40 60 H 290" />
-                  <path className="route-on" d="M40 60 H 165" />
-                  <g className="pin-shop" transform="translate(40 60)"><rect x="-7" y="-7" width="14" height="14" rx="3" /><text x="-7" y="24">SHOP</text></g>
-                  <g className="pin-end" transform="translate(290 60)"><circle r="16" className="glow" /><circle r="7" className="dot" /><circle r="2.5" className="eye" /><text x="10" y="30" textAnchor="end">MEET HERE</text></g>
-                  <g className="tagpin" transform="translate(165 60)"><circle className="halo" r="20" /><circle className="body" r="13" /><g className="van"><Van /></g></g>
-                  <g className="north" transform="translate(305 22)"><circle r="14" /><path d="M0 -8 L4 4 L0 1 L-4 4 Z" /></g>
-                </svg>
-              </St>
-              <div className="g-minis">
-                <Mini page="10-delivery-tracking" label="10 · tracking" seed={{ paid: true, now: 79.4, arrived: true, book: { d: '7:40', c: '13:30' } }} />
-                <Mini page="18-storage-map" label="18 · racks" seed={{ paid: true, now: 79.67, book: { d: '7:40', c: '13:30' } }} />
-              </div>
-            </Comp>
-          </Sub>
-        </Sec>
+          </Sec>
 
         <Sec id="motion" title="Motion" intro="Motion is a measurement being taken: lines draw, numbers settle, parts move on a spring. It is used only as feedback, a state change, spatial continuity or an explanation. With reduced motion set on the device, every motion lands on its end state.">
           <Sub title="Tokens" note="Short CSS transitions use these; longer moments are written with GSAP, with the values below.">
@@ -512,7 +453,7 @@ export default function Gallery() {
               <div className="wide"><code>--ease</code><b>{TOKENS['--ease']}</b></div>
             </div>
           </Sub>
-          <Sub title="Every motion">
+          <Sub title="Key motions">
             <div className="g-scroll"><table className="g-table">
               <thead><tr><th>Motion</th><th>Where</th><th>How</th><th>What it explains</th><th>Reduced motion</th></tr></thead>
               <tbody>{MOTION.map((m) => <tr key={m.what}><td><b>{m.what}</b></td><td>{m.where}</td><td>{m.how}</td><td>{m.why}</td><td>{m.still}</td></tr>)}</tbody>

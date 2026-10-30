@@ -175,15 +175,15 @@ export function useSheet() {
   }, [open])
   return { open, show, hide, ref }
 }
-export function Sheet({ sheet, label, title, closeLabel, children, className }: {
-  sheet: ReturnType<typeof useSheet>; label: string; title: ReactNode; closeLabel: string; children: ReactNode; className?: string
+export function Sheet({ sheet, label, title, closeLabel, children, className, plainTitle }: {
+  sheet: ReturnType<typeof useSheet>; label: string; title: ReactNode; closeLabel: string; children: ReactNode; className?: string; plainTitle?: boolean
 }) {
   return (
     <>
       <div className={`scrim${sheet.open ? ' on' : ''}`} onClick={sheet.hide} />
       <div ref={sheet.ref} className={`sheetx${sheet.open ? ' on' : ''}${className ? ' ' + className : ''}`} role="dialog" aria-modal="true" aria-label={label} aria-hidden={!sheet.open}>
         <span className="grab07" aria-hidden="true" />
-        <div className="sx-h"><h2 className="t-h2">{title}</h2><button className="xbtn" type="button" aria-label={closeLabel} onClick={sheet.hide}><LineIcon name="x" /></button></div>
+        <div className="sx-h">{plainTitle ? <div className="t-h2">{title}</div> : <h2 className="t-h2">{title}</h2>}<button className="xbtn" type="button" aria-label={closeLabel} onClick={sheet.hide}><LineIcon name="x" /></button></div>
         {children}
       </div>
     </>

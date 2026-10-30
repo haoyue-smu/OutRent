@@ -1,7 +1,7 @@
 /* The design library: layout of the page only. Every piece shown comes from the app's own CSS. */
 .gallery-page { position: fixed; inset: 0; overflow-y: auto; background: var(--paper); color: var(--ink); font-size: 14px; scroll-behavior: smooth; }
 @media (prefers-reduced-motion: reduce) { .gallery-page { scroll-behavior: auto; } }
-.gallery { display: flex; flex-direction: column; gap: 72px; max-width: 1120px; margin: 0 auto; padding: 56px max(20px, env(safe-area-inset-right, 0px)) 80px max(20px, env(safe-area-inset-left, 0px)); }
+.gallery { display: flex; flex-direction: column; gap: 56px; max-width: 1120px; margin: 0 auto; padding: 56px max(20px, env(safe-area-inset-right, 0px)) 80px max(20px, env(safe-area-inset-left, 0px)); }
 .gallery code { font-family: var(--mono); font-size: 12px; }
 .gallery h1 { margin: 0; font-size: 44px; line-height: 48px; font-weight: 600; letter-spacing: -0.04em; }
 .gallery h2 { margin: 0; font-size: 32px; line-height: 36px; font-weight: 600; letter-spacing: var(--track-large); }
@@ -34,10 +34,10 @@
 .g-scroll { overflow-x: auto; }
 .g-table { width: 100%; border-collapse: collapse; font-size: 13px; line-height: 18px; }
 .g-table th { padding: 8px 12px 8px 0; border-bottom: 1px solid var(--ink); font-family: var(--mono); font-size: 10.5px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-3); text-align: left; white-space: nowrap; }
-.g-table td { padding: 9px 12px 9px 0; border-bottom: 1px solid var(--rule); color: var(--ink-2); vertical-align: top; }
+.g-table td { padding: 7px 12px 7px 0; border-bottom: 1px solid var(--rule); color: var(--ink-2); vertical-align: top; }
 .g-table td b { color: var(--ink); font-weight: 600; }
 .g-table code { color: var(--ink); white-space: nowrap; }
-.g-swatch { display: block; width: 44px; height: 32px; border: 1px solid var(--rule); border-radius: var(--r-thumb); }
+.g-swatch { display: block; width: 40px; height: 24px; border: 1px solid var(--rule); border-radius: var(--r-thumb); }
 .g-val { min-width: 70px; font-family: var(--mono); font-size: 11.5px; overflow-wrap: anywhere; max-width: 210px; }
 .g-pages { display: block; font-family: var(--mono); font-size: 10.5px; color: var(--ink-3); }
 .g-ratio { white-space: nowrap; font-variant-numeric: tabular-nums; color: var(--ink); }
@@ -45,8 +45,10 @@
 .g-ratio.pass b { color: var(--forest) !important; }
 .g-ratio.fail b { color: var(--ink-2) !important; font-weight: 500; }
 .g-na { color: var(--ink-3); }
-.g-text { min-width: 120px; }
-.g-pair { display: inline-block; padding: 4px 10px; border: 1px solid var(--rule-2); border-radius: var(--r-thumb); font-size: 15px; font-weight: 500; white-space: nowrap; }
+.g-contrast { min-width: 190px; }
+.g-contrast span { display: block; white-space: nowrap; }
+.g-contrast .g-ratio { display: inline; }
+.g-contrast-rule { margin: 0; font-size: 15px; line-height: 22px; font-weight: 500; }
 .g-legacy { display: flex; flex-wrap: wrap; gap: 6px 14px; margin: 0; }
 .g-legacy code { color: var(--ink-2); }
 
@@ -61,7 +63,6 @@
 .g-plain.rd3 { display: block; }
 .g-plain.eta2 { display: block; }
 .g-monos { font-size: var(--fs-mono-s); }
-.g-size span { display: block; line-height: 1.1; font-weight: 600; color: var(--ink); white-space: nowrap; }
 
 /* space */
 .g-layout { display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: 32px; align-items: start; }
@@ -83,10 +84,12 @@
 .g-radii i { display: block; height: 56px; margin-bottom: 6px; border: 1.5px solid var(--ink); background: var(--sheet); }
 .g-rulesdemo { display: flex; flex-direction: column; gap: 16px; max-width: 560px; }
 .g-rulesdemo > div { display: flex; flex-direction: column; gap: 6px; }
-.g-shadows { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 24px 20px; }
-.g-shadows div { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
-.g-shadows i { display: block; height: 64px; margin: 12px 12px 14px; border-radius: var(--r-lens); background: var(--sheet); }
-.g-shadows .g-val { font-size: 10.5px; color: var(--ink-3); max-width: none; }
+.g-shadowrow { display: flex; gap: 14px; padding: 12px 12px 8px; margin: 0 -12px; overflow-x: auto; scrollbar-width: none; }
+.g-shadowrow::-webkit-scrollbar { display: none; }
+.g-shadowrow div { display: flex; flex: none; flex-direction: column; gap: 2px; width: 128px; }
+.g-shadowrow i { display: block; height: 44px; margin-bottom: 12px; border-radius: var(--r-thumb); background: var(--sheet); }
+.g-shadowrow code { font-size: 11px; }
+.g-shadowrow span { font-size: 12px; line-height: 16px; color: var(--ink-2); }
 
 /* icons */
 .g-icons { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 14px; }
@@ -100,17 +103,17 @@
 .g-icons .kb.g-kb .icon { width: 12px; height: 12px; }
 
 /* components */
-.g-comp { display: flex; flex-direction: column; gap: 16px; padding: 20px; border: 1px solid var(--rule); border-radius: var(--r-card); background: var(--sheet); }
+.g-comp { display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: 20px; padding: 16px; border: 1px solid var(--rule); border-radius: var(--r-card); background: var(--sheet); }
 .g-comp > header { display: flex; flex-direction: column; gap: 8px; }
-.g-usefor { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px 24px; margin: 0; }
+.g-usefor { display: flex; flex-direction: column; gap: 10px; margin: 0; }
 .g-usefor div { display: flex; flex-direction: column; gap: 2px; }
 .g-usefor dt { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-3); }
 .g-usefor dd { margin: 0; font-size: 13.5px; line-height: 19px; color: var(--ink-2); }
 .g-spec { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-end; padding: 16px; border-radius: var(--r-lens); background: var(--paper); }
 .g-state { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; max-width: 100%; }
-.g-state:has(.g-mapspec) { width: 330px; }
 .g-w { display: block; width: 220px; }
 .g-w353 { width: 100%; max-width: 353px; }
+.g-w353:has(.row6) { flex-basis: 100%; max-width: none; }
 .g-tapes { display: flex; flex-direction: column; gap: 12px; }
 .g-rows { display: flex; flex-direction: column; gap: 8px; }
 .g-rows .opt + .opt { margin-top: 0; }
@@ -123,9 +126,9 @@
 /* a slice of the phone, for the pieces that sit on its edges */
 .g-phone { position: relative; width: 100%; max-width: 393px; height: 190px; overflow: hidden; border: 1px solid var(--rule); border-radius: var(--r-sheet); background: var(--paper); --top-safe: 10px; --bottom-float: 22px; --bottom-tab: 24px; }
 .g-phone.g-short { height: 96px; }
-.g-phone.g-tall { height: 380px; }
-.g-phone.g-tall2 { height: 330px; }
-.g-phone.g-mid { height: 300px; }
+.g-phone.g-tall { height: 330px; }
+.g-phone.g-tall2 { height: 290px; }
+.g-phone.g-mid { height: 250px; }
 .g-phone-copy { padding-top: 20px; }
 .g-btns { display: flex; flex-direction: column; gap: 8px; }
 .g-toggle { position: absolute; left: 20px; right: 20px; top: 16px; width: auto; }
@@ -133,7 +136,7 @@
 .g-photo { position: relative; width: 240px; height: 150px; border-radius: var(--r-lens); overflow: hidden; }
 .g-photo .photo { width: 100%; height: 100%; object-fit: cover; }
 .g-rail .rail figure { width: 100%; }
-.g-dragrules { flex: 1 1 280px; }
+.g-dragrules { flex: 1 1 240px; }
 .g-cap { width: 280px; padding: 0; }
 .g-stamp { position: relative; display: block; width: 140px; height: 120px; padding: 0; border: 0; border-radius: var(--r-inset); background: var(--tag-paper); cursor: pointer; }
 .g-stamp .stamp { right: 28px; bottom: 18px; }
@@ -143,10 +146,17 @@
 .g-minis { display: flex; flex-wrap: wrap; gap: 16px; width: 100%; }
 .g-mini { display: flex; flex-direction: column; gap: 6px; width: 177px; margin: 0; }
 .g-mini-ph { position: relative; width: 177px; height: 384px; overflow: hidden; border: 1px solid var(--rule); border-radius: var(--r-card); background: var(--paper); }
+.g-comp.is-wide { grid-template-columns: minmax(0, 1fr); }
+.g-comp.is-wide .g-usefor { flex-direction: row; gap: 24px; }
+.g-comp.is-wide .g-usefor div { flex: 1; }
+.g-comp.is-wide .g-spec { flex-wrap: nowrap; align-items: flex-start; overflow-x: auto; }
+.g-comp.is-wide .g-minis { flex-wrap: nowrap; width: auto; gap: 12px; }
+.g-comp.is-wide .g-mini { width: 150px; }
+.g-comp.is-wide .g-mini-ph { width: 150px; height: 326px; }
+.g-comp.is-wide .g-mini-ph iframe { transform: scale(0.38); }
 .g-mini-ph iframe { position: absolute; left: 0; top: 0; border: 0; transform: scale(0.45); transform-origin: 0 0; pointer-events: none; }
 .g-mini figcaption { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
 .g-mini figcaption .link { min-height: var(--touch); }
-.g-mapspec.map10 { position: static; display: block; width: 100%; height: auto; overflow: hidden; border-radius: var(--r-lens); }
 
 /* motion */
 .g-motiontok { display: flex; flex-wrap: wrap; gap: 12px; }
@@ -156,7 +166,11 @@
 .g-not { text-decoration: line-through; text-decoration-color: var(--ink-3); }
 .g-foot { padding-top: 14px; border-top: 1px solid var(--rule); }
 
+@media (max-width: 900px) {
+  .g-comp { grid-template-columns: minmax(0, 1fr); }
+}
 @media (max-width: 760px) {
+  .g-comp.is-wide .g-usefor { flex-direction: column; gap: 10px; }
   .g-type, .g-layout { grid-template-columns: 1fr; gap: 10px; }
   .gallery h1 { font-size: 34px; line-height: 38px; }
   .g-comp { padding: 14px; }
