@@ -19,6 +19,13 @@ Haoyue (31 Oct 00:00): /components is far too long (~30,000 px, ~35 screens) and
 
 **Motion**: keep the tokens; replace "Every motion" with ~5 key motions (page change, sheet, time skip, done mark, fit set-up) in one short table.
 
+**Plain English everywhere (Haoyue 00:27: he cannot understand the intro, the principles or the content itself).** Write for a reader who did not build the app and whose English is a second language: short sentences, everyday words, no metaphors, no jargon.
+- Rename sections plainly: "Radii, rules and elevation" → "Corners, lines and shadows"; "Iconography" → "Icons"; "Spacing, layout and grid" → "Spacing and layout". Table column "Role" → "Used for".
+- Every section and sub-section opens with one sentence saying what it shows and why it matters (e.g. "Colours: every colour in the app and what each one is for.").
+- Intro, replacing the current paragraph: "OutRent's design library. It lists every colour, font size, component and animation used in the app. Two colours lead: an off-white background and a forest green for the main action. Everything on this page is taken directly from the app's code, so it always matches the app."
+- Principles, one plain line each: "Two main colours: off-white and forest green. Everything else is grey or a light accent." / "Green means the next thing to tap or good news, nowhere else." / "Colour is never the only signal: a selected option is also filled, a finished step has a tick." / "All text is easy to read: contrast is at least 4.5:1." / "Every button is at least 44 px, big enough for a thumb." / "Animation only shows that something changed or explains what happened. With reduced motion turned on, it jumps straight to the end."
+- Remove words like "the fitter's line", "marks a tube", "spatial continuity", "reduced-motion end state", "elevation", "affordance" from the page text; component notes say plainly what the piece is and when it is used.
+
 Keep the contents list and Principles. The page must still read everything from the app's own files. Then do the drag task below, check both, and ship once: npm run check; commit as Haoyue; push main; `npx vercel --prod`; `vercel alias set <deployment> outrent-g14t3.vercel.app`. Reply "done, main <hash>".
 
 ## NOW (30 Oct 21:10) · Build-1: sideways rows cannot be dragged with a mouse
