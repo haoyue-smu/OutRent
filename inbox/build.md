@@ -2,6 +2,26 @@
 
 Last updated 25 Oct 2026 16:05 by the management chat. **This replaces every earlier task in this file.**
 
+## NOW (31 Oct 00:35) · Build-1: rebuild /components as a two-layer style guide (replaces the 00:05 trim notes, the plain-English notes and the colour-name notes below)
+
+Management reviewed the live library (6c1babb, ~16,700 px) end to end with Haoyue. Verdict: it is written for engineers, not for the teaching team or a general reader. Worst part: the colour section lists ~50 tokens (`--tag-paper-3`, `--on-forest-ink` …) with page numbers and contrast — a grader looking for "a limited palette" sees 50 colours. Haoyue approved this structure (00:31):
+
+### Layer 1 · Style guide (open by default, about 4–5 screens at 1440 × 900, plain English throughout)
+Write for someone who did not build the app and whose English is a second language: short sentences, everyday words, no metaphors, no code names, no page numbers, no CSS values.
+1. **Header**: "OutRent style guide" + one plain paragraph: "This page shows the colours, text styles, icons and building blocks used across the OutRent app, and the rules that keep every screen consistent. Everything here is taken from the app's own code, so it always matches the app."
+2. **Principles**: six short lines — "Two main colours: an off-white background and forest green." / "Green means the next thing to tap, or good news." / "Colour is never the only signal: a selected option is also filled, a finished step has a tick." / "All text is easy to read (contrast at least 4.5:1)." / "Every button is big enough for a thumb (at least 44 px)." / "Animation only shows that something changed."
+3. **Colours**: 7–8 large swatches only (off-white background, forest green, ink for text, grey for secondary text, white for cards, light green, tag paper — or whatever the true main families are). Each: a plain name ("Forest green"), the hex, one line "Used for …". Shades of the same colour are shown as a small strip under their parent swatch, not as separate entries. No token names, no page lists.
+4. **Text styles**: 5 levels shown as real samples from the app (big number, page title, section title, body, small label), each with a plain name and size in px only.
+5. **Icons**: one grid, icon + plain name. No page numbers.
+6. **Building blocks**: one live specimen per kind with one plain sentence of what it is for: buttons (main, secondary, text link, back), options (time chips, day chips), the measuring tape and fit values, cards (one result card, one post), bottom bar and tab bar, sheet / drawer and toast, photo with date caption, done marks (stamp, slip, ring, intake dot, dial token). Show states only where they matter (main button: normal / pressed / disabled). Short labels instead of "USE IT FOR / DON'T USE IT FOR" columns.
+7. **Writing**: keep the current "Write this / Not this" table (it is the clearest section).
+
+### Layer 2 · Developer reference (collapsed by default, a single "Full reference for developers" toggle at the end)
+Everything else that exists today moves here unchanged in substance: every colour token with hex, used-for, pages and contrast (contrast only for colours used as text, checked against the backgrounds they are actually used on; others "not used as text"), type metrics, spacing, corners, lines, shadows, motion tokens and key motions. This keeps "every colour is recorded" without putting 50 swatches in front of the grader.
+
+### Ship
+Layer 1 checked at 1440 × 900 and 393 px wide (no overflow, no console errors). npm run check; commit as Haoyue; push main; `npx vercel --prod`; `vercel alias set <deployment> outrent-g14t3.vercel.app`. Reply "done, main <hash>".
+
 ## NOW (31 Oct 00:05) · Build-1: trim /components to what the grader needs (do together with the drag fix below, one deploy)
 
 Haoyue (31 Oct 00:00): /components is far too long (~30,000 px, ~35 screens) and holds things nobody grading it needs. The grader looks for: a limited palette (two main colours + few accents) with every UI colour recorded, the type scale, a consistent component library, and overall consistency. Aim for about half the length.
