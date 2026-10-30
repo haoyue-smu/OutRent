@@ -19,6 +19,13 @@ Write for someone who did not build the app and whose English is a second langua
 ### Layer 2 · Developer reference (collapsed by default, a single "Full reference for developers" toggle at the end)
 Everything else that exists today moves here unchanged in substance: every colour token with hex, used-for, pages and contrast (contrast only for colours used as text, checked against the backgrounds they are actually used on; others "not used as text"), type metrics, spacing, corners, lines, shadows, motion tokens and key motions. This keeps "every colour is recorded" without putting 50 swatches in front of the grader.
 
+### Before the style guide: consolidate the palette (Haoyue 00:33)
+design/tokens.css has 128 colour-related entries and 67 distinct solid hex values, mostly near-duplicates made by different pages (e.g. #E4E7E1, #E2E5E1, #E3E5E0, #E5E8E1). Merge colours a person cannot tell apart into one token, so the app keeps the same look with far fewer colours:
+- Target about 20 solid colours: greys 4–5 steps (ink, secondary text, tertiary text, line, light line / fill), greens 3–4 (forest, forest-2, mint, light mint), paper / white, tag paper 2–3, one error red (+ its tint). Map and bike-figure colours reuse these steps wherever possible; keep a separate token only where a merge would visibly change a drawing. 18's blue "you" dot may stay (18 is outside the demo).
+- Transparent overlays (white or ink at an alpha) stay as overlays of these base colours; shadows stay as they are but should reference the base colours.
+- After merging: every page must look the same as before (screenshot 01–17 before and after at 393 × 852 and compare; any visible change must be intended), contrast still passes, npm run check passes.
+- Report in the commit message: colour count before → after.
+
 ### Ship
 Layer 1 checked at 1440 × 900 and 393 px wide (no overflow, no console errors). npm run check; commit as Haoyue; push main; `npx vercel --prod`; `vercel alias set <deployment> outrent-g14t3.vercel.app`. Reply "done, main <hash>".
 
