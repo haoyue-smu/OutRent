@@ -152,9 +152,12 @@ export default function Pickup() {
             </div>
           </div>
 
-          <div className="cost17"><b>Getting it there</b><span className="v">{t?.price}</span><span className="s">Then S$18 / month storage from the day it arrives.</span></div>
+          <section className="back17 there17">
+            <div className="k"><b>Getting it there</b><Mono>Your choice above</Mono></div>
+            <div className="kv"><b>{path === 'home' ? 'Door pickup' : path === 'rack' ? 'Rack drop-off · Rack S' : 'Door or rack'}</b><span className="v">{t?.price ?? '—'}</span><span className="s">Then S$18 / month storage from the day it arrives.</span></div>
+          </section>
           <section className="back17">
-            <div className="k"><b>Getting it back</b><Mono>Shown before you send it</Mono></div>
+            <div className="k"><b>Getting it back</b><Mono>Pick when you want it</Mono></div>
             <div className="kv"><b>Shared courier run</b><span className="v">Free</span><span className="s">With 2 days’ notice</span></div>
             <div className="kv"><b>Next day, to your door</b><span className="v">S$8</span></div>
           </section>

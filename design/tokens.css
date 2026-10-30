@@ -57,6 +57,7 @@
   --on-forest-dot: #CFE5D6;
   --on-forest-sub: rgba(255, 255, 255, 0.78);
   --mint-2: #EDF3EE;      /* a lighter mint: a row just pointed at */
+  --shadow-kb-need: 0 0 0 1.5px var(--forest), 0 0 0 3.5px #FFFFFF;   /* the "+" on a thumbnail (02) */
   --shadow-vsheet: 0 -1px 0 var(--rule), 0 -16px 40px -18px rgba(18, 24, 21, 0.28);
   --tabbar-bg: rgba(243, 244, 240, 0.9);
   --signed-bg: rgba(18, 36, 29, 0.78);      /* the "Signed up" pill on the post photo */
@@ -124,6 +125,8 @@
   --on-photo-border: rgba(255, 255, 255, 0.55);
   --on-photo-label: rgba(14, 20, 17, 0.62);
   --on-photo-ring: rgba(0, 0, 0, 0.18);
+  --on-photo-chip: rgba(14, 20, 17, 0.55);   /* a small caption on a photo (04) */
+  --on-photo-dim: rgba(255, 255, 255, 0.75);  /* its quieter text */
 
   /* v0.3 names, kept so older pages render in the new colours until they are rebuilt */
   --sage: var(--forest);

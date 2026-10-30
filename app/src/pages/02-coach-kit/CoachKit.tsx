@@ -17,14 +17,15 @@ import sunscreen from '@photos/02-coach-kit/assets/02-direction-kit-sunscreen.we
 import pedals from '@photos/02-coach-kit/assets/02-direction-kit-clipless-pedals.webp'
 import './kit.css'
 
-// 02 Coach's post · the fitter's line (v52). Her photo, her note, her list. The app adds two things: a forest tab
-// above the post (Daniel has signed up for the ride) and one drawer, the same on entry and after the bike tap:
-// the bike he needs, and his own helmet greyed with a tick (it is already in My gear).
+// 02 Coach's post · the fitter's line (v60). Her photo, her note, her plain list, every row the same height. The app
+// adds a forest tab above the post (Daniel has signed up for the ride), one icon on the thumbnail of each item it
+// knows (a "+" on the bike, not in his gear, which opens the drawer; a tick on the helmet, in his gear) with a key
+// line under the caption, and one drawer that offers only the bike.
 // Once the bike is booked the drawer says so and leads to Bookings instead of the search.
 
-type Item = { src: string; alt: string; name: string; note?: string }
+type Item = { src: string; alt: string; name: string; note?: string; have?: boolean }
 const KIT: Item[] = [
-  { src: helmet, alt: 'A black mountain-bike helmet', name: 'Bike helmet', note: 'Any bike helmet. A road helmet is fine.' },
+  { src: helmet, alt: 'A black mountain-bike helmet', name: 'Bike helmet', note: 'Any bike helmet. A road helmet is fine.', have: true },
   { src: shoes, alt: 'Grey running shoes', name: 'Sports shoes', note: 'Your regular running shoes.' },
   { src: bottles, alt: 'Two water bottles', name: '2 water bottles' },
   { src: sunscreen, alt: 'A tube of sunscreen', name: 'Sunscreen' },
@@ -38,7 +39,7 @@ export default function CoachKit() {
   const [sheet, setSheet] = useState<Sheet>('hidden')
   const [ping, setPing] = useState(false)
   const screen = useRef<HTMLElement>(null)
-  const need = useRef<HTMLButtonElement>(null)
+  const need = useRef<HTMLLIElement>(null)
   const y0 = useRef<number | null>(null)
   const f = fitNow(s)
 
@@ -104,16 +105,18 @@ export default function CoachKit() {
               <span><Icon name="map-pin" />Chestnut Nature Park</span>
             </div>
             <p className="cap">First time on the trails? Join my beginner ride this Saturday. Here’s what to bring.</p>
+            <p className="key2"><span className="kb need" aria-hidden="true"><Icon name="plus" /></span>Not in your gear<span className="kb have" aria-hidden="true"><Icon name="check" /></span>In your gear</p>
             <ul className="kit" aria-label="What to bring">
-              <li>
-                <button type="button" ref={need} className={`kit-it need-bike${ping ? ' ping' : ''}`} onClick={showNeed} aria-label="Hardtail mountain bike: you need one. Show how to rent it">
-                  <span className="th"><Photo src={bike} alt="" width={60} height={60} className="bike-img" /></span>
-                  <span className="tx"><b>Hardtail mountain bike</b><span>A mountain bike with suspension at the front only. Get one in your size.</span></span>
-                </button>
+              <li ref={need} className={`kit-it need-bike${ping ? ' ping' : ''}`} onClick={showNeed}>
+                <span className="th">
+                  <button type="button" className="kb need" aria-label="You don’t have one. See how to rent one" onClick={(e) => { e.stopPropagation(); showNeed() }}><Icon name="plus" /></button>
+                  <Photo src={bike} alt="A hardtail mountain bike" width={56} height={56} className="bike-img" />
+                </span>
+                <span className="tx"><b>Hardtail mountain bike</b><span>A mountain bike with suspension at the front only. Get one in your size.</span></span>
               </li>
               {KIT.map((k) => (
                 <li key={k.name} className="kit-it">
-                  <span className="th"><Photo src={k.src} alt={k.alt} width={60} height={60} /></span>
+                  <span className="th"><Photo src={k.src} alt={k.alt} width={56} height={56} />{k.have && <span className="kb have" role="img" aria-label="You have one, in My gear"><Icon name="check" /></span>}</span>
                   <span className="tx"><b>{k.name}</b>{k.note && <span>{k.note}</span>}</span>
                 </li>
               ))}
@@ -122,7 +125,7 @@ export default function CoachKit() {
               <Mono>Not needed</Mono>
               <ul className="kit">
                 <li className="kit-it is-skip">
-                  <span className="th"><Photo src={pedals} alt="A clipless pedal beside a cycling shoe with a cleat" width={60} height={60} /></span>
+                  <span className="th"><Photo src={pedals} alt="A clipless pedal beside a cycling shoe with a cleat" width={56} height={56} /></span>
                   <span className="tx"><b>Clipless pedals</b><span>Pedals that lock onto special shoes. Leave them for later rides.</span></span>
                 </li>
               </ul>
@@ -142,10 +145,6 @@ export default function CoachKit() {
             {s.paid
               ? <span className="tx"><b>Trek Marlin 7 · size {f.frame}</b><span>Booked · OR-10482 · delivered 25 Oct · {deliverAt(s)} at {placeShort(s.book.place.d)}.</span></span>
               : <span className="tx"><b>Mountain bike</b><span>Rent one, set to your fit and delivered to Chestnut.</span></span>}
-          </div>
-          <div className="orow">
-            <span className="th own"><Photo src={helmet} alt="" width={44} height={44} /><span className="tick"><i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" /></svg></i></span></span>
-            <span className="tx"><b>Bike helmet</b><span>Your road helmet is in My gear.</span></span>
           </div>
         </div>
         <button type="button" className="cta" onClick={rent}>{cta}</button>

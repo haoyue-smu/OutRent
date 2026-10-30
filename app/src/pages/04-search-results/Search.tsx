@@ -12,8 +12,8 @@ import m6 from '@photos/04-search-results/assets/04-direction-marlin-6.webp'
 import scott from '@photos/04-search-results/assets/04-direction-scott-aspect-950.webp'
 import './search.css'
 
-// 04 Search results · the fitter's line (v52). Each result is one object: photo, price, and its own time scale
-// against the 8:00 start. The frame size in the query and on every result is the one from 03.
+// 04 Search results · the fitter's line (v60). Each result is one object: a photo carrying its set-up status, the
+// price, and a time scale that reads as the rider lives it: delivery from, your ride. The frame size in the query and on every result is the one from 03.
 
 type Result = { id: string; src: string; alt: string; name: string; price: string; who: string; rating: string; reviews: string; at: number; fits: boolean; open?: boolean }
 const RESULTS: Result[] = [
@@ -75,7 +75,9 @@ export default function Search() {
           <div className="results" ref={list}>
             {RESULTS.map((r) => {
               const body = <>
-                <span className="ph"><Photo src={r.src} alt={r.alt} width={353} height={177} first={r.id === 'm7'} /></span>
+                <span className="ph"><Photo src={r.src} alt={r.alt} width={353} height={177} first={r.id === 'm7'} />
+                  <span className={`fitchip${r.fits ? '' : ' no'}`}>{r.fits && <Icon name="check" />}{r.fits ? 'Set to your fit before delivery' : 'No set-up for your fit'}</span>
+                </span>
                 <span className="body">
                   <span className="top">
                     <b>{r.name} · size {frame}</b>
@@ -84,10 +86,6 @@ export default function Search() {
                     <span className="al">all in</span>
                   </span>
                   <Ruler at={r.at} />
-                  <span className={`fit${r.fits ? '' : ' no'}`}>
-                    <Icon name={r.fits ? 'check' : 'x'} small />
-                    {r.fits ? 'Set to your fit before delivery' : 'No set-up for your fit'}
-                  </span>
                 </span>
               </>
               // The listing that exists is a real link (opens in a new tab too); a plain click runs the photo morph.
@@ -110,7 +108,7 @@ function Ruler({ at }: { at: number }) {
   useLayoutEffect(() => { if (box.current?.clientWidth) setW(box.current.clientWidth) }, [])
   const x = (t: number) => 2 + ((t - 7) / 2) * (W - 4)
   const ok = at < 8
-  const label = ok ? `EARLIEST ${Math.abs(at - (7 + 40 / 60)) < 0.01 ? '7:40' : ''} · BEFORE THE 8:00 START` : 'EARLIEST 8:30 · AFTER THE 8:00 START'
+  const label = ok ? 'DELIVERY FROM 7:40 · BEFORE YOUR RIDE' : 'DELIVERY FROM 8:30 · AFTER YOUR RIDE STARTS'
   const ticks = []
   for (let t = 7; t <= 9.001; t += 0.25) ticks.push(<line key={t} x1={x(t)} x2={x(t)} y1={Math.abs(t % 1) < 0.01 ? 18 : 21} y2={24} className="tk" />)
   return (
@@ -122,10 +120,9 @@ function Ruler({ at }: { at: number }) {
         <circle className={`dotm${ok ? ' is-ok' : ''}`} cx={x(at)} cy={24} r={5} />
         <text className={ok ? 'on' : undefined} x={0} y={9}>{label}</text>
         <text x={x(7)} y={38}>7:00</text>
-        <text x={x(8)} y={38} textAnchor="middle">8:00</text>
-        <text x={x(9)} y={38} textAnchor="end">9:00</text>
+        <text className="ride-l" x={x(8) - 3} y={38} textAnchor="start">YOUR RIDE 8:00</text>
       </svg>
-      <span className="sr-only">{ok ? `Earliest ${at === 7 + 40 / 60 ? '7:40' : ''}, before the 8:00 start` : 'Earliest 8:30, after the 8:00 start'}</span>
+      <span className="sr-only">{ok ? 'Delivery from 7:40, before your ride starts at 8:00' : 'Delivery from 8:30, after your ride starts at 8:00'}</span>
     </span>
   )
 }

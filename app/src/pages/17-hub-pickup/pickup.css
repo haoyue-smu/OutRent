@@ -26,13 +26,9 @@
 .dc > span:last-child { font-size: var(--fs-label); line-height: var(--lh-label); color: var(--ink-2); text-wrap: balance; }
 .dial17.booked .dc .mono { color: var(--forest); }
 
-.cost17 { display: grid; grid-template-columns: 1fr auto; gap: 2px var(--s-3); align-items: baseline; margin-top: var(--s-4); padding-top: var(--s-3); border-top: 1.5px solid var(--ink); }
-.cost17 b { font-size: var(--fs-callout); font-weight: 600; }
-.cost17 .v { font-size: 22px; font-weight: 600; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
-.cost17 .s { grid-column: 1 / -1; font-size: var(--fs-small); color: var(--ink-2); }
 .back17 { margin-top: 22px; }
 .back17 .k { display: flex; justify-content: space-between; align-items: baseline; padding-bottom: 6px; border-bottom: var(--hair) solid var(--ink); }
-.back17 .k b { font-size: 16px; font-weight: 600; }
+.back17 .k b { font-size: 16px; font-weight: 600; letter-spacing: -0.01em; }
 
 /* Booked: the forest card */
 .booked17 { display: flex; flex-direction: column; gap: 6px; margin-top: var(--s-4); padding: var(--s-4); border-radius: var(--r-tile); background: var(--forest); color: var(--white); }

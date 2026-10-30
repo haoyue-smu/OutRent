@@ -65,7 +65,7 @@ export async function E1(t) {
   s = t.S()
   await t.chk(s, '04 query', 'Mountain bike, size M · Chestnut · Sat 25 Oct', await t.text('.query .q'), { exact: true })
   await t.chk(s, '04 Marlin 7 card', 'Trek Marlin 7 · size M S$50 Timah Cycles · shop · 4.8 (126) all in', await t.text('.res'))
-  await t.chk(s, '04 Scott after the start', 'EARLIEST 8:30 · AFTER THE 8:00 START', (await p.locator('.res').nth(2).innerText()))
+  await t.chk(s, '04 Scott after the start', 'DELIVERY FROM 8:30 · AFTER YOUR RIDE STARTS', (await p.locator('.res').nth(2).innerText()))
   await t.go(s, 'Back from 04 → the post', p.locator('.bar-top .back'), '02-coach-kit')
   await p.waitForTimeout(900)
   await t.chk(s, 'drawer button with a fit saved', 'See mountain bikes for Sat 25 Oct', await t.text('.vsheet .cta'), { exact: true })
@@ -159,12 +159,7 @@ export async function E2(t) {
       await t.tap(p.locator('.where6').first().getByRole('button', { name: /Your home address/ }))
       await t.tap(t.btn('Use these places'), { wait: 700 })
       await t.tap(t.btn('Deliver at 8:00')); await t.tap(t.btn('Deliver at 7:20'))
-      await t.tap(t.btn('Pick another collection time'), { wait: 700 })
-      // the wheel starts at 13:10; 26 steps of 10 minutes down is 17:30
-      await p.locator('.wheel6').focus()
-      for (let i = 0; i < 26; i++) { await p.keyboard.press('ArrowDown'); await p.waitForTimeout(40) }
-      await p.waitForTimeout(500)
-      await t.tap(t.btn(/Use this time/), { wait: 600 })
+      await t.tap(t.btn('Collect at 17:30'))
       const s = t.S()
       await t.chk(s, '06 bill with 7:20 / 17:30', 'Delivery 25 Oct · 7:20 Collection 25 Oct · 17:30', await t.text('.bill6'))
       await t.chk(s, '06 card names home for delivery', 'Blk 325C Sengkang East Way #11-42', await t.text('.meet6'))

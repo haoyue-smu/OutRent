@@ -18,7 +18,7 @@ import shop from '@photos/05-listing-detail/assets/05-direction-shop.webp'
 import './listing.css'
 
 // 05 Listing · the fitter's line. A proof: this exact bike, its marks circled, its price measured.
-// v52. The fit numbers are the ones saved on 03.
+// v60. The fit numbers are the ones saved on 03, in one white block with the way to change them.
 
 type Mark = { x: number; y: number; label: string; lx: string; ly: string }
 type Shot = { src: string; alt: string; date: string; mark?: Mark }
@@ -125,13 +125,13 @@ export default function Listing() {
           </div>
 
           <section className="sec" id="setfor">
-            <div className="sec-h"><h2 className="t-h2">Set to your fit before delivery</h2></div>
-            <MeasuredGrid items={[
-              { k: 'Saddle', v: String(f.saddle), unit: 'cm' }, { k: 'Frame', v: f.frame }, { k: 'Fork sag', v: '25', unit: '%' }, { k: 'Handlebar', v: '+1', unit: 'cm' },
-            ]} />
-            <div className="sec-h is-center">
-              <span className="small">From your height {f.height}&nbsp;cm and inside leg {f.leg}&nbsp;cm</span>
-              <GoTo page="03-fit-profile" className="link">Edit fit</GoTo>
+            <h2 className="t-h2">Set to your fit before delivery</h2>
+            <div className="fit5">
+              <div className="fit5h"><Mono>Your fit</Mono><GoTo page="03-fit-profile" className="link">Edit fit<Icon name="caret-right" small /></GoTo></div>
+              <MeasuredGrid items={[
+                { k: 'Saddle', v: String(f.saddle), unit: 'cm' }, { k: 'Frame', v: f.frame }, { k: 'Fork sag', v: '25', unit: '%' }, { k: 'Handlebar', v: '+1', unit: 'cm' },
+              ]} />
+              <p className="small fit5s">From your height {f.height}&nbsp;cm and inside leg {f.leg}&nbsp;cm</p>
             </div>
           </section>
 

@@ -19,9 +19,9 @@ import './gear.css'
 // Source: the Creative Director's prototype v52 (#14). The card follows the story: pickup booked, at the Hub.
 
 const OTHERS = [
-  { src: canyon, alt: 'The Canyon Endurace on its wall bracket', b: 'Canyon Endurace', w: 'Road bike · living-room wall bracket', ago: '2 days ago' },
-  { src: helmet, alt: 'Daniel’s road helmet', b: 'Road helmet', w: 'Helmet · shelf', ago: '2 days ago' },
-  { src: box, alt: 'The hard-shell bike box by the front door', b: 'Hard-shell bike box', w: 'Bike box · hallway, no fixed place', ago: '1 year ago', old: true },
+  { src: canyon, alt: 'The Canyon Endurace on its wall bracket', b: 'Canyon Endurace', w: 'Road bike', ago: '2 days ago' },
+  { src: helmet, alt: 'Daniel’s road helmet', b: 'Road helmet', w: 'Helmet', ago: '2 days ago' },
+  { src: box, alt: 'The hard-shell bike box by the front door', b: 'Hard-shell bike box', w: 'Bike box', ago: '1 year ago', old: true },
 ]
 const TYPES = ['Bike', 'Bike box', 'Helmet', 'Accessory']
 const PLACES = ['Corridor', 'Hallway', 'Shelf', 'Living-room wall']
@@ -114,9 +114,9 @@ export default function Gear() {
               </button>
             ))}
             {added && (
-              <button type="button" className="gcard new" onClick={() => toast(`${added.name ?? NAME} · ${added.type.toLowerCase()} · ${added.where.toLowerCase()}.`)}>
+              <button type="button" className="gcard new" onClick={() => toast(`${added.name ?? NAME} · ${added.type.toLowerCase()}.`)}>
                 <span className="ph nophoto"><LineIcon name="camera" /><Mono>No photo yet</Mono></span>
-                <b>{added.name ?? NAME}</b><span className="w">{added.type} · {added.where.toLowerCase()}</span><span className="ago">Not used yet</span>
+                <b>{added.name ?? NAME}</b><span className="w">{added.type}</span><span className="ago">Not used yet</span>
               </button>
             )}
             <button type="button" className="gcard add" aria-label="Add an item to My gear"

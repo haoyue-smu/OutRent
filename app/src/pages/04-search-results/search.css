@@ -32,6 +32,8 @@
 .res .ruler .ride { fill: var(--ink-3); opacity: 0.55; }
 .res .ruler .dotm { fill: var(--paper); stroke: var(--ink-3); stroke-width: 2; }
 .res .ruler .dotm.is-ok { stroke: var(--forest); }
-.res .fit { display: flex; align-items: center; gap: 6px; margin-top: var(--s-1); font-size: var(--fs-small); font-weight: 600; color: var(--forest); }
-.res .fit .icon { width: 13px; height: 13px; }
-.res .fit.no { color: var(--ink-3); font-weight: 500; }
+.res .ruler text.ride-l { fill: var(--ink); }
+/* the set-up status sits on the photo, like 05's photo labels */
+.fitchip { position: absolute; left: 10px; bottom: 10px; display: inline-flex; align-items: center; gap: 5px; padding: 5px var(--s-2); border-radius: var(--r-tick); background: var(--on-photo-chip); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); color: var(--white); font-family: var(--mono); font-size: var(--fs-mono-s); font-weight: 500; letter-spacing: 0.07em; text-transform: uppercase; }
+.fitchip .icon { width: 11px; height: 11px; color: var(--glow); }
+.fitchip.no { color: var(--on-photo-dim); }

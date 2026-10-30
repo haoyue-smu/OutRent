@@ -22,17 +22,21 @@
 .meet6 .tx span { font-size: 13.5px; line-height: 19px; color: var(--ink-2); text-wrap: pretty; }
 .meet6 .link { min-height: 24px; }
 
-/* Each leg: three suggested times and Other */
+/* Each leg: one row of time chips that scrolls sideways */
 .leg6 { display: flex; flex-direction: column; gap: 10px; margin-top: var(--s-6); }
 .lh { display: flex; justify-content: space-between; align-items: baseline; gap: var(--s-3); }
 .lh .mono { color: var(--ink); }
 .lh .hint { font-size: var(--fs-small); color: var(--ink-2); }
 .lh .dt6 { font-size: 14px; font-weight: 600; color: var(--ink); }
-.chips6 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--s-2); }
+.chips6 { display: flex; gap: var(--s-2); }
+.chips6.row6 { margin: 0 calc(var(--gutter) * -1); padding: 2px var(--gutter) var(--s-1); overflow-x: auto; scroll-snap-type: x proximity; scrollbar-width: none;
+  -webkit-mask-image: linear-gradient(to right, transparent, var(--ink) 20px, var(--ink) calc(100% - 20px), transparent); mask-image: linear-gradient(to right, transparent, var(--ink) 20px, var(--ink) calc(100% - 20px), transparent); }
+.chips6.row6::-webkit-scrollbar { display: none; }
+.row6 .c6 { flex: none; width: 76px; scroll-snap-align: center; }
 .c6 { height: 50px; padding: 0; border: var(--hair) solid var(--rule); border-radius: 15px; background: var(--sheet); color: var(--ink); font-size: var(--fs-body); font-weight: 600; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; cursor: pointer; transition: background-color 0.2s, color 0.2s, border-color 0.2s, transform var(--t-press) var(--ease); }
 .c6:active, .c6.is-pressed { transform: scale(0.96); }
 .c6[aria-pressed="true"] { border-color: var(--forest); background: var(--forest); color: var(--white); }
-.c6.oth { border-style: dashed; border-color: var(--ink-3); background: transparent; color: var(--ink-2); font-size: 14px; font-weight: 500; }
+.c6:disabled { border-style: dashed; background: transparent; color: var(--ink-3); font-weight: 400; cursor: not-allowed; transform: none; }
 .note6 { margin: 0; font-size: var(--fs-small); line-height: var(--lh-small); color: var(--ink-2); }
 .ride6n { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 10px; margin: 18px 0 0; font-size: 13.5px; color: var(--ink-2); }
 .ride6n i { height: 1px; background: var(--rule); }
@@ -50,24 +54,6 @@
 .bill6 .tot dt { color: var(--ink); font-weight: 600; }
 .bill6 .tot dd { font-size: var(--fs-num); font-weight: 600; letter-spacing: var(--track-num); }
 
-/* Another time: a sheet with a wheel in 10-minute steps */
-.sheet6 { position: absolute; inset: 0; z-index: 50; background: transparent; pointer-events: none; transition: background-color 0.3s; }
-.sheet6.on { background: var(--scrim-sheet); pointer-events: auto; }
-.sh6 { position: absolute; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column; gap: var(--s-3); padding: 6px 18px 26px; border-radius: 26px 26px 0 0; background: var(--sheet); transform: translateY(105%); transition: transform 0.45s cubic-bezier(0.2, 1.1, 0.3, 1); }
-.sheet6.on .sh6 { transform: none; }
-.sh6 .grab { display: grid; place-items: center; align-self: center; width: 60px; height: 18px; }
-.sh6 .grab i { width: 36px; height: 5px; border-radius: var(--r-pill); background: var(--rule); }
-.sh6 .lh { flex-direction: column; align-items: flex-start; gap: 2px; }
-.sh6 .lh b { font-size: 18px; font-weight: 600; }
-.wheel6 { position: relative; height: 180px; overflow-y: auto; scroll-snap-type: y mandatory; scrollbar-width: none; overscroll-behavior: contain;
-  -webkit-mask-image: linear-gradient(transparent, var(--ink) 30%, var(--ink) 70%, transparent); mask-image: linear-gradient(transparent, var(--ink) 30%, var(--ink) 70%, transparent); }
-.wheel6::-webkit-scrollbar { display: none; }
-.wheel6 .t { display: grid; place-items: center; height: 44px; scroll-snap-align: center; font-size: 22px; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--ink-3); cursor: pointer; transition: color 0.15s; }
-.wheel6 .t.on { color: var(--ink); }
-.wheel6 .padr { height: 68px; scroll-snap-align: none; }
-.wheel6::before { content: ""; position: sticky; top: 68px; display: block; height: 44px; margin-bottom: -44px; border-top: var(--hair) solid var(--rule); border-bottom: var(--hair) solid var(--rule); pointer-events: none; }
-@media (max-width: 520px) { .sh6 { padding-bottom: max(18px, env(safe-area-inset-bottom, 0px)); } }
-
 /* Where to meet: two places, chosen separately for each leg */
 .where6 { display: flex; flex-direction: column; gap: var(--s-2); }
 .where6 + .where6 { margin-top: 18px; }
@@ -75,5 +61,4 @@
 
 @media (prefers-reduced-motion: reduce) {
   .spot6::after { animation: none; }
-  .sh6, .sheet6 { transition: none; }
 }

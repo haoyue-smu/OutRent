@@ -29,6 +29,14 @@ figure.seen .rlab { opacity: 1; }
 .sec-h { display: flex; justify-content: space-between; align-items: baseline; gap: var(--s-3); }
 .sec-h.is-center { align-items: center; }
 
+/* The fit values and the way to change them, one block */
+.fit5 { padding: var(--s-1) 14px var(--s-3); border-radius: var(--r-tile); background: var(--sheet); box-shadow: var(--shadow-sheet); }
+.fit5h { display: flex; justify-content: space-between; align-items: center; }
+.fit5h .link { gap: 2px; }
+.fit5h .link .icon { width: 14px; height: 14px; }
+.fit5 .mgrid { border-top-color: var(--rule); }
+.fit5s { margin: 10px 0 0; }
+
 /* Marks: two loupes that zoom in when seen */
 .loupes { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-3); }
 .loupe { display: flex; flex-direction: column; gap: var(--s-2); }

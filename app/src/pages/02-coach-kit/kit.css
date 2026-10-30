@@ -27,21 +27,34 @@
 .event .icon { width: 15px; height: 15px; color: var(--ink); }
 .cap { margin: var(--s-1) 0 0; font-size: 16px; line-height: 23px; text-wrap: pretty; }
 
+/* Have / don't have: one icon on the thumbnail; the + opens OutRent's drawer */
+.kb { position: absolute; right: 4px; bottom: 4px; z-index: 1; display: grid; place-items: center; width: 20px; height: 20px; padding: 0; border: 0; border-radius: var(--r-pill); }
+.kb .icon { width: 11px; height: 11px; }
+.kb.need { background: var(--white); color: var(--forest); box-shadow: var(--shadow-kb-need); cursor: pointer; }
+.kb.need::after { content: ""; position: absolute; inset: -12px; }
+.kb.have { background: var(--forest); color: var(--white); box-shadow: 0 0 0 2px var(--white); }
+.key2 { display: flex; align-items: center; gap: 6px; margin: 2px 0 0; font-size: 12.5px; color: var(--ink-2); }
+.key2 .kb { position: static; width: 16px; height: 16px; box-shadow: none; }
+.key2 .kb.need { box-shadow: inset 0 0 0 1.5px var(--forest); }
+.key2 .kb .icon { width: 9px; height: 9px; }
+.key2 .kb.have { margin-left: 10px; }
+
 /* Her list */
 .kit { display: flex; flex-direction: column; margin: 2px 0 0; padding: 0; list-style: none; }
 .kit > li { border-top: var(--hair) solid var(--rule-2); }
 .kit > li:first-child { border-top: 0; }
-.kit-it { display: grid; grid-template-columns: 60px 1fr; gap: var(--s-3); align-items: center; padding: var(--s-2) 0; }
-button.kit-it { width: 100%; border: 0; border-radius: 12px; background: none; color: var(--ink); font: inherit; text-align: left; cursor: pointer; transition: background-color 0.3s; }
+.kit-it { display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: 14px; align-items: center; min-height: 72px; padding: 10px 0; }
+.need-bike { border-radius: 12px; transition: background-color 0.3s; }
 .need-bike.ping { background: var(--mint-2); }
-.kit-it .th { position: relative; width: 60px; height: 60px; border-radius: 12px; overflow: hidden; background: var(--paper); }
+.kit-it .th { position: relative; width: 56px; height: 56px; border-radius: 12px; overflow: hidden; background: var(--paper); }
 .kit-it .th .photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .kit-it .th .bike-img { object-position: 38% 55%; }
-.kit-it .tx { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.kit-it .tx { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
 .kit-it .tx b { font-size: 15.5px; line-height: 20px; font-weight: 600; }
 .kit-it .tx span { font-size: var(--fs-small); line-height: 18px; color: var(--ink-2); text-wrap: pretty; }
 .kit-it.is-skip .th { opacity: 0.55; }
 .kit-it.is-skip .tx b { color: var(--ink-2); }
+.kit-skip .kit-it { grid-template-columns: 60px minmax(0, 1fr); }
 .kit-skip { margin-top: 6px; padding-top: var(--s-3); border-top: var(--hair) solid var(--rule); }
 
 /* OutRent's drawer: pops up on a spring, tucks away when the post is touched */
@@ -59,11 +72,6 @@ button.kit-it { width: 100%; border: 0; border-radius: 12px; background: none; c
 .orow .th { position: relative; display: grid; place-items: center; width: 44px; height: 44px; border-radius: var(--r-thumb); overflow: hidden; background: var(--sheet); }
 .orow .th .photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .orow .th .bike-img { object-position: 38% 55%; }
-/* what Daniel owns shows its own photo, greyed, with a tick */
-.orow .th.own .photo { filter: grayscale(1) brightness(1.05) contrast(0.85); opacity: 0.7; }
-.orow .th.own .tick { position: absolute; inset: 0; display: grid; place-items: center; }
-.orow .th.own .tick i { display: grid; place-items: center; width: 22px; height: 22px; border-radius: var(--r-pill); background: var(--forest); color: var(--white); box-shadow: 0 0 0 2px var(--white); }
-.orow .th.own .tick svg { width: 12px; height: 12px; }
 .orow .tx { display: flex; flex-direction: column; gap: 1px; }
 .orow .tx b { font-size: var(--fs-callout); line-height: 20px; font-weight: 600; }
 .orow .tx span { font-size: var(--fs-small); line-height: 18px; color: var(--ink-2); text-wrap: pretty; }
