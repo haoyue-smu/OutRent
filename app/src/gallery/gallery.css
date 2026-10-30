@@ -1,7 +1,7 @@
-/* The design library: layout of the page only. Every piece shown comes from the app's own CSS. */
+/* The style guide: layout of the page only. Every piece shown comes from the app's own CSS. */
 .gallery-page { position: fixed; inset: 0; overflow-y: auto; background: var(--paper); color: var(--ink); font-size: 14px; scroll-behavior: smooth; }
 @media (prefers-reduced-motion: reduce) { .gallery-page { scroll-behavior: auto; } }
-.gallery { display: flex; flex-direction: column; gap: 56px; max-width: 1120px; margin: 0 auto; padding: 56px max(20px, env(safe-area-inset-right, 0px)) 80px max(20px, env(safe-area-inset-left, 0px)); }
+.gallery { display: flex; flex-direction: column; gap: 48px; max-width: 1120px; margin: 0 auto; padding: 56px max(20px, env(safe-area-inset-right, 0px)) 80px max(20px, env(safe-area-inset-left, 0px)); }
 .gallery code { font-family: var(--mono); font-size: 12px; }
 .gallery h1 { margin: 0; font-size: 44px; line-height: 48px; font-weight: 600; letter-spacing: -0.04em; }
 .gallery h2 { margin: 0; font-size: 32px; line-height: 36px; font-weight: 600; letter-spacing: var(--track-large); }
@@ -165,6 +165,66 @@
 .g-motiontok .wide b { font-family: var(--mono); font-size: 13px; font-weight: 500; }
 .g-not { text-decoration: line-through; text-decoration-color: var(--ink-3); }
 .g-foot { padding-top: 14px; border-top: 1px solid var(--rule); }
+
+/* ---------- layer 1: the style guide ---------- */
+.s-head { display: flex; flex-direction: column; gap: 10px; }
+.s-head p { max-width: 760px; margin: 0; font-size: 17px; line-height: 26px; color: var(--ink-2); }
+.s-sec { display: flex; flex-direction: column; gap: 18px; padding-top: 14px; border-top: 1.5px solid var(--ink); scroll-margin-top: 24px; }
+.s-sec h2 { font-size: 26px; line-height: 32px; }
+.s-principles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px 28px; margin: 0; padding: 0; list-style: none; font-size: 15px; line-height: 22px; }
+.s-principles li { padding-left: 12px; border-left: 2px solid var(--forest); }
+.s-colours { display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 20px 16px; }
+.s-swatch { display: flex; flex-direction: column; grid-column: span 2; min-width: 0; font-size: 13px; line-height: 18px; }
+.s-swatch.is-main { grid-column: span 5; }
+.s-swatch > i { display: block; height: 88px; border: 1px solid var(--rule); border-radius: var(--r-lens); }
+.s-swatch.is-main > i { height: 112px; }
+.s-swatch b { margin-top: 8px; font-size: 15px; line-height: 20px; font-weight: 600; }
+.s-hex { font-family: var(--mono); font-size: 12px; color: var(--ink-2); }
+.s-use { margin-top: 2px; color: var(--ink-2); }
+.s-shades { display: flex; gap: 2px; min-height: 10px; margin-top: 4px; }
+.s-shades i { flex: 1; border: 1px solid var(--rule-2); border-radius: var(--r-bar); }
+.s-text { display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: 20px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--rule); }
+.s-text > div:first-child { display: flex; flex-direction: column; font-size: 13px; line-height: 18px; color: var(--ink-2); }
+.s-text b { font-size: 15px; line-height: 20px; font-weight: 600; color: var(--ink); }
+.s-sample { min-width: 0; overflow: hidden; }
+.s-sample .hero-num { display: block; font-size: 76px; }
+.s-icons { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 12px 8px; }
+.s-icons > div { display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 12px; line-height: 16px; color: var(--ink-2); text-align: center; }
+.s-icons .icon, .s-icons .ic { width: 24px; height: 24px; color: var(--ink); }
+.s-blocks { display: flex; flex-direction: column; }
+.s-block { display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: 20px; padding: 18px 0; border-bottom: 1px solid var(--rule); }
+.s-block:first-child { padding-top: 0; }
+.s-block h3 { margin: 0; font-size: 16px; line-height: 21px; font-weight: 600; }
+.s-block p { margin: 4px 0 0; font-size: 14px; line-height: 20px; color: var(--ink-2); }
+.s-block-s { display: flex; flex-wrap: wrap; gap: 16px 20px; align-items: flex-start; min-width: 0; }
+.s-lab { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; max-width: 100%; }
+.s-lab:has(.s-w) { width: 100%; max-width: 353px; }
+.s-lab > span { font-size: 12px; line-height: 16px; color: var(--ink-2); }
+.s-ghost { display: block; width: 170px; }
+.s-w { width: 100%; max-width: 353px; }
+.s-stack { display: flex; flex-direction: column; gap: 10px; }
+.s-w .days17 { margin-top: 0; }
+.s-bar.g-phone { height: 96px; flex: 1 1 280px; }
+.s-over.g-phone { height: 250px; flex: 1 1 280px; }
+.s-photo { display: flex; flex-direction: column; width: 240px; }
+.s-photo .caption { padding: 8px 0 0; }
+.s-marks { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; width: 100%; }
+.s-mark { display: flex; flex-direction: column; gap: 6px; min-width: 0; margin: 0; font-size: 12px; line-height: 16px; color: var(--ink-2); }
+.s-mark > div { position: relative; height: 190px; overflow: hidden; border: 1px solid var(--rule); border-radius: var(--r-lens); background: var(--paper); }
+.s-mark iframe { position: absolute; left: 0; top: 0; border: 0; opacity: 0; transform: scale(0.4); transform-origin: 0 0; pointer-events: none; }
+.s-writing td { font-size: 14px; line-height: 20px; }
+.s-ref { display: flex; flex-direction: column; gap: 32px; }
+.s-ref-t.ghostbtn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; max-width: 353px; margin: 0 auto; }
+.s-ref-t .s-open { transform: rotate(90deg); }
+.s-ref-b { display: flex; flex-direction: column; gap: 48px; }
+@media (max-width: 900px) {
+  .s-principles { grid-template-columns: 1fr; }
+  .s-colours { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .s-swatch, .s-swatch.is-main { grid-column: span 1; }
+  .s-block, .s-text { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+  .s-marks { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .s-sample .hero-num { font-size: 56px; }
+}
 
 @media (max-width: 900px) {
   .g-comp { grid-template-columns: minmax(0, 1fr); }

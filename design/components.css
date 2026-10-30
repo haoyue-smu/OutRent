@@ -1,6 +1,6 @@
 /* OutRent components · the fitter's line · v60 (30 Oct 2026). The shared pieces of the app, the only stylesheet
    pages compose besides tokens.css (it replaces direction.css and the Trail Glass v0.1 library).
-   The design library with every state and its motion: the app's /components route; static index: design/components.html.
+   The style guide and full reference: the app's /components route; static index: design/components.html.
    Every screen is drawn like a fitting sheet: Daniel's numbers are the largest things on it, and each one is
    marked the way a fitter marks a tube, a thin line, two ticks, a value. Uses only tokens.css.
    Pieces: mono label, hairline, measured grid, measured line, hero number, top bar and back, CTA and dock, toast. */

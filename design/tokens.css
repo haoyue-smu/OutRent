@@ -1,6 +1,6 @@
 /* OutRent design tokens · the fitter's line · direction (24 Oct 2026)
    The only values pages may use. Source: the Creative Director's prototype "OutRent · direction"
-   (prototype v60, 30 Oct 2026). Every colour here is recorded with its role and contrast in the design library, the
+   (prototype v60, 30 Oct 2026). Every colour here is recorded with its role and contrast in the style guide's full reference, the
    app's /components route. design/DESIGN.md still describes v0.3 and needs Haoyue's update.
    Load once per page, before components.css and direction.css:
    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap"> */
