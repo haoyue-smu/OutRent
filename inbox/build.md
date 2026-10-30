@@ -2,6 +2,17 @@
 
 Last updated 25 Oct 2026 16:05 by the management chat. **This replaces every earlier task in this file.**
 
+## NOW (30 Oct 21:10) · Build-1: sideways rows cannot be dragged with a mouse
+
+Haoyue (20:59): on his laptop the 05 photos do not slide. Management's sweep of every live page (desktop 1536 × 864 and phone 393 × 852): no console errors and no broken images anywhere, but **every horizontal row ignores a mouse drag**: 01 the "Rent gear for" medallions (`.meds`), 05 the photo strip (`.rail`), 06 both time-chip rows (`.chips6 .row6`). They move only with a trackpad two-finger swipe or touch. The demo is shown on a laptop inside the iPhone frame, so a click-and-drag must work.
+
+1. One shared helper for every horizontal scroller in the app (these four and any added later): with a mouse (pointerType "mouse"), press and drag scrolls it sideways; on release it settles on the nearest snap point (05 photo by photo, as scroll-snap does for touch). Touch and trackpad keep their native behaviour.
+2. A drag must not count as a tap: after a drag of more than ~6 px, swallow the click (no chip gets selected, no photo opens). A plain click still works.
+3. Images inside these rows must not start the browser's own image drag (`draggable=false` / `-webkit-user-drag:none`), and text must not get selected while dragging. Cursor: `grab`, `grabbing` while dragging, only on desktop.
+4. 05: the five photo ticks also become tappable (jump to that photo), 44 px tall hit area, no visual change.
+5. Add the helper to /components (Components → scrolling rows) with a note.
+6. Test with a real mouse drag in Playwright on desktop for all four rows, plus touch at 393 × 852; check 06 chip selection still works by click. npm run check; commit as Haoyue; push main; `npx vercel --prod`; `vercel alias set <deployment> outrent-g14t3.vercel.app`. Reply "done, main <hash>".
+
 ## NOW (30 Oct 19:10) · Build-1: port prototype v60, make /components the full design library, push main, deploy
 
 Haoyue approved the Creative Director's answer to the team feedback (prototype v60). Also: the components page is graded — the teaching team will look at it — so it must be a complete, formal design library.
