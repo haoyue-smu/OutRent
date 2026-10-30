@@ -53,6 +53,10 @@ html, body { overflow: auto; }
     <p class="small">One row of chips per leg, scrolling sideways, opening on the suggested time (06). No wheel. A time that cannot be picked is dashed and grey, and says why below.</p>
     <dl><dt>File</dt><dd><code>pages/06-delivery-return</code>: <code>.chips6.row6</code>, <code>.c6</code>.</dd></dl></section>
 
+  <section class="rec"><h2 class="t-h2">A row that scrolls sideways</h2>
+    <p class="small">With a mouse, press and drag scrolls the row; on release it settles on the nearest snap point in 320 ms. A drag of more than 6 px is not a tap. Touch and trackpad keep the browser’s own scrolling.</p>
+    <dl><dt>File</dt><dd><code>useDragScroll(() =&gt; [row.current])</code> in <code>shell/dragScroll.ts</code>. Every new sideways row uses it.</dd></dl></section>
+
   <section class="rec"><h2 class="t-h2">Done marks</h2>
     <p class="small">Each page says done its own way: 08 the stamp, 11 the folded slip, 13 the ring, 15 the forest intake dot, 17 the token on the dial. Each has a reduced-motion end state.</p></section>
 

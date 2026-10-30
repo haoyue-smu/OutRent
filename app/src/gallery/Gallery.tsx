@@ -7,6 +7,7 @@ import {
 import { Tape } from '../pages/03-fit-profile/session'
 import { Van } from '../pages/10-delivery-tracking/Tracking'
 import { Fit } from '../shell/store'
+import { useDragScroll } from '../shell/dragScroll'
 import lockup from '@design/brand/outrent-lockup.svg?raw'
 import post from '@photos/01-home/assets/01-direction-02-coach-post.webp'
 import aisyah from '@photos/01-home/assets/01-direction-aisyah-avatar.webp'
@@ -129,6 +130,8 @@ export default function Gallery() {
   const tape1 = useRef<HTMLDivElement>(null)
   const tape2 = useRef<HTMLDivElement>(null)
   const row = useRef<HTMLDivElement>(null)
+  const rail = useRef<HTMLDivElement>(null)
+  useDragScroll(() => [row.current, rail.current])
   const [h, setH] = useState(176)
   const [leg, setLeg] = useState(81)
 
@@ -376,6 +379,18 @@ export default function Gallery() {
             </Comp>
             <Comp name="Label chips" yes="A short choice in a sheet: type, place (14)." no="Filtering a long list.">
               <St label="Default and selected"><div className="chips"><button type="button" aria-pressed={false}>Bike</button><button type="button" aria-pressed>Accessory</button><button type="button" aria-pressed={false}>Helmet</button></div></St>
+            </Comp>
+          </Sub>
+
+          <Sub title="Scrolling rows" note="One helper, useDragScroll in shell/dragScroll.ts, serves every row that scrolls sideways: the 01 medallions, the 05 photos, the 06 time chips and any added later.">
+            <Comp name="Drag to scroll" yes="Any row wider than the screen. With a mouse, press and drag: it follows, then settles on the nearest snap point in 320 ms. Try this one, and the time chips above." no="Up-and-down scrolling, or a value you set: that is the tape. Touch and trackpad never use it: they keep the browser’s own scrolling.">
+              <St label="Rest: grab. Dragging: grabbing"><div className="g-photo g-rail"><div className="rail" ref={rail} tabIndex={0} role="region" aria-label="Sample photos, drag or swipe for more">
+                {[m7, post, bike, helmet].map((s) => <figure key={s}><Photo src={s} alt="" width={240} height={150} /></figure>)}
+              </div></div></St>
+              <dl className="g-usefor g-dragrules">
+                <div><dt>A drag is not a tap</dt><dd>After more than 6 px the click is dropped: no chip is picked, no photo opens. A plain click still works.</dd></div>
+                <div><dt>While dragging</dt><dd>Text is not selected and an image never starts the browser’s own drag.</dd></div>
+              </dl>
             </Comp>
           </Sub>
 

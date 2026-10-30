@@ -132,6 +132,8 @@
 .g-phone .vsheet { transition-duration: 0.45s; }
 .g-photo { position: relative; width: 240px; height: 150px; border-radius: var(--r-lens); overflow: hidden; }
 .g-photo .photo { width: 100%; height: 100%; object-fit: cover; }
+.g-rail .rail figure { width: 100%; }
+.g-dragrules { flex: 1 1 280px; }
 .g-cap { width: 280px; padding: 0; }
 .g-stamp { position: relative; display: block; width: 140px; height: 120px; padding: 0; border: 0; border-radius: var(--r-inset); background: var(--tag-paper); cursor: pointer; }
 .g-stamp .stamp { right: 28px; bottom: 18px; }

@@ -6,6 +6,7 @@ import { Photo } from '../../shell/Photo'
 import { BackButton, Mono, Sheet, haptic, useSheet } from '../../shell/direction'
 import { PLACES, getState, hm, set, setClock, useStore, type Place } from '../../shell/store'
 import { routeFor } from '../../pages'
+import { useDragScroll } from '../../shell/dragScroll'
 import spot from '@photos/06-delivery-return/assets/06-direction-handover-spot.webp'
 import './delivery.css'
 
@@ -29,6 +30,7 @@ export default function Delivery() {
   const [draft, setDraft] = useState<{ d: Place; c: Place }>(book.place)
   const rows = useRef<Record<Kind, HTMLDivElement | null>>({ d: null, c: null })
   const both = book.d && book.c
+  useDragScroll(() => [rows.current.d, rows.current.c])
 
   useEffect(() => { setClock(getState().paid ? '19:00' : '9:07') }, [])
 

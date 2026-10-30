@@ -7,6 +7,7 @@ import { Photo } from '../../shell/Photo'
 import { BackButton, MeasuredGrid, Measure, Mono, still, useToast } from '../../shell/direction'
 import { routeFor } from '../../pages'
 import { fitNow, getState, setClock, useStore } from '../../shell/store'
+import { useDragScroll } from '../../shell/dragScroll'
 import u1 from '@photos/05-listing-detail/assets/05-direction-u1-stand.webp'
 import u2 from '@photos/05-listing-detail/assets/05-direction-u2-cockpit.webp'
 import u3 from '@photos/05-listing-detail/assets/05-direction-u3-drive.webp'
@@ -50,6 +51,7 @@ export default function Listing() {
   const [cur, setCur] = useState(0)
   const [seen, setSeen] = useState<number[]>([])
   const rail = useRef<HTMLDivElement>(null)
+  useDragScroll(() => [rail.current])
   const strip = useRef<HTMLDivElement>(null)
   const screen = useRef<HTMLElement>(null)
   const price = useRef<HTMLElement>(null)
@@ -95,6 +97,11 @@ export default function Listing() {
     setSeen((s) => (s.includes(i) ? s : [...s, i]))
   }
 
+  const jump = (i: number) => {
+    const el = rail.current
+    if (el) el.scrollTo({ left: i * el.clientWidth, behavior: still() ? 'auto' : 'smooth' })
+  }
+
   return (
     <>
       <main className="screen d-screen l-screen" ref={screen}>
@@ -114,7 +121,7 @@ export default function Listing() {
         </div>
         <div className="caption">
           <Mono>Photo {cur + 1} of 5 · {SHOTS[cur].date}</Mono>
-          <span className="ticks5" aria-hidden="true">{SHOTS.map((s, i) => <i key={s.src} className={i === cur ? 'on' : undefined} />)}</span>
+          <span className="ticks5" role="group" aria-label="Choose a photo">{SHOTS.map((s, i) => <button key={s.src} type="button" className={i === cur ? 'on' : undefined} aria-label={`Photo ${i + 1} of 5`} aria-current={i === cur ? 'true' : undefined} onClick={() => jump(i)}><i /></button>)}</span>
         </div>
 
         <div className="pad">

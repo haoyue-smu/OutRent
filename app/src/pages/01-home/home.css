@@ -59,6 +59,7 @@
 .med.more .disc svg { width: 24px; height: 24px; }
 .med.more b { color: var(--ink-2); }
 .med:active .disc { transform: scale(0.95); }
+.meds.is-dragging .med:active .disc { transform: none; }
 
 /* Two ways to get more from it */
 .promos { display: flex; flex-direction: column; gap: 10px; }

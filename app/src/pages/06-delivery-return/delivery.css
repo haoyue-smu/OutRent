@@ -35,6 +35,7 @@
 .row6 .c6 { flex: none; width: 76px; scroll-snap-align: center; }
 .c6 { height: 50px; padding: 0; border: var(--hair) solid var(--rule); border-radius: 15px; background: var(--sheet); color: var(--ink); font-size: var(--fs-body); font-weight: 600; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; cursor: pointer; transition: background-color 0.2s, color 0.2s, border-color 0.2s, transform var(--t-press) var(--ease); }
 .c6:active, .c6.is-pressed { transform: scale(0.96); }
+.row6.is-dragging .c6:active { transform: none; }
 .c6[aria-pressed="true"] { border-color: var(--forest); background: var(--forest); color: var(--white); }
 .c6:disabled { border-style: dashed; background: transparent; color: var(--ink-3); font-weight: 400; cursor: not-allowed; transform: none; }
 .note6 { margin: 0; font-size: var(--fs-small); line-height: var(--lh-small); color: var(--ink-2); }

@@ -17,6 +17,7 @@ import boards from '@photos/01-home/assets/01-direction-cat-paddleboards.webp'
 import camping from '@photos/01-home/assets/01-direction-cat-camping.webp'
 import storage from '@photos/01-home/assets/01-direction-storage-promo.webp'
 import { dayLong, dm, nextDayBack, pickDay, poolBack, wd } from '../../shell/storage'
+import { useDragScroll } from '../../shell/dragScroll'
 import './home.css'
 
 // 01 Home · the fitter's line. A docket to fill in: what, to where, when. Below it what is coming up (once
@@ -42,6 +43,7 @@ export default function Home() {
   const [toastNode, toast] = useToast()
   const root = useRef<HTMLElement>(null)
   const meds = useRef<HTMLDivElement>(null)
+  useDragScroll(() => [meds.current])
   const s = useStore((x) => x)
   const now = homeNow(s)
   const h = now % 24

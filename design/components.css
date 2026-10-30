@@ -155,6 +155,15 @@ img { max-width: 100%; }
 .xbtn .ic { width: 16px; height: 16px; }
 @media (max-width: 520px) { .sheetx { padding-bottom: max(18px, env(safe-area-inset-bottom, 0px)); } }
 
+/* ---------- a row that scrolls sideways: a mouse can drag it (shell/dragScroll.ts adds these classes) ---------- */
+.drag-x { -webkit-user-select: none; user-select: none; }
+.drag-x img { -webkit-user-drag: none; }
+.drag-x.is-dragging { scroll-snap-type: none; scroll-behavior: auto; }
+@media (hover: hover) and (pointer: fine) {
+  .drag-x { cursor: grab; }
+  .drag-x.is-dragging, .drag-x.is-dragging * { cursor: grabbing; }
+}
+
 /* ---------- a key and its value on one row ---------- */
 .kv { display: grid; grid-template-columns: 1fr auto; gap: 2px var(--s-3); align-items: baseline; padding: 11px 0; border-bottom: var(--hair) solid var(--rule); }
 .kv b { font-size: var(--fs-callout); font-weight: 600; }
