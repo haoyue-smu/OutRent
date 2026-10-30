@@ -5,7 +5,7 @@
 .s9-screen .nb { white-space: nowrap; }
 
 /* A booking: one white card */
-.bk { margin-top: 14px; overflow: hidden; border-radius: var(--r-card); background: var(--sheet); box-shadow: 0 1px 0 var(--rule), 0 18px 36px -26px color-mix(in srgb, var(--ink) 45%, transparent); }
+.bk { margin-top: 14px; overflow: hidden; border-radius: var(--r-card); background: var(--sheet); box-shadow: var(--shadow-photo-card); }
 .bk-h { display: flex; justify-content: space-between; align-items: baseline; padding: var(--s-4) 18px 0; }
 .bk-t { display: flex; flex-direction: column; gap: 2px; padding: 6px 18px 0; }
 .bk-t b { font-size: 22px; line-height: 27px; font-weight: 600; letter-spacing: -0.02em; }
@@ -17,7 +17,7 @@
 .board { display: flex; align-items: flex-end; gap: 6px; padding: var(--s-2) 18px var(--s-1); }
 .board-part { display: contents; }
 .flap { position: relative; display: grid; place-items: center; width: 44px; height: 60px; overflow: hidden; border-radius: var(--r-chip); background: var(--ink); color: var(--white); font-family: var(--mono); font-size: 38px; font-weight: 500; font-variant-numeric: tabular-nums; perspective: 200px; }
-.flap::after { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: color-mix(in srgb, var(--white) 18%, transparent); }
+.flap::after { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: var(--flap-line); }
 .flap span { display: block; backface-visibility: hidden; }
 .board .u { padding: 0 6px 6px 2px; font-size: var(--fs-callout); color: var(--ink-2); }
 

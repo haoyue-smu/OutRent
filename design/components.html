@@ -10,10 +10,11 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap">
 <link rel="stylesheet" href="tokens.css">
 <link rel="stylesheet" href="components.css">
+<link rel="stylesheet" href="../app/src/pages/06-delivery-return/delivery.css">
 <style>
 /* Gallery layout only. Every piece below is drawn by components.css with tokens.css: the same two files the app loads,
-   so this page cannot drift from it. The live version (every state, every motion, the pages' done marks) is the
-   app's /components route. Light only on purpose. */
+   so this page cannot drift from it (the time chips come from 06's own stylesheet). The full library (every colour,
+   every state, every motion, the pages' done marks) is the app's /components route. Light only on purpose. */
 html, body { overflow: auto; }
 .gallery { max-width: 1120px; margin: 0 auto; padding: 40px max(16px, env(safe-area-inset-right, 0px)) 80px max(16px, env(safe-area-inset-left, 0px)); display: flex; flex-direction: column; gap: 44px; }
 .g-head { display: flex; flex-direction: column; gap: var(--s-2); max-width: 680px; }
@@ -35,19 +36,20 @@ html, body { overflow: auto; }
 .g-skip .skip { position: absolute; }
 .g-toast { position: relative; height: 80px; max-width: 393px; }
 .g-toast .toast { bottom: 20px; }
+.g-chip { width: 76px; }
 @media (max-width: 760px) { .g-sec { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
 <main class="gallery">
   <header class="g-head">
-    <span class="mono">OutRent · the fitter’s line · v52</span>
+    <span class="mono">OutRent · the fitter’s line · v60</span>
     <h1 class="t-h1">Components</h1>
-    <p class="lede">The shared pieces of the app, drawn by the app’s own stylesheet (components.css on tokens.css). For every state and its motion, live, and the pages’ done marks (the slip, the ring, the intake dot, the dial token), open the app’s <a class="link" href="http://localhost:5191/components">/components</a> page (<code>npm run app:dev</code>).</p>
-    <p class="small">DESIGN.md still describes v0.3 (Trail Glass); this page, the app and prototype/v52/DIRECTION.md are current.</p>
+    <p class="lede">The shared pieces of the app, drawn by the app’s own stylesheet (components.css on tokens.css). For every state and its motion, live, and the pages’ done marks (the slip, the ring, the intake dot, the dial token), open the design library, <a class="link" href="https://outrent-g14t3.vercel.app/components">/components</a>. It also records every colour with its contrast, every icon and the writing rules.</p>
+    <p class="small">DESIGN.md still describes v0.3 (Trail Glass); this page, the app and the design library are current.</p>
   </header>
 
-  <section class="g-sec" aria-labelledby="c-h"><header><h2 class="t-h2" id="c-h">Colour</h2><p class="small">Paper and ink, one forest green for the primary action and good news only. #666F6A is the text grey; #7F8883 is for ticks only.</p></header>
+  <section class="g-sec" aria-labelledby="c-h"><header><h2 class="t-h2" id="c-h">Colour</h2><p class="small">The two main colours are paper and forest; forest is for the primary action and good news only. #666F6A is the text grey; #7F8883 is for ticks only. These are the core ones: the design library records all of them.</p></header>
     <div class="g-panel"><div class="swatches">
       <div class="sw"><i style="background:var(--paper)"></i><b>--paper</b><span>page</span></div>
       <div class="sw"><i style="background:var(--sheet)"></i><b>--sheet</b><span>white cards, sheets</span></div>
@@ -90,6 +92,7 @@ html, body { overflow: auto; }
         <div class="g-state"><span class="mono">Default</span><button class="cta" type="button">Choose delivery</button></div>
         <div class="g-state"><span class="mono">Pressed</span><button class="cta is-pressed" type="button">Choose delivery</button></div>
         <div class="g-state"><span class="mono">Disabled</span><button class="cta" type="button" disabled>Pick a delivery time</button></div>
+        <div class="g-state"><span class="mono">Focus</span><button class="cta is-focus" type="button">Choose delivery</button></div>
       </div>
       <div class="g-row">
         <div class="g-state" style="width:240px"><span class="mono">Ghost</span><button class="ghostbtn" type="button">Back to Home</button></div>
@@ -110,8 +113,18 @@ html, body { overflow: auto; }
     <div class="g-panel"><div class="g-narrow">
       <button class="r9" type="button"><span class="dt"><b>25</b><span>SAT</span></span><span class="tx"><b>Trek Marlin 7 · size M</b><span>Delivered 7:40 · collected 13:30</span><span class="ok">In 12 h 40 min</span></span><svg class="chev" viewBox="0 0 256 256" aria-hidden="true"><path fill="currentColor" d="M181.7 133.7l-80 80a8 8 0 0 1-11.4-11.4L164.7 128 90.3 53.7a8 8 0 0 1 11.4-11.4l80 80a8 8 0 0 1 0 11.4Z"/></svg></button>
       <button class="opt" type="button" aria-pressed="true"><span class="rad"></span><b>Door pickup</b><span class="pr">S$10</span><span class="s">Daily, 17:00–19:00 only.</span></button>
-      <button class="opt" type="button" aria-pressed="false"><span class="rad"></span><b>Rack drop-off · Rack S</b><span class="pr">S$5</span><span class="s">Leave it at the void deck rack before 7:00.</span></button>
+      <button class="opt" type="button" aria-pressed="false"><span class="rad"></span><b>Rack S drop-off</b><span class="pr">S$5</span><span class="s">Leave it at Rack S before 7:00.</span></button>
       <div class="kv"><b>Shared courier run</b><span class="v">Free</span><span class="s">With 2 days’ notice</span></div>
+    </div></div>
+  </section>
+
+  <section class="g-sec" aria-labelledby="ch-h"><header><h2 class="t-h2" id="ch-h">Time chips</h2><p class="small">Picking a time from many: one row per leg that scrolls sideways and opens on the suggested time (06). A time that cannot be picked is dashed and grey.</p></header>
+    <div class="g-panel"><div class="g-row">
+      <div class="g-state"><span class="mono">Default</span><button class="c6 g-chip" type="button">7:20</button></div>
+      <div class="g-state"><span class="mono">Pressed</span><button class="c6 g-chip is-pressed" type="button">7:20</button></div>
+      <div class="g-state"><span class="mono">Selected</span><button class="c6 g-chip" type="button" aria-pressed="true">7:40</button></div>
+      <div class="g-state"><span class="mono">Disabled</span><button class="c6 g-chip" type="button" disabled>7:00</button></div>
+      <div class="g-state"><span class="mono">Focus</span><button class="c6 g-chip is-focus" type="button">7:20</button></div>
     </div></div>
   </section>
 

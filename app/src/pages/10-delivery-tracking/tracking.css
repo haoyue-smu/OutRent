@@ -19,7 +19,7 @@
 .map10 .m-roads .pathway { stroke: var(--map-path); stroke-dasharray: 3 4; }
 .map10 .route-todo { fill: none; stroke: var(--map-route-todo); stroke-width: 3.5; stroke-dasharray: 1 7; stroke-linecap: round; }
 .map10 .route-on { fill: none; stroke: var(--forest); stroke-width: 4; stroke-linecap: round; }
-.map10 text { font-family: var(--mono); font-size: 8.5px; letter-spacing: 0.08em; fill: var(--ink-3); }
+.map10 text { font-family: var(--mono); font-size: 8.5px; letter-spacing: 0.08em; fill: var(--ink-2); }
 .map10 .pin-shop rect { fill: var(--ink); }
 .map10 .pin-shop text { fill: var(--ink); }
 .map10 .pin-end .glow { fill: var(--forest); opacity: 0.14; }

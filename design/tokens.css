@@ -1,6 +1,7 @@
 /* OutRent design tokens · the fitter's line · direction (24 Oct 2026)
    The only values pages may use. Source: the Creative Director's prototype "OutRent · direction"
-   (final prototype v52, 25 Oct 2026). design/DESIGN.md still describes v0.3 and needs Haoyue's update.
+   (prototype v60, 30 Oct 2026). Every colour here is recorded with its role and contrast in the design library, the
+   app's /components route. design/DESIGN.md still describes v0.3 and needs Haoyue's update.
    Load once per page, before components.css and direction.css:
    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap"> */
 
@@ -68,7 +69,7 @@
   --tag-paper: #EFE7D6;
   --tag-ink: #2A241A;
   --tag-ink-2: #5C5240;
-  --tag-label: #7B6D52;
+  --tag-label: #73664C;
   --tag-rule: #CDBF9F;
   --tag-ring: #C9B994;
   --tag-string: #8C7B5E;
@@ -106,6 +107,10 @@
   --box-face: #F7F8F5;     /* the lit face of the drawn box (15) */
   --split-rest: #B9C2BD;   /* the 30% OutRent keeps, on the rent-out bar */
   --dial-win: #C9D1CB;     /* a courier window on the 24-hour dial (17), before it is chosen */
+  --on-forest-body: rgba(255, 255, 255, 0.82);  /* running text on the 12 offer */
+  --on-forest-ghost: rgba(255, 255, 255, 0.45);  /* the ghost button's line on forest (not text) */
+  --ad-shade: linear-gradient(to top, rgba(18, 24, 21, 0.35), transparent 60%);  /* under the 12 offer photo */
+  --flap-line: rgba(255, 255, 255, 0.18);  /* the split across a station-board digit (09) */
   --on-forest-rule: rgba(255, 255, 255, 0.14);
   --on-forest-dt: rgba(255, 255, 255, 0.65);
   --on-forest-k: rgba(255, 255, 255, 0.7);

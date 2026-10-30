@@ -10,7 +10,7 @@
 .map18 .m-roads .cas { stroke: var(--map18-casing); }
 .map18 .m-roads .rd { stroke: var(--sheet); }
 .map18 .route18 { fill: none; stroke: var(--forest); stroke-width: 3.5; stroke-linecap: round; stroke-dasharray: 1 7; }
-.map18 .lab { font-family: var(--mono); font-size: 8.5px; letter-spacing: 0.08em; fill: var(--ink-3); }
+.map18 .lab { font-family: var(--mono); font-size: 8.5px; letter-spacing: 0.08em; fill: var(--ink-2); }
 .map18 .lab.you { fill: var(--map18-you-ink); transition: opacity var(--t-base); }
 .rk { cursor: pointer; }
 .rk .badge { transition: transform 0.3s var(--ease); }

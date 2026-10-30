@@ -170,7 +170,7 @@ export default function Tracking() {
 }
 
 // The courier's van, drawn in the map's own small strokes: white on the forest pin, forest on the mint avatar.
-function Van({ tone }: { tone?: 'mint' }) {
+export function Van({ tone }: { tone?: 'mint' }) {
   return (
     <g className={`van-shape${tone ? ' is-mint' : ''}`}>
       <path d="M-7 -4 h8 v8 h-8 z M1 -1 h3.5 l2.5 3 v2 h-6 z" />

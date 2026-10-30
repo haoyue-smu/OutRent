@@ -1,6 +1,6 @@
-/* OutRent components · the fitter's line · v52 (25 Oct 2026). The shared pieces of the app, the only stylesheet
+/* OutRent components · the fitter's line · v60 (30 Oct 2026). The shared pieces of the app, the only stylesheet
    pages compose besides tokens.css (it replaces direction.css and the Trail Glass v0.1 library).
-   Live gallery with every state and its motion: the app's /components route; static index: design/components.html.
+   The design library with every state and its motion: the app's /components route; static index: design/components.html.
    Every screen is drawn like a fitting sheet: Daniel's numbers are the largest things on it, and each one is
    marked the way a fitter marks a tube, a thin line, two ticks, a value. Uses only tokens.css.
    Pieces: mono label, hairline, measured grid, measured line, hero number, top bar and back, CTA and dock, toast. */
@@ -13,7 +13,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 button, a, label { touch-action: manipulation; }
 img { max-width: 100%; }
 [hidden] { display: none !important; }
-:focus-visible { outline: 2px solid var(--forest); outline-offset: 2px; border-radius: 6px; }
+:focus-visible, .is-focus { outline: 2px solid var(--forest); outline-offset: 2px; }
 .icon { flex: none; width: 22px; height: 22px; fill: currentColor; }
 .icon.is-sm { width: 16px; height: 16px; }
 .sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
@@ -55,6 +55,8 @@ img { max-width: 100%; }
 .bar-top { display: grid; grid-template-columns: var(--touch) 1fr var(--touch); align-items: center; height: calc(var(--top-safe) + 48px); padding: calc(var(--top-safe) + 2px) 14px 0; }
 .bar-top .mid { text-align: center; }
 .back { width: var(--touch); height: var(--touch); border-radius: var(--r-pill); display: grid; place-items: center; border: var(--hair) solid var(--rule); background: var(--sheet); color: var(--ink); cursor: pointer; padding: 0; }
+.back { transition: transform var(--t-press) var(--ease); }
+.back:active, .back.is-pressed { transform: scale(0.96); }
 .back .icon, .back svg { width: 20px; height: 20px; }
 .back.on-photo { border-color: var(--on-photo-border); background: var(--on-photo-bg); -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur); }
 .pad { padding-left: var(--gutter); padding-right: var(--gutter); }
@@ -62,7 +64,7 @@ img { max-width: 100%; }
 /* ---------- primary action and its dock ---------- */
 .cta { display: flex; align-items: center; justify-content: center; gap: 10px; height: 54px; padding: 0 var(--s-6); border: 0; border-radius: 27px; background: var(--forest); color: var(--white); font-family: inherit; font-size: var(--fs-body); font-weight: 600; letter-spacing: -0.01em; white-space: nowrap; text-decoration: none; cursor: pointer; transition: transform var(--t-press) var(--ease), background-color var(--t-quick); }
 .cta:active, .cta.is-pressed { transform: scale(0.97); }
-.cta:disabled { background: var(--rule); color: var(--ink-3); cursor: not-allowed; transform: none; }
+.cta:disabled { background: var(--rule); color: var(--ink-2); cursor: not-allowed; transform: none; }
 .cta .icon, .cta svg { width: 20px; height: 20px; }
 .dock { position: absolute; left: 0; right: 0; bottom: 0; z-index: 20; padding: 10px var(--s-4) var(--bottom-float); background: var(--paper); }
 .dock::before { content: ""; position: absolute; left: 0; right: 0; bottom: 100%; height: 28px; background: linear-gradient(to top, var(--paper), transparent); pointer-events: none; }
@@ -86,7 +88,7 @@ img { max-width: 100%; }
 
 /* ---------- image stand-in: a hatched plate naming the photo that is still to come ---------- */
 .todo { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: flex-end; gap: 2px; padding: var(--s-3); background: repeating-linear-gradient(135deg, var(--todo-1) 0 9px, var(--todo-2) 9px 18px); color: var(--ink-2); }
-.todo .mono { font-size: 9.5px; color: var(--ink-3); }
+.todo .mono { font-size: 9.5px; color: var(--ink-2); }
 .todo .w { font-size: 12.5px; line-height: 16px; font-weight: 500; text-wrap: balance; }
 
 /* ---------- the end of the built route (shown from 13) ---------- */

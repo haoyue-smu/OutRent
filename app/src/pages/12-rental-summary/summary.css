@@ -36,25 +36,25 @@
 .ad12 { margin-top: 44px; overflow: hidden; border-radius: 26px 26px 0 0; background: var(--forest); color: var(--white); }
 .adph { position: relative; height: 200px; overflow: hidden; }
 .adph .photo { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 58%; }
-.adph::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, color-mix(in srgb, var(--ink) 35%, transparent), transparent 60%); }
+.adph::after { content: ""; position: absolute; inset: 0; background: var(--ad-shade); }
 .adk { position: absolute; left: var(--gutter); top: 18px; z-index: 1; display: inline-flex; align-items: center; height: 28px; padding: 0 var(--s-3); border-radius: 14px; background: var(--white); color: var(--forest); font-family: var(--mono); font-size: var(--fs-mono); font-weight: 600; letter-spacing: var(--track-label); text-transform: uppercase; }
 .adb { display: flex; flex-direction: column; gap: 14px; padding: 22px var(--gutter) 26px; }
 .adb .t-h2 { font-size: 28px; line-height: 32px; letter-spacing: -0.03em; color: var(--white); }
-.adl { margin: -4px 0 0; font-size: var(--fs-callout); line-height: var(--lh-callout); color: color-mix(in srgb, var(--white) 82%, transparent); text-wrap: pretty; }
+.adl { margin: -4px 0 0; font-size: var(--fs-callout); line-height: var(--lh-callout); color: var(--on-forest-body); text-wrap: pretty; }
 .adp { display: flex; align-items: baseline; gap: var(--s-2); }
 .adp b { font-size: 40px; line-height: 42px; font-weight: 600; letter-spacing: -0.04em; font-variant-numeric: tabular-nums; }
-.adp span { font-size: var(--fs-callout); color: color-mix(in srgb, var(--white) 82%, transparent); }
-.adp s { margin-left: 6px; font-size: 16px; color: color-mix(in srgb, var(--white) 55%, transparent); }
-.weeks { position: relative; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); margin-top: var(--s-1); border-top: var(--hair) solid color-mix(in srgb, var(--white) 70%, transparent); }
+.adp span { font-size: var(--fs-callout); color: var(--on-forest-body); }
+.adp s { margin-left: 6px; font-size: 16px; color: var(--on-forest-label); }
+.weeks { position: relative; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); margin-top: var(--s-1); border-top: var(--hair) solid var(--on-forest-k); }
 .weeks div { position: relative; display: flex; flex-direction: column; gap: 2px; padding-top: 10px; }
-.weeks div::before { content: ""; position: absolute; top: -1px; left: 0; width: 1px; height: 9px; background: color-mix(in srgb, var(--white) 70%, transparent); }
+.weeks div::before { content: ""; position: absolute; top: -1px; left: 0; width: 1px; height: 9px; background: var(--on-forest-k); }
 .weeks b { font-size: var(--fs-callout); font-weight: 600; color: var(--white); font-variant-numeric: tabular-nums; }
 .weeks div:first-child b { color: var(--glow); }
-.weeks small { font-family: var(--mono); font-size: var(--fs-mono-s); letter-spacing: 0.06em; color: color-mix(in srgb, var(--white) 60%, transparent); }
+.weeks small { font-family: var(--mono); font-size: var(--fs-mono-s); letter-spacing: 0.06em; color: var(--on-forest-label); }
 .ad12 .cta { margin-top: var(--s-1); background: var(--white); color: var(--forest); }
-.ad12 .adn { margin: -4px 0 0; font-size: 12.5px; line-height: 17px; color: color-mix(in srgb, var(--white) 70%, transparent); }
+.ad12 .adn { margin: -4px 0 0; font-size: 12.5px; line-height: 17px; color: var(--on-forest-k); }
 .ad12.set .adp, .ad12.set .adk { display: none; }
 .home12 { padding: 0 var(--gutter) 40px; background: var(--forest); }
-.home12 .ghostbtn { border: var(--hair) solid color-mix(in srgb, var(--white) 45%, transparent); color: var(--white); }
+.home12 .ghostbtn { border: var(--hair) solid var(--on-forest-ghost); color: var(--white); }
 
 .s-cover { position: absolute; inset: 0; z-index: 50; background: var(--paper); pointer-events: none; }

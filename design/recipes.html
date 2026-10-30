@@ -25,14 +25,14 @@ html, body { overflow: auto; }
 <body>
 <main class="wrap">
   <header style="display:flex;flex-direction:column;gap:8px">
-    <span class="mono">OutRent · v52 recipes</span>
+    <span class="mono">OutRent · v60 recipes</span>
     <h1 class="t-h1">Recipes</h1>
-    <p class="lede">How the app does the things every page shares. The pieces are in components.css; the behaviour is in <code>app/src/shell</code>. Live: the app’s /components page.</p>
+    <p class="lede">How the app does the things every page shares. The pieces are in components.css; the behaviour is in <code>app/src/shell</code>. Live: the design library, <a class="link" href="https://outrent-g14t3.vercel.app/components">/components</a>.</p>
   </header>
 
   <section class="rec"><h2 class="t-h2">The story state</h2>
     <p class="small">Every choice Daniel makes is kept in one store and read by every later page, so nothing falls back to the seeded default.</p>
-    <dl><dt>File</dt><dd><code>shell/store.ts</code>: <code>useStore(s =&gt; …)</code> to read, <code>set(…)</code> to write; kept for the browser session.</dd>
+    <dl><dt>File</dt><dd><code>shell/store.ts</code>: <code>useStore(s =&gt; …)</code> to read, <code>set(…)</code> to write; kept on this device until Restart.</dd>
       <dt>Holds</dt><dd>fit, delivery and collection times and places, payment method, paid, the story clock, arrival, the hand-over record, closed, weekly ride, storage way, pickup, Hub, rent-out, return, the added item.</dd>
       <dt>Rule</dt><dd>Show only MOCK-DATA values; derive (countdowns, dates) from the clock, never invent a value.</dd></dl></section>
 
@@ -48,6 +48,10 @@ html, body { overflow: auto; }
   <section class="rec"><h2 class="t-h2">A sheet over the page</h2>
     <p class="small">Rises over a scrim (450 ms). The scrim, its X and Escape close it; focus goes in and comes back.</p>
     <dl><dt>File</dt><dd><code>useSheet()</code> and <code>&lt;Sheet&gt;</code> in <code>shell/direction.tsx</code>; options inside are <code>.opt</code>.</dd></dl></section>
+
+  <section class="rec"><h2 class="t-h2">Picking a time</h2>
+    <p class="small">One row of chips per leg, scrolling sideways, opening on the suggested time (06). No wheel. A time that cannot be picked is dashed and grey, and says why below.</p>
+    <dl><dt>File</dt><dd><code>pages/06-delivery-return</code>: <code>.chips6.row6</code>, <code>.c6</code>.</dd></dl></section>
 
   <section class="rec"><h2 class="t-h2">Done marks</h2>
     <p class="small">Each page says done its own way: 08 the stamp, 11 the folded slip, 13 the ring, 15 the forest intake dot, 17 the token on the dial. Each has a reduced-motion end state.</p></section>
