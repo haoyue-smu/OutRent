@@ -511,8 +511,8 @@ async function grep() {
 // Q4 and Q5 may scroll. Nothing may overflow sideways. Screenshots for the hand-back.
 async function screens() {
   const browser = await chromium.launch()
-  for (const [w, h] of [[390, 844], [375, 667]]) {
-    const ctx = await browser.newContext({ ...VIEW, viewport: { width: w, height: h } })
+  for (const [w, h] of [[390, 844], [375, 667], [430, 932], [1440, 900]]) {
+    const ctx = await browser.newContext(w > 500 ? { viewport: { width: w, height: h }, hasTouch: true } : { ...VIEW, viewport: { width: w, height: h } })
     const p = await ctx.newPage()
     const errs = []
     p.on('console', (m) => { if (m.type() === 'error') errs.push(m.text()) }); p.on('pageerror', (e) => errs.push(e.message))
@@ -520,15 +520,27 @@ async function screens() {
       await settled(p); await sleep(500)
       await p.evaluate(() => document.activeElement?.blur())
       const m = await p.evaluate(() => {
-        const sc = document.querySelector('.ab-ps-sheet') ?? document.querySelector('.ab-screen')
+        const bikeBox = () => {
+          const i = document.querySelector('.ab-ps-photo:not(.is-spot) img')
+          if (!i) return null
+          const r = i.getBoundingClientRect(), k = Math.max(r.width / i.naturalWidth, r.height / i.naturalHeight), crop = r.height - i.naturalHeight * k, y = (f) => Math.round(r.top + crop * 0.63 + f * i.naturalHeight * k)
+          return [y(0.387), y(0.661)]
+        }
+        const sc = document.querySelector('.ab-ps') ?? document.querySelector('.ab-screen')
         const dock = document.querySelector('.ab-root .dock')?.getBoundingClientRect()
         const last = document.querySelector('.ab-qs-in')?.getBoundingClientRect()
         const btn = document.querySelector('.cta')?.getBoundingClientRect()
         const sheet = document.querySelector('.ab-ps-sheet')?.getBoundingClientRect()
-        return { scrolls: sc.scrollHeight > sc.clientHeight, sideways: sc.scrollWidth > innerWidth || document.documentElement.scrollWidth > innerWidth, contentBottom: last && Math.round(last.bottom), dockTop: dock && Math.round(dock.top), buttonIn: !btn || btn.bottom <= innerHeight, photo: sheet && Math.round(sheet.top) }
+        return { scrolls: sc.scrollHeight > sc.clientHeight, sideways: sc.scrollWidth > innerWidth || document.documentElement.scrollWidth > innerWidth, contentBottom: last && Math.round(last.bottom), dockTop: dock && Math.round(dock.top), buttonIn: !btn || btn.bottom <= innerHeight, sheetTop: sheet && Math.round(sheet.top), sheetBottom: sheet && Math.round(sheet.bottom), button: btn && Math.round(btn.bottom), rootW: Math.round(document.querySelector('.ab-root').getBoundingClientRect().width), rootLeft: Math.round(document.querySelector('.ab-root').getBoundingClientRect().left), H: innerHeight, bike: bikeBox() }
       })
       check(`${w} × ${h} ${name}: nothing sideways`, !m.sideways, JSON.stringify(m))
       if (mustFit) check(`${w} × ${h} ${name}: fits without scrolling`, !m.scrolls && m.buttonIn && (m.contentBottom == null || m.contentBottom <= m.dockTop), JSON.stringify(m))
+      if (m.sheetTop != null) {
+        check(`${w} × ${h} ${name}: photo at most 40% or 220 px, sheet at least 55%`, m.sheetTop + 28 <= Math.max(h * 0.4, 220) + 1 && (m.sheetBottom - m.sheetTop) / h >= 0.55, JSON.stringify(m))
+        if (m.button != null) check(`${w} × ${h} ${name}: the button sits at the bottom of the sheet`, m.sheetBottom - m.button <= 26, `${m.sheetBottom - m.button} px`)
+        if (m.bike) console.log(`INFO ${w} × ${h} ${name}: bike ${m.bike.join('-')}, sheet from ${m.sheetTop}`)
+        if (w > 500) check(`${w} × ${h} ${name}: a centred 430 px column`, m.rootW === 430 && m.rootLeft === (w - 430) / 2, `${m.rootW} at ${m.rootLeft}`)
+      }
       await p.screenshot({ path: `${OUT}screen-${name}-${w}x${h}.png` })
     }
     await p.goto(`${BASE}/?pilot=1&new=1&v=a`)

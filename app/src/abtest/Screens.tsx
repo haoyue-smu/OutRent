@@ -25,12 +25,16 @@ const Bar = ({ eyebrow, onBack, backLabel }: { eyebrow: string; onBack?: () => v
   <>{onBack ? <BackButton label={backLabel ?? 'Back'} onClick={onBack} /> : <span />}<Mono className="mid">{eyebrow}</Mono><span /></>
 )
 
-// The screens around the task: a paper sheet over a photo, as on page 07. The sheet takes only the height it needs.
-function PhotoSheet({ label, photo = BACKDROP, spot, children }: { label: string; photo?: string; spot?: boolean; children: ReactNode }) {
+// The screens around the task: a paper sheet over a photo, as on page 07. The photo takes at most 40% of the height; the
+// sheet takes the rest, with its content at the top and its button at the bottom.
+function PhotoSheet({ label, photo = BACKDROP, spot, action, children }: { label: string; photo?: string; spot?: boolean; action?: ReactNode; children: ReactNode }) {
   return (
     <main className="ab-ps" aria-label={label}>
       <div className={`ab-ps-photo${spot ? ' is-spot' : ''}`}><Photo src={photo} alt="" width={390} height={844} first /></div>
-      <div className="ab-ps-sheet">{children}</div>
+      <div className="ab-ps-sheet">
+        <div className={`ab-ps-body${action ? '' : ' is-alone'}`}>{children}</div>
+        {action}
+      </div>
     </main>
   )
 }
@@ -38,7 +42,7 @@ function PhotoSheet({ label, photo = BACKDROP, spot, children }: { label: string
 // ---------- S0 · Welcome ----------
 export function Welcome({ onContinue }: { onContinue: () => void }) {
   return (
-    <PhotoSheet label="Welcome">
+    <PhotoSheet label="Welcome" action={<button type="button" className="cta" onClick={onContinue}>Continue</button>}>
       <h1 className="t-h1">Thanks for helping us out!</h1>
       <p className="lede">We’re SMU students building OutRent, an app for renting bikes and outdoor gear. You’ll try one screen of it.</p>
       <ul className="ab-facts">
@@ -46,7 +50,6 @@ export function Welcome({ onContinue }: { onContinue: () => void }) {
         <li><Icon name="camera" /><span>You’ll take a few photos. The camera is a mock-up, your real camera stays off.</span></li>
         <li><Icon name="lock-simple" /><span>We only record taps and timings. Nothing personal.</span></li>
       </ul>
-      <button type="button" className="cta" onClick={onContinue}>Continue</button>
     </PhotoSheet>
   )
 }
@@ -54,7 +57,7 @@ export function Welcome({ onContinue }: { onContinue: () => void }) {
 // ---------- S1 · Scenario: its button is t0 and creates the row ----------
 export function Scenario({ onStart, busy, failed }: { onStart: () => void; busy: boolean; failed: boolean }) {
   return (
-    <PhotoSheet label="Your scenario" photo={SPOT} spot>
+    <PhotoSheet label="Your scenario" photo={SPOT} spot action={<button type="button" className="cta" disabled={busy} onClick={onStart}>Start</button>}>
       <Mono>Your scenario</Mono>
       <h1 className="t-h1">You’re Daniel</h1>
       <div className="ab-lines">
@@ -68,7 +71,6 @@ export function Scenario({ onStart, busy, failed }: { onStart: () => void; busy:
         <p className="small">Just do what feels natural.</p>
       </div>
       {failed && <p className="ab-dock-note" role="alert">We could not reach the server. Check your connection and tap Start again.</p>}
-      <button type="button" className="cta" disabled={busy} onClick={onStart}>Start</button>
     </PhotoSheet>
   )
 }

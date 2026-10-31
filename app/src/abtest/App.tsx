@@ -301,7 +301,9 @@ function Session({ row }: { row: Row }) {
     logEvent('form', column, { len: value.length })
   }
   const leave = (n: number, to: Screen, more: Record<string, unknown> = {}) => {
-    setFields({ [`t_q${n}_done`]: now(), ...more })
+    const t = now()
+    // t_questions_done is Q3's own moment: one reading of the clock, so the two are always equal.
+    setFields({ [`t_q${n}_done`]: t, ...(n === 3 ? { t_questions_done: t } : {}), ...more })
     go(to)
   }
   const finish = () => {
@@ -334,7 +336,7 @@ function Session({ row }: { row: Row }) {
           onEase={(findEase) => { patch({ findEase, findNot: false }); setFields({ find_ease: findEase, find_not_looked: false }); logEvent('form', 'find_ease', { value: findEase }) }}
           onNot={() => { patch({ findEase: 0, findNot: true }); setFields({ find_ease: null, find_not_looked: true }); logEvent('form', 'find_not_looked', { value: true }) }}
           onWhere={(v) => written('findWhere', 'find_where', v)}
-          onNext={() => { const t = now(); leave(3, 'q4', { t_questions_done: t, preference_left: (state.current.left ?? 'a').toUpperCase() }) }} />
+          onNext={() => leave(3, 'q4', { preference_left: (state.current.left ?? 'a').toUpperCase() })} />
       )}
       {s.screen === 'q4' && (
         <Q4 left={s.left ?? 'a'} pick={s.pick} why={s.why}

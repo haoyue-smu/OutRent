@@ -117,30 +117,33 @@ body { background: var(--desk); font-family: var(--font); color: var(--ink); -we
 .ab-pick .opt.ab-row { padding-left: 10px; padding-right: 10px; column-gap: var(--s-2); }
 .ab-pick .opt.ab-row b { font-size: var(--fs-small); line-height: var(--lh-small); }
 
-/* The screens around the task. The photo runs under the status bar and on behind the sheet, far enough to stay covered
-   while the sheet rises; its crop keeps the whole bike in the part that shows, on any phone. */
-.ab-ps { position: absolute; inset: 0; display: flex; flex-direction: column; overflow: hidden; background: var(--photo-bg); }
-.ab-ps-photo { position: relative; flex: 1; min-height: 0; margin-bottom: -84px; }
-.ab-ps-photo .photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 60%; }
-.ab-ps-sheet { position: relative; flex: none; display: flex; flex-direction: column; gap: var(--s-3); max-height: 100%; box-sizing: border-box; padding: var(--s-6) var(--gutter) calc(var(--s-4) + env(safe-area-inset-bottom)); overflow-y: auto; border-radius: var(--r-sheet) var(--r-sheet) 0 0; background: var(--paper); box-shadow: var(--shadow-drawer); animation: ab-rise var(--t-base) var(--ease); }
+/* The screens around the task. The photo takes at most 40% of the height and never less than 220 px, giving way only as far
+   as the sheet needs; it runs under the status bar and on behind the sheet, far enough to stay covered while the sheet rises.
+   Its crop keeps the bike in the part that shows. The sheet takes the rest: content at the top, button at the bottom. */
+.ab-ps { position: absolute; inset: 0; display: flex; flex-direction: column; overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; background: var(--photo-bg); }
+.ab-ps-photo { position: relative; flex: 0 1 40%; min-height: 220px; margin-bottom: calc(var(--r-sheet) * -1); }
+.ab-ps-photo .photo { position: absolute; top: 0; left: 0; width: 100%; height: calc(100% + 56px); object-fit: cover; object-position: 50% 63%; }
 .ab-ps-photo.is-spot .photo { object-position: 28% 50%; }
-.ab-ps-sheet .lede { margin: 0; color: var(--ink); }
-.ab-facts { display: flex; flex-direction: column; gap: var(--s-2); margin: var(--s-1) 0; padding: 0; list-style: none; font-size: var(--fs-callout); line-height: var(--lh-callout); }
+.ab-ps-sheet { position: relative; flex: 1 0 auto; display: flex; flex-direction: column; box-sizing: border-box; padding: var(--s-6) var(--s-6) calc(var(--s-6) + env(safe-area-inset-bottom)); border-radius: var(--r-sheet) var(--r-sheet) 0 0; background: var(--paper); box-shadow: var(--shadow-drawer); animation: ab-rise var(--t-base) var(--ease); }
+.ab-ps-body { flex: 1 0 auto; display: flex; flex-direction: column; gap: var(--s-4); }
+.ab-ps-body.is-alone { justify-content: center; }
+.ab-ps-body > .mono { margin-bottom: calc(var(--s-2) * -1); }
+.ab-ps-body .lede { margin: 0; color: var(--ink); line-height: 1.55; }
+.ab-ps-body .t-h1 { margin: 0; }
+.ab-ps-body .ab-dock-note { margin: 0; }
+.ab-ps-sheet .cta { flex: none; width: 100%; margin-top: var(--s-6); }
+.ab-facts { display: flex; flex-direction: column; gap: var(--s-4); margin: 0; padding: 0; list-style: none; font-size: var(--fs-callout); line-height: 1.55; }
 .ab-facts li { display: grid; grid-template-columns: 20px minmax(0, 1fr); gap: var(--s-3); align-items: start; }
-.ab-facts .icon { width: 20px; height: 20px; margin-top: 1px; }
-.ab-lines { display: flex; flex-direction: column; gap: var(--s-2); }
-.ab-lines .lede { line-height: 1.5; }
+.ab-facts .icon { width: 20px; height: 20px; margin-top: 2px; }
+.ab-lines { display: flex; flex-direction: column; gap: var(--s-4); }
 .ab-task { display: flex; flex-direction: column; gap: var(--s-1); padding: var(--s-3) 14px; border-radius: var(--r-card); background: var(--sheet); box-shadow: var(--shadow-sheet); }
 .ab-task b { font-size: var(--fs-callout); line-height: var(--lh-callout); font-weight: 600; }
 .ab-task .small { margin: 0; }
-.ab-ps-sheet .t-h1 { margin: 0; }
-.ab-ps-sheet .cta { flex: none; width: 100%; margin-top: var(--s-2); }
-.ab-ps-sheet .ab-dock-note { margin: 0; }
-/* A short phone: tighter, so the whole bike still shows above the sheet. */
+/* A short phone: a little tighter, so the whole sheet still fits without scrolling. */
 @media (max-height: 700px) {
-  .ab-ps-photo .photo { object-position: 50% 62%; }
-  .ab-ps-sheet { gap: var(--s-2); padding-top: var(--s-4); padding-bottom: calc(var(--s-3) + env(safe-area-inset-bottom)); }
-  .ab-ps-sheet .cta { margin-top: var(--s-1); }
+  .ab-ps-sheet { padding-top: var(--s-4); padding-bottom: calc(var(--s-4) + env(safe-area-inset-bottom)); }
+  .ab-ps-body, .ab-lines, .ab-facts { gap: var(--s-3); }
+  .ab-ps-sheet .cta { margin-top: var(--s-4); }
 }
 @keyframes ab-rise { from { transform: translateY(56px); } to { transform: none; } }
 @media (prefers-reduced-motion: reduce) { .ab-ps-sheet { animation: none; } }
