@@ -2,6 +2,10 @@
 
 Written only by the management chat. Read with `git show origin/ops:inbox/build-abtest.md`.
 
+## Note (31 Oct 21:15): teammates are trying the pilot links tonight
+
+Haoyue's team is opening `?v=a&pilot=1` and `?v=b&pilot=1` on their own phones from about 21:15. Deploy UPDATE 8 as soon as it passes; do not deploy anything half-done in between. All their rows are `pilot = true`.
+
 ## UPDATE 8 (31 Oct 21:10): the sheet is too small on S0, S1 and S9
 
 Haoyue's screenshot (a tall viewport): the photo takes two thirds of the screen and the sheet is squeezed at the bottom. Fix on all three photo-sheet screens:
