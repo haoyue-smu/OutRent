@@ -2,6 +2,25 @@
 
 Written only by the management chat. Read with `git show origin/ops:inbox/build-abtest.md`.
 
+## UPDATE (31 Oct 12:50), read first
+
+Your 5e917b2 hand-back was read. Supabase now exists, and **your schema.sql is applied to it** (details under "Where it lives"). Next:
+1. Put the URL and key in `app/.env.local`.
+2. Rerun acceptance checks 3–6 and 9 against the real Supabase. Include the `keepalive` final write on `pagehide`.
+3. Deploy the separate Vercel project and alias it, as under Ship.
+4. Hand back the links and the CSV.
+
+The damaged photo is still on its way. Deploy now with the PLACEHOLDER tag so the pilot setup can be checked; swap the photo in and redeploy when Haoyue passes it to you.
+
+Accepted from your report:
+- the pixel residual on check 1 (your control test shows it is offset painting);
+- `block_seq` with a separate pilot sequence;
+- `keepalive` instead of `sendBeacon`;
+- fitting the preview photo instead of cropping it;
+- `?new=1` for testers.
+
+One thing to avoid: never push before the flows pass (07d9aca).
+
 ## NOW (31 Oct 11:15): A/B test site · a standalone app from the same code, separate deploy
 
 **Time.** Recruiting closes **Sun 2 Nov, 23:59**. The site must be live for a pilot **tonight (31 Oct)**, with the real run on 1–2 Nov. Speed over polish, but every acceptance check below must pass. If something cannot be done by tonight, say so early.
@@ -136,28 +155,11 @@ Reopening the link after Finish shows only the thank-you line, with no new row.
   - `ab_start(...)`, which creates and assigns the row;
   - `ab_log(token, patch)`, which appends events and sets fields only on the row that owns that token.
 - Never put the service-role key in the site or in git.
-- **Supabase is set up by Management (31 Oct 12:00).**
-  - Project `outrent-abtest`, URL `https://mswjwsmszuhutuqzguwi.supabase.co`.
-  - The schema is `inbox/abtest-schema.sql` on ops. Copy it into the repo as `app/src/abtest/schema.sql`. Do not change it without telling Management.
-  - Publishable key: `sb_publishable_eScKVPBbQFUxJyWgeAROIg_BUlKtlKM`. It goes in `app/.env.local` as `VITE_SUPABASE_URL` / `VITE_SUPABASE_KEY` (gitignored). It is a public key, but keep it out of committed files anyway.
-  - Management checked it on 31 Oct 11:55:
-    - the schema is applied;
-    - reading or inserting into the table or the view with the anon key is refused;
-    - six Starts came out as three A/B pairs;
-    - forced rows work;
-    - `ab_log` accepts a valid token and rejects an unknown token or a non-array events value.
-  - Management's test rows were cleared at 11:50; the table is empty and ids start at 1. Mark your own test rows `pilot = true`; Haoyue clears the table again after the pilot, before the real run.
-  - The site calls only two functions:
-    - `rpc('ab_start', { p_forced, p_pilot, p_data })` → `{ id, variant, token }`;
-    - `rpc('ab_log', { p_token, p_data, p_events })`.
-  - The table itself cannot be read with the anon key, by design.
-  - `p_data` is a flat object with the summary field names listed under Logging. It is merged into the row, so send each field as soon as it is known.
-  - `p_events` is an array of `{ t, type, screen, target, data }`.
-  - The results view needs two event types:
-    - `scroll` events carry `data.max_y`;
-    - `show` events (the page coming back after being hidden) carry `data.away_ms`.
-  - For the final writes on `pagehide`, use `fetch(..., { keepalive: true })` with the apikey header, not `sendBeacon`, because sendBeacon cannot send the headers Supabase needs.
-  - Batch events: send at most every 1 s, plus on every screen change.
+- **Supabase (31 Oct 12:50).**
+  - Project `outrent-abtest` (Haoyue's org haoyue-smu, Singapore), URL `https://mswjwsmszuhutuqzguwi.supabase.co`.
+  - Publishable key: `sb_publishable_eScKVPBbQFUxJyWgeAROIg_BUlKtlKM`. Put it in `app/.env.local` under the variable names your code already reads; it stays gitignored.
+  - **Your `app/src/abtest/schema.sql` (5e917b2) is the one now applied**, replacing Management's first draft, so your `ab_start` / `ab_log` signatures are live. If you change the schema again, say so in your hand-back; Haoyue applies it in the SQL editor.
+  - Neither you nor Management can reach this project through the Supabase connector (it only sees the FYP org), so all checks go through the REST API with the publishable key.
 
 ### Logging
 
