@@ -1,4 +1,4 @@
-import { useEffect, useRef, type ReactNode, type Ref } from 'react'
+import { useEffect, useRef, type KeyboardEvent, type ReactNode, type Ref } from 'react'
 import { Icon } from '../shell/Icon'
 import { Photo } from '../shell/Photo'
 import { BackButton, Mono } from '../shell/direction'
@@ -6,7 +6,7 @@ import { PARTS, RecordPart, ReportRow, type PartId } from '../pages/11-handover-
 import type { Variant } from './api'
 import { CAPTION, EVIDENCE_DONE, EVIDENCE_OPEN, FIRST_TAKEN, LAYOUTS, NOTICED, REASONS, SENT_FULL, SENT_SHORT, SHOP_TAG, TAKEN, mineOf } from './story'
 
-// The screens, copy as in the flow artifact. No screen reads the store or the router; App.tsx owns the state and the log.
+// The screens. The app's own copy is as in the flow artifact; what the participant reads outside the app is as in UPDATE 3. No screen reads the store or the router; App.tsx owns the state and the log.
 
 const Kv = ({ k, v }: { k: string; v: ReactNode }) => <div className="ab-kv"><span>{k}</span><span>{v}</span></div>
 
@@ -29,16 +29,13 @@ const Bar = ({ eyebrow, onBack, backLabel }: { eyebrow: string; onBack?: () => v
 export function Entry({ onStart, busy, failed }: { onStart: () => void; busy: boolean; failed: boolean }) {
   return (
     <>
-      <Page label="Start" top={<Bar eyebrow="OutRent · 3-minute test" />}>
+      <Page label="Start" top={<Bar eyebrow="SMU IS211 · OutRent" />}>
         <div className="pad">
-          <h1 className="t-h1 s11-h">Your rental bike just arrived</h1>
-          <p className="lede ab-para">You’re Daniel. A Trek Marlin 7 was delivered to the Chestnut trailhead for your Saturday ride. A S$150 deposit is on hold until the bike goes back.</p>
-          <p className="lede ab-para">Do what you’d normally do in the app before you ride off. There are no right answers; we’re testing the app, not you.</p>
-        </div>
-        <div className="ab-card">
-          <Kv k="Takes" v="about 3 minutes" />
-          <Kv k="Your phone" v="use it as you normally would" />
-          <Kv k="Data" v="taps and timings, no names" />
+          <p className="lede ab-intro">Hi! We’re SMU students building OutRent, an app for renting bikes and outdoor gear, for our IS211 project. Thanks for helping us test it.</p>
+          <h1 className="t-h1 s11-h">Your bike’s here</h1>
+          <p className="lede ab-para">You’re Daniel. You booked a mountain bike on OutRent for a Saturday morning ride, and it’s just been dropped off at the trailhead. There’s a S$150 deposit on your card until you return it.</p>
+          <p className="lede ab-para">Use the app like you normally would before you ride off. Takes about 3 minutes.</p>
+          <p className="small ab-para">We don’t collect names or any personal info.</p>
         </div>
       </Page>
       <div className="dock">
@@ -50,9 +47,9 @@ export function Entry({ onStart, busy, failed }: { onStart: () => void; busy: bo
 }
 
 // ---------- 1 · Hand-over: the only place the variant is read ----------
-export function HandoverPage({ variant, shots, sent, linkRef, scrollRef, onTake, onLink, onSave }: {
+export function HandoverPage({ variant, shots, sent, linkRef, scrollRef, onTake, onView, onLink, onSave }: {
   variant: Variant; shots: PartId[]; sent: boolean; linkRef: Ref<HTMLButtonElement>; scrollRef: Ref<HTMLElement>
-  onTake: (id: PartId) => void; onLink: () => void; onSave: () => void
+  onTake: (id: PartId) => void; onView: (v: PhotoView, from: HTMLElement) => void; onLink: () => void; onSave: () => void
 }) {
   const left = 3 - shots.length
   const label = left === 3 ? 'Take 3 photos' : left > 0 ? `Take ${left} more photo${left === 1 ? '' : 's'}` : 'Save record'
@@ -78,8 +75,11 @@ export function HandoverPage({ variant, shots, sent, linkRef, scrollRef, onTake,
           <div className="parts">
             {PARTS.map((p) => (
               <RecordPart key={p.id} p={p} shot={shots.includes(p.id)} when={TAKEN[p.id]} eager mine={mineOf(p.id)}
-                onTake={() => onTake(p.id)}
-                shopTag={<span className="ab-tag">{SHOP_TAG}</span>}
+                onTake={(el) => { if (shots.includes(p.id)) onView({ part: p.id, who: 'you' }, el); else onTake(p.id) }}
+                shopTag={<>
+                  <span className="ab-tag">{SHOP_TAG}</span>
+                  <button type="button" className="ab-view" aria-label={`See the shop’s photo of the ${p.name.toLowerCase()} full size`} onClick={(e) => onView({ part: p.id, who: 'shop' }, e.currentTarget)} />
+                </>}
                 mineTag={<span className="ab-tag">{TAKEN[p.id]} · you</span>} />
             ))}
           </div>
@@ -103,6 +103,29 @@ export function Camera({ part }: { part: PartId }) {
         <Photo src={mineOf(part)} alt={`Your photo of the ${PARTS.find((p) => p.id === part)!.name.toLowerCase()}`} width={390} height={278} first />
       </div>
       <div className="ab-camera-bar" aria-hidden="true"><span>Retake</span><span className="ab-shutter" /><span>Use photo</span></div>
+    </div>
+  )
+}
+
+// ---------- A photo full size, from either column, the same in both versions ----------
+export type PhotoView = { part: PartId; who: 'shop' | 'you' }
+export function Viewer({ view, onClose }: { view: PhotoView; onClose: () => void }) {
+  const p = PARTS.find((x) => x.id === view.part)!
+  const close = useRef<HTMLButtonElement>(null)
+  useEffect(() => { close.current?.focus({ preventScroll: true }) }, [])
+  const onKey = (e: KeyboardEvent) => {
+    if (e.key === 'Escape') onClose()
+    if (e.key === 'Tab') e.preventDefault() // the close button is the only thing to reach
+  }
+  const mine = view.who === 'you'
+  return (
+    <div className="ab-viewer" role="dialog" aria-modal="true" aria-label={`Photo of the ${p.name.toLowerCase()}`} data-log="viewer-outside" onKeyDown={onKey}
+      onClick={(e) => { if (!(e.target as Element).closest('img')) onClose() }}>
+      <button type="button" className="ab-viewer-x" ref={close} data-log="viewer-close" aria-label="Close photo"><Icon name="x" /></button>
+      <figure>
+        <span data-log="viewer-photo"><Photo src={mine ? mineOf(p.id) : p.shop} alt={mine ? `Your photo of the ${p.name.toLowerCase()}` : `The shop’s photo of the ${p.name.toLowerCase()}`} width={390} height={278} first /></span>
+        <figcaption>{p.name} · {mine ? `${TAKEN[p.id]} · you` : SHOP_TAG}</figcaption>
+      </figure>
     </div>
   )
 }
@@ -184,7 +207,7 @@ export function Questions({ noticed, seq, seqWhy, openText, onNoticed, onSeq, on
       <Page label="3 quick questions" top={<Bar eyebrow="3 quick questions" />}>
         <h1 className="ab-sr">3 quick questions</h1>
         <fieldset className="ab-q">
-          <legend className="ab-q-t">1 · Did you notice anything wrong with the bike?</legend>
+          <legend className="ab-q-t">Did you notice anything wrong with the bike?</legend>
           <div className="ab-card ab-group ab-inq">
             {NOTICED.map((v) => (
               <label key={v} className="ab-opt" data-log={`noticed:${v}`}>
@@ -195,7 +218,7 @@ export function Questions({ noticed, seq, seqWhy, openText, onNoticed, onSeq, on
           </div>
         </fieldset>
         <fieldset className="ab-q">
-          <legend className="ab-q-t">2 · Overall, how easy was it to do what you wanted?</legend>
+          <legend className="ab-q-t">Overall, how difficult or easy was the task?</legend>
           <div className="ab-scale">
             {[1, 2, 3, 4, 5, 6, 7].map((n) => (
               <label key={n} className="ab-scale-n" data-log={`seq:${n}`}>
@@ -205,15 +228,16 @@ export function Questions({ noticed, seq, seqWhy, openText, onNoticed, onSeq, on
             ))}
           </div>
           <div className="ab-ends"><span>Very difficult</span><span>Very easy</span></div>
-          <label className="ab-label" htmlFor="ab-seq-why">Why did you give this rating? (optional)</label>
+          <label className="ab-label" htmlFor="ab-seq-why">Why? (optional)</label>
           <textarea id="ab-seq-why" name="seq_why" autoComplete="off" className="ab-field" rows={2} value={seqWhy} onChange={(e) => onSeqWhy(e.target.value)} />
         </fieldset>
-        <div className="ab-q">
-          <label className="ab-q-t" htmlFor="ab-open">3 · If you wanted to tell the shop about a problem, where did you look first? Why?</label>
+        <fieldset className="ab-q">
+          <legend className="ab-q-t">If something was wrong with the bike, where would you go to tell the shop?</legend>
+          <label className="ab-label ab-label-top" htmlFor="ab-open">Optional</label>
           <textarea id="ab-open" name="open_text" autoComplete="off" className="ab-field" rows={3} value={openText} onChange={(e) => onOpenText(e.target.value)} />
-        </div>
+        </fieldset>
       </Page>
-      <div className="dock" data-log="done-disabled"><button type="button" className="cta s11-save ab-main" data-log="done" disabled={!noticed || !seq} onClick={onDone}>Done</button></div>
+      <div className="dock" data-log="done-disabled"><button type="button" className="cta s11-save ab-main" data-log="done" disabled={!noticed || !seq} onClick={onDone}>Next</button></div>
     </>
   )
 }
@@ -228,7 +252,7 @@ export function Preference({ left, pick, why, onPick, onWhy, onFinish }: {
       <Page label="Last one" top={<Bar eyebrow="Last one" />}>
         <h1 className="ab-sr">Last one</h1>
         <fieldset className="ab-q">
-          <legend className="ab-q-t">Two layouts of the page you just used. Which would you rather have?</legend>
+          <legend className="ab-q-t">Which version of that page do you prefer?</legend>
           <div className="ab-picks">
             {order.map((v) => (
               <label key={v} className="ab-pick" data-log={`pick:${v.toUpperCase()}`}>
@@ -240,13 +264,13 @@ export function Preference({ left, pick, why, onPick, onWhy, onFinish }: {
           </div>
         </fieldset>
         <div className="ab-q">
-          <label className="ab-label" htmlFor="ab-why">Why?</label>
+          <label className="ab-label" htmlFor="ab-why">Why? (optional)</label>
           <textarea id="ab-why" name="preference_why" autoComplete="off" className="ab-field" rows={3} value={why} onChange={(e) => onWhy(e.target.value)} />
         </div>
       </Page>
-      <div className="dock" data-log="finish-disabled"><button type="button" className="cta s11-save ab-main" data-log="finish" disabled={!pick} onClick={onFinish}>Finish</button></div>
+      <div className="dock" data-log="finish-disabled"><button type="button" className="cta s11-save ab-main" data-log="finish" disabled={!pick} onClick={onFinish}>Submit</button></div>
     </>
   )
 }
 
-export const Thanks = () => <main className="ab-thanks"><p className="lede">Thanks. You can close this page.</p></main>
+export const Thanks = () => <main className="ab-thanks"><p className="lede">Done, thanks a lot! You can close this tab.</p></main>

@@ -5,6 +5,7 @@
 //   node app/e2e/abtest.mjs assign             acceptance 5: ten Starts in a row, a reload, a forced row
 //   node app/e2e/abtest.mjs drop               the keepalive write on pagehide
 //   node app/e2e/abtest.mjs slow               the damaged photo on a slow connection
+//   node app/e2e/abtest.mjs grep               the built bundle holds no old copy
 // Every run opens rows with pilot=1. Output goes to app/e2e/out/abtest/ (git ignores it).
 import { createRequire } from 'module'
 import fs from 'fs'
@@ -62,7 +63,7 @@ async function open(browserType, device, query) {
   p.on('console', (m) => { if (m.type() === 'error') errs.push(m.text()) })
   p.on('pageerror', (e) => errs.push('pageerror: ' + e.message))
   await p.goto(`${BASE}/?pilot=1&new=1${query ? '&' + query : ''}`)
-  await p.waitForSelector('text=Your rental bike just arrived')
+  await p.waitForSelector('text=Your bike’s here')
   return { browser, ctx, p, errs, calls }
 }
 const start = async (p) => { await p.tap('button:has-text("Start")'); await p.waitForSelector('text=Check it before you ride') }
@@ -105,25 +106,48 @@ async function finishSurvey(p) {
   await scrollTo(p, '.ab-main')
   await p.tap('button:has-text("Save record")')
   await p.waitForSelector('text=3 quick questions')
-  check('done disabled until answers', await p.isDisabled('button:has-text("Done")'))
+  check('next disabled until answers', await p.isDisabled('button:has-text("Next")'))
   await p.tap('label:has-text("Yes")')
   await p.tap('[data-log="seq:6"]')
   await p.fill('#ab-seq-why', 'Clear steps')
   await p.fill('#ab-open', 'Near the photos')
-  await p.tap('button:has-text("Done")')
-  await p.waitForSelector('text=Which would you rather have?')
+  await p.tap('button:has-text("Next")')
+  await p.waitForSelector('text=Which version of that page do you prefer?')
   await settled(p)
-  check('finish disabled until a pick', await p.isDisabled('button:has-text("Finish")'))
+  check('submit disabled until a pick', await p.isDisabled('button:has-text("Submit")'))
   const caps = await p.$$eval('.ab-pick-cap', (x) => x.map((e) => e.textContent))
-  check('both captions', caps.includes('Report link on top') && caps.includes('Report link below the photos'), caps.join(' | '))
+  check('both captions', caps.includes('Link at the top') && caps.includes('Link at the bottom'), caps.join(' | '))
   await p.tap('.ab-pick >> nth=0')
   await p.fill('#ab-why', 'Easier to find')
-  await p.tap('button:has-text("Finish")')
-  await p.waitForSelector('text=Thanks. You can close this page.')
+  await p.tap('button:has-text("Submit")')
+  await p.waitForSelector('text=Done, thanks a lot! You can close this tab.')
 }
 
-async function flow(name, browserType, device, variant, withReport) {
-  console.log(`\n--- ${name} · ${variant.toUpperCase()} · ${withReport ? 'report' : 'save only'}`)
+// A photo full size: its tag, one 44 px close button, a tap outside closes, and the page behind has not moved.
+async function viewPhoto(p, name, opener, tag, how, src) {
+  await scrollTo(p, opener)
+  await sleep(150)
+  const y = await p.evaluate(() => document.querySelector('.ab-screen').scrollTop)
+  await p.tap(opener)
+  await p.waitForSelector('.ab-viewer')
+  check(`${name}: the tag`, (await p.textContent('.ab-viewer figcaption')) === tag, await p.textContent('.ab-viewer figcaption'))
+  check(`${name}: the photo`, src.test(await p.getAttribute('.ab-viewer img', 'src')))
+  const x = await p.$eval('.ab-viewer-x', (b) => { const r = b.getBoundingClientRect(); return [r.width, r.height, innerWidth - r.right] })
+  check(`${name}: close is 44 px at the top right`, x[0] === 44 && x[1] === 44 && x[2] < 20, x.join(' '))
+  const fit = await p.$eval('.ab-viewer img', (i) => { const r = i.getBoundingClientRect(); return r.left >= 0 && r.right <= innerWidth && r.top >= 0 && r.bottom <= innerHeight && i.naturalWidth > 0 })
+  check(`${name}: fitted to the screen`, fit)
+  await p.tap('.ab-viewer img')
+  check(`${name}: a tap on the photo keeps it open`, await p.isVisible('.ab-viewer'))
+  if (how === 'x') await p.tap('.ab-viewer-x')
+  else { const v = await p.viewportSize(); await p.touchscreen.tap(v.width / 2, 40) }
+  await p.waitForSelector('.ab-viewer', { state: 'detached' })
+  await sleep(100)
+  const after = await p.evaluate(() => document.querySelector('.ab-screen').scrollTop)
+  check(`${name}: the page has not moved`, after === y, `${y} / ${after}`)
+}
+
+async function flow(name, browserType, device, variant, withReport, viewFirst) {
+  console.log(`\n--- ${name} · ${variant.toUpperCase()} · ${viewFirst ? 'open the drivetrain photo, close it, then report' : withReport ? 'report' : 'save only'}`)
   const { browser, p, errs, calls } = await open(browserType, device, `v=${variant}`)
   await settled(p)
   await start(p)
@@ -135,8 +159,7 @@ async function flow(name, browserType, device, variant, withReport) {
   await takePhoto(p, 'Crank arm')
   check('button counts down', (await p.textContent('.ab-main')) === 'Take 2 more photos')
   check('you column', (await p.textContent('.cols')).includes('25 Oct · 7:40'))
-  await p.tap('section.part[aria-label="Crank arm"] .shot')
-  check('tapping a taken photo does nothing', !(await p.isVisible('.ab-camera')))
+  if (viewFirst) await viewPhoto(p, 'shop crank, before the third photo', 'section.part[aria-label="Crank arm"] .ab-view', 'Crank arm · 18 Oct · Timah', 'outside', /11-direction-s-crank/)
   await takePhoto(p, 'Saddle edge')
   await takePhoto(p, 'Drivetrain')
   const drive = await p.$$eval('section.part[aria-label="Drivetrain"] img', (x) => x.map((i) => i.getAttribute('src')))
@@ -144,18 +167,32 @@ async function flow(name, browserType, device, variant, withReport) {
   check('save enabled after three', !(await p.isDisabled('button:has-text("Save record")')))
   check('note above save', await p.isVisible('text=Both records are kept with booking OR-10482'))
   check('no condition text after photos', !/No marks|Circle the|nothing new/i.test(await p.textContent('body')))
-  await p.screenshot({ path: `${OUT}flow-${name}-${variant}-${withReport ? 'report' : 'save'}.png` })
+  await p.screenshot({ path: `${OUT}flow-${name}-${variant}-${viewFirst ? 'view' : withReport ? 'report' : 'save'}.png` })
+  if (viewFirst) {
+    const sel = 'section.part[aria-label="Drivetrain"] .shot'
+    await scrollTo(p, sel); await sleep(800)
+    const before = await p.screenshot()
+    await viewPhoto(p, 'your drivetrain', sel, 'Drivetrain · 25 Oct · 7:41 · you', 'x', /11-mine-drive-bent/)
+    await p.evaluate(() => document.activeElement?.blur()); await sleep(300)
+    check('the page looks the same after closing', before.equals(await p.screenshot()))
+    await viewPhoto(p, 'shop drivetrain', 'section.part[aria-label="Drivetrain"] .ab-view', 'Drivetrain · 18 Oct · Timah', 'outside', /11-direction-s-drive/)
+  }
   if (withReport) await report(p)
   await finishSurvey(p)
   await sleep(1200)
   await p.reload()
-  await p.waitForSelector('text=Thanks. You can close this page.')
-  check('reopening shows only thanks', (await p.textContent('body')).trim() === 'Thanks. You can close this page.')
+  await p.waitForSelector('text=Done, thanks a lot! You can close this tab.')
+  check('reopening shows only thanks', (await p.textContent('body')).trim() === 'Done, thanks a lot! You can close this tab.')
   check('no console errors', errs.length === 0, errs.join(' | '))
   await sleep(800)
   check('server accepted every write', refused(calls).length === 0, `${calls.length} calls, refused: ${JSON.stringify(refused(calls).map((c) => [c.fn, c.status, c.why]))}`)
   const row = rowFromCalls(calls)
   check('final answers went out', row.t_finish != null && row.preference != null, `finish ${row.t_finish}, preference ${row.preference}`)
+  const views = viewFirst ? 3 : 0, kinds = (t) => row.events.filter((e) => e.type === t)
+  check('photo_views counts them', (row.photo_views ?? 0) === views, row.photo_views)
+  check('every open has its close, with part and who', kinds('photo_view_open').length === views && kinds('photo_view_close').length === views && kinds('photo_view_open').every((e) => e.data.part && e.data.who), JSON.stringify(kinds('photo_view_open').map((e) => e.data)))
+  check('first tap after the photos', row.first_tap_after_photos === (viewFirst ? 'photo_view' : withReport ? 'link' : 'save'), row.first_tap_after_photos)
+  if (viewFirst) check('the report tap is still the metric, after the views', row.t_report_tap > kinds('photo_view_close').at(-1).t && row.t_report_tap > row.t_damage_visible, `${row.t_report_tap - row.t_damage_visible} ms`)
   await browser.close()
   return { id, name, variant, withReport, row }
 }
@@ -163,7 +200,10 @@ async function flow(name, browserType, device, variant, withReport) {
 async function flows() {
   const out = []
   for (const [name, type, device] of [['iphone13-webkit', webkit, devices['iPhone 13']], ['pixel7-chromium', chromium, devices['Pixel 7']]]) {
-    for (const v of ['a', 'b']) for (const r of [true, false]) out.push(await flow(name, type, device, v, r))
+    for (const v of ['a', 'b']) {
+      for (const r of [true, false]) out.push(await flow(name, type, device, v, r))
+      out.push(await flow(name, type, device, v, true, true))
+    }
   }
   fs.writeFileSync(OUT + 'flows.json', JSON.stringify(out.map(({ row, ...o }) => o), null, 1))
   fs.writeFileSync(OUT + 'rows-from-writes.json', JSON.stringify(out.map((o) => o.row), null, 1))
@@ -386,7 +426,7 @@ async function slow() {
   await ctx.route('**/*11-mine-drive-bent*', async (route) => { await sleep(4000); await route.continue() })
   const p = await ctx.newPage()
   await p.goto(`${BASE}/?pilot=1&new=1&v=a`)
-  await p.waitForSelector('text=Your rental bike just arrived')
+  await p.waitForSelector('text=Your bike’s here')
   await start(p); await settled(p)
   const at = Date.now()
   await takePhoto(p, 'Drivetrain')
@@ -398,7 +438,29 @@ async function slow() {
   await browser.close()
 }
 
+// The built bundle: no placeholder, no old copy, nothing that judges a part's condition.
+async function grep() {
+  const dir = new URL('../dist-abtest/', import.meta.url).pathname.replace(/^\/([A-Z]:)/, '$1')
+  const files = fs.readdirSync(dir, { recursive: true }).filter((f) => /\.(js|css|html)$/.test(f))
+  const text = files.map((f) => fs.readFileSync(dir + f, 'utf8')).join('\n')
+  for (const w of ['PLACEHOLDER', 'There are no right answers', 'testing the app, not you', 'Your rental bike just arrived', 'Report link on top', 'Thanks. You can close this page', 'No marks to record', 'Circle the', 'nothing new']) check(`bundle has no "${w}"`, !text.includes(w))
+  for (const w of ['SMU IS211', 'Your bike', 'Link at the bottom', 'thanks a lot', 'photo_view_open']) check(`bundle has "${w}"`, text.includes(w))
+}
+
+// One screenshot for the hand-back: the slot right after the drivetrain photo drops in, at 390 × 844.
+async function slot() {
+  const { browser, p } = await open(chromium, VIEW, 'v=a')
+  await start(p); await settled(p)
+  await takePhoto(p, 'Crank arm'); await takePhoto(p, 'Saddle edge'); await takePhoto(p, 'Drivetrain')
+  await sleep(700)
+  await p.screenshot({ path: `${OUT}slot-drivetrain.png` })
+  await p.tap('section.part[aria-label="Drivetrain"] .shot')
+  await p.waitForSelector('.ab-viewer'); await sleep(300)
+  await p.screenshot({ path: `${OUT}viewer-drivetrain.png` })
+  await browser.close()
+}
+
 const mode = process.argv[2]
-await ({ flows, layouts, diff, assign, drop, slow })[mode]()
+await ({ flows, layouts, diff, assign, drop, slow, grep, slot })[mode]()
 console.log(fails.length ? `\n${fails.length} FAILED:\n` + fails.join('\n') : '\nALL PASS')
 process.exit(fails.length ? 1 : 0)

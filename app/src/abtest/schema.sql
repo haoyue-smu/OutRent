@@ -43,7 +43,8 @@ create table if not exists public.ab_sessions (
   t_finish bigint,
   -- away time and the full replay
   hidden jsonb not null default '[]',
-  events jsonb not null default '[]'
+  events jsonb not null default '[]',
+  photo_views integer not null default 0  -- photos opened full size
 );
 
 create unique index if not exists ab_sessions_block on public.ab_sessions (pilot, block_seq) where block_seq is not null;
@@ -52,7 +53,8 @@ alter table public.ab_sessions enable row level security;
 revoke all on public.ab_sessions from public, anon, authenticated;
 
 -- Derived fields, computed here and not by the client. Same rule: no access for the anon key.
-create or replace view public.ab_results with (security_invoker = true) as
+drop view if exists public.ab_results;
+create view public.ab_results with (security_invoker = true) as
   select s.*,
     s.t_report_tap - s.t_damage_visible as time_to_report_ms,
     s.report_sent is not null as reported,
@@ -127,6 +129,7 @@ begin
     scroll_up_after_photos = s.scroll_up_after_photos or coalesce((f ->> 'scroll_up_after_photos')::boolean, false),
     t_report_tap = coalesce(s.t_report_tap, (f ->> 't_report_tap')::bigint),
     report_taps_before_damage = greatest(s.report_taps_before_damage, coalesce((f ->> 'report_taps_before_damage')::integer, 0)),
+    photo_views = greatest(s.photo_views, coalesce((f ->> 'photo_views')::integer, 0)),
     report_opened = coalesce(s.report_opened, (f ->> 'report_opened')::bigint),
     report_reason = coalesce(left(f ->> 'report_reason', 40), s.report_reason),
     report_photos = coalesce(f -> 'report_photos', s.report_photos),

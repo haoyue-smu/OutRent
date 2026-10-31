@@ -18,8 +18,8 @@ export const SENT_FULL = '25 Oct · 7:46'
 export const REASONS = ['Wrong item', 'Damaged', 'Not adjusted to my fit', 'Something else']
 export const NOTICED = ['Yes', 'No', 'Not sure']
 export const LAYOUTS = {
-  a: { src: layoutA, caption: 'Report link on top', alt: 'The hand-over page with the report link above the record card' },
-  b: { src: layoutB, caption: 'Report link below the photos', alt: 'The hand-over page with the report link below the record card' },
+  a: { src: layoutA, caption: 'Link at the top', alt: 'The hand-over page with the report link above the record card' },
+  b: { src: layoutB, caption: 'Link at the bottom', alt: 'The hand-over page with the report link below the record card' },
 }
 
 // Every photo the test shows, decoded before it is needed, so the 1.0 s preview starts with the picture on screen.

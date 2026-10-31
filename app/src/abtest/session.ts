@@ -12,6 +12,7 @@ export type Saved = {
   damageAt: number | null
   reportTapped: boolean
   firstTapDone: boolean
+  views: number             // photos opened full size
   sent: boolean
   reason: string
   photos: PartId[]
@@ -25,7 +26,7 @@ export type Saved = {
   why: string
 }
 export const fresh = (): Saved => ({
-  screen: 'handover', shots: [], n: 0, scrolledMax: 0, taps: 0, damageAt: null, reportTapped: false, firstTapDone: false, sent: false,
+  screen: 'handover', shots: [], n: 0, scrolledMax: 0, taps: 0, damageAt: null, reportTapped: false, firstTapDone: false, views: 0, sent: false,
   reason: '', photos: [], details: '', noticed: '', seq: 0, seqWhy: '', openText: '', left: null, pick: null, why: '',
 })
 

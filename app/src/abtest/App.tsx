@@ -3,7 +3,7 @@ import { gsap } from 'gsap'
 import { still } from '../shell/direction'
 import { PARTS, type PartId } from '../pages/11-handover-check/pieces'
 import { deviceName, makeQueue, startRow, type Queue, type Variant } from './api'
-import { Camera, Entry, HandoverPage, Preference, Questions, ReportForm, ReportSent, Thanks } from './Screens'
+import { Camera, Entry, HandoverPage, Preference, Questions, ReportForm, ReportSent, Thanks, Viewer, type PhotoView } from './Screens'
 import { clearRow, dropNew, readParams, readRow, readSaved, writeRow, writeSaved, type Row, type Saved, type Screen } from './session'
 import { decoded, mineOf, preload } from './story'
 
@@ -68,6 +68,8 @@ function Start({ onRow }: { onRow: (r: Row) => void }) {
 function Session({ row }: { row: Row }) {
   const [s, setS] = useState<Saved>(() => readSaved(row.token))
   const [camera, setCamera] = useState<PartId | null>(null)
+  const [view, setView] = useState<PhotoView | null>(null)
+  const viewFrom = useRef<HTMLElement | null>(null)
   const state = useRef(s); state.current = s
   const cameraRef = useRef(camera); cameraRef.current = camera
   const queue = useRef<Queue>(null as unknown as Queue)
@@ -192,9 +194,11 @@ function Session({ row }: { row: Row }) {
     const target = tapTarget(e.target as Element)
     logEvent('tap', target)
     const c = state.current
-    if (c.screen === 'handover' && c.shots.length === 3 && !c.firstTapDone && !cameraRef.current) {
+    // A tap on a photo opens it, and openView records that as the first tap.
+    const onPhoto = target.startsWith('photo:') || target.startsWith('shop-photo:')
+    if (c.screen === 'handover' && c.shots.length === 3 && !c.firstTapDone && !cameraRef.current && !onPhoto) {
       patch({ firstTapDone: true })
-      setFields({ first_tap_after_photos: FIRST_TAP[target] ?? (target.startsWith('photo:') || target.startsWith('shop-photo:') ? 'a photo' : 'other') })
+      setFields({ first_tap_after_photos: FIRST_TAP[target] ?? 'other' })
     }
   }
 
@@ -214,6 +218,22 @@ function Session({ row }: { row: Row }) {
     const max = Math.max(c.scrolledMax, y)
     if (max !== c.scrolledMax) patch({ scrolledMax: max })
     queue.current.push({ scroll_depth: [{ t, y, max }] })
+  }
+
+  // A photo full size: over the page, which stays mounted and where it was. Focus goes back without moving it.
+  const openView = (v: PhotoView, from: HTMLElement) => {
+    const c = state.current, views = c.views + 1
+    viewFrom.current = from
+    patch({ views, firstTapDone: c.firstTapDone || c.shots.length === 3 })
+    setFields(c.shots.length === 3 && !c.firstTapDone ? { photo_views: views, first_tap_after_photos: 'photo_view' } : { photo_views: views })
+    logEvent('photo_view_open', undefined, v)
+    setView(v)
+  }
+  const closeView = () => {
+    if (!view) return
+    logEvent('photo_view_close', undefined, view)
+    setView(null)
+    viewFrom.current?.focus({ preventScroll: true })
   }
 
   const tapLink = () => {
@@ -259,7 +279,7 @@ function Session({ row }: { row: Row }) {
     <div className="ab-session" onPointerDown={onPointerDown} onPointerUp={onPointerUp} onPointerCancel={() => { down.current = null }} onScrollCapture={onScroll}>
       {s.screen === 'handover' && (
         <HandoverPage variant={row.variant} shots={s.shots} sent={s.sent} linkRef={link} scrollRef={scroller}
-          onTake={(id) => { void take(id) }} onLink={tapLink} onSave={save} />
+          onTake={(id) => { void take(id) }} onView={openView} onLink={tapLink} onSave={save} />
       )}
       {s.screen === 'report' && (
         <ReportForm shots={s.shots} reason={s.reason} photos={s.photos} details={s.details}
@@ -286,6 +306,7 @@ function Session({ row }: { row: Row }) {
       )}
       {s.screen === 'thanks' && <Thanks />}
       {camera && <Camera part={camera} />}
+      {view && <Viewer view={view} onClose={closeView} />}
     </div>
   )
 }

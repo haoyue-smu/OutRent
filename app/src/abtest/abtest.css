@@ -19,9 +19,21 @@ body { background: var(--desk); font-family: var(--font); color: var(--ink); -we
 
 .ab-link { margin: 0; }
 .ab-para { margin-top: var(--s-3); }
+.ab-intro { margin: 0 0 var(--s-5); }
 
 /* Tags on the photos */
 .ab-tag { position: absolute; left: 6px; bottom: 6px; padding: 2px 6px; border-radius: var(--r-tick); background: var(--ink); color: var(--white); font-family: var(--mono); font-size: var(--fs-mono-s); line-height: var(--lh-mono); white-space: nowrap; }
+
+/* A photo opens full size. The shop's is not a button in the live page, so the test lays one over it; nothing changes on screen. */
+.ab-view { position: absolute; inset: 0; width: 100%; height: 100%; padding: 0; border: 0; background: none; cursor: pointer; }
+.ab-view:focus-visible { outline-offset: -2px; }
+.ab-viewer { position: absolute; inset: 0; z-index: 40; display: flex; flex-direction: column; justify-content: center; background: var(--ink); color: var(--white); }
+.ab-viewer figure { display: flex; flex-direction: column; gap: var(--s-3); margin: 0; }
+.ab-viewer .photo { display: block; width: 100%; height: auto; max-height: calc(100vh - 176px); max-height: calc(100dvh - 176px); object-fit: contain; }
+.ab-viewer figcaption { padding: 0 var(--gutter); font-family: var(--mono); font-size: var(--fs-mono); line-height: var(--lh-mono); text-align: center; }
+.ab-viewer-x { position: absolute; top: var(--top-safe); right: var(--s-2); display: grid; place-items: center; width: var(--touch); height: var(--touch); padding: 0; border: 0; background: none; color: var(--white); cursor: pointer; }
+.ab-viewer-x .icon { width: 24px; height: 24px; }
+.ab-viewer-x:focus-visible { outline-color: var(--white); outline-offset: -4px; }
 
 /* The simulated camera */
 .ab-camera { position: absolute; inset: 0; z-index: 40; display: flex; flex-direction: column; background: var(--ink); color: var(--white); }
@@ -57,7 +69,7 @@ body { background: var(--desk); font-family: var(--font); color: var(--ink); -we
 .ab-add { display: grid; place-items: center; border: 1.5px dashed var(--ink-3); color: var(--ink); }
 .ab-add .icon { width: 20px; height: 20px; }
 .ab-label { display: block; margin: var(--s-3) 0 var(--s-2); font-size: var(--fs-small); line-height: var(--lh-small); color: var(--ink-2); }
-.ab-block .ab-label { margin-top: 0; }
+.ab-block .ab-label, .ab-label.ab-label-top { margin-top: 0; }
 /* 17 px keeps iPhone Safari from zooming the page when the field takes focus. */
 .ab-field { display: block; width: 100%; box-sizing: border-box; padding: var(--s-3); border: var(--hair) solid var(--rule); border-radius: 12px; background: var(--sheet); color: var(--ink); font-family: var(--sans); font-size: var(--fs-body); line-height: var(--lh-body); resize: none; }
 .ab-field:focus-visible { outline: 2px solid var(--forest); outline-offset: 1px; }
