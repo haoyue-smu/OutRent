@@ -4,39 +4,36 @@ Written only by the management chat. Read with `git show origin/ops:inbox/build-
 
 ## UPDATE 3 (31 Oct 14:00): Haoyue's test run, two changes. Do them together with UPDATE 2, then deploy once.
 
-### 1. New copy for everything the participant reads outside the app
+### 1. New copy for everything the participant reads outside the app (rewritten 14:00, this version replaces any earlier one)
 
-Haoyue: the test's own text reads as machine-written. Replace it word for word as below.
-- Do not touch the app's own copy: the hand-over page, the report form, the sent screen.
-- Straight apostrophes are fine here, and so are curly ones; just be consistent.
-- No semicolons, no em dashes.
+Use these words exactly. Do not touch the app's own copy: the hand-over page, the report form, the sent screen.
 
 **0 · Entry**
-- Eyebrow: `OutRent · user test`
-- Title: `Your rental bike just arrived`
-- Paragraph 1: `Imagine you're Daniel. You rented a mountain bike on OutRent for a Saturday morning ride, and the shop has just dropped it off at the trailhead. They're holding a S$150 deposit on your card until you return it.`
-- Paragraph 2: `Do whatever you'd normally do in the app before you ride off. It takes about 3 minutes.`
-- Small text under it, in place of the three-row card: `We only record taps and timings, not your name. We're testing the app, not you.`
+- Eyebrow: `IS211 · OutRent`
+- Title: `Your bike's here`
+- Paragraph 1: `You're Daniel. You booked a mountain bike on OutRent for a Saturday morning ride, and it's just been dropped off at the trailhead. There's a S$150 deposit on your card until you return it.`
+- Paragraph 2: `Use the app like you normally would before you ride off. Takes about 3 minutes.`
+- Small text, in place of the three-row card: `We don't collect names or any personal info.`
 - Button: `Start`
 
 **6 · Questions**
-- Eyebrow: `Almost done`
+- Eyebrow: `3 quick questions`
 - Q1: `Did you notice anything wrong with the bike?`. Options: `Yes` / `No` / `Not sure`.
-- Q2: `Overall, how difficult or easy was the task?`. This is the standard SEQ wording, so keep it as is. Ends: `Very difficult` and `Very easy`.
-- Field under Q2: `Why that score? (optional)`
-- Q3: `Say something was wrong with the bike and you wanted to tell the shop. Where in the app would you go?`
-- Field under Q3: `Type here (optional)`
+- Q2: `Overall, how difficult or easy was the task?`. This is the standard SEQ wording; keep it. Ends: `Very difficult` and `Very easy`.
+- Field under Q2: `Why? (optional)`
+- Q3: `If something was wrong with the bike, where would you go to tell the shop?`
+- Field under Q3: `Optional`
 - Button: `Next`
-- The log fields stay the same: `noticed`, `seq`, `seq_why`, `open_text`.
+- The log fields stay the same.
 
 **7 · Preference**
-- Eyebrow: `Last question`
-- Line: `Here are two versions of the page you just used. Which one would you rather use?`
-- Captions: `Report link at the top` (A) and `Report link at the bottom` (B).
+- Eyebrow: `Last one`
+- Line: `Which version of that page do you prefer?`
+- Captions: `Link at the top` (A) and `Link at the bottom` (B).
 - Field: `Why? (optional)`
 - Button: `Submit`
 
-**Thank-you line:** `That's it, thank you! You can close this page now.`
+**Thank-you line:** `Done, thanks a lot! You can close this tab.`
 
 ### 2. Tap a photo to see it full size
 
@@ -54,7 +51,7 @@ On the hand-over page, every photo can be tapped to open it full size: both the 
 
 - Rerun the flows in both versions and both browsers, with one extra path: open Daniel's drivetrain photo, close it, then report.
 - The A/B pixel check still holds with the viewer closed.
-- Grep the bundle: no "PLACEHOLDER", and no old entry copy ("There are no right answers").
+- Grep the bundle: no "PLACEHOLDER", and no old entry copy ("There are no right answers", "testing the app, not you").
 
 ## UPDATE 2 (31 Oct 13:55): the damaged photo has arrived
 
