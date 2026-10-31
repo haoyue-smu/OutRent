@@ -1,7 +1,7 @@
 // One simulated participant per persona, walking the live test site from screenshots only. Spec: ops inbox/AGENT-PILOT.md.
 //   MODEL=<id> RUN=<name> node src/abtest/agent/run.js [personas/pilot.json]
 // Config: MODEL, RUN, COORDS (grid: the model answers on 0 to 1000, the runner scales; pixels: spec §2 as written), OPENROUTER_API_KEY (.env.local), VARIANT, VIEWPORT_H, TEMPERATURE (0.8), ONLY=p01,p02, CONCURRENCY (5), MAX_COST (2), BASE.
-// Every row opens with pilot=1, so none can enter a dataset. Traces: trace/<run>/<persona>.jsonl, screenshots beside them (git ignores those).
+// Every row opens with pilot=1, so none can enter a dataset. Traces: trace/<run>/<persona>.jsonl. Screenshots: app/e2e/out/agent/<run>/ (git ignores it, and tools/check.mjs allows no images in app/src).
 import fs from 'fs'
 import { createRequire } from 'module'
 import { chat, rng } from './openrouter.js'
@@ -73,7 +73,7 @@ async function runAgent(browser, p) {
   page.on('pageerror', (e) => errs.push(e.message))
   page.on('console', (m) => { if (m.type() === 'error') errs.push(m.text()) })
   const cdp = await ctx.newCDPSession(page)
-  const shots = `${dir}${p.persona_id}/`
+  const shots = here(`../../../e2e/out/agent/${RUN}/${p.persona_id}/`)
   fs.mkdirSync(shots, { recursive: true })
   const log = fs.createWriteStream(`${dir}${p.persona_id}.jsonl`)
   const trace = (o) => log.write(JSON.stringify(o) + '\n')

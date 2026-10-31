@@ -23,7 +23,7 @@ Live site `abtest-DUwRiIBB.js`, every row `pilot=1`. Runner in `app/src/abtest/a
 
 No agent in either run said anything about the chain at the drivetrain preview, and none answered "Yes" on question 1.
 
-To separate seeing from attending, the screenshot `pilot-b/p03/08.png` was sent to each model outside the walk, without persona or rules, twice per question (`vision-probe.json`). Asked "Is anything wrong with the bike in this photo?", qwen, GLM and Gemini all named the chain as off or detached, 2 of 2 times each. So the image and the screenshot size are fine. The failure is in the walk: told to act one step at a time, the agents treat the preview as a button to get past.
+To separate seeing from attending, the screenshot `app/e2e/out/agent/pilot-b/p03/08.png` (local only) was sent to each model outside the walk, without persona or rules, twice per question (`vision-probe.json`). Asked "Is anything wrong with the bike in this photo?", qwen, GLM and Gemini all named the chain as off or detached, 2 of 2 times each. So the image and the screenshot size are fine. The failure is in the walk: told to act one step at a time, the agents treat the preview as a button to get past.
 
 Thoughts at the preview, Run A:
 
