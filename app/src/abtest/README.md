@@ -19,6 +19,16 @@ A second entry point of the app (`abtest.html`, `vite.abtest.config.ts`), built 
 
 With the built site served on port 5193 (`npm run preview -- --config vite.abtest.config.ts --port 5193`), from `app/`: `node e2e/abtest.mjs layouts | flows | diff | assign`. `layouts` retakes screen 7's screenshots; rebuild afterwards. `node e2e/abtest-replay.mjs rows.json [id …]` rebuilds sessions from an export of `ab_results`.
 
+## Export
+
+The public key cannot read the table, by design. Export in the Supabase SQL editor, then download the CSV:
+
+```sql
+select * from public.ab_results where pilot order by id;
+```
+
+`node e2e/abtest-replay.mjs export.csv [id …]` rebuilds the sessions from it.
+
 ## Links
 
 `?v=a` and `?v=b` force a version (row marked `forced`), `?pilot=1` marks the row `pilot`. `?new=1` together with either opens a fresh row on the same phone.

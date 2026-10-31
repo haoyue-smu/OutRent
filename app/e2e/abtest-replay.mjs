@@ -1,6 +1,24 @@
 // Acceptance 4: rebuilds a session from its row alone.  node app/e2e/abtest-replay.mjs rows.json [id …]
 import fs from 'fs'
-const rows = JSON.parse(fs.readFileSync(process.argv[2], 'utf8'))
+// rows is JSON, or the CSV the Supabase table editor exports.
+function parseCsv(text) {
+  const table = [[]]
+  let cell = '', quoted = false
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i]
+    if (quoted) { if (c === '"' && text[i + 1] === '"') { cell += '"'; i++ } else if (c === '"') quoted = false; else cell += c }
+    else if (c === '"') quoted = true
+    else if (c === ',') { table.at(-1).push(cell); cell = '' }
+    else if (c === '\n') { table.at(-1).push(cell.replace(/\r$/, '')); cell = ''; table.push([]) }
+    else cell += c
+  }
+  if (cell || table.at(-1).length) table.at(-1).push(cell)
+  const [head, ...body] = table.filter((r) => r.length > 1)
+  const value = (v) => { if (v === '') return null; try { return JSON.parse(v) } catch { return v } }
+  return body.map((r) => Object.fromEntries(head.map((k, n) => [k, value(r[n])])))
+}
+const file = fs.readFileSync(process.argv[2], 'utf8')
+const rows = process.argv[2].endsWith('.csv') ? parseCsv(file) : JSON.parse(file)
 const want = process.argv.slice(3).map(Number)
 const s = (ms) => (ms == null ? '-' : (ms / 1000).toFixed(2) + ' s')
 for (const r of rows.filter((x) => !want.length || want.includes(Number(x.id)))) {

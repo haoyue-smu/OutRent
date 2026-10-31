@@ -3,6 +3,7 @@
 //   node app/e2e/abtest.mjs flows              whole flow: WebKit iPhone 13 and Chromium Pixel 7, A and B, report and save only
 //   node app/e2e/abtest.mjs diff               acceptance 1: the four screenshots, the DOM and the pixel diff
 //   node app/e2e/abtest.mjs assign             acceptance 5: ten Starts in a row, a reload, a forced row
+//   node app/e2e/abtest.mjs drop               the keepalive write on pagehide
 // Every run opens rows with pilot=1. Output goes to app/e2e/out/abtest/ (git ignores it).
 import { createRequire } from 'module'
 import fs from 'fs'
@@ -17,16 +18,51 @@ const VIEW = { viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, hasT
 const fails = []
 const check = (name, ok, got = '') => { console.log(ok ? 'PASS' : 'FAIL', name, got === '' ? '' : `=> ${got}`); if (!ok) fails.push(name) }
 
+// Every call to the server and its answer. The public key cannot read the table, by design, so this is what a run can see.
+function watch(ctx) {
+  const calls = []
+  // Recorded as it is sent: the browser stops reporting answers for a page that has gone, however the server replied.
+  const sent = new Map()
+  ctx.on('request', (r) => {
+    const m = r.url().match(/\/rpc\/(ab_\w+)/)
+    if (!m || r.method() !== 'POST') return
+    const call = { fn: m[1], status: null, body: JSON.parse(r.postData() ?? '{}') }
+    sent.set(r, call)
+    calls.push(call)
+  })
+  ctx.on('response', async (r) => {
+    const call = sent.get(r.request())
+    if (!call) return
+    call.status = r.status()
+    if (call.fn === 'ab_start') call.row = await r.json().catch(() => null)
+  })
+  ctx.on('requestfailed', (r) => { const call = sent.get(r); if (call) { call.status = 0; call.why = r.failure()?.errorText } })
+  return calls
+}
+// The row as the server should hold it, rebuilt from the accepted writes with schema.sql's rules. For the replay until the export.
+function rowFromCalls(calls) {
+  const start = calls.find((c) => c.fn === 'ab_start'), b = start.body, first = start.row[0]
+  const row = { id: first.id, variant: first.variant, forced: !!b.p_forced, pilot: b.p_pilot, t0: b.p_t0, viewport_h: b.p_viewport_h, viewport_w: b.p_viewport_w, dpr: b.p_dpr, device: b.p_device, order: 'neither', events: [], scroll_depth: [], photo_taken: [], hidden: [], scroll_up_after_photos: false }
+  const once = new Set(['page_open', 'link_visible_on_load', 'link_in_view_at_damage', 't_damage_visible', 'first_tap_after_photos', 't_report_tap', 'report_opened', 'report_sent', 'record_saved', 't_end', 't_questions_done', 'preference_left', 't_finish'])
+  for (const c of calls.filter((x) => x.fn === 'ab_log' && (x.status === null || x.status < 300))) {
+    for (const [k, v] of Object.entries(c.body.p_patch.set ?? {})) if (!once.has(k) || row[k] == null) row[k] = v
+    for (const k of ['events', 'scroll_depth', 'photo_taken', 'hidden']) row[k].push(...(c.body.p_patch[k] ?? []))
+  }
+  return row
+}
+const refused = (calls) => calls.filter((c) => c.status !== null && (c.status === 0 || c.status >= 300))
+
 async function open(browserType, device, query) {
   const browser = await browserType.launch()
   const ctx = await browser.newContext(device)
+  const calls = watch(ctx)
   const p = await ctx.newPage()
   const errs = []
   p.on('console', (m) => { if (m.type() === 'error') errs.push(m.text()) })
   p.on('pageerror', (e) => errs.push('pageerror: ' + e.message))
   await p.goto(`${BASE}/?pilot=1&new=1${query ? '&' + query : ''}`)
   await p.waitForSelector('text=Your rental bike just arrived')
-  return { browser, ctx, p, errs }
+  return { browser, ctx, p, errs, calls }
 }
 const start = async (p) => { await p.tap('button:has-text("Start")'); await p.waitForSelector('text=Check it before you ride') }
 const settled = (p) => p.waitForFunction(() => [...document.images].every((i) => i.complete && i.naturalWidth > 0))
@@ -36,7 +72,7 @@ async function takePhoto(p, name) {
   await scrollTo(p, sel)
   await p.tap(sel)
   await p.waitForSelector('.ab-camera')
-  await p.waitForSelector('.ab-camera', { state: 'detached', timeout: 3000 })
+  await p.waitForSelector('.ab-camera', { state: 'detached', timeout: 15000 })
 }
 const takeAll = async (p) => { for (const n of ['Crank arm', 'Saddle edge', 'Drivetrain']) await takePhoto(p, n) }
 const rowId = (p) => p.evaluate(() => JSON.parse(decodeURIComponent(document.cookie.match(/outrent_ab=([^;]*)/)[1])).id)
@@ -85,7 +121,7 @@ async function finishSurvey(p) {
 
 async function flow(name, browserType, device, variant, withReport) {
   console.log(`\n--- ${name} · ${variant.toUpperCase()} · ${withReport ? 'report' : 'save only'}`)
-  const { browser, p, errs } = await open(browserType, device, `v=${variant}`)
+  const { browser, p, errs, calls } = await open(browserType, device, `v=${variant}`)
   await settled(p)
   await start(p)
   const id = await rowId(p)
@@ -111,8 +147,12 @@ async function flow(name, browserType, device, variant, withReport) {
   await p.waitForSelector('text=Thanks. You can close this page.')
   check('reopening shows only thanks', (await p.textContent('body')).trim() === 'Thanks. You can close this page.')
   check('no console errors', errs.length === 0, errs.join(' | '))
+  await sleep(800)
+  check('server accepted every write', refused(calls).length === 0, `${calls.length} calls, refused: ${JSON.stringify(refused(calls).map((c) => [c.fn, c.status, c.why]))}`)
+  const row = rowFromCalls(calls)
+  check('final answers went out', row.t_finish != null && row.preference != null, `finish ${row.t_finish}, preference ${row.preference}`)
   await browser.close()
-  return { id, name, variant, withReport }
+  return { id, name, variant, withReport, row }
 }
 
 async function flows() {
@@ -120,7 +160,8 @@ async function flows() {
   for (const [name, type, device] of [['iphone13-webkit', webkit, devices['iPhone 13']], ['pixel7-chromium', chromium, devices['Pixel 7']]]) {
     for (const v of ['a', 'b']) for (const r of [true, false]) out.push(await flow(name, type, device, v, r))
   }
-  fs.writeFileSync(OUT + 'flows.json', JSON.stringify(out, null, 1))
+  fs.writeFileSync(OUT + 'flows.json', JSON.stringify(out.map(({ row, ...o }) => o), null, 1))
+  fs.writeFileSync(OUT + 'rows-from-writes.json', JSON.stringify(out.map((o) => o.row), null, 1))
   console.log('\nrows', out.map((o) => o.id).join(' '))
 }
 
@@ -293,6 +334,10 @@ async function assign() {
   const pairs = []
   for (let i = 0; i < 10; i += 2) pairs.push(seen[i].variant + seen[i + 1].variant)
   check('every pair has one A and one B', pairs.every((x) => x === 'ab' || x === 'ba'), pairs.join(' '))
+  // A forced row between two Starts must not take a place: the two around it are still a pair.
+  const startOne = async (q) => { const c = await browser.newContext(VIEW); const pg = await c.newPage(); await pg.goto(`${BASE}/?${q}`); await start(pg); const v = await pg.evaluate(() => JSON.parse(decodeURIComponent(document.cookie.match(/outrent_ab=([^;]*)/)[1]))); await c.close(); return v }
+  const one = await startOne('pilot=1'), forcedSame = await startOne(`pilot=1&v=${one.variant}`), two = await startOne('pilot=1')
+  check('a forced row is not the partner of the next row', one.variant !== two.variant, `${one.id}:${one.variant} forced ${forcedSame.id}:${forcedSame.variant} ${two.id}:${two.variant}`)
   const ctx = await browser.newContext(VIEW)
   const p = await ctx.newPage()
   await p.goto(`${BASE}/?pilot=1&v=b`)
@@ -307,7 +352,27 @@ async function assign() {
   await browser.close()
 }
 
+// The final write as the page goes: a tap, then away at once, before the usual 400 ms send. WebKit only: Chromium stops
+// reporting a page's requests once it navigates, so there the same write was checked through a logging proxy.
+async function drop() {
+  for (const [name, type, device] of [['iphone13-webkit', webkit, devices['iPhone 13']]]) {
+    const { browser, p, errs, calls } = await open(type, device, 'v=a')
+    await start(p); await settled(p); await sleep(900)
+    const before = calls.length
+    await p.tap('section.part[aria-label="Crank arm"] .ph:not(.shot)')
+    await p.goto('about:blank')
+    await sleep(2500)
+    const last = calls.slice(before)
+    const carried = last.filter((c) => (c.body.p_patch?.events ?? []).some((e) => e.type === 'hide') || (c.body.p_patch?.hidden ?? []).length)
+    const tapped = last.some((c) => (c.body.p_patch?.events ?? []).some((e) => e.target === 'shop-photo:crank'))
+    check(`${name}: the tap and the leaving went out as the page closed`, carried.length > 0 && tapped, JSON.stringify(last.map((c) => [c.fn, c.status, c.why])))
+    check(`${name}: not refused`, !refused(carried).length, JSON.stringify(carried.map((c) => c.status)))
+    check(`${name}: no console errors`, errs.length === 0, errs.join(' | '))
+    await browser.close()
+  }
+}
+
 const mode = process.argv[2]
-await ({ flows, layouts, diff, assign })[mode]()
+await ({ flows, layouts, diff, assign, drop })[mode]()
 console.log(fails.length ? `\n${fails.length} FAILED:\n` + fails.join('\n') : '\nALL PASS')
 process.exit(fails.length ? 1 : 0)
