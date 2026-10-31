@@ -2,43 +2,66 @@
 
 Written only by the management chat. Read with `git show origin/ops:inbox/build-abtest.md`.
 
-## UPDATE 7 (31 Oct 20:40): the entry must be easy to read, and three "about you" questions at the end
+## UPDATE 7 (31 Oct 20:45, replaces the 20:40 version): the test's own screens, redesigned
 
-### 1. Entry copy, rewritten for reading on a phone
+Haoyue's standard for every screen outside the app: **a stranger who opens the link must want to continue.** Short lines, one idea per line, air between things, something pleasant to look at. If a screen reads like a form or a consent notice, it is wrong. Treat these screens as a small product of their own, built with the app's tokens, type and photos, following the conventions of research tools (Maze, Lyssna): one question per screen, big full-width option rows, a fixed primary button at the bottom, a small progress line at the top.
 
-Haoyue: the entry is hard to read. Two dense paragraphs and three lines of small print. Rule from now on: **one idea per line, no line longer than about ten words, short paragraphs with air between them.** Replace the sheet's content with exactly this:
+Delete the current entry, questions and preference screens and build the flow below. The hand-over page, camera, report form and sent screen stay as they are.
 
-- Eyebrow: `SMU IS211 · OutRent`
-- Title: `Your bike's here`
-- Three one-sentence paragraphs, body style, generous line height (about 1.5), a clear gap between them:
-  1. `You're Daniel. You rented a mountain bike for a Saturday ride.`
-  2. `It's just been dropped off at the trailhead.`
+### S0 · Welcome (speaks to the participant)
+Photo sheet layout (the one you built in UPDATE 4): the Marlin 7 photo on top, the paper sheet below.
+- Title: `Thanks for helping us out!`
+- One paragraph: `We're SMU students building OutRent, an app for renting bikes and outdoor gear. You'll try one screen of it.`
+- Three rows, each an icon from the app's set plus one line (icon left, text right, like the app's list rows):
+  - clock icon · `About 3 minutes`
+  - camera icon · `You'll take a few photos. The camera is a mock-up, your real camera stays off.`
+  - lock icon · `We only record taps and timings. Nothing personal.`
+- Button: `Continue`
+
+### S1 · Scenario (puts them in the role)
+Full-bleed photo `work/haoyue/06-delivery-return/assets/06-direction-handover-spot.webp` (the trailhead carpark) with the paper sheet below, same construction as S0.
+- Eyebrow: `Your scenario`
+- Title: `You're Daniel`
+- Three one-line paragraphs, body style, line height 1.5, a gap between them:
+  1. `You rented a mountain bike for a Saturday morning ride.`
+  2. `The shop just dropped it off here, at the trailhead.`
   3. `There's a S$150 deposit on your card until you return it.`
-- Then two lines in the body style at weight 600 (this is the task):
-  1. `Check the bike like you normally would, then ride off.`
-  2. `The shop's photos are there to compare.`
-- Button: `Start`
-- Under the button, a short list in the caption style, one line each, with a small dot or tick before each:
-  - `About 3 minutes`
-  - `No camera. The photos are already taken for you.`
-  - `No names, no personal info.`
-  - `We're SMU students. This is our IS211 project. Thanks!`
+- A small card (white, the app's card radius) with eyebrow `Your task` and one line at weight 600: `Do what you'd normally do with a rental before riding off.` Under it, caption style: `Just do what feels natural.`
+- Button: `Start`. This tap is `t0` and creates the row (what Start did before).
 
-Nothing else on the sheet. If this does not fit at 375 × 667 without scrolling, drop the photo's height first, never the line spacing. Delete the old sentences from the bundle ("Compare what you see with the shop's photos", "Tapping "Take photo" won't open your camera", "Hi! We're SMU students building").
+### Task · the hand-over page, A or B · unchanged
 
-### 2. "About you": one more screen, after the preference screen and before the thank-you
+### Q1 to Q5 · one question per screen
+Shared layout: paper background; top line in the mono caption style `1 of 5` … `5 of 5`; the question as the page title (the app's h1 size); options as full-width white rows with a radio on the left, 56 px tall, 8 px apart; selecting one fills the radio forest; the `Next` button is fixed at the bottom and disabled until the required answer exists. Optional text fields sit under the options, one line tall, growing as they type. Each screen also logs its own `t_q<n>_done`.
 
-Eyebrow `About you`. Line: `Last three, so we know who took part.`
-- Q1 `How often do you cycle?` Options: `Never` / `A few times a year` / `Monthly or more`.
-- Q2 `Have you rented sports or outdoor gear before?` Small line under it: `Bikes, kayaks, camping gear, anything like that.` Options: `Yes` / `No`.
-- Q3 `Your age` Options: `18 to 24` / `25 to 34` / `35 to 44` / `45 or older` / `Prefer not to say`.
-- Button `Finish`. Q1 and Q2 required, Q3 required but has the opt-out option.
-- Log: columns `cycling` (text), `rented_before` (boolean), `age_band` (text), `t_about_done`. Add them to `schema.sql`, write `migration-3.sql` for Haoyue, rebuild the `ab_results` view in it.
-- These answers describe the sample in the report. They are not used to exclude anyone after the fact.
+- **Q1 · 1 of 5.** `Did you notice anything wrong with the bike?` Rows: `Yes` / `No` / `Not sure`. Required. Column `noticed`.
+- **Q2 · 2 of 5.** `Overall, how difficult or easy was the task?` A 1 to 7 row of seven square tiles, ends labelled `Very difficult` and `Very easy` under the tiles. Required. Column `seq`. (Standard SEQ wording; do not change.)
+- **Q3 · 3 of 5.** `How easy was it to find where to report a problem with the bike?` The same 1 to 7 tiles, ends `Very hard` and `Very easy`, plus one full-width row under them: `I didn't look for it`. Required (a tile or the row). Columns `find_ease` (1 to 7 or null), `find_not_looked` (boolean). Under it an optional field, placeholder `Where did you look first? (optional)`. Column `find_where`.
+- **Q4 · 4 of 5.** `Which layout would you rather use?` Caption under the title: `Two versions of the page you just used. Tap a picture to see it full size.` Then the two full-page pictures side by side with the yellow outline on the link block (from UPDATE 5), each with a radio row under it: `Report link at the top` / `Report link at the bottom`. Random left/right, `preference_left` logged. Required. Under them an optional field `Why? (optional)`. Columns `preference`, `preference_why`.
+- **Q5 · 5 of 5.** Title `About you`. Caption: `So we can describe who took part.` Three short groups on one screen, each a small heading in the eyebrow style and its rows:
+  - `How often do you cycle?` · `Never` / `A few times a year` / `Monthly or more` · column `cycling`
+  - `Rented sports or outdoor gear before?` · `Yes` / `No` · column `rented_before`
+  - `Your age` · `18 to 24` / `25 to 34` / `35 to 44` / `45 or older` / `Prefer not to say` · column `age_band`
+  All three required. Button `Finish`.
 
-The preference screen's button changes from `Submit` to `Next`. The thank-you line stays.
+### S9 · Thank you
+Photo sheet (the S0 photo). Title `Done, thank you!` One line: `You can close this tab now.` Nothing else.
 
-Rerun the flows, the entry fit at 390 × 844 and 375 × 667, deploy, hand back the commit, the two entry screenshots and `migration-3.sql`.
+### Removed
+The open question "If something was wrong with the bike, where would you go to tell the shop?" (`open_text`), the three-row card on the old entry, and every sentence of the old entry copy. Keep the `open_text` column in the table (null from now on) so old pilot rows still load.
+
+### Data
+- New columns: `find_ease`, `find_not_looked`, `find_where`, `cycling`, `rented_before`, `age_band`, `t_q1_done` … `t_q5_done`. Put them in `schema.sql` and in `migration-3.sql` (which also rebuilds `ab_results`). `t_questions_done` = `t_q3_done`; `t_finish` = `t_q5_done`.
+- `order`, `record_saved`, `t_end`, the report fields and the events are unchanged.
+
+### Look
+Use the app's tokens only. Photos: the two named above, fitted, never stretched. The sheet corners, buttons, rows and radios are the app's own components (reuse them from `app/src`), so the test looks like the same family as the hand-over page. No new colours. No emoji.
+
+### Acceptance
+- Fits without scrolling at 390 × 844 and 375 × 667 on S0, S1, Q1, Q2, Q3 and S9; Q4 and Q5 may scroll.
+- Flows rerun (both versions, both browsers): report path, save-only path, "I didn't look" path.
+- Bundle grep: none of the removed sentences.
+- Screenshots at 390 × 844 of S0, S1, Q1, Q3, Q4, Q5 in the hand-back, plus the commit and `migration-3.sql`.
 
 ## UPDATE 6 is GO (31 Oct 19:55): the six photos are on ops, plus one copy line
 
