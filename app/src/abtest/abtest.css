@@ -136,13 +136,15 @@ body { background: var(--desk); font-family: var(--font); color: var(--ink); -we
 .ab-facts li { display: grid; grid-template-columns: 20px minmax(0, 1fr); gap: var(--s-3); align-items: start; }
 .ab-facts .icon { width: 20px; height: 20px; margin-top: 2px; }
 .ab-lines { display: flex; flex-direction: column; gap: var(--s-4); }
-.ab-task { display: flex; flex-direction: column; gap: var(--s-1); padding: var(--s-3) 14px; border-radius: var(--r-card); background: var(--sheet); box-shadow: var(--shadow-sheet); }
-.ab-task b { font-size: var(--fs-callout); line-height: var(--lh-callout); font-weight: 600; }
-.ab-task .small { margin: 0; }
+/* The task is what a glance at the screen must catch, so it reads louder than the story above it. On a short phone the photo gives way first. */
+.ab-ps-photo.is-spot { min-height: 96px; }
+.ab-task { display: flex; flex-direction: column; gap: var(--s-2); margin-top: var(--s-2); padding: var(--s-5); border-radius: var(--r-card); background: var(--sheet); box-shadow: var(--shadow-sheet); }
+.ab-task .mono { color: var(--forest); }
 /* A short phone: a little tighter, so the whole sheet still fits without scrolling. */
 @media (max-height: 700px) {
   .ab-ps-sheet { padding-top: var(--s-4); padding-bottom: calc(var(--s-4) + env(safe-area-inset-bottom)); }
   .ab-ps-body, .ab-lines, .ab-facts { gap: var(--s-3); }
+  .ab-task { margin-top: var(--s-3); }
   .ab-ps-sheet .cta { margin-top: var(--s-4); }
 }
 @keyframes ab-rise { from { transform: translateY(56px); } to { transform: none; } }

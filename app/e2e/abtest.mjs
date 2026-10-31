@@ -502,16 +502,16 @@ async function grep() {
   const dir = new URL('../dist-abtest/', import.meta.url).pathname.replace(/^\/([A-Z]:)/, '$1')
   const files = fs.readdirSync(dir, { recursive: true }).filter((f) => /\.(js|css|html)$/.test(f))
   const text = files.map((f) => fs.readFileSync(dir + f, 'utf8')).join('\n')
-  for (const w of ['Your bike’s here', 'Compare what you see', 'it’s a prototype', 'Hi! We’re SMU', 'Use the app like', 'We don’t collect', 'where would you go to tell the shop', 'Which version of that page', 'Link at the top', 'Done, thanks a lot', 'Why did you give']) check(`bundle has no "${w}"`, !text.includes(w))
+  for (const w of ['Your bike’s here', 'Compare what you see', 'it’s a prototype', 'Hi! We’re SMU', 'Use the app like', 'We don’t collect', 'where would you go to tell the shop', 'Which version of that page', 'Link at the top', 'Done, thanks a lot', 'Why did you give', 'normally do with a rental', 'Just do what feels natural']) check(`bundle has no "${w}"`, !text.includes(w))
   for (const w of ['PLACEHOLDER', 'mine-drive-bent', 'There are no right answers', 'testing the app, not you', 'Your rental bike just arrived', 'Report link on top', 'Thanks. You can close this page', 'No marks to record', 'Circle the', 'nothing new']) check(`bundle has no "${w}"`, !text.includes(w))
-  for (const w of ['Thanks for helping us out', 'You’re Daniel', 'I didn’t look for it', 'Report link at the bottom', 'About you', 'Done, thank you', 'photo_view_open', 'photo_use_tap', 't_q5_done', 'find_not_looked']) check(`bundle has "${w}"`, text.includes(w))
+  for (const w of ['Thanks for helping us out', 'You’re Daniel', 'Do the hand-over check before you ride.', 'If anything’s wrong, let the shop know.', 'I didn’t look for it', 'Report link at the bottom', 'About you', 'Done, thank you', 'photo_view_open', 'photo_use_tap', 't_q5_done', 'find_not_looked']) check(`bundle has "${w}"`, text.includes(w))
 }
 
 // Every screen around the task. S0, S1, Q1, Q2, Q3 and S9 must fit without scrolling, the button included, at both sizes;
 // Q4 and Q5 may scroll. Nothing may overflow sideways. Screenshots for the hand-back.
 async function screens() {
   const browser = await chromium.launch()
-  for (const [w, h] of [[390, 844], [375, 667], [430, 932], [1440, 900]]) {
+  for (const [w, h] of [[390, 844], [375, 667], [390, 664], [430, 932], [1440, 900]]) {
     const ctx = await browser.newContext(w > 500 ? { viewport: { width: w, height: h }, hasTouch: true } : { ...VIEW, viewport: { width: w, height: h } })
     const p = await ctx.newPage()
     const errs = []
@@ -537,6 +537,7 @@ async function screens() {
       if (mustFit) check(`${w} × ${h} ${name}: fits without scrolling`, !m.scrolls && m.buttonIn && (m.contentBottom == null || m.contentBottom <= m.dockTop), JSON.stringify(m))
       if (m.sheetTop != null) {
         check(`${w} × ${h} ${name}: photo at most 40% or 220 px, sheet at least 55%`, m.sheetTop + 28 <= Math.max(h * 0.4, 220) + 1 && (m.sheetBottom - m.sheetTop) / h >= 0.55, JSON.stringify(m))
+        console.log(`INFO ${w} × ${h} ${name}: photo shows ${m.sheetTop} px, ${Math.round(m.sheetTop / h * 100)}%`)
         if (m.button != null) check(`${w} × ${h} ${name}: the button sits at the bottom of the sheet`, m.sheetBottom - m.button <= 26, `${m.sheetBottom - m.button} px`)
         if (m.bike) console.log(`INFO ${w} × ${h} ${name}: bike ${m.bike.join('-')}, sheet from ${m.sheetTop}`)
         if (w > 500) check(`${w} × ${h} ${name}: a centred 430 px column`, m.rootW === 430 && m.rootLeft === (w - 430) / 2, `${m.rootW} at ${m.rootLeft}`)
