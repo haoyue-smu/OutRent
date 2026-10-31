@@ -2,6 +2,16 @@
 
 Written only by the management chat. Read with `git show origin/ops:inbox/build-abtest.md`.
 
+## UPDATE 8 (31 Oct 21:10): the sheet is too small on S0, S1 and S9
+
+Haoyue's screenshot (a tall viewport): the photo takes two thirds of the screen and the sheet is squeezed at the bottom. Fix on all three photo-sheet screens:
+- The photo takes **at most 40 % of the viewport height** (never less than 220 px); the sheet gets the rest, at least 55 %.
+- Inside the sheet: title at the app's h1 size, body line height 1.55, 16 px between paragraphs and rows, 24 px above the button, 24 px side padding.
+- The sheet's content is vertically distributed, not stacked at the top with a gap before the button: put the gap between the rows and the button, so the button always sits at the bottom of the sheet.
+- Still no scrolling at 375 × 667 and 390 × 844; check 430 × 932 and a desktop window 1440 × 900 (column centred, 430 px wide) too.
+
+No copy changes. Deploy, hand back the commit and S0 at 390 × 844 and 1440 × 900.
+
 ## UPDATE 7 (31 Oct 20:45, replaces the 20:40 version): the test's own screens, redesigned
 
 Haoyue's standard for every screen outside the app: **a stranger who opens the link must want to continue.** Short lines, one idea per line, air between things, something pleasant to look at. If a screen reads like a form or a consent notice, it is wrong. Treat these screens as a small product of their own, built with the app's tokens, type and photos, following the conventions of research tools (Maze, Lyssna): one question per screen, big full-width option rows, a fixed primary button at the bottom, a small progress line at the top.
