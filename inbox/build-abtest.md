@@ -2,6 +2,18 @@
 
 Written only by the management chat. Read with `git show origin/ops:inbox/build-abtest.md`.
 
+## UPDATE 2 (31 Oct 13:55): the damaged photo has arrived
+
+The photo is on ops at `inbox/assets/11-mine-drive-bent.webp`: 1600 × 1143, sha256 9d27d85a…, the same file as `img/11-mine-drive-bent.webp` in OutRent Image Library. Haoyue picked it at 11:45. The cage is bent forward, almost horizontal, into the spokes.
+
+1. Put it where the other test images live, for example `work/haoyue/_abtest/assets/11-mine-drive-bent.webp`, and use it as Daniel's drivetrain photo everywhere in the test: the camera preview, the slot and the report thumbnail. Remove the PLACEHOLDER tag.
+2. **Remake the two preference screenshots (`layout-a`, `layout-b`) only if they show the drivetrain photo.**
+3. Rerun the flows (both versions, both browsers) and the bundle grep: no "PLACEHOLDER" left.
+4. Commit and push `abtest`, then redeploy `outrent-abtest`. Check the live site with `?v=a&pilot=1&new=1`.
+5. Hand back: the commit, and one screenshot of the slot right after the drivetrain photo drops in, at 390 × 844.
+
+The UPDATE 1 checks you already passed stand. The CSV is no longer yours to produce: Haoyue exports it from Supabase.
+
 ## UPDATE (31 Oct 12:50), read first
 
 Your 5e917b2 hand-back was read. Supabase now exists, and **your schema.sql is applied to it** (details under "Where it lives"). Next:
