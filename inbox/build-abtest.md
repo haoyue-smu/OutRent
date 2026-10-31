@@ -2,6 +2,33 @@
 
 Written only by the management chat. Read with `git show origin/ops:inbox/build-abtest.md`.
 
+## UPDATE 4 (31 Oct 15:00): the entry screen looks like a form, not like OutRent
+
+Haoyue saw it on his iPhone and finds it ugly: a wall of grey text at the top, half the screen empty, then a button. It must look like a screen from the app.
+
+**Layout: the same idea as page 07** (a sheet over the Marlin 7 photo).
+- **The photo** `work/haoyue/07-fees-liability/assets/07-direction-backdrop-marlin7.webp` (portrait, the Marlin 7 on the grass at the trailhead in morning light) fills the screen behind everything. Crop so the whole bike sits in the upper half.
+- **A paper sheet** (`--paper`, the app's large top radius) rises from the bottom and holds, in this order:
+  1. the eyebrow `SMU IS211 · OutRent`;
+  2. the title `Your bike's here`;
+  3. the Daniel paragraph and the "Use the app…" paragraph, in the app's body style (ink, not grey);
+  4. the Start button;
+  5. under the button, in the small caption style, two short lines: `Hi! We're SMU students building OutRent for our IS211 project. Thanks for helping us test it.` and `We don't collect names or any personal info.`
+- The sheet takes only the height it needs. No empty band.
+- The safe areas are respected: the photo runs under the status bar, and the button clears the home indicator and Safari's bottom bar.
+- **Motion:** at most the sheet rising once on load (about 300 ms). Reduced motion shows the end state.
+
+**The thank-you screen:** the same photo and sheet, holding only `Done, thanks a lot! You can close this tab.`
+
+The words are unchanged; only their order and look change. The questions and preference screens stay as they are.
+
+Then:
+- rerun the flows;
+- screenshot the entry at 390 × 844 and at 375 × 667 (small phone: the whole sheet, button included, must fit without scrolling);
+- commit, push `abtest` and redeploy.
+
+Hand back the commit and the two screenshots.
+
 ## UPDATE 3 (31 Oct 14:00): Haoyue's test run, two changes. Do them together with UPDATE 2, then deploy once.
 
 ### 1. New copy for everything the participant reads outside the app (rewritten 14:00, this version replaces any earlier one)
