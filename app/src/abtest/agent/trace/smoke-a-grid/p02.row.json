@@ -1,0 +1,330 @@
+{
+  "id": 437,
+  "variant": "B",
+  "forced": true,
+  "pilot": true,
+  "t0": 1793465412946,
+  "viewport_h": 932,
+  "viewport_w": 390,
+  "dpr": 2,
+  "device": "Windows · Chrome",
+  "order": "neither",
+  "events": [
+    {
+      "n": 0,
+      "t": 0,
+      "type": "tap",
+      "screen": "entry",
+      "target": "start"
+    },
+    {
+      "n": 1,
+      "t": 613,
+      "type": "screen",
+      "screen": "handover",
+      "target": "handover"
+    },
+    {
+      "n": 2,
+      "t": 14455,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 3,
+      "t": 24765,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 4,
+      "t": 34154,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 5,
+      "t": 43461,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 6,
+      "t": 52670,
+      "type": "tap",
+      "screen": "handover",
+      "target": "link"
+    },
+    {
+      "n": 7,
+      "t": 52683,
+      "type": "screen",
+      "screen": "report",
+      "target": "report"
+    },
+    {
+      "n": 8,
+      "t": 58646,
+      "type": "tap",
+      "screen": "report",
+      "target": "send-disabled"
+    },
+    {
+      "n": 9,
+      "t": 63989,
+      "type": "tap",
+      "screen": "report",
+      "target": "send-disabled"
+    },
+    {
+      "n": 10,
+      "t": 69221,
+      "type": "tap",
+      "screen": "report",
+      "target": "send-disabled"
+    },
+    {
+      "n": 11,
+      "t": 74535,
+      "type": "tap",
+      "screen": "report",
+      "target": "textarea"
+    },
+    {
+      "n": 12,
+      "t": 79839,
+      "type": "tap",
+      "screen": "report",
+      "target": "send-disabled"
+    },
+    {
+      "n": 13,
+      "t": 85097,
+      "type": "tap",
+      "screen": "report",
+      "target": "send-disabled"
+    },
+    {
+      "n": 14,
+      "t": 90527,
+      "type": "tap",
+      "screen": "report",
+      "target": "send-disabled"
+    },
+    {
+      "n": 15,
+      "t": 95726,
+      "type": "tap",
+      "screen": "report",
+      "target": "send-disabled"
+    },
+    {
+      "n": 16,
+      "t": 101508,
+      "type": "tap",
+      "screen": "report",
+      "target": "textarea"
+    },
+    {
+      "n": 17,
+      "t": 106951,
+      "type": "tap",
+      "screen": "report",
+      "target": "send-disabled"
+    },
+    {
+      "n": 18,
+      "t": 112201,
+      "type": "tap",
+      "screen": "report",
+      "target": "send-disabled"
+    },
+    {
+      "n": 19,
+      "t": 117288,
+      "type": "tap",
+      "screen": "report",
+      "target": "send-disabled"
+    },
+    {
+      "n": 20,
+      "t": 122623,
+      "type": "tap",
+      "screen": "report",
+      "target": "send-disabled"
+    },
+    {
+      "n": 21,
+      "t": 128707,
+      "type": "tap",
+      "screen": "report",
+      "target": "send-disabled"
+    },
+    {
+      "n": 22,
+      "t": 133802,
+      "type": "tap",
+      "screen": "report",
+      "target": "send-disabled"
+    },
+    {
+      "n": 23,
+      "t": 139703,
+      "type": "tap",
+      "screen": "report",
+      "target": "textarea"
+    },
+    {
+      "n": 24,
+      "t": 145088,
+      "type": "tap",
+      "screen": "report",
+      "target": "send-disabled"
+    },
+    {
+      "n": 25,
+      "t": 150837,
+      "type": "tap",
+      "screen": "report",
+      "target": "send-disabled"
+    },
+    {
+      "n": 26,
+      "t": 156069,
+      "type": "tap",
+      "screen": "report",
+      "target": "send-disabled"
+    },
+    {
+      "n": 27,
+      "t": 161694,
+      "type": "tap",
+      "screen": "report",
+      "target": "send-disabled"
+    },
+    {
+      "n": 28,
+      "t": 168171,
+      "type": "tap",
+      "screen": "report",
+      "target": "send-disabled"
+    },
+    {
+      "n": 29,
+      "t": 174535,
+      "type": "tap",
+      "screen": "report",
+      "target": "send-disabled"
+    },
+    {
+      "n": 30,
+      "t": 180471,
+      "type": "tap",
+      "screen": "report",
+      "target": "textarea"
+    },
+    {
+      "n": 31,
+      "t": 187881,
+      "type": "tap",
+      "screen": "report",
+      "target": "textarea"
+    },
+    {
+      "n": 32,
+      "t": 195019,
+      "type": "tap",
+      "screen": "report",
+      "target": "send-disabled"
+    },
+    {
+      "n": 33,
+      "t": 200539,
+      "type": "tap",
+      "screen": "report",
+      "target": "textarea"
+    },
+    {
+      "n": 34,
+      "t": 205653,
+      "type": "tap",
+      "screen": "report",
+      "target": "send-disabled"
+    },
+    {
+      "n": 35,
+      "t": 210571,
+      "type": "tap",
+      "screen": "report",
+      "target": "send-disabled"
+    },
+    {
+      "n": 36,
+      "t": 215741,
+      "type": "tap",
+      "screen": "report",
+      "target": "send-disabled"
+    },
+    {
+      "n": 37,
+      "t": 220922,
+      "type": "tap",
+      "screen": "report",
+      "target": "send-disabled"
+    },
+    {
+      "n": 38,
+      "t": 226163,
+      "type": "tap",
+      "screen": "report",
+      "target": "send-disabled"
+    },
+    {
+      "n": 39,
+      "t": 231216,
+      "type": "tap",
+      "screen": "report",
+      "target": "send-disabled"
+    },
+    {
+      "n": 40,
+      "t": 236631,
+      "type": "tap",
+      "screen": "report",
+      "target": "send-disabled"
+    },
+    {
+      "n": 41,
+      "t": 243168,
+      "type": "tap",
+      "screen": "report",
+      "target": "send-disabled"
+    },
+    {
+      "n": 42,
+      "t": 248325,
+      "type": "tap",
+      "screen": "report",
+      "target": "textarea"
+    },
+    {
+      "n": 43,
+      "t": 258090,
+      "type": "tap",
+      "screen": "report",
+      "target": "send-disabled"
+    }
+  ],
+  "scroll_depth": [],
+  "photo_taken": [],
+  "hidden": [],
+  "scroll_up_after_photos": false,
+  "page_open": 611,
+  "link_visible_on_load": true,
+  "report_taps_before_damage": 1,
+  "report_opened": 52672
+}

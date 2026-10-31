@@ -1,0 +1,38 @@
+{
+  "persona_id": "p02",
+  "model": "z-ai/glm-4.6v",
+  "temperature": 0.8,
+  "run_id": "smoke-b",
+  "variant": "b",
+  "viewport": [
+    390,
+    932
+  ],
+  "status": "capped",
+  "aborted": true,
+  "steps": 45,
+  "injected": 8,
+  "cost": 0.02000641,
+  "tokens_in": 54626,
+  "tokens_out": 9655,
+  "skips": {},
+  "mismatch": [
+    {
+      "field": "cycling",
+      "persona": "Never",
+      "answered": null
+    },
+    {
+      "field": "rented_before",
+      "persona": "Yes",
+      "answered": null
+    },
+    {
+      "field": "age_band",
+      "persona": "25 to 34",
+      "answered": null
+    }
+  ],
+  "bad_writes": [],
+  "console_errors": []
+}

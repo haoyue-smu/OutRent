@@ -1,0 +1,328 @@
+{
+  "id": 444,
+  "variant": "A",
+  "forced": true,
+  "pilot": true,
+  "t0": 1793465760101,
+  "viewport_h": 932,
+  "viewport_w": 390,
+  "dpr": 2,
+  "device": "Windows · Chrome",
+  "order": "neither",
+  "events": [
+    {
+      "n": 0,
+      "t": 0,
+      "type": "tap",
+      "screen": "entry",
+      "target": "start"
+    },
+    {
+      "n": 1,
+      "t": 677,
+      "type": "screen",
+      "screen": "handover",
+      "target": "handover"
+    },
+    {
+      "n": 2,
+      "t": 9640,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 3,
+      "t": 19716,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 4,
+      "t": 29341,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 5,
+      "t": 40261,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 6,
+      "t": 50723,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 7,
+      "t": 60031,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 8,
+      "t": 69429,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 9,
+      "t": 78354,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 10,
+      "t": 87602,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 11,
+      "t": 97715,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 12,
+      "t": 106791,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 13,
+      "t": 116070,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 14,
+      "t": 125668,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 15,
+      "t": 135131,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 16,
+      "t": 144321,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 17,
+      "t": 154028,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 18,
+      "t": 163161,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 19,
+      "t": 172784,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 20,
+      "t": 182150,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 21,
+      "t": 191365,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 22,
+      "t": 200401,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 23,
+      "t": 209481,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 24,
+      "t": 218384,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 25,
+      "t": 227603,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 26,
+      "t": 236851,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 27,
+      "t": 245570,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 28,
+      "t": 254531,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 29,
+      "t": 264238,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 30,
+      "t": 273758,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 31,
+      "t": 283538,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 32,
+      "t": 294056,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 33,
+      "t": 303476,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 34,
+      "t": 312897,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 35,
+      "t": 322630,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 36,
+      "t": 331537,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 37,
+      "t": 344390,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 38,
+      "t": 353676,
+      "type": "tap",
+      "screen": "handover",
+      "target": "shop-photo:drivetrain"
+    },
+    {
+      "n": 39,
+      "t": 353677,
+      "type": "photo_view_open",
+      "screen": "handover",
+      "data": {
+        "part": "drive",
+        "who": "shop"
+      }
+    },
+    {
+      "n": 40,
+      "t": 365772,
+      "type": "tap",
+      "screen": "handover",
+      "target": "viewer-close"
+    },
+    {
+      "n": 41,
+      "t": 365773,
+      "type": "photo_view_close",
+      "screen": "handover",
+      "data": {
+        "part": "drive",
+        "who": "shop"
+      }
+    },
+    {
+      "n": 42,
+      "t": 376803,
+      "type": "tap",
+      "screen": "handover",
+      "target": "div"
+    }
+  ],
+  "scroll_depth": [],
+  "photo_taken": [],
+  "hidden": [],
+  "scroll_up_after_photos": false,
+  "page_open": 675,
+  "link_visible_on_load": true,
+  "photo_views": 1
+}

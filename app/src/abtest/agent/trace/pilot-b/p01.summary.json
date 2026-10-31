@@ -1,0 +1,39 @@
+{
+  "persona_id": "p01",
+  "model": "z-ai/glm-4.6v",
+  "temperature": 0.8,
+  "coords": "grid",
+  "run_id": "pilot-b",
+  "variant": "a",
+  "viewport": [
+    390,
+    852
+  ],
+  "status": "capped",
+  "aborted": true,
+  "steps": 45,
+  "injected": 3,
+  "cost": 0.01582639,
+  "tokens_in": 53551,
+  "tokens_out": 5847,
+  "skips": {},
+  "mismatch": [
+    {
+      "field": "cycling",
+      "persona": "A few times a year",
+      "answered": null
+    },
+    {
+      "field": "rented_before",
+      "persona": "Yes",
+      "answered": null
+    },
+    {
+      "field": "age_band",
+      "persona": "18 to 24",
+      "answered": null
+    }
+  ],
+  "bad_writes": [],
+  "console_errors": []
+}

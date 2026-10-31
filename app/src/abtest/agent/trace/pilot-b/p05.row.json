@@ -1,0 +1,388 @@
+{
+  "id": 442,
+  "variant": "A",
+  "forced": true,
+  "pilot": true,
+  "t0": 1793465759612,
+  "viewport_h": 667,
+  "viewport_w": 375,
+  "dpr": 2,
+  "device": "Windows · Chrome",
+  "order": "neither",
+  "events": [
+    {
+      "n": 0,
+      "t": 0,
+      "type": "tap",
+      "screen": "entry",
+      "target": "start"
+    },
+    {
+      "n": 1,
+      "t": 285,
+      "type": "screen",
+      "screen": "handover",
+      "target": "handover"
+    },
+    {
+      "n": 2,
+      "t": 6898,
+      "type": "tap",
+      "screen": "handover",
+      "target": "take:crank"
+    },
+    {
+      "n": 3,
+      "t": 6951,
+      "type": "photo",
+      "screen": "camera",
+      "target": "preview:crank",
+      "data": {
+        "loaded": true
+      }
+    },
+    {
+      "n": 4,
+      "t": 15772,
+      "type": "tap",
+      "screen": "camera",
+      "target": "camera-use"
+    },
+    {
+      "n": 5,
+      "t": 15773,
+      "type": "photo_use_tap",
+      "screen": "camera",
+      "target": "crank"
+    },
+    {
+      "n": 6,
+      "t": 15773,
+      "type": "photo",
+      "screen": "camera",
+      "target": "taken:crank",
+      "data": {
+        "count": 1
+      }
+    },
+    {
+      "n": 7,
+      "t": 30318,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 8,
+      "t": 39254,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 9,
+      "t": 49309,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 10,
+      "t": 59449,
+      "type": "tap",
+      "screen": "handover",
+      "target": "photo:crank"
+    },
+    {
+      "n": 11,
+      "t": 59451,
+      "type": "photo_view_open",
+      "screen": "handover",
+      "data": {
+        "part": "crank",
+        "who": "you"
+      }
+    },
+    {
+      "n": 12,
+      "t": 69480,
+      "type": "tap",
+      "screen": "handover",
+      "target": "viewer-close"
+    },
+    {
+      "n": 13,
+      "t": 69481,
+      "type": "photo_view_close",
+      "screen": "handover",
+      "data": {
+        "part": "crank",
+        "who": "you"
+      }
+    },
+    {
+      "n": 14,
+      "t": 82116,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 15,
+      "t": 95224,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 16,
+      "t": 103654,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 17,
+      "t": 112218,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 18,
+      "t": 121945,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 19,
+      "t": 131554,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 20,
+      "t": 141241,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 21,
+      "t": 150852,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 22,
+      "t": 159225,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 23,
+      "t": 168872,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 24,
+      "t": 183975,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 25,
+      "t": 193457,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 26,
+      "t": 206107,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 27,
+      "t": 216325,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 28,
+      "t": 243417,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 29,
+      "t": 255235,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 30,
+      "t": 264870,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 31,
+      "t": 274263,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 32,
+      "t": 287061,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 33,
+      "t": 299661,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 34,
+      "t": 309899,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 35,
+      "t": 320740,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 36,
+      "t": 331361,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 37,
+      "t": 341771,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 38,
+      "t": 351592,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 39,
+      "t": 361493,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 40,
+      "t": 371367,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 41,
+      "t": 379785,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 42,
+      "t": 389549,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 43,
+      "t": 397700,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 44,
+      "t": 411682,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 45,
+      "t": 420572,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 46,
+      "t": 429620,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 47,
+      "t": 450517,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 48,
+      "t": 463148,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 49,
+      "t": 476048,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    }
+  ],
+  "scroll_depth": [],
+  "photo_taken": [
+    {
+      "part": "crank",
+      "t": 15773
+    }
+  ],
+  "hidden": [],
+  "scroll_up_after_photos": false,
+  "page_open": 284,
+  "link_visible_on_load": true,
+  "photo_views": 1
+}

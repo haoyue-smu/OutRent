@@ -1,0 +1,89 @@
+{
+  "shot": "pilot-b/p03/08.png",
+  "results": [
+    {
+      "model": "qwen/qwen3-vl-30b-a3b-instruct",
+      "q": "Describe what this phone screen shows, in two sentences.",
+      "seed": 1,
+      "answer": "This phone screen shows a photo of the rear wheel and drivetrain of a green mountain bike, with the chain hanging loosely on the asphalt. The image is captured in a camera app interface, with options to \"Retake\" or \"Use photo\" at the bottom.",
+      "cost": 0.00008835
+    },
+    {
+      "model": "qwen/qwen3-vl-30b-a3b-instruct",
+      "q": "Describe what this phone screen shows, in two sentences.",
+      "seed": 2,
+      "answer": "This phone screen shows a photo of a green mountain bike's rear wheel and drivetrain, with the chain hanging loosely on the asphalt. The image is displayed within a camera app interface, with options to \"Retake\" or \"Use photo\" at the bottom.",
+      "cost": 0.00008775
+    },
+    {
+      "model": "qwen/qwen3-vl-30b-a3b-instruct",
+      "q": "Is anything wrong with the bike in this photo? Answer in one or two sentences.",
+      "seed": 1,
+      "answer": "Yes, the bike's chain is detached and hanging on the ground, which means it's not properly connected to the drivetrain.",
+      "cost": 0.00007245
+    },
+    {
+      "model": "qwen/qwen3-vl-30b-a3b-instruct",
+      "q": "Is anything wrong with the bike in this photo? Answer in one or two sentences.",
+      "seed": 2,
+      "answer": "Yes, the bike chain is detached and hanging on the ground, which means it's not properly connected to the rear derailleur and sprockets.",
+      "cost": 0.00007545
+    },
+    {
+      "model": "z-ai/glm-4.6v",
+      "q": "Describe what this phone screen shows, in two sentences.",
+      "seed": 1,
+      "answer": "The phone screen displays a photo of a green bicycle’s drivetrain (chain, gears) on a paved road with trees in the background, with top text reading “DRIVETRAIN • 25 OCT • 7:41.” At the bottom, there are “Retake” and “Use photo” options flanking a central camera button.",
+      "cost": 0.00035662
+    },
+    {
+      "model": "z-ai/glm-4.6v",
+      "q": "Describe what this phone screen shows, in two sentences.",
+      "seed": 2,
+      "answer": "The phone screen displays a photo of a green bicycle’s drivetrain (chain, gears) on a road with trees, with the top text showing “DRIVETRAIN • 25 OCT • 7:41”. At the bottom, there are “Retake” and “Use photo” options plus a camera button for capturing a new image.",
+      "cost": 0.00035662
+    },
+    {
+      "model": "z-ai/glm-4.6v",
+      "q": "Is anything wrong with the bike in this photo? Answer in one or two sentences.",
+      "seed": 1,
+      "answer": "The bike’s chain is disengaged from the gears (fallen off the drivetrain), indicating a drivetrain issue. The chain is off the gears (disengaged from the drivetrain).",
+      "cost": 0.00031072
+    },
+    {
+      "model": "z-ai/glm-4.6v",
+      "q": "Is anything wrong with the bike in this photo? Answer in one or two sentences.",
+      "seed": 2,
+      "answer": "The bike’s chain is detached from the drivetrain (not properly engaged with the gears), indicating a mechanical issue with the drivetrain. The bike’s chain is detached from the drivetrain (not properly engaged with the gears).",
+      "cost": 0.00026572
+    },
+    {
+      "model": "google/gemini-2.5-flash",
+      "q": "Describe what this phone screen shows, in two sentences.",
+      "seed": 1,
+      "answer": "This phone screen displays a photo taken of the rear and middle section of a green mountain bike, with its chain detached and lying on the asphalt. The screen is in camera mode, showing options to \"Retake\" or \"Use photo\" at the bottom, and a timestamp \"DRIVETRAIN • 25 OCT • 7:41\" at the top.",
+      "cost": 0.000271
+    },
+    {
+      "model": "google/gemini-2.5-flash",
+      "q": "Describe what this phone screen shows, in two sentences.",
+      "seed": 2,
+      "answer": "This phone screen displays a photo of a dark green mountain bike, focusing on its rear wheel, derailleur, and drivetrain, with the bike chain lying on the asphalt. The screen is in a camera or photo review mode, showing options to \"Retake\" or \"Use photo\" along with a capture button, and a timestamp \"DRIVETRAIN - 25 OCT - 7:41\" at the top.",
+      "cost": 0.00023809
+    },
+    {
+      "model": "google/gemini-2.5-flash",
+      "q": "Is anything wrong with the bike in this photo? Answer in one or two sentences.",
+      "seed": 1,
+      "answer": "Yes, something is wrong with the bike. The chain is completely off the drivetrain and lying on the ground.",
+      "cost": 0.0001378
+    },
+    {
+      "model": "google/gemini-2.5-flash",
+      "q": "Is anything wrong with the bike in this photo? Answer in one or two sentences.",
+      "seed": 2,
+      "answer": "Yes, something is wrong with the bike. The chain is completely off the drivetrain and lying on the ground.",
+      "cost": 0.00007381
+    }
+  ]
+}

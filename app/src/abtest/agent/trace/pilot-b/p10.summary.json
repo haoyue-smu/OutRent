@@ -1,0 +1,26 @@
+{
+  "persona_id": "p10",
+  "model": "z-ai/glm-4.6v",
+  "temperature": 0.8,
+  "coords": "grid",
+  "run_id": "pilot-b",
+  "variant": "b",
+  "viewport": [
+    390,
+    780
+  ],
+  "status": "finished",
+  "aborted": false,
+  "steps": 27,
+  "injected": 3,
+  "cost": 0.011927974999999999,
+  "tokens_in": 30418,
+  "tokens_out": 6366,
+  "skips": {
+    "find_where": false,
+    "preference_why": false
+  },
+  "mismatch": [],
+  "bad_writes": [],
+  "console_errors": []
+}

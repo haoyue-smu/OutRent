@@ -1,0 +1,488 @@
+{
+  "id": 456,
+  "variant": "A",
+  "forced": true,
+  "pilot": true,
+  "t0": 1793466471097,
+  "viewport_h": 667,
+  "viewport_w": 375,
+  "dpr": 2,
+  "device": "Windows · Chrome",
+  "order": "neither",
+  "events": [
+    {
+      "n": 0,
+      "t": 0,
+      "type": "tap",
+      "screen": "entry",
+      "target": "start"
+    },
+    {
+      "n": 1,
+      "t": 681,
+      "type": "screen",
+      "screen": "handover",
+      "target": "handover"
+    },
+    {
+      "n": 2,
+      "t": 6356,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 3,
+      "t": 14303,
+      "type": "tap",
+      "screen": "handover",
+      "target": "take:crank"
+    },
+    {
+      "n": 4,
+      "t": 14352,
+      "type": "photo",
+      "screen": "camera",
+      "target": "preview:crank",
+      "data": {
+        "loaded": true
+      }
+    },
+    {
+      "n": 5,
+      "t": 24001,
+      "type": "tap",
+      "screen": "camera",
+      "target": "camera-use"
+    },
+    {
+      "n": 6,
+      "t": 24002,
+      "type": "photo_use_tap",
+      "screen": "camera",
+      "target": "crank"
+    },
+    {
+      "n": 7,
+      "t": 24002,
+      "type": "photo",
+      "screen": "camera",
+      "target": "taken:crank",
+      "data": {
+        "count": 1
+      }
+    },
+    {
+      "n": 8,
+      "t": 32820,
+      "type": "tap",
+      "screen": "handover",
+      "target": "shop-photo:crank"
+    },
+    {
+      "n": 9,
+      "t": 32821,
+      "type": "photo_view_open",
+      "screen": "handover",
+      "data": {
+        "part": "crank",
+        "who": "shop"
+      }
+    },
+    {
+      "n": 10,
+      "t": 42483,
+      "type": "tap",
+      "screen": "handover",
+      "target": "viewer-close"
+    },
+    {
+      "n": 11,
+      "t": 42484,
+      "type": "photo_view_close",
+      "screen": "handover",
+      "data": {
+        "part": "crank",
+        "who": "shop"
+      }
+    },
+    {
+      "n": 12,
+      "t": 51084,
+      "type": "tap",
+      "screen": "handover",
+      "target": "shop-photo:crank"
+    },
+    {
+      "n": 13,
+      "t": 51085,
+      "type": "photo_view_open",
+      "screen": "handover",
+      "data": {
+        "part": "crank",
+        "who": "shop"
+      }
+    },
+    {
+      "n": 14,
+      "t": 60203,
+      "type": "tap",
+      "screen": "handover",
+      "target": "viewer-close"
+    },
+    {
+      "n": 15,
+      "t": 60205,
+      "type": "photo_view_close",
+      "screen": "handover",
+      "data": {
+        "part": "crank",
+        "who": "shop"
+      }
+    },
+    {
+      "n": 16,
+      "t": 68790,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 17,
+      "t": 78191,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 18,
+      "t": 88198,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 19,
+      "t": 96897,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 20,
+      "t": 105195,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 21,
+      "t": 113771,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 22,
+      "t": 122166,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 23,
+      "t": 130759,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 24,
+      "t": 139575,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 25,
+      "t": 148116,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 26,
+      "t": 156436,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 27,
+      "t": 164750,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 28,
+      "t": 173189,
+      "type": "tap",
+      "screen": "handover",
+      "target": "shop-photo:crank"
+    },
+    {
+      "n": 29,
+      "t": 173189,
+      "type": "photo_view_open",
+      "screen": "handover",
+      "data": {
+        "part": "crank",
+        "who": "shop"
+      }
+    },
+    {
+      "n": 30,
+      "t": 181996,
+      "type": "tap",
+      "screen": "handover",
+      "target": "viewer-close"
+    },
+    {
+      "n": 31,
+      "t": 181997,
+      "type": "photo_view_close",
+      "screen": "handover",
+      "data": {
+        "part": "crank",
+        "who": "shop"
+      }
+    },
+    {
+      "n": 32,
+      "t": 190493,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 33,
+      "t": 199309,
+      "type": "tap",
+      "screen": "handover",
+      "target": "shop-photo:crank"
+    },
+    {
+      "n": 34,
+      "t": 199310,
+      "type": "photo_view_open",
+      "screen": "handover",
+      "data": {
+        "part": "crank",
+        "who": "shop"
+      }
+    },
+    {
+      "n": 35,
+      "t": 209116,
+      "type": "tap",
+      "screen": "handover",
+      "target": "viewer-close"
+    },
+    {
+      "n": 36,
+      "t": 209116,
+      "type": "photo_view_close",
+      "screen": "handover",
+      "data": {
+        "part": "crank",
+        "who": "shop"
+      }
+    },
+    {
+      "n": 37,
+      "t": 218436,
+      "type": "tap",
+      "screen": "handover",
+      "target": "div"
+    },
+    {
+      "n": 38,
+      "t": 226691,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 39,
+      "t": 235475,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 40,
+      "t": 246133,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 41,
+      "t": 254367,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 42,
+      "t": 263330,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 43,
+      "t": 271697,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 44,
+      "t": 281605,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 45,
+      "t": 290254,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 46,
+      "t": 298834,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 47,
+      "t": 307992,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 48,
+      "t": 316606,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 49,
+      "t": 325510,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 50,
+      "t": 334437,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 51,
+      "t": 342795,
+      "type": "tap",
+      "screen": "handover",
+      "target": "main-disabled"
+    },
+    {
+      "n": 52,
+      "t": 351563,
+      "type": "tap",
+      "screen": "handover",
+      "target": "shop-photo:crank"
+    },
+    {
+      "n": 53,
+      "t": 351564,
+      "type": "photo_view_open",
+      "screen": "handover",
+      "data": {
+        "part": "crank",
+        "who": "shop"
+      }
+    },
+    {
+      "n": 54,
+      "t": 360689,
+      "type": "tap",
+      "screen": "handover",
+      "target": "viewer-close"
+    },
+    {
+      "n": 55,
+      "t": 360689,
+      "type": "photo_view_close",
+      "screen": "handover",
+      "data": {
+        "part": "crank",
+        "who": "shop"
+      }
+    },
+    {
+      "n": 56,
+      "t": 369226,
+      "type": "tap",
+      "screen": "handover",
+      "target": "shop-photo:crank"
+    },
+    {
+      "n": 57,
+      "t": 369228,
+      "type": "photo_view_open",
+      "screen": "handover",
+      "data": {
+        "part": "crank",
+        "who": "shop"
+      }
+    },
+    {
+      "n": 58,
+      "t": 378036,
+      "type": "tap",
+      "screen": "handover",
+      "target": "viewer-close"
+    },
+    {
+      "n": 59,
+      "t": 378037,
+      "type": "photo_view_close",
+      "screen": "handover",
+      "data": {
+        "part": "crank",
+        "who": "shop"
+      }
+    }
+  ],
+  "scroll_depth": [],
+  "photo_taken": [
+    {
+      "part": "crank",
+      "t": 24002
+    }
+  ],
+  "hidden": [],
+  "scroll_up_after_photos": false,
+  "page_open": 679,
+  "link_visible_on_load": true,
+  "photo_views": 6
+}

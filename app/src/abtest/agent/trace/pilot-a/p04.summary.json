@@ -1,0 +1,32 @@
+{
+  "persona_id": "p04",
+  "model": "qwen/qwen3-vl-30b-a3b-instruct",
+  "temperature": 0.8,
+  "coords": "grid",
+  "run_id": "pilot-a",
+  "variant": "b",
+  "viewport": [
+    390,
+    780
+  ],
+  "status": "capped",
+  "aborted": true,
+  "steps": 45,
+  "injected": 7,
+  "cost": 0.008403149999999996,
+  "tokens_in": 48565,
+  "tokens_out": 1864,
+  "skips": {
+    "find_where": false,
+    "preference_why": false
+  },
+  "mismatch": [
+    {
+      "field": "age_band",
+      "persona": "18 to 24",
+      "answered": null
+    }
+  ],
+  "bad_writes": [],
+  "console_errors": []
+}

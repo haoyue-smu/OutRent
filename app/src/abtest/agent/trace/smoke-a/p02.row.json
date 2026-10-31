@@ -1,0 +1,239 @@
+{
+  "id": 434,
+  "variant": "B",
+  "forced": true,
+  "pilot": true,
+  "t0": 1793465189456,
+  "viewport_h": 932,
+  "viewport_w": 390,
+  "dpr": 2,
+  "device": "Windows · Chrome",
+  "order": "neither",
+  "events": [
+    {
+      "n": 0,
+      "t": 0,
+      "type": "tap",
+      "screen": "entry",
+      "target": "start"
+    },
+    {
+      "n": 1,
+      "t": 1553,
+      "type": "screen",
+      "screen": "handover",
+      "target": "handover"
+    },
+    {
+      "n": 2,
+      "t": 6820,
+      "type": "tap",
+      "screen": "handover",
+      "target": "span"
+    },
+    {
+      "n": 3,
+      "t": 15916,
+      "type": "tap",
+      "screen": "handover",
+      "target": "span"
+    },
+    {
+      "n": 4,
+      "t": 24632,
+      "type": "tap",
+      "screen": "handover",
+      "target": "span"
+    },
+    {
+      "n": 5,
+      "t": 33822,
+      "type": "tap",
+      "screen": "handover",
+      "target": "span"
+    },
+    {
+      "n": 6,
+      "t": 46319,
+      "type": "tap",
+      "screen": "handover",
+      "target": "back"
+    },
+    {
+      "n": 7,
+      "t": 55656,
+      "type": "tap",
+      "screen": "handover",
+      "target": "span"
+    },
+    {
+      "n": 8,
+      "t": 70720,
+      "type": "tap",
+      "screen": "handover",
+      "target": "span"
+    },
+    {
+      "n": 9,
+      "t": 84650,
+      "type": "tap",
+      "screen": "handover",
+      "target": "span"
+    },
+    {
+      "n": 10,
+      "t": 97407,
+      "type": "tap",
+      "screen": "handover",
+      "target": "span"
+    },
+    {
+      "n": 11,
+      "t": 110347,
+      "type": "tap",
+      "screen": "handover",
+      "target": "span"
+    },
+    {
+      "n": 12,
+      "t": 123946,
+      "type": "tap",
+      "screen": "handover",
+      "target": "span"
+    },
+    {
+      "n": 13,
+      "t": 133962,
+      "type": "tap",
+      "screen": "handover",
+      "target": "back"
+    },
+    {
+      "n": 14,
+      "t": 143522,
+      "type": "tap",
+      "screen": "handover",
+      "target": "span"
+    },
+    {
+      "n": 15,
+      "t": 152655,
+      "type": "tap",
+      "screen": "handover",
+      "target": "span"
+    },
+    {
+      "n": 16,
+      "t": 162889,
+      "type": "tap",
+      "screen": "handover",
+      "target": "span"
+    },
+    {
+      "n": 17,
+      "t": 172236,
+      "type": "tap",
+      "screen": "handover",
+      "target": "span"
+    },
+    {
+      "n": 18,
+      "t": 181416,
+      "type": "tap",
+      "screen": "handover",
+      "target": "span"
+    },
+    {
+      "n": 19,
+      "t": 190494,
+      "type": "tap",
+      "screen": "handover",
+      "target": "span"
+    },
+    {
+      "n": 20,
+      "t": 199687,
+      "type": "tap",
+      "screen": "handover",
+      "target": "back"
+    },
+    {
+      "n": 21,
+      "t": 209442,
+      "type": "tap",
+      "screen": "handover",
+      "target": "back"
+    },
+    {
+      "n": 22,
+      "t": 218994,
+      "type": "tap",
+      "screen": "handover",
+      "target": "span"
+    },
+    {
+      "n": 23,
+      "t": 228508,
+      "type": "tap",
+      "screen": "handover",
+      "target": "back"
+    },
+    {
+      "n": 24,
+      "t": 237968,
+      "type": "tap",
+      "screen": "handover",
+      "target": "span"
+    },
+    {
+      "n": 25,
+      "t": 246756,
+      "type": "tap",
+      "screen": "handover",
+      "target": "span"
+    },
+    {
+      "n": 26,
+      "t": 256821,
+      "type": "tap",
+      "screen": "handover",
+      "target": "span"
+    },
+    {
+      "n": 27,
+      "t": 265918,
+      "type": "tap",
+      "screen": "handover",
+      "target": "span"
+    },
+    {
+      "n": 28,
+      "t": 275244,
+      "type": "tap",
+      "screen": "handover",
+      "target": "span"
+    },
+    {
+      "n": 29,
+      "t": 316409,
+      "type": "tap",
+      "screen": "handover",
+      "target": "link"
+    },
+    {
+      "n": 30,
+      "t": 316418,
+      "type": "screen",
+      "screen": "report",
+      "target": "report"
+    }
+  ],
+  "scroll_depth": [],
+  "photo_taken": [],
+  "hidden": [],
+  "scroll_up_after_photos": false,
+  "page_open": 1545,
+  "link_visible_on_load": true,
+  "report_taps_before_damage": 1,
+  "report_opened": 316411
+}

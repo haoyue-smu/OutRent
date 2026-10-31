@@ -1,0 +1,26 @@
+{
+  "persona_id": "p02",
+  "model": "z-ai/glm-4.6v",
+  "temperature": 0.8,
+  "coords": "grid",
+  "run_id": "smoke-b-grid",
+  "variant": "b",
+  "viewport": [
+    390,
+    932
+  ],
+  "status": "finished",
+  "aborted": false,
+  "steps": 26,
+  "injected": 4,
+  "cost": 0.011341589999999999,
+  "tokens_in": 31778,
+  "tokens_out": 5929,
+  "skips": {
+    "find_where": true,
+    "preference_why": true
+  },
+  "mismatch": [],
+  "bad_writes": [],
+  "console_errors": []
+}

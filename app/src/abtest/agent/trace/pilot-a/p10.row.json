@@ -1,0 +1,541 @@
+{
+  "id": 457,
+  "variant": "B",
+  "forced": true,
+  "pilot": true,
+  "t0": 1793466528042,
+  "viewport_h": 780,
+  "viewport_w": 390,
+  "dpr": 2,
+  "device": "Windows · Chrome",
+  "order": "save only",
+  "events": [
+    {
+      "n": 0,
+      "t": 0,
+      "type": "tap",
+      "screen": "entry",
+      "target": "start"
+    },
+    {
+      "n": 1,
+      "t": 703,
+      "type": "screen",
+      "screen": "handover",
+      "target": "handover"
+    },
+    {
+      "n": 2,
+      "t": 17273,
+      "type": "tap",
+      "screen": "handover",
+      "target": "take:crank"
+    },
+    {
+      "n": 3,
+      "t": 17337,
+      "type": "photo",
+      "screen": "camera",
+      "target": "preview:crank",
+      "data": {
+        "loaded": true
+      }
+    },
+    {
+      "n": 4,
+      "t": 38221,
+      "type": "tap",
+      "screen": "camera",
+      "target": "camera-use"
+    },
+    {
+      "n": 5,
+      "t": 38223,
+      "type": "photo_use_tap",
+      "screen": "camera",
+      "target": "crank"
+    },
+    {
+      "n": 6,
+      "t": 38223,
+      "type": "photo",
+      "screen": "camera",
+      "target": "taken:crank",
+      "data": {
+        "count": 1
+      }
+    },
+    {
+      "n": 7,
+      "t": 59933,
+      "type": "tap",
+      "screen": "handover",
+      "target": "take:saddle"
+    },
+    {
+      "n": 8,
+      "t": 60017,
+      "type": "photo",
+      "screen": "camera",
+      "target": "preview:saddle",
+      "data": {
+        "loaded": true
+      }
+    },
+    {
+      "n": 9,
+      "t": 81890,
+      "type": "tap",
+      "screen": "camera",
+      "target": "camera-use"
+    },
+    {
+      "n": 10,
+      "t": 81891,
+      "type": "photo_use_tap",
+      "screen": "camera",
+      "target": "saddle"
+    },
+    {
+      "n": 11,
+      "t": 81891,
+      "type": "photo",
+      "screen": "camera",
+      "target": "taken:saddle",
+      "data": {
+        "count": 2
+      }
+    },
+    {
+      "n": 12,
+      "t": 105296,
+      "type": "tap",
+      "screen": "handover",
+      "target": "take:drivetrain"
+    },
+    {
+      "n": 13,
+      "t": 105363,
+      "type": "photo",
+      "screen": "camera",
+      "target": "preview:drive",
+      "data": {
+        "loaded": true
+      }
+    },
+    {
+      "n": 14,
+      "t": 128214,
+      "type": "tap",
+      "screen": "camera",
+      "target": "camera-use"
+    },
+    {
+      "n": 15,
+      "t": 128214,
+      "type": "photo_use_tap",
+      "screen": "camera",
+      "target": "drive"
+    },
+    {
+      "n": 16,
+      "t": 128214,
+      "type": "photo",
+      "screen": "camera",
+      "target": "taken:drive",
+      "data": {
+        "count": 3
+      }
+    },
+    {
+      "n": 17,
+      "t": 152945,
+      "type": "tap",
+      "screen": "handover",
+      "target": "save"
+    },
+    {
+      "n": 18,
+      "t": 152948,
+      "type": "screen",
+      "screen": "q1",
+      "target": "q1"
+    },
+    {
+      "n": 19,
+      "t": 159052,
+      "type": "tap",
+      "screen": "q1",
+      "target": "noticed:No"
+    },
+    {
+      "n": 20,
+      "t": 159053,
+      "type": "form",
+      "screen": "q1",
+      "target": "noticed",
+      "data": {
+        "value": "No"
+      }
+    },
+    {
+      "n": 21,
+      "t": 165027,
+      "type": "tap",
+      "screen": "q1",
+      "target": "next:1"
+    },
+    {
+      "n": 22,
+      "t": 165030,
+      "type": "screen",
+      "screen": "q2",
+      "target": "q2"
+    },
+    {
+      "n": 23,
+      "t": 173036,
+      "type": "tap",
+      "screen": "q2",
+      "target": "seq:7"
+    },
+    {
+      "n": 24,
+      "t": 173036,
+      "type": "form",
+      "screen": "q2",
+      "target": "seq",
+      "data": {
+        "value": 7
+      }
+    },
+    {
+      "n": 25,
+      "t": 182090,
+      "type": "tap",
+      "screen": "q2",
+      "target": "next:2"
+    },
+    {
+      "n": 26,
+      "t": 182094,
+      "type": "screen",
+      "screen": "q3",
+      "target": "q3"
+    },
+    {
+      "n": 27,
+      "t": 193110,
+      "type": "tap",
+      "screen": "q3",
+      "target": "h1"
+    },
+    {
+      "n": 28,
+      "t": 204683,
+      "type": "tap",
+      "screen": "q3",
+      "target": "find:not-looked"
+    },
+    {
+      "n": 29,
+      "t": 204685,
+      "type": "form",
+      "screen": "q3",
+      "target": "find_not_looked",
+      "data": {
+        "value": true
+      }
+    },
+    {
+      "n": 30,
+      "t": 215611,
+      "type": "tap",
+      "screen": "q3",
+      "target": "next:3"
+    },
+    {
+      "n": 31,
+      "t": 215616,
+      "type": "screen",
+      "screen": "q4",
+      "target": "q4"
+    },
+    {
+      "n": 32,
+      "t": 229189,
+      "type": "tap",
+      "screen": "q4",
+      "target": "pick:A"
+    },
+    {
+      "n": 33,
+      "t": 229190,
+      "type": "form",
+      "screen": "q4",
+      "target": "preference",
+      "data": {
+        "pick": "A"
+      }
+    },
+    {
+      "n": 34,
+      "t": 240842,
+      "type": "tap",
+      "screen": "q4",
+      "target": "pick:A"
+    },
+    {
+      "n": 35,
+      "t": 240843,
+      "type": "form",
+      "screen": "q4",
+      "target": "preference",
+      "data": {
+        "pick": "A"
+      }
+    },
+    {
+      "n": 36,
+      "t": 252689,
+      "type": "tap",
+      "screen": "q4",
+      "target": "next:4"
+    },
+    {
+      "n": 37,
+      "t": 252692,
+      "type": "screen",
+      "screen": "q5",
+      "target": "q5"
+    },
+    {
+      "n": 38,
+      "t": 269394,
+      "type": "tap",
+      "screen": "q5",
+      "target": "next-disabled:5"
+    },
+    {
+      "n": 39,
+      "t": 286368,
+      "type": "tap",
+      "screen": "q5",
+      "target": "next-disabled:5"
+    },
+    {
+      "n": 40,
+      "t": 301411,
+      "type": "tap",
+      "screen": "q5",
+      "target": "next-disabled:5"
+    },
+    {
+      "n": 41,
+      "t": 316909,
+      "type": "tap",
+      "screen": "q5",
+      "target": "next-disabled:5"
+    },
+    {
+      "n": 42,
+      "t": 332085,
+      "type": "tap",
+      "screen": "q5",
+      "target": "next-disabled:5"
+    },
+    {
+      "n": 43,
+      "t": 346862,
+      "type": "tap",
+      "screen": "q5",
+      "target": "next-disabled:5"
+    },
+    {
+      "n": 44,
+      "t": 365842,
+      "type": "tap",
+      "screen": "q5",
+      "target": "next-disabled:5"
+    },
+    {
+      "n": 45,
+      "t": 381568,
+      "type": "tap",
+      "screen": "q5",
+      "target": "next-disabled:5"
+    },
+    {
+      "n": 46,
+      "t": 395733,
+      "type": "tap",
+      "screen": "q5",
+      "target": "age:35 to 44"
+    },
+    {
+      "n": 47,
+      "t": 395734,
+      "type": "form",
+      "screen": "q5",
+      "target": "age_band",
+      "data": {
+        "value": "35 to 44"
+      }
+    },
+    {
+      "n": 48,
+      "t": 410314,
+      "type": "tap",
+      "screen": "q5",
+      "target": "next-disabled:5"
+    },
+    {
+      "n": 49,
+      "t": 424880,
+      "type": "tap",
+      "screen": "q5",
+      "target": "next-disabled:5"
+    },
+    {
+      "n": 50,
+      "t": 439353,
+      "type": "tap",
+      "screen": "q5",
+      "target": "next-disabled:5"
+    },
+    {
+      "n": 51,
+      "t": 453823,
+      "type": "tap",
+      "screen": "q5",
+      "target": "next-disabled:5"
+    },
+    {
+      "n": 52,
+      "t": 473768,
+      "type": "tap",
+      "screen": "q5",
+      "target": "next-disabled:5"
+    },
+    {
+      "n": 53,
+      "t": 488090,
+      "type": "tap",
+      "screen": "q5",
+      "target": "next-disabled:5"
+    },
+    {
+      "n": 54,
+      "t": 502678,
+      "type": "tap",
+      "screen": "q5",
+      "target": "next-disabled:5"
+    },
+    {
+      "n": 55,
+      "t": 517579,
+      "type": "tap",
+      "screen": "q5",
+      "target": "next-disabled:5"
+    },
+    {
+      "n": 56,
+      "t": 531966,
+      "type": "tap",
+      "screen": "q5",
+      "target": "next-disabled:5"
+    },
+    {
+      "n": 57,
+      "t": 546638,
+      "type": "tap",
+      "screen": "q5",
+      "target": "next-disabled:5"
+    },
+    {
+      "n": 58,
+      "t": 561370,
+      "type": "tap",
+      "screen": "q5",
+      "target": "next-disabled:5"
+    },
+    {
+      "n": 59,
+      "t": 577093,
+      "type": "tap",
+      "screen": "q5",
+      "target": "next-disabled:5"
+    },
+    {
+      "n": 60,
+      "t": 592013,
+      "type": "tap",
+      "screen": "q5",
+      "target": "next-disabled:5"
+    },
+    {
+      "n": 61,
+      "t": 606819,
+      "type": "tap",
+      "screen": "q5",
+      "target": "next-disabled:5"
+    },
+    {
+      "n": 62,
+      "t": 621230,
+      "type": "tap",
+      "screen": "q5",
+      "target": "next-disabled:5"
+    },
+    {
+      "n": 63,
+      "t": 635779,
+      "type": "tap",
+      "screen": "q5",
+      "target": "next-disabled:5"
+    },
+    {
+      "n": 64,
+      "t": 650379,
+      "type": "tap",
+      "screen": "q5",
+      "target": "next-disabled:5"
+    }
+  ],
+  "scroll_depth": [],
+  "photo_taken": [
+    {
+      "part": "crank",
+      "t": 38223
+    },
+    {
+      "part": "saddle",
+      "t": 81891
+    },
+    {
+      "part": "drive",
+      "t": 128214
+    }
+  ],
+  "hidden": [],
+  "scroll_up_after_photos": false,
+  "page_open": 701,
+  "link_visible_on_load": false,
+  "t_damage_visible": 105363,
+  "link_in_view_at_damage": false,
+  "first_tap_after_photos": "save",
+  "record_saved": 152946,
+  "t_end": 152946,
+  "noticed": "No",
+  "t_q1_done": 165028,
+  "seq": 7,
+  "t_q2_done": 182091,
+  "find_ease": null,
+  "find_not_looked": true,
+  "t_q3_done": 215612,
+  "t_questions_done": 215612,
+  "preference_left": "A",
+  "preference": "A",
+  "t_q4_done": 252690,
+  "age_band": "35 to 44"
+}

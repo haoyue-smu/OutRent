@@ -1,0 +1,48 @@
+
+# pilot-b · z-ai/glm-4.6v · cost $0.1616
+| Agent | Var | Viewport | Status | Steps | Injected | Steps to report | Noticed | Sent | Cost |
+|---|---|---|---|---|---|---|---|---|---|
+| p01 | a | 390×852 | capped | 45 | 3 | - | - | no | $0.0158 |
+mismatch p01 cycling: persona A few times a year, answered null
+mismatch p01 rented_before: persona Yes, answered null
+mismatch p01 age_band: persona 18 to 24, answered null
+| p02 | b | 390×932 | finished | 37 | 7 | - | No | no | $0.0182 |
+| p03 | a | 390×932 | finished | 23 | 0 | - | No | no | $0.0094 |
+| p04 | b | 390×780 | finished | 28 | 5 | - | No | no | $0.0123 |
+| p05 | a | 375×667 | capped | 45 | 1 | - | - | no | $0.0157 |
+mismatch p05 cycling: persona Never, answered null
+mismatch p05 rented_before: persona No, answered null
+mismatch p05 age_band: persona 18 to 24, answered null
+| p06 | b | 390×896 | capped | 45 | 4 | - | No | no | $0.0200 |
+| p07 | a | 390×896 | capped | 45 | 5 | - | No | no | $0.0233 |
+mismatch p07 cycling: persona A few times a year, answered null
+mismatch p07 rented_before: persona No, answered null
+mismatch p07 age_band: persona 18 to 24, answered null
+| p08 | b | 375×667 | capped | 45 | 1 | - | - | no | $0.0165 |
+mismatch p08 cycling: persona Monthly or more, answered null
+mismatch p08 rented_before: persona No, answered null
+mismatch p08 age_band: persona 35 to 44, answered null
+| p09 | a | 375×667 | capped | 45 | 6 | - | - | no | $0.0184 |
+mismatch p09 cycling: persona Monthly or more, answered null
+mismatch p09 rented_before: persona No, answered null
+mismatch p09 age_band: persona 35 to 44, answered null
+| p10 | b | 390×780 | finished | 27 | 3 | - | No | no | $0.0119 |
+
+Check 1: Yes 0, Yes with the thought 0, of 10
+- p01 (noticed -): never reached the preview
+- p02 (noticed No): "need to use this photo, retake is too slow"
+- p03 (noticed No): "photo of drivetrain looks clear, use it to keep going"
+- p04 (noticed No): "drivetrain photo is clear, use it to finish"
+- p05 (noticed -): never reached the preview
+- p06 (noticed No): "photo of drivetrain looks okay, tap use photo to move on fast"
+- p07 (noticed No): "need to finish fast, use the photo" / "need to finish fast, use the photo"
+- p08 (noticed -): never reached the preview
+- p09 (noticed -): never reached the preview
+- p10 (noticed No): "drivetrain looks fine, tap use photo to continue"
+
+Check 2: 377 non-injected taps, on a live control 153 (40.6%), on the control the thought names 139 (36.9%), capped 6
+
+Check 3: skipped 12 of 12 optional fields (100%), mismatches 15
+
+
+Check 4: columns seen age_band, cycling, device, dpr, events, find_ease, find_not_looked, first_tap_after_photos, forced, hidden, id, link_in_view_at_damage, link_visible_on_load, noticed, order, page_open, photo_taken, photo_views, pilot, preference, preference_left, record_saved, rented_before, scroll_depth, scroll_up_after_photos, seq, t0, t_damage_visible, t_end, t_finish, t_q1_done, t_q2_done, t_q3_done, t_q4_done, t_q5_done, t_questions_done, variant, viewport_h, viewport_w

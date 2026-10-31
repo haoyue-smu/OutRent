@@ -1,0 +1,162 @@
+{
+  "id": 435,
+  "variant": "B",
+  "forced": true,
+  "pilot": true,
+  "t0": 1793465190234,
+  "viewport_h": 932,
+  "viewport_w": 390,
+  "dpr": 2,
+  "device": "Windows · Chrome",
+  "order": "neither",
+  "events": [
+    {
+      "n": 0,
+      "t": 0,
+      "type": "tap",
+      "screen": "entry",
+      "target": "start"
+    },
+    {
+      "n": 1,
+      "t": 774,
+      "type": "screen",
+      "screen": "handover",
+      "target": "handover"
+    },
+    {
+      "n": 2,
+      "t": 58850,
+      "type": "tap",
+      "screen": "handover",
+      "target": "take:drivetrain"
+    },
+    {
+      "n": 3,
+      "t": 58918,
+      "type": "photo",
+      "screen": "camera",
+      "target": "preview:drive",
+      "data": {
+        "loaded": true
+      }
+    },
+    {
+      "n": 4,
+      "t": 140084,
+      "type": "tap",
+      "screen": "camera",
+      "target": "camera-use"
+    },
+    {
+      "n": 5,
+      "t": 140085,
+      "type": "photo_use_tap",
+      "screen": "camera",
+      "target": "drive"
+    },
+    {
+      "n": 6,
+      "t": 140086,
+      "type": "photo",
+      "screen": "camera",
+      "target": "taken:drive",
+      "data": {
+        "count": 1
+      }
+    },
+    {
+      "n": 7,
+      "t": 216582,
+      "type": "tap",
+      "screen": "handover",
+      "target": "photo:drivetrain"
+    },
+    {
+      "n": 8,
+      "t": 216585,
+      "type": "photo_view_open",
+      "screen": "handover",
+      "data": {
+        "part": "drive",
+        "who": "you"
+      }
+    },
+    {
+      "n": 9,
+      "t": 231439,
+      "type": "tap",
+      "screen": "handover",
+      "target": "viewer-close"
+    },
+    {
+      "n": 10,
+      "t": 231440,
+      "type": "photo_view_close",
+      "screen": "handover",
+      "data": {
+        "part": "drive",
+        "who": "you"
+      }
+    },
+    {
+      "n": 11,
+      "t": 272857,
+      "type": "tap",
+      "screen": "handover",
+      "target": "take:saddle"
+    },
+    {
+      "n": 12,
+      "t": 272935,
+      "type": "photo",
+      "screen": "camera",
+      "target": "preview:saddle",
+      "data": {
+        "loaded": true
+      }
+    },
+    {
+      "n": 13,
+      "t": 391631,
+      "type": "tap",
+      "screen": "camera",
+      "target": "camera-use"
+    },
+    {
+      "n": 14,
+      "t": 391632,
+      "type": "photo_use_tap",
+      "screen": "camera",
+      "target": "saddle"
+    },
+    {
+      "n": 15,
+      "t": 391632,
+      "type": "photo",
+      "screen": "camera",
+      "target": "taken:saddle",
+      "data": {
+        "count": 2
+      }
+    }
+  ],
+  "scroll_depth": [],
+  "photo_taken": [
+    {
+      "part": "drive",
+      "t": 140085
+    },
+    {
+      "part": "saddle",
+      "t": 391632
+    }
+  ],
+  "hidden": [],
+  "scroll_up_after_photos": false,
+  "page_open": 767,
+  "link_visible_on_load": true,
+  "t_damage_visible": 58918,
+  "link_in_view_at_damage": true,
+  "photo_views": 1
+}

@@ -1,0 +1,59 @@
+
+# pilot-a · qwen/qwen3-vl-30b-a3b-instruct · cost $0.0868
+| Agent | Var | Viewport | Status | Steps | Injected | Steps to report | Noticed | Sent | Cost |
+|---|---|---|---|---|---|---|---|---|---|
+| p01 | a | 390×852 | capped | 45 | 3 | - | No | no | $0.0087 |
+mismatch p01 age_band: persona 18 to 24, answered null
+| p02 | b | 390×932 | capped | 45 | 7 | - | - | no | $0.0090 |
+mismatch p02 cycling: persona Never, answered null
+mismatch p02 rented_before: persona Yes, answered null
+mismatch p02 age_band: persona 25 to 34, answered null
+| p03 | a | 390×932 | capped | 45 | 1 | - | - | no | $0.0089 |
+mismatch p03 cycling: persona A few times a year, answered null
+mismatch p03 rented_before: persona Yes, answered null
+mismatch p03 age_band: persona 25 to 34, answered null
+| p04 | b | 390×780 | capped | 45 | 7 | - | No | no | $0.0084 |
+mismatch p04 age_band: persona 18 to 24, answered null
+| p05 | a | 375×667 | capped | 45 | 1 | - | - | no | $0.0079 |
+mismatch p05 cycling: persona Never, answered null
+mismatch p05 rented_before: persona No, answered null
+mismatch p05 age_band: persona 18 to 24, answered null
+| p06 | b | 390×896 | capped | 45 | 6 | - | No | no | $0.0090 |
+mismatch p06 cycling: persona Never, answered null
+mismatch p06 rented_before: persona No, answered null
+mismatch p06 age_band: persona 25 to 34, answered null
+| p07 | a | 390×896 | capped | 45 | 6 | - | No | no | $0.0089 |
+mismatch p07 cycling: persona A few times a year, answered null
+mismatch p07 rented_before: persona No, answered null
+mismatch p07 age_band: persona 18 to 24, answered null
+| p08 | b | 375×667 | capped | 45 | 2 | - | - | no | $0.0084 |
+mismatch p08 cycling: persona Monthly or more, answered null
+mismatch p08 rented_before: persona No, answered null
+mismatch p08 age_band: persona 35 to 44, answered null
+| p09 | a | 375×667 | capped | 45 | 6 | - | - | no | $0.0083 |
+mismatch p09 cycling: persona Monthly or more, answered null
+mismatch p09 rented_before: persona No, answered null
+mismatch p09 age_band: persona 35 to 44, answered null
+| p10 | b | 390×780 | capped | 45 | 4 | - | No | no | $0.0091 |
+mismatch p10 cycling: persona A few times a year, answered null
+mismatch p10 rented_before: persona Yes, answered null
+mismatch p10 age_band: persona 25 to 34, answered 35 to 44
+
+Check 1: Yes 0, Yes with the thought 0, of 10
+- p01 (noticed No): "last photo taken, need to confirm it" / "last photo taken, need to confirm it"
+- p02 (noticed -): never reached the preview
+- p03 (noticed -): never reached the preview
+- p04 (noticed No): "this photo looks clear, need to confirm it to move on" / "this photo looks clear, need to confirm it to move on"
+- p05 (noticed -): never reached the preview
+- p06 (noticed No): "need to use this photo quickly to avoid missing my ride"
+- p07 (noticed No): "last photo taken, need to use it fast to move on"
+- p08 (noticed -): never reached the preview
+- p09 (noticed -): never reached the preview
+- p10 (noticed No): "this photo of the drivetrain looks clear, time to use it"
+
+Check 2: 434 non-injected taps, on a live control 114 (26.3%), on the control the thought names 54 (12.4%), capped 10
+
+Check 3: skipped 10 of 10 optional fields (100%), mismatches 26
+
+
+Check 4: columns seen age_band, cycling, device, dpr, events, find_ease, find_not_looked, first_tap_after_photos, forced, hidden, id, link_in_view_at_damage, link_visible_on_load, noticed, order, page_open, photo_taken, photo_views, pilot, preference, preference_left, record_saved, rented_before, report_opened, report_taps_before_damage, scroll_depth, scroll_up_after_photos, seq, t0, t_damage_visible, t_end, t_q1_done, t_q2_done, t_q3_done, t_q4_done, t_questions_done, variant, viewport_h, viewport_w

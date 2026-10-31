@@ -1,0 +1,338 @@
+{
+  "run_id": "pilot-b",
+  "model": "z-ai/glm-4.6v",
+  "temperature": 0.8,
+  "coords": "grid",
+  "base": "https://outrent-abtest.vercel.app",
+  "cost": 0.1615773899999999,
+  "agents": [
+    {
+      "persona_id": "p01",
+      "model": "z-ai/glm-4.6v",
+      "temperature": 0.8,
+      "coords": "grid",
+      "run_id": "pilot-b",
+      "variant": "a",
+      "viewport": [
+        390,
+        852
+      ],
+      "status": "capped",
+      "aborted": true,
+      "steps": 45,
+      "injected": 3,
+      "cost": 0.01582639,
+      "tokens_in": 53551,
+      "tokens_out": 5847,
+      "skips": {},
+      "mismatch": [
+        {
+          "field": "cycling",
+          "persona": "A few times a year",
+          "answered": null
+        },
+        {
+          "field": "rented_before",
+          "persona": "Yes",
+          "answered": null
+        },
+        {
+          "field": "age_band",
+          "persona": "18 to 24",
+          "answered": null
+        }
+      ],
+      "bad_writes": [],
+      "console_errors": []
+    },
+    {
+      "persona_id": "p02",
+      "model": "z-ai/glm-4.6v",
+      "temperature": 0.8,
+      "coords": "grid",
+      "run_id": "pilot-b",
+      "variant": "b",
+      "viewport": [
+        390,
+        932
+      ],
+      "status": "finished",
+      "aborted": false,
+      "steps": 37,
+      "injected": 7,
+      "cost": 0.018235634999999993,
+      "tokens_in": 45333,
+      "tokens_out": 11106,
+      "skips": {
+        "find_where": true,
+        "preference_why": true
+      },
+      "mismatch": [],
+      "bad_writes": [],
+      "console_errors": []
+    },
+    {
+      "persona_id": "p03",
+      "model": "z-ai/glm-4.6v",
+      "temperature": 0.8,
+      "coords": "grid",
+      "run_id": "pilot-b",
+      "variant": "a",
+      "viewport": [
+        390,
+        932
+      ],
+      "status": "finished",
+      "aborted": false,
+      "steps": 23,
+      "injected": 0,
+      "cost": 0.009365720000000001,
+      "tokens_in": 27732,
+      "tokens_out": 4003,
+      "skips": {
+        "find_where": false,
+        "preference_why": false
+      },
+      "mismatch": [],
+      "bad_writes": [],
+      "console_errors": []
+    },
+    {
+      "persona_id": "p04",
+      "model": "z-ai/glm-4.6v",
+      "temperature": 0.8,
+      "coords": "grid",
+      "run_id": "pilot-b",
+      "variant": "b",
+      "viewport": [
+        390,
+        780
+      ],
+      "status": "finished",
+      "aborted": false,
+      "steps": 28,
+      "injected": 5,
+      "cost": 0.012294830000000001,
+      "tokens_in": 32023,
+      "tokens_out": 5712,
+      "skips": {
+        "find_where": true,
+        "preference_why": true
+      },
+      "mismatch": [],
+      "bad_writes": [],
+      "console_errors": []
+    },
+    {
+      "persona_id": "p05",
+      "model": "z-ai/glm-4.6v",
+      "temperature": 0.8,
+      "coords": "grid",
+      "run_id": "pilot-b",
+      "variant": "a",
+      "viewport": [
+        375,
+        667
+      ],
+      "status": "capped",
+      "aborted": true,
+      "steps": 45,
+      "injected": 1,
+      "cost": 0.015738635,
+      "tokens_in": 47050,
+      "tokens_out": 8029,
+      "skips": {},
+      "mismatch": [
+        {
+          "field": "cycling",
+          "persona": "Never",
+          "answered": null
+        },
+        {
+          "field": "rented_before",
+          "persona": "No",
+          "answered": null
+        },
+        {
+          "field": "age_band",
+          "persona": "18 to 24",
+          "answered": null
+        }
+      ],
+      "bad_writes": [],
+      "console_errors": []
+    },
+    {
+      "persona_id": "p06",
+      "model": "z-ai/glm-4.6v",
+      "temperature": 0.8,
+      "coords": "grid",
+      "run_id": "pilot-b",
+      "variant": "b",
+      "viewport": [
+        390,
+        896
+      ],
+      "status": "capped",
+      "aborted": true,
+      "steps": 45,
+      "injected": 4,
+      "cost": 0.02002498,
+      "tokens_in": 55204,
+      "tokens_out": 10617,
+      "skips": {
+        "find_where": true,
+        "preference_why": false
+      },
+      "mismatch": [],
+      "bad_writes": [],
+      "console_errors": []
+    },
+    {
+      "persona_id": "p07",
+      "model": "z-ai/glm-4.6v",
+      "temperature": 0.8,
+      "coords": "grid",
+      "run_id": "pilot-b",
+      "variant": "a",
+      "viewport": [
+        390,
+        896
+      ],
+      "status": "capped",
+      "aborted": true,
+      "steps": 45,
+      "injected": 5,
+      "cost": 0.02325978,
+      "tokens_in": 54343,
+      "tokens_out": 13293,
+      "skips": {
+        "find_where": false,
+        "preference_why": true
+      },
+      "mismatch": [
+        {
+          "field": "cycling",
+          "persona": "A few times a year",
+          "answered": null
+        },
+        {
+          "field": "rented_before",
+          "persona": "No",
+          "answered": null
+        },
+        {
+          "field": "age_band",
+          "persona": "18 to 24",
+          "answered": null
+        }
+      ],
+      "bad_writes": [],
+      "console_errors": []
+    },
+    {
+      "persona_id": "p08",
+      "model": "z-ai/glm-4.6v",
+      "temperature": 0.8,
+      "coords": "grid",
+      "run_id": "pilot-b",
+      "variant": "b",
+      "viewport": [
+        375,
+        667
+      ],
+      "status": "capped",
+      "aborted": true,
+      "steps": 45,
+      "injected": 1,
+      "cost": 0.016469155000000006,
+      "tokens_in": 49611,
+      "tokens_out": 8072,
+      "skips": {},
+      "mismatch": [
+        {
+          "field": "cycling",
+          "persona": "Monthly or more",
+          "answered": null
+        },
+        {
+          "field": "rented_before",
+          "persona": "No",
+          "answered": null
+        },
+        {
+          "field": "age_band",
+          "persona": "35 to 44",
+          "answered": null
+        }
+      ],
+      "bad_writes": [],
+      "console_errors": []
+    },
+    {
+      "persona_id": "p09",
+      "model": "z-ai/glm-4.6v",
+      "temperature": 0.8,
+      "coords": "grid",
+      "run_id": "pilot-b",
+      "variant": "a",
+      "viewport": [
+        375,
+        667
+      ],
+      "status": "capped",
+      "aborted": true,
+      "steps": 45,
+      "injected": 6,
+      "cost": 0.01843429,
+      "tokens_in": 47899,
+      "tokens_out": 11403,
+      "skips": {},
+      "mismatch": [
+        {
+          "field": "cycling",
+          "persona": "Monthly or more",
+          "answered": null
+        },
+        {
+          "field": "rented_before",
+          "persona": "No",
+          "answered": null
+        },
+        {
+          "field": "age_band",
+          "persona": "35 to 44",
+          "answered": null
+        }
+      ],
+      "bad_writes": [],
+      "console_errors": []
+    },
+    {
+      "persona_id": "p10",
+      "model": "z-ai/glm-4.6v",
+      "temperature": 0.8,
+      "coords": "grid",
+      "run_id": "pilot-b",
+      "variant": "b",
+      "viewport": [
+        390,
+        780
+      ],
+      "status": "finished",
+      "aborted": false,
+      "steps": 27,
+      "injected": 3,
+      "cost": 0.011927974999999999,
+      "tokens_in": 30418,
+      "tokens_out": 6366,
+      "skips": {
+        "find_where": false,
+        "preference_why": false
+      },
+      "mismatch": [],
+      "bad_writes": [],
+      "console_errors": []
+    }
+  ]
+}

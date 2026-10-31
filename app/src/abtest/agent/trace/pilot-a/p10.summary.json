@@ -1,0 +1,42 @@
+{
+  "persona_id": "p10",
+  "model": "qwen/qwen3-vl-30b-a3b-instruct",
+  "temperature": 0.8,
+  "coords": "grid",
+  "run_id": "pilot-a",
+  "variant": "b",
+  "viewport": [
+    390,
+    780
+  ],
+  "status": "capped",
+  "aborted": true,
+  "steps": 45,
+  "injected": 4,
+  "cost": 0.009053809999999999,
+  "tokens_in": 50231,
+  "tokens_out": 2223,
+  "skips": {
+    "find_where": false,
+    "preference_why": false
+  },
+  "mismatch": [
+    {
+      "field": "cycling",
+      "persona": "A few times a year",
+      "answered": null
+    },
+    {
+      "field": "rented_before",
+      "persona": "Yes",
+      "answered": null
+    },
+    {
+      "field": "age_band",
+      "persona": "25 to 34",
+      "answered": "35 to 44"
+    }
+  ],
+  "bad_writes": [],
+  "console_errors": []
+}
