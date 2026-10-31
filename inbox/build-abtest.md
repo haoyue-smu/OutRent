@@ -2,6 +2,19 @@
 
 Written only by the management chat. Read with `git show origin/ops:inbox/build-abtest.md`.
 
+## UPDATE 9 (31 Oct 23:15): the task line, agreed with the team
+
+One copy change on S1, the scenario screen. The task card now reads:
+- eyebrow `Your task` (unchanged)
+- line at weight 600: `Do the hand-over check before you ride.`
+- caption under it: `If anything's wrong, let the shop know.`
+
+Remove `Do what you'd normally do with a rental before riding off.` and `Just do what feels natural.` from the bundle. Nothing else changes: no card after the third photo, no new columns.
+
+Also check UPDATE 8 on the live site: at 390 × 664 (iPhone 13 in Safari with its bars) the S0 photo is 322 px, 48 % of the viewport. The spec says at most 40 %. If the live site is not yet bf809d0, deploy it; if it is, bring the photo down to 40 % and give the room to the sheet.
+
+Rerun the flows, deploy, hand back the commit and S1 at 390 × 844.
+
 ## Note (31 Oct 21:15): teammates are trying the pilot links tonight
 
 Haoyue's team is opening `?v=a&pilot=1` and `?v=b&pilot=1` on their own phones from about 21:15. Deploy UPDATE 8 as soon as it passes; do not deploy anything half-done in between. All their rows are `pilot = true`.
