@@ -139,7 +139,14 @@ Reopening the link after Finish shows only the thank-you line, with no new row.
 - **Supabase is set up by Management (31 Oct 12:00).**
   - Project `outrent-abtest`, URL `https://mswjwsmszuhutuqzguwi.supabase.co`.
   - The schema is `inbox/abtest-schema.sql` on ops. Copy it into the repo as `app/src/abtest/schema.sql`. Do not change it without telling Management.
-  - Haoyue gives you the publishable (anon) key. It goes in `app/.env.local` (gitignored); never commit it.
+  - Publishable key: `sb_publishable_eScKVPBbQFUxJyWgeAROIg_BUlKtlKM`. It goes in `app/.env.local` as `VITE_SUPABASE_URL` / `VITE_SUPABASE_KEY` (gitignored). It is a public key, but keep it out of committed files anyway.
+  - Management checked it on 31 Oct 11:55:
+    - the schema is applied;
+    - reading or inserting into the table or the view with the anon key is refused;
+    - six Starts came out as three A/B pairs;
+    - forced rows work;
+    - `ab_log` accepts a valid token and rejects an unknown token or a non-array events value.
+  - Rows 1–7 are Management's test rows, all `pilot = true`. Haoyue clears the table before the real run.
   - The site calls only two functions:
     - `rpc('ab_start', { p_forced, p_pilot, p_data })` → `{ id, variant, token }`;
     - `rpc('ab_log', { p_token, p_data, p_events })`.
