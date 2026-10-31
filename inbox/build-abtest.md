@@ -9,7 +9,8 @@ Written only by the management chat. Read with `git show origin/ops:inbox/build-
 Use these words exactly. Do not touch the app's own copy: the hand-over page, the report form, the sent screen.
 
 **0 · Entry**
-- Eyebrow: `IS211 · OutRent`
+- Eyebrow: `SMU IS211 · OutRent`
+- Intro, above the title, in the body style: `Hi! We're SMU students building OutRent, an app for renting bikes and outdoor gear, for our IS211 project. Thanks for helping us test it.`
 - Title: `Your bike's here`
 - Paragraph 1: `You're Daniel. You booked a mountain bike on OutRent for a Saturday morning ride, and it's just been dropped off at the trailhead. There's a S$150 deposit on your card until you return it.`
 - Paragraph 2: `Use the app like you normally would before you ride off. Takes about 3 minutes.`
