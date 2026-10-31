@@ -146,7 +146,7 @@ Reopening the link after Finish shows only the thank-you line, with no new row.
     - six Starts came out as three A/B pairs;
     - forced rows work;
     - `ab_log` accepts a valid token and rejects an unknown token or a non-array events value.
-  - Rows 1–7 are Management's test rows, all `pilot = true`. Haoyue clears the table before the real run.
+  - Management's test rows were cleared at 11:50; the table is empty and ids start at 1. Mark your own test rows `pilot = true`; Haoyue clears the table again after the pilot, before the real run.
   - The site calls only two functions:
     - `rpc('ab_start', { p_forced, p_pilot, p_data })` → `{ id, variant, token }`;
     - `rpc('ab_log', { p_token, p_data, p_events })`.
