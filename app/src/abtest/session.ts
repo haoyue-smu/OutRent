@@ -2,7 +2,7 @@ import type { PartId } from '../pages/11-handover-check/pieces'
 import type { Started, Variant } from './api'
 
 // What survives a reload. The cookie holds the row (30 days, SameSite=Lax); local storage holds where the participant was.
-export type Screen = 'handover' | 'report' | 'sent' | 'questions' | 'preference' | 'thanks'
+export type Screen = 'handover' | 'report' | 'sent' | 'q1' | 'q2' | 'q3' | 'q4' | 'q5' | 'thanks'
 export type Saved = {
   screen: Screen
   shots: PartId[]
@@ -19,15 +19,19 @@ export type Saved = {
   details: string
   noticed: string
   seq: number
-  seqWhy: string
-  openText: string
+  findEase: number
+  findNot: boolean
+  findWhere: string
   left: Variant | null
   pick: Variant | null
   why: string
+  cycling: string
+  rentedBefore: string
+  ageBand: string
 }
 export const fresh = (): Saved => ({
   screen: 'handover', shots: [], n: 0, scrolledMax: 0, taps: 0, damageAt: null, reportTapped: false, firstTapDone: false, views: 0, sent: false,
-  reason: '', photos: [], details: '', noticed: '', seq: 0, seqWhy: '', openText: '', left: null, pick: null, why: '',
+  reason: '', photos: [], details: '', noticed: '', seq: 0, findEase: 0, findNot: false, findWhere: '', left: null, pick: null, why: '', cycling: '', rentedBefore: '', ageBand: '',
 })
 
 const COOKIE = 'outrent_ab'
@@ -49,7 +53,12 @@ export function clearRow() {
 
 const key = (token: string) => `outrent_ab_${token}`
 export function readSaved(token: string): Saved {
-  try { return { ...fresh(), ...JSON.parse(localStorage.getItem(key(token)) ?? '{}') as Partial<Saved> } } catch { return fresh() }
+  try {
+    const s = { ...fresh(), ...JSON.parse(localStorage.getItem(key(token)) ?? '{}') as Partial<Saved> }
+    // A session begun before the questions were split up resumes on the matching new screen.
+    const was = s.screen as string
+    return { ...s, screen: was === 'questions' ? 'q1' : was === 'preference' ? 'q4' : s.screen }
+  } catch { return fresh() }
 }
 export function writeSaved(token: string, s: Saved) {
   try { localStorage.setItem(key(token), JSON.stringify(s)) } catch { /* private mode: a reload starts the hand-over again, on the same row */ }

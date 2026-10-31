@@ -66,10 +66,10 @@ body { background: var(--desk); font-family: var(--font); color: var(--ink); -we
 /* Radio rows */
 .ab-opt { position: relative; display: flex; align-items: center; gap: var(--s-3); min-height: 48px; border-bottom: var(--hair) solid var(--rule-2); font-size: var(--fs-callout); font-weight: 500; cursor: pointer; }
 .ab-opt:last-child { border-bottom: 0; }
-.ab-opt input, .ab-scale-n input, .ab-pick input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
+.ab-opt input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
 .ab-opt i { flex: none; width: 20px; height: 20px; box-sizing: border-box; border: 1.5px solid var(--ink-3); border-radius: var(--r-pill); }
 .ab-opt input:checked + i { border: 6px solid var(--forest); }
-.ab-opt input:focus-visible + i, .ab-scale-n input:focus-visible + span { outline: 2px solid var(--forest); outline-offset: 2px; }
+.ab-opt input:focus-visible + i { outline: 2px solid var(--forest); outline-offset: 2px; }
 
 /* Report form */
 .ab-block { margin-top: var(--s-5); }
@@ -80,7 +80,7 @@ body { background: var(--desk); font-family: var(--font); color: var(--ink); -we
 .ab-add { display: grid; place-items: center; border: 1.5px dashed var(--ink-3); color: var(--ink); }
 .ab-add .icon { width: 20px; height: 20px; }
 .ab-label { display: block; margin: var(--s-3) 0 var(--s-2); font-size: var(--fs-small); line-height: var(--lh-small); color: var(--ink-2); }
-.ab-block .ab-label, .ab-label.ab-label-top { margin-top: 0; }
+.ab-block .ab-label { margin-top: 0; }
 /* 17 px keeps iPhone Safari from zooming the page when the field takes focus. */
 .ab-field { display: block; width: 100%; box-sizing: border-box; padding: var(--s-3); border: var(--hair) solid var(--rule); border-radius: 12px; background: var(--sheet); color: var(--ink); font-family: var(--sans); font-size: var(--fs-body); line-height: var(--lh-body); resize: none; }
 .ab-field:focus-visible { outline: 2px solid var(--forest); outline-offset: 1px; }
@@ -90,42 +90,52 @@ body { background: var(--desk); font-family: var(--font); color: var(--ink); -we
 .ab-badge .icon { width: 22px; height: 22px; }
 .ab-sent-h { margin-top: var(--s-3); }
 
-/* Questions */
-.ab-q { min-width: 0; margin: var(--s-5) 0 0; padding: 0 var(--gutter); border: 0; }
-.ab-q:first-child { margin-top: var(--s-2); }
-.ab-q-t { display: block; padding: 0; text-wrap: pretty; margin-bottom: var(--s-3); font-size: var(--fs-body); line-height: var(--lh-body); font-weight: 600; }
-.ab-inq { margin: 0; }
-.ab-scale { display: grid; grid-template-columns: repeat(7, 1fr); gap: var(--s-1); }
-.ab-scale-n { position: relative; display: block; height: 44px; }
-.ab-scale-n span { display: grid; place-items: center; height: 100%; box-sizing: border-box; border: var(--hair) solid var(--rule); border-radius: var(--r-thumb); background: var(--sheet); font-size: var(--fs-callout); font-weight: 500; }
-.ab-scale-n input:checked + span { border-color: var(--forest); background: var(--forest); color: var(--white); }
+/* The questions: one per screen, the progress line on top, the button fixed at the bottom. */
+.ab-root .ab-qs { padding-bottom: 110px; scroll-padding-bottom: 110px; }
+.ab-qs-in { display: flex; flex-direction: column; gap: var(--s-4); padding: calc(var(--top-safe) + var(--s-3)) var(--gutter) 0; }
+.ab-qs-in .t-h1 { margin: calc(var(--s-2) * -1) 0 0; text-wrap: pretty; }
+.ab-qs-in > .small { margin: calc(var(--s-2) * -1) 0 0; }
+.ab-rows { display: flex; flex-direction: column; gap: var(--s-2); }
+.opt.ab-row { align-items: center; align-content: center; min-height: 56px; padding-top: var(--s-2); padding-bottom: var(--s-2); box-sizing: border-box; cursor: pointer; }
+.ab-rows .opt + .opt { margin-top: 0; }
+.opt.ab-row .rad { margin-top: 0; box-sizing: border-box; }
+.ab-scale { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: var(--s-1); }
+.ab-tile { aspect-ratio: 1; min-height: var(--touch); padding: 0; border: var(--hair) solid var(--rule); border-radius: var(--r-thumb); background: var(--sheet); color: var(--ink); font: inherit; font-size: var(--fs-callout); font-weight: 500; cursor: pointer; }
+.ab-tile[aria-pressed="true"] { border-color: var(--forest); background: var(--forest); color: var(--white); }
 .ab-ends { display: flex; justify-content: space-between; margin-top: 6px; font-size: var(--fs-label); line-height: var(--lh-label); color: var(--ink-2); }
+.ab-grow { overflow: hidden; }
+.ab-group5 { display: flex; flex-direction: column; gap: var(--s-2); margin-top: var(--s-1); }
 
 /* Pick A or B */
-.ab-picks { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-3); }
-.ab-pick { display: flex; flex-direction: column; gap: var(--s-1); min-width: 0; }
+.ab-picks { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-3); align-items: start; }
+.ab-pick { display: flex; flex-direction: column; gap: var(--s-2); min-width: 0; }
 /* The whole page, never cropped: as wide as the column, unless that would be taller than the screen leaves room for. */
-.ab-pick-img { display: block; width: min(100%, calc((100vh - 268px) * var(--ar))); width: min(100%, calc((100dvh - 268px) * var(--ar))); aspect-ratio: var(--ar); margin: 0 auto; padding: 0; border: 2px solid var(--rule); border-radius: var(--r-thumb); overflow: hidden; background: var(--sheet); box-sizing: border-box; cursor: pointer; }
-.ab-pick-img .photo { display: block; width: 100%; height: 100%; object-fit: contain; }
+.ab-pick-img { position: relative; display: block; width: min(100%, calc((100vh - 268px) * var(--ar))); width: min(100%, calc((100dvh - 268px) * var(--ar))); aspect-ratio: var(--ar); margin: 0 auto; padding: 0; border: 2px solid var(--rule); border-radius: var(--r-thumb); overflow: hidden; background: var(--sheet); box-sizing: border-box; cursor: pointer; }
+.ab-pick-img .photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
 .ab-pick.is-on .ab-pick-img { border-color: var(--forest); }
 .ab-pick-img:focus-visible { outline-offset: 2px; }
-.ab-pick-cap { position: relative; display: flex; align-items: center; justify-content: center; gap: var(--s-2); min-height: var(--touch); font-size: var(--fs-small); line-height: var(--lh-small); cursor: pointer; }
-.ab-pick-cap i { flex: none; width: 20px; height: 20px; box-sizing: border-box; border: 1.5px solid var(--ink-3); border-radius: var(--r-pill); }
-.ab-pick-cap input:checked + i { border: 6px solid var(--forest); }
-.ab-pick-cap input:focus-visible + i { outline: 2px solid var(--forest); outline-offset: 2px; }
+.ab-pick .opt.ab-row { padding-left: 10px; padding-right: 10px; column-gap: var(--s-2); }
+.ab-pick .opt.ab-row b { font-size: var(--fs-small); line-height: var(--lh-small); }
 
-/* The first and the last screen. The photo runs under the status bar and on behind the sheet, far enough to stay covered
+/* The screens around the task. The photo runs under the status bar and on behind the sheet, far enough to stay covered
    while the sheet rises; its crop keeps the whole bike in the part that shows, on any phone. */
 .ab-ps { position: absolute; inset: 0; display: flex; flex-direction: column; overflow: hidden; background: var(--photo-bg); }
 .ab-ps-photo { position: relative; flex: 1; min-height: 0; margin-bottom: -84px; }
 .ab-ps-photo .photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 60%; }
 .ab-ps-sheet { position: relative; flex: none; display: flex; flex-direction: column; gap: var(--s-3); max-height: 100%; box-sizing: border-box; padding: var(--s-6) var(--gutter) calc(var(--s-4) + env(safe-area-inset-bottom)); overflow-y: auto; border-radius: var(--r-sheet) var(--r-sheet) 0 0; background: var(--paper); box-shadow: var(--shadow-drawer); animation: ab-rise var(--t-base) var(--ease); }
+.ab-ps-photo.is-spot .photo { object-position: 28% 50%; }
 .ab-ps-sheet .lede { margin: 0; color: var(--ink); }
+.ab-facts { display: flex; flex-direction: column; gap: var(--s-2); margin: var(--s-1) 0; padding: 0; list-style: none; font-size: var(--fs-callout); line-height: var(--lh-callout); }
+.ab-facts li { display: grid; grid-template-columns: 20px minmax(0, 1fr); gap: var(--s-3); align-items: start; }
+.ab-facts .icon { width: 20px; height: 20px; margin-top: 1px; }
+.ab-lines { display: flex; flex-direction: column; gap: var(--s-2); }
+.ab-lines .lede { line-height: 1.5; }
+.ab-task { display: flex; flex-direction: column; gap: var(--s-1); padding: var(--s-3) 14px; border-radius: var(--r-card); background: var(--sheet); box-shadow: var(--shadow-sheet); }
+.ab-task b { font-size: var(--fs-callout); line-height: var(--lh-callout); font-weight: 600; }
+.ab-task .small { margin: 0; }
 .ab-ps-sheet .t-h1 { margin: 0; }
 .ab-ps-sheet .cta { flex: none; width: 100%; margin-top: var(--s-2); }
 .ab-ps-sheet .ab-dock-note { margin: 0; }
-.ab-ps-small { display: flex; flex-direction: column; gap: var(--s-1); }
-.ab-ps-small .small { margin: 0; }
 /* A short phone: tighter, so the whole bike still shows above the sheet. */
 @media (max-height: 700px) {
   .ab-ps-photo .photo { object-position: 50% 62%; }

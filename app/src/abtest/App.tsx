@@ -3,7 +3,7 @@ import { gsap } from 'gsap'
 import { still } from '../shell/direction'
 import { PARTS, type PartId } from '../pages/11-handover-check/pieces'
 import { deviceName, makeQueue, startRow, type Queue, type Variant } from './api'
-import { Camera, Entry, HandoverPage, LayoutViewer, Preference, Questions, ReportForm, ReportSent, Thanks, Viewer, type PhotoView } from './Screens'
+import { Camera, HandoverPage, LayoutViewer, Q1, Q2, Q3, Q4, Q5, ReportForm, ReportSent, Scenario, Thanks, Viewer, Welcome, type PhotoView } from './Screens'
 import { clearRow, dropNew, readParams, readRow, readSaved, writeRow, writeSaved, type Row, type Saved, type Screen } from './session'
 import { decoded, mineOf, preload } from './story'
 
@@ -50,6 +50,7 @@ export default function App() {
 }
 
 function Start({ onRow }: { onRow: (r: Row) => void }) {
+  const [scenario, setScenario] = useState(false)
   const [busy, setBusy] = useState(false)
   const [failed, setFailed] = useState(false)
   const start = async () => {
@@ -61,7 +62,8 @@ function Start({ onRow }: { onRow: (r: Row) => void }) {
       onRow(r)
     } catch { setFailed(true); setBusy(false) }
   }
-  return <Entry onStart={start} busy={busy} failed={failed} />
+  if (!scenario) return <Welcome onContinue={() => setScenario(true)} />
+  return <Scenario onStart={start} busy={busy} failed={failed} />
 }
 
 function Session({ row }: { row: Row }) {
@@ -274,7 +276,7 @@ function Session({ row }: { row: Row }) {
     const t = now()
     setFields({ record_saved: t, t_end: t, order: state.current.sent ? 'report then save' : 'save only' })
     patch({ left: state.current.left ?? (Math.random() < 0.5 ? 'a' : 'b') })
-    go('questions')
+    go('q1')
   }
   const send = () => {
     const c = state.current
@@ -287,15 +289,24 @@ function Session({ row }: { row: Row }) {
     patch({ photos })
     logEvent('form', 'report_photos', { photos })
   }
-  const done = () => {
-    const c = state.current
-    setFields({ t_questions_done: now(), noticed: c.noticed, seq: c.seq, seq_why: c.seqWhy, open_text: c.openText })
-    setFields({ preference_left: (c.left ?? 'a').toUpperCase() })
-    go('preference')
+  // Each answer goes out as it is given; each screen also logs when it was left.
+  const answer = (key: keyof Saved, column: string, value: string | number) => {
+    patch({ [key]: value } as Partial<Saved>)
+    setFields({ [column]: value })
+    logEvent('form', column, { value })
+  }
+  const written = (key: keyof Saved, column: string, value: string) => {
+    patch({ [key]: value } as Partial<Saved>)
+    setFields({ [column]: value })
+    logEvent('form', column, { len: value.length })
+  }
+  const leave = (n: number, to: Screen, more: Record<string, unknown> = {}) => {
+    setFields({ [`t_q${n}_done`]: now(), ...more })
+    go(to)
   }
   const finish = () => {
-    const c = state.current
-    setFields({ t_finish: now(), preference: c.pick?.toUpperCase(), preference_why: c.why })
+    const t = now()
+    setFields({ t_q5_done: t, t_finish: t })
     patch({ screen: 'thanks' })
     writeRow({ ...row, done: true })
     queue.current.beacon()
@@ -316,19 +327,25 @@ function Session({ row }: { row: Row }) {
           onSend={send} />
       )}
       {s.screen === 'sent' && <ReportSent reason={s.reason} count={s.photos.length} onBack={() => go('handover')} />}
-      {s.screen === 'questions' && (
-        <Questions noticed={s.noticed} seq={s.seq} seqWhy={s.seqWhy} openText={s.openText}
-          onNoticed={(noticed) => { patch({ noticed }); setFields({ noticed }); logEvent('form', 'noticed', { noticed }) }}
-          onSeq={(seq) => { patch({ seq }); setFields({ seq }); logEvent('form', 'seq', { seq }) }}
-          onSeqWhy={(seqWhy) => { patch({ seqWhy }); setFields({ seq_why: seqWhy }); logEvent('form', 'seq_why', { len: seqWhy.length }) }}
-          onOpenText={(openText) => { patch({ openText }); setFields({ open_text: openText }); logEvent('form', 'open_text', { len: openText.length }) }}
-          onDone={done} />
+      {s.screen === 'q1' && <Q1 value={s.noticed} onPick={(v) => answer('noticed', 'noticed', v)} onNext={() => leave(1, 'q2')} />}
+      {s.screen === 'q2' && <Q2 value={s.seq} onPick={(n) => answer('seq', 'seq', n)} onNext={() => leave(2, 'q3')} />}
+      {s.screen === 'q3' && (
+        <Q3 ease={s.findEase} not={s.findNot} where={s.findWhere}
+          onEase={(findEase) => { patch({ findEase, findNot: false }); setFields({ find_ease: findEase, find_not_looked: false }); logEvent('form', 'find_ease', { value: findEase }) }}
+          onNot={() => { patch({ findEase: 0, findNot: true }); setFields({ find_ease: null, find_not_looked: true }); logEvent('form', 'find_not_looked', { value: true }) }}
+          onWhere={(v) => written('findWhere', 'find_where', v)}
+          onNext={() => { const t = now(); leave(3, 'q4', { t_questions_done: t, preference_left: (state.current.left ?? 'a').toUpperCase() }) }} />
       )}
-      {s.screen === 'preference' && (
-        <Preference left={s.left ?? 'a'} pick={s.pick} why={s.why}
+      {s.screen === 'q4' && (
+        <Q4 left={s.left ?? 'a'} pick={s.pick} why={s.why}
           onPick={(pick: Variant) => { patch({ pick }); setFields({ preference: pick.toUpperCase() }); logEvent('form', 'preference', { pick: pick.toUpperCase() }) }}
           onView={openPref}
-          onWhy={(why) => { patch({ why }); setFields({ preference_why: why }); logEvent('form', 'preference_why', { len: why.length }) }}
+          onWhy={(v) => written('why', 'preference_why', v)}
+          onNext={() => leave(4, 'q5')} />
+      )}
+      {s.screen === 'q5' && (
+        <Q5 cycling={s.cycling} rented={s.rentedBefore} age={s.ageBand}
+          onCycling={(v) => answer('cycling', 'cycling', v)} onRented={(v) => answer('rentedBefore', 'rented_before', v)} onAge={(v) => answer('ageBand', 'age_band', v)}
           onFinish={finish} />
       )}
       {s.screen === 'thanks' && <Thanks />}

@@ -36,6 +36,7 @@ for (const r of rows.filter((x) => !want.length || want.includes(Number(x.id))))
   console.log(`damage   ${s(r.t_damage_visible)}, first report tap ${s(r.t_report_tap)}, time to report ${s(r.time_to_report_ms ?? (r.t_report_tap == null ? null : r.t_report_tap - r.t_damage_visible))}`)
   console.log(`report   opened ${s(r.report_opened)}, sent ${s(r.report_sent)}, reason ${r.report_reason ?? '-'}, photos ${JSON.stringify(r.report_photos)}, details length ${r.report_details_len ?? '-'}`)
   console.log(`end      first tap after photos: ${r.first_tap_after_photos}, order: ${r.order}, saved ${s(r.record_saved)}`)
-  console.log(`answers  noticed ${r.noticed}, seq ${r.seq}, why "${r.seq_why ?? ''}", looked "${r.open_text ?? ''}", done ${s(r.t_questions_done)}`)
+  console.log(`answers  noticed ${r.noticed}, seq ${r.seq}, find ${r.find_not_looked ? 'did not look' : r.find_ease}, looked first "${r.find_where ?? ''}", done ${s(r.t_questions_done)}`)
+  console.log(`about    cycling ${r.cycling}, rented ${r.rented_before}, age ${r.age_band}`)
   console.log(`prefer   ${r.preference}, left was ${r.preference_left}, why "${r.preference_why ?? ''}", finish ${s(r.t_finish)}, hidden ${r.hidden.length} events`)
 }

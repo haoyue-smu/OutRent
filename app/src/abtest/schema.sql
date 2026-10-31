@@ -44,7 +44,15 @@ create table if not exists public.ab_sessions (
   -- away time and the full replay
   hidden jsonb not null default '[]',
   events jsonb not null default '[]',
-  photo_views integer not null default 0  -- photos opened full size
+  photo_views integer not null default 0,  -- photos opened full size
+  -- the questions, one per screen (open_text and seq_why stay for the old pilot rows; null from now on)
+  find_ease integer check (find_ease between 1 and 7),
+  find_not_looked boolean,
+  find_where text,
+  cycling text,
+  rented_before text,
+  age_band text,
+  t_q1_done bigint, t_q2_done bigint, t_q3_done bigint, t_q4_done bigint, t_q5_done bigint
 );
 
 create unique index if not exists ab_sessions_block on public.ab_sessions (pilot, block_seq) where block_seq is not null;
@@ -143,6 +151,18 @@ begin
     seq_why = coalesce(left(f ->> 'seq_why', 4000), s.seq_why),
     open_text = coalesce(left(f ->> 'open_text', 4000), s.open_text),
     t_questions_done = coalesce(s.t_questions_done, (f ->> 't_questions_done')::bigint),
+    -- "I didn't look for it" clears a tile picked first, so a null in the patch counts here.
+    find_ease = case when f ? 'find_ease' then (f ->> 'find_ease')::integer else s.find_ease end,
+    find_not_looked = coalesce((f ->> 'find_not_looked')::boolean, s.find_not_looked),
+    find_where = coalesce(left(f ->> 'find_where', 4000), s.find_where),
+    cycling = coalesce(left(f ->> 'cycling', 40), s.cycling),
+    rented_before = coalesce(left(f ->> 'rented_before', 20), s.rented_before),
+    age_band = coalesce(left(f ->> 'age_band', 40), s.age_band),
+    t_q1_done = coalesce(s.t_q1_done, (f ->> 't_q1_done')::bigint),
+    t_q2_done = coalesce(s.t_q2_done, (f ->> 't_q2_done')::bigint),
+    t_q3_done = coalesce(s.t_q3_done, (f ->> 't_q3_done')::bigint),
+    t_q4_done = coalesce(s.t_q4_done, (f ->> 't_q4_done')::bigint),
+    t_q5_done = coalesce(s.t_q5_done, (f ->> 't_q5_done')::bigint),
     preference = coalesce(left(f ->> 'preference', 2), s.preference),
     preference_why = coalesce(left(f ->> 'preference_why', 4000), s.preference_why),
     preference_left = coalesce(s.preference_left, left(f ->> 'preference_left', 2)),

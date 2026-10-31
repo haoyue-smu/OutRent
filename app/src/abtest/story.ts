@@ -6,13 +6,15 @@ import mineCrank from '@photos/_abtest/assets/mine-crank.webp'
 import mineSaddle from '@photos/_abtest/assets/mine-saddle.webp'
 import mineDrive from '@photos/_abtest/assets/mine-drive.webp'
 import backdrop from '@photos/07-fees-liability/assets/07-direction-backdrop-marlin7.webp'
+import spot from '@photos/06-delivery-return/assets/06-direction-handover-spot.webp'
 import layoutA from '@photos/_abtest/assets/layout-a.webp'
 import layoutB from '@photos/_abtest/assets/layout-b.webp'
 
 // The fixed story clock and the photos. Nothing on screen uses the real time.
 
-// The Marlin 7 at the trailhead, behind the first and the last screen, as on page 07.
+// The Marlin 7 at the trailhead, behind the welcome and the thank-you, as on page 07; the trailhead carpark behind the scenario.
 export const BACKDROP = backdrop
+export const SPOT = spot
 // The test's own six photos, made so anyone can read them; the live app keeps its images. Daniel's drivetrain shows the
 // chain off and lying on the ground, which the shop's does not. The rings sit on the shop's scratch and scuff.
 const OWN: Record<PartId, Partial<Part>> = {
@@ -32,16 +34,19 @@ export const SENT_SHORT = '7:46'
 export const SENT_FULL = '25 Oct · 7:46'
 export const REASONS = ['Wrong item', 'Damaged', 'Not adjusted to my fit', 'Something else']
 export const NOTICED = ['Yes', 'No', 'Not sure']
+export const CYCLING = ['Never', 'A few times a year', 'Monthly or more']
+export const RENTED = ['Yes', 'No']
+export const AGES = ['18 to 24', '25 to 34', '35 to 44', '45 or older', 'Prefer not to say']
 // Screen 7's pictures: the whole page after the three photos, 390 px wide, with the link outlined. This is their height.
 export const LAYOUT_H = 1012
 export const LAYOUTS = {
-  a: { src: layoutA, caption: 'Link at the top', alt: 'The whole hand-over page, with the report link outlined above the record card' },
-  b: { src: layoutB, caption: 'Link at the bottom', alt: 'The whole hand-over page, with the report link outlined below the record card' },
+  a: { src: layoutA, caption: 'Report link at the top', alt: 'The whole hand-over page, with the report link outlined above the record card' },
+  b: { src: layoutB, caption: 'Report link at the bottom', alt: 'The whole hand-over page, with the report link outlined below the record card' },
 }
 
 // Every photo the test shows, decoded before it is needed, so the 1.0 s preview starts with the picture on screen.
 export const preload = () => Promise.allSettled(
-  [backdrop, ...AB_PARTS.flatMap((p) => [p.shop, p.mine]), layoutA, layoutB].map((src) => { const i = new Image(); i.src = src; return i.decode() }),
+  [backdrop, spot, ...AB_PARTS.flatMap((p) => [p.shop, p.mine]), layoutA, layoutB].map((src) => { const i = new Image(); i.src = src; return i.decode() }),
 )
 // Waits for a photo, but never for long: a slow decode must not stop the participant from going on.
 export const decoded = (src: string, limit = 1500) => {

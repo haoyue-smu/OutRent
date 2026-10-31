@@ -6,7 +6,7 @@
 //   node app/e2e/abtest.mjs drop               the keepalive write on pagehide
 //   node app/e2e/abtest.mjs slow               the damaged photo on a slow connection
 //   node app/e2e/abtest.mjs grep               the built bundle holds no old copy
-//   node app/e2e/abtest.mjs entry              the entry and thank-you screens: the sheet fits a small phone, screenshots
+//   node app/e2e/abtest.mjs screens            every screen around the task at 390 x 844 and 375 x 667: what must fit does, screenshots
 // Every run opens rows with pilot=1. Output goes to app/e2e/out/abtest/ (git ignores it).
 import { createRequire } from 'module'
 import fs from 'fs'
@@ -46,7 +46,7 @@ function watch(ctx) {
 function rowFromCalls(calls) {
   const start = calls.find((c) => c.fn === 'ab_start'), b = start.body, first = start.row[0]
   const row = { id: first.id, variant: first.variant, forced: !!b.p_forced, pilot: b.p_pilot, t0: b.p_t0, viewport_h: b.p_viewport_h, viewport_w: b.p_viewport_w, dpr: b.p_dpr, device: b.p_device, order: 'neither', events: [], scroll_depth: [], photo_taken: [], hidden: [], scroll_up_after_photos: false }
-  const once = new Set(['page_open', 'link_visible_on_load', 'link_in_view_at_damage', 't_damage_visible', 'first_tap_after_photos', 't_report_tap', 'report_opened', 'report_sent', 'record_saved', 't_end', 't_questions_done', 'preference_left', 't_finish'])
+  const once = new Set(['page_open', 'link_visible_on_load', 'link_in_view_at_damage', 't_damage_visible', 'first_tap_after_photos', 't_report_tap', 'report_opened', 'report_sent', 'record_saved', 't_end', 't_questions_done', 'preference_left', 't_finish', 't_q1_done', 't_q2_done', 't_q3_done', 't_q4_done', 't_q5_done'])
   for (const c of calls.filter((x) => x.fn === 'ab_log' && (x.status === null || x.status < 300))) {
     for (const [k, v] of Object.entries(c.body.p_patch.set ?? {})) if (!once.has(k) || row[k] == null) row[k] = v
     for (const k of ['events', 'scroll_depth', 'photo_taken', 'hidden']) row[k].push(...(c.body.p_patch[k] ?? []))
@@ -64,10 +64,15 @@ async function open(browserType, device, query) {
   p.on('console', (m) => { if (m.type() === 'error') errs.push(m.text()) })
   p.on('pageerror', (e) => errs.push('pageerror: ' + e.message))
   await p.goto(`${BASE}/?pilot=1&new=1${query ? '&' + query : ''}`)
-  await p.waitForSelector('text=Your bike’s here')
+  await p.waitForSelector('text=Thanks for helping us out!')
   return { browser, ctx, p, errs, calls }
 }
-const start = async (p) => { await p.tap('button:has-text("Start")'); await p.waitForSelector('text=Check it before you ride') }
+const start = async (p) => {
+  await p.tap('button:has-text("Continue")')
+  await p.waitForSelector('text=You’re Daniel')
+  await p.tap('button:has-text("Start")')
+  await p.waitForSelector('text=Check it before you ride')
+}
 const settled = (p) => p.waitForFunction(() => [...document.images].every((i) => i.complete && i.naturalWidth > 0))
 const scrollTo = (p, sel) => p.evaluate((s) => document.querySelector(s).scrollIntoView({ block: 'center' }), sel)
 async function takePhoto(p, name) {
@@ -113,35 +118,48 @@ async function report(p, photos = ['drive']) {
   await sleep(100)
   check('second report refused', await p.isVisible('text=Check it before you ride'))
 }
-async function finishSurvey(p) {
+const next = async (p, n) => { await p.tap(`[data-log="next:${n}"]`); await p.waitForSelector(`text=${n + 1} of 5`) }
+async function finishSurvey(p, notLooked) {
   await scrollTo(p, '.ab-main')
   await p.tap('button:has-text("Save record")')
-  await p.waitForSelector('text=3 quick questions')
-  check('next disabled until answers', await p.isDisabled('button:has-text("Next")'))
-  await p.tap('label:has-text("Yes")')
+  await p.waitForSelector('text=1 of 5')
+  check('Q1: next disabled until an answer', await p.isDisabled('[data-log="next:1"]'))
+  await p.tap('[data-log="noticed:Yes"]')
+  await next(p, 1)
+  check('Q2: next disabled until an answer', await p.isDisabled('[data-log="next:2"]'))
   await p.tap('[data-log="seq:6"]')
-  await p.fill('#ab-seq-why', 'Clear steps')
-  await p.fill('#ab-open', 'Near the photos')
-  await p.tap('button:has-text("Next")')
-  await p.waitForSelector('text=Which version of that page do you prefer?')
+  await next(p, 2)
+  check('Q3: next disabled until an answer', await p.isDisabled('[data-log="next:3"]'))
+  if (notLooked) {
+    await p.tap('[data-log="find:6"]')
+    await p.tap('[data-log="find:not-looked"]')
+    check('Q3: the row clears the tile', await p.getAttribute('[data-log="find:6"]', 'aria-pressed') === 'false')
+  } else await p.tap('[data-log="find:5"]')
+  await p.fill('#ab-find-where', 'Near the photos')
+  await next(p, 3)
   await settled(p)
-  check('submit disabled until a pick', await p.isDisabled('button:has-text("Submit")'))
+  check('Q4: next disabled until a pick', await p.isDisabled('[data-log="next:4"]'))
   check('neither picture is cropped', await p.$$eval('.ab-pick-img img', (x) => x.every((i) => { const r = i.getBoundingClientRect(); return Math.abs(r.width / r.height - i.naturalWidth / i.naturalHeight) < 0.01 })))
   await p.tap('.ab-pick-img >> nth=1')
   await p.waitForSelector('.ab-viewer')
   check('a picture opens full size and scrolls', await p.$eval('.ab-viewer figure', (f) => f.scrollHeight > f.clientHeight), await p.textContent('.ab-viewer figcaption'))
-  check('its opening did not pick it', await p.$$eval('input[name=pick]:checked', (x) => x.length) === 0)
+  check('its opening did not pick it', await p.$$eval('.ab-pick.is-on', (x) => x.length) === 0)
   await p.$eval('.ab-viewer figure', (f) => { f.scrollTop = f.scrollHeight })
   check('close stays on screen when scrolled', await p.isVisible('.ab-viewer-x'))
   await p.tap('.ab-viewer-x')
   await p.waitForSelector('.ab-viewer', { state: 'detached' })
-  const caps = await p.$$eval('.ab-pick-cap', (x) => x.map((e) => e.textContent))
-  check('both captions', caps.includes('Link at the top') && caps.includes('Link at the bottom'), caps.join(' | '))
-  await p.tap('.ab-pick-cap >> nth=0')
-  check('a tap on the caption picks, with a forest border', await p.$eval('.ab-pick >> nth=0', (e) => e.classList.contains('is-on')) && !(await p.isDisabled('button:has-text("Submit")')))
+  const caps = await p.$$eval('.ab-pick .opt b', (x) => x.map((e) => e.textContent))
+  check('both captions', caps.includes('Report link at the top') && caps.includes('Report link at the bottom'), caps.join(' | '))
+  await p.tap('.ab-pick .opt >> nth=0')
+  check('a tap on the row picks, with a forest border', await p.$eval('.ab-pick >> nth=0', (e) => e.classList.contains('is-on')) && !(await p.isDisabled('[data-log="next:4"]')))
   await p.fill('#ab-why', 'Easier to find')
-  await p.tap('button:has-text("Submit")')
-  await p.waitForSelector('text=Done, thanks a lot! You can close this tab.')
+  await next(p, 4)
+  check('Q5: finish disabled until all three', await p.isDisabled('[data-log="next:5"]'))
+  await p.tap('[data-log="cycling:Never"]'); await p.tap('[data-log="rented:No"]')
+  check('Q5: still disabled with two', await p.isDisabled('[data-log="next:5"]'))
+  await p.tap('[data-log="age:Prefer not to say"]')
+  await p.tap('button:has-text("Finish")')
+  await p.waitForSelector('text=Done, thank you!')
 }
 
 // A photo full size: its tag, one 44 px close button, a tap outside closes, and the page behind has not moved.
@@ -167,8 +185,8 @@ async function viewPhoto(p, name, opener, tag, how, src) {
   check(`${name}: the page has not moved`, after === y, `${y} / ${after}`)
 }
 
-async function flow(name, browserType, device, variant, withReport, viewFirst) {
-  console.log(`\n--- ${name} · ${variant.toUpperCase()} · ${viewFirst ? 'open the drivetrain photo, close it, then report' : withReport ? 'report' : 'save only'}`)
+async function flow(name, browserType, device, variant, withReport, viewFirst, notLooked) {
+  console.log(`\n--- ${name} · ${variant.toUpperCase()} · ${viewFirst ? 'open the drivetrain photo, close it, then report' : notLooked ? 'save only, did not look' : withReport ? 'report' : 'save only'}`)
   const { browser, p, errs, calls } = await open(browserType, device, `v=${variant}`)
   await settled(p)
   await start(p)
@@ -188,7 +206,7 @@ async function flow(name, browserType, device, variant, withReport, viewFirst) {
   check('save enabled after three', !(await p.isDisabled('button:has-text("Save record")')))
   check('note above save', await p.isVisible('text=Both records are kept with booking OR-10482'))
   check('no condition text after photos', !/No marks|Circle the|nothing new/i.test(await p.textContent('body')))
-  await p.screenshot({ path: `${OUT}flow-${name}-${variant}-${viewFirst ? 'view' : withReport ? 'report' : 'save'}.png` })
+  await p.screenshot({ path: `${OUT}flow-${name}-${variant}-${viewFirst ? 'view' : notLooked ? 'notlooked' : withReport ? 'report' : 'save'}.png` })
   if (viewFirst) {
     const sel = 'section.part[aria-label="Drivetrain"] .shot'
     await scrollTo(p, sel); await sleep(800)
@@ -199,14 +217,14 @@ async function flow(name, browserType, device, variant, withReport, viewFirst) {
     await viewPhoto(p, 'shop drivetrain', 'section.part[aria-label="Drivetrain"] .ab-view', 'Drivetrain · 18 Oct · Timah', 'outside', /shop-drive/)
   }
   if (withReport) await report(p)
-  await finishSurvey(p)
+  await finishSurvey(p, notLooked)
   await sleep(1200)
   await p.reload()
-  await p.waitForSelector('text=Done, thanks a lot! You can close this tab.')
-  check('reopening shows only thanks', (await p.textContent('body')).trim() === 'Done, thanks a lot! You can close this tab.')
+  await p.waitForSelector('text=You can close this tab now.')
+  check('reopening shows only thanks', (await p.textContent('body')).trim() === 'Done, thank you!You can close this tab now.')
   check('no console errors', errs.length === 0, errs.join(' | '))
   await sleep(800)
-  check('server accepted every write', refused(calls).length === 0, `${calls.length} calls, refused: ${JSON.stringify(refused(calls).map((c) => [c.fn, c.status, c.why]))}`)
+  check('server accepted every write', refused(calls).length === 0, `${calls.length} calls, refused: ${JSON.stringify(refused(calls).map((c) => [c.fn, c.status, c.why, Object.keys(c.body.p_patch?.set ?? {}), (c.body.p_patch?.events ?? []).map((e) => e.type)]))}`)
   const row = rowFromCalls(calls)
   check('final answers went out', row.t_finish != null && row.preference != null, `finish ${row.t_finish}, preference ${row.preference}`)
   const views = viewFirst ? 3 : 0, kinds = (t) => row.events.filter((e) => e.type === t)
@@ -217,6 +235,12 @@ async function flow(name, browserType, device, variant, withReport, viewFirst) {
   check('the damage clock starts at the preview, before Use photo', row.t_damage_visible < uses.find((e) => e.target === 'drive').t && uses.find((e) => e.target === 'drive').t - row.t_damage_visible >= 1300, `${uses.find((e) => e.target === 'drive').t - row.t_damage_visible} ms`)
   check('the Retake tap is logged', row.events.some((e) => e.type === 'tap' && e.target === 'camera-retake'))
   check('the enlarged picture is logged', kinds('pref_view_open').length === 1 && /^[AB]$/.test(kinds('pref_view_open')[0].data.version), JSON.stringify(kinds('pref_view_open').map((e) => e.data)))
+  check('Q3 is stored as answered', notLooked ? row.find_ease === null && row.find_not_looked === true : row.find_ease === 5 && row.find_not_looked === false, `${row.find_ease} ${row.find_not_looked}`)
+  check('the other answers went out', row.noticed === 'Yes' && row.seq === 6 && row.find_where === 'Near the photos' && row.preference_why === 'Easier to find' && row.cycling === 'Never' && row.rented_before === 'No' && row.age_band === 'Prefer not to say')
+  const ts = [row.t_q1_done, row.t_q2_done, row.t_q3_done, row.t_q4_done, row.t_q5_done]
+  check('each screen logs its time, in order', ts.every((t, i) => t != null && (i === 0 || t >= ts[i - 1])), ts.join(' '))
+  check('t_questions_done is Q3, t_finish is Q5', row.t_questions_done === row.t_q3_done && row.t_finish === row.t_q5_done)
+  check('open_text stays empty', row.open_text == null)
   check('first tap after the photos', row.first_tap_after_photos === (viewFirst ? 'photo_view' : withReport ? 'link' : 'save'), row.first_tap_after_photos)
   if (viewFirst) check('the report tap is still the metric, after the views', row.t_report_tap > kinds('photo_view_close').at(-1).t && row.t_report_tap > row.t_damage_visible, `${row.t_report_tap - row.t_damage_visible} ms`)
   await browser.close()
@@ -229,6 +253,7 @@ async function flows() {
     for (const v of ['a', 'b']) {
       for (const r of [true, false]) out.push(await flow(name, type, device, v, r))
       out.push(await flow(name, type, device, v, true, true))
+      out.push(await flow(name, type, device, v, false, false, true))
     }
   }
   fs.writeFileSync(OUT + 'flows.json', JSON.stringify(out.map(({ row, ...o }) => o), null, 1))
@@ -460,7 +485,7 @@ async function slow() {
   await ctx.route('**/*mine-drive*', async (route) => { await sleep(4000); await route.continue() })
   const p = await ctx.newPage()
   await p.goto(`${BASE}/?pilot=1&new=1&v=a`)
-  await p.waitForSelector('text=Your bike’s here')
+  await p.waitForSelector('text=Thanks for helping us out!')
   await start(p); await settled(p)
   const at = Date.now()
   await takePhoto(p, 'Drivetrain')
@@ -477,62 +502,52 @@ async function grep() {
   const dir = new URL('../dist-abtest/', import.meta.url).pathname.replace(/^\/([A-Z]:)/, '$1')
   const files = fs.readdirSync(dir, { recursive: true }).filter((f) => /\.(js|css|html)$/.test(f))
   const text = files.map((f) => fs.readFileSync(dir + f, 'utf8')).join('\n')
+  for (const w of ['Your bike’s here', 'Compare what you see', 'it’s a prototype', 'Hi! We’re SMU', 'Use the app like', 'We don’t collect', 'where would you go to tell the shop', 'Which version of that page', 'Link at the top', 'Done, thanks a lot', 'Why did you give']) check(`bundle has no "${w}"`, !text.includes(w))
   for (const w of ['PLACEHOLDER', 'mine-drive-bent', 'There are no right answers', 'testing the app, not you', 'Your rental bike just arrived', 'Report link on top', 'Thanks. You can close this page', 'No marks to record', 'Circle the', 'nothing new']) check(`bundle has no "${w}"`, !text.includes(w))
-  for (const w of ['SMU IS211', 'Your bike', 'Link at the bottom', 'thanks a lot', 'photo_view_open', 'photo_use_tap', 'Compare what you see', 'it’s a prototype']) check(`bundle has "${w}"`, text.includes(w))
+  for (const w of ['Thanks for helping us out', 'You’re Daniel', 'I didn’t look for it', 'Report link at the bottom', 'About you', 'Done, thank you', 'photo_view_open', 'photo_use_tap', 't_q5_done', 'find_not_looked']) check(`bundle has "${w}"`, text.includes(w))
 }
 
-// The whole sheet, button included, fits without scrolling, and the whole bike shows above it.
-async function entry() {
-  const browser = await chromium.launch()
-  for (const [w, h] of [[390, 844], [375, 667], [375, 553], [320, 568]]) {
-    const ctx = await browser.newContext({ ...VIEW, viewport: { width: w, height: h } })
-    const p = await ctx.newPage()
-    await p.goto(`${BASE}/?pilot=1&new=1&v=a`)
-    await p.waitForSelector('text=Your bike’s here'); await settled(p); await sleep(600)
-    const m = await p.evaluate(() => {
-      const s = document.querySelector('.ab-ps-sheet'), b = document.querySelector('.cta').getBoundingClientRect(), i = document.querySelector('.ab-ps-photo img'), r = i.getBoundingClientRect()
-      const sr = s.getBoundingClientRect(), scale = Math.max(r.width / i.naturalWidth, r.height / i.naturalHeight)
-      // The bike in the photo, as parts of its height: from the top of the bar to the bottom of the tyres.
-      const crop = r.height - i.naturalHeight * scale, parts = parseFloat(getComputedStyle(i).objectPosition.split(' ')[1]) / 100
-      const y = (f) => r.top + crop * parts + f * i.naturalHeight * scale
-      return { sheet: Math.round(sr.height), sheetTop: Math.round(sr.top), scrolls: s.scrollHeight > s.clientHeight, button: b.bottom <= innerHeight, bikeTop: Math.round(y(0.387)), bikeBottom: Math.round(y(0.661)), page: document.documentElement.scrollHeight <= innerHeight }
-    })
-    const main = h >= 667
-    if (main) {
-      check(`${w} × ${h}: the sheet needs no scrolling and the button shows`, !m.scrolls && m.button && m.page, JSON.stringify(m))
-      check(`${w} × ${h}: the whole bike shows above the sheet`, m.bikeTop >= 0 && m.bikeBottom <= m.sheetTop, JSON.stringify(m))
-    } else console.log(`INFO ${w} × ${h}: ${JSON.stringify(m)}`)
-    await p.screenshot({ path: `${OUT}entry-${w}x${h}.png` })
-    await ctx.close()
-  }
-  await browser.close()
-}
-
-// Screen 7 for the hand-back, at 390 × 844 and on a small phone: nothing overflows, and both pictures show whole.
-async function pref() {
+// Every screen around the task. S0, S1, Q1, Q2, Q3 and S9 must fit without scrolling, the button included, at both sizes;
+// Q4 and Q5 may scroll. Nothing may overflow sideways. Screenshots for the hand-back.
+async function screens() {
   const browser = await chromium.launch()
   for (const [w, h] of [[390, 844], [375, 667]]) {
     const ctx = await browser.newContext({ ...VIEW, viewport: { width: w, height: h } })
     const p = await ctx.newPage()
-    await p.goto(`${BASE}/?pilot=1&new=1&v=a`)
-    await p.waitForSelector('text=Your bike’s here')
-    await start(p); await settled(p)
-    await takeAll(p)
-    await scrollTo(p, '.ab-main')
-    await p.tap('button:has-text("Save record")')
-    await p.waitForSelector('text=3 quick questions')
-    await p.tap('label:has-text("Yes")'); await p.tap('[data-log="seq:6"]'); await p.tap('button:has-text("Next")')
-    await p.waitForSelector('text=Which version of that page do you prefer?')
-    await settled(p); await sleep(400)
-    await p.tap('.ab-pick-cap >> nth=0'); await sleep(200)
-    await p.evaluate(() => document.activeElement?.blur()); await sleep(100)
-    const m = await p.evaluate(() => ({ over: document.querySelector('.ab-screen').scrollWidth > innerWidth, pics: [...document.querySelectorAll('.ab-pick-img')].map((e) => { const r = e.getBoundingClientRect(); return [Math.round(r.width), Math.round(r.height), Math.round(r.bottom)] }) }))
-    check(`${w} × ${h}: no sideways overflow, the pictures fit the screen`, !m.over && m.pics.every((x) => x[2] <= h), JSON.stringify(m))
-    await p.screenshot({ path: `${OUT}pref-${w}x${h}.png` })
-    if (w === 390) {
-      await p.tap('.ab-pick-img >> nth=0'); await p.waitForSelector('.ab-viewer'); await sleep(400)
-      await p.screenshot({ path: `${OUT}pref-viewer.png` })
+    const errs = []
+    p.on('console', (m) => { if (m.type() === 'error') errs.push(m.text()) }); p.on('pageerror', (e) => errs.push(e.message))
+    const look = async (name, mustFit) => {
+      await settled(p); await sleep(500)
+      await p.evaluate(() => document.activeElement?.blur())
+      const m = await p.evaluate(() => {
+        const sc = document.querySelector('.ab-ps-sheet') ?? document.querySelector('.ab-screen')
+        const dock = document.querySelector('.ab-root .dock')?.getBoundingClientRect()
+        const last = document.querySelector('.ab-qs-in')?.getBoundingClientRect()
+        const btn = document.querySelector('.cta')?.getBoundingClientRect()
+        const sheet = document.querySelector('.ab-ps-sheet')?.getBoundingClientRect()
+        return { scrolls: sc.scrollHeight > sc.clientHeight, sideways: sc.scrollWidth > innerWidth || document.documentElement.scrollWidth > innerWidth, contentBottom: last && Math.round(last.bottom), dockTop: dock && Math.round(dock.top), buttonIn: !btn || btn.bottom <= innerHeight, photo: sheet && Math.round(sheet.top) }
+      })
+      check(`${w} × ${h} ${name}: nothing sideways`, !m.sideways, JSON.stringify(m))
+      if (mustFit) check(`${w} × ${h} ${name}: fits without scrolling`, !m.scrolls && m.buttonIn && (m.contentBottom == null || m.contentBottom <= m.dockTop), JSON.stringify(m))
+      await p.screenshot({ path: `${OUT}screen-${name}-${w}x${h}.png` })
     }
+    await p.goto(`${BASE}/?pilot=1&new=1&v=a`)
+    await p.waitForSelector('text=Thanks for helping us out!')
+    await look('s0', true)
+    await p.tap('button:has-text("Continue")'); await p.waitForSelector('text=You’re Daniel')
+    await look('s1', true)
+    await p.tap('button:has-text("Start")'); await p.waitForSelector('text=Check it before you ride')
+    await settled(p); await takeAll(p)
+    await scrollTo(p, '.ab-main'); await p.tap('button:has-text("Save record")'); await p.waitForSelector('text=1 of 5')
+    await p.tap('[data-log="noticed:Yes"]'); await look('q1', true)
+    await next(p, 1); await p.tap('[data-log="seq:6"]'); await look('q2', true)
+    await next(p, 2); await p.tap('[data-log="find:5"]'); await look('q3', true)
+    await next(p, 3); await p.tap('.ab-pick .opt >> nth=0'); await p.evaluate(() => { document.querySelector('.ab-screen').scrollTop = 0 }); await look('q4', false)
+    await next(p, 4); await look('q5', false)
+    await p.tap('[data-log="cycling:Never"]'); await p.tap('[data-log="rented:No"]'); await p.tap('[data-log="age:Prefer not to say"]')
+    await p.tap('button:has-text("Finish")'); await p.waitForSelector('text=Done, thank you!')
+    await look('s9', true)
+    check(`${w} × ${h}: no console errors`, errs.length === 0, errs.join(' | '))
     await ctx.close()
   }
   await browser.close()
@@ -554,6 +569,6 @@ async function slot() {
 }
 
 const mode = process.argv[2]
-await ({ flows, layouts, diff, assign, drop, slow, grep, slot, entry, pref })[mode]()
+await ({ flows, layouts, diff, assign, drop, slow, grep, slot, screens })[mode]()
 console.log(fails.length ? `\n${fails.length} FAILED:\n` + fails.join('\n') : '\nALL PASS')
 process.exit(fails.length ? 1 : 0)

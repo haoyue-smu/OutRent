@@ -1,10 +1,10 @@
-import { useEffect, useRef, type CSSProperties, type KeyboardEvent, type ReactNode, type Ref } from 'react'
+import { useEffect, useLayoutEffect, useRef, type CSSProperties, type KeyboardEvent, type ReactNode, type Ref } from 'react'
 import { Icon } from '../shell/Icon'
 import { Photo } from '../shell/Photo'
 import { BackButton, Mono } from '../shell/direction'
 import { RecordPart, ReportRow, type PartId } from '../pages/11-handover-check/pieces'
 import type { Variant } from './api'
-import { AB_PARTS, BACKDROP, CAPTION, EVIDENCE_DONE, EVIDENCE_OPEN, FIRST_TAKEN, LAYOUTS, LAYOUT_H, NOTICED, REASONS, SENT_FULL, SENT_SHORT, SHOP_TAG, TAKEN, mineOf } from './story'
+import { AB_PARTS, AGES, BACKDROP, CAPTION, CYCLING, EVIDENCE_DONE, EVIDENCE_OPEN, FIRST_TAKEN, LAYOUTS, LAYOUT_H, NOTICED, REASONS, RENTED, SENT_FULL, SENT_SHORT, SHOP_TAG, SPOT, TAKEN, mineOf } from './story'
 
 // The screens. The app's own copy is as in the flow artifact; what the participant reads outside the app is as in UPDATE 3. No screen reads the store or the router; App.tsx owns the state and the log.
 
@@ -25,31 +25,50 @@ const Bar = ({ eyebrow, onBack, backLabel }: { eyebrow: string; onBack?: () => v
   <>{onBack ? <BackButton label={backLabel ?? 'Back'} onClick={onBack} /> : <span />}<Mono className="mid">{eyebrow}</Mono><span /></>
 )
 
-// The first and the last screen: a paper sheet over the Marlin 7, as on page 07. The sheet takes only the height it needs.
-function PhotoSheet({ label, children }: { label: string; children: ReactNode }) {
+// The screens around the task: a paper sheet over a photo, as on page 07. The sheet takes only the height it needs.
+function PhotoSheet({ label, photo = BACKDROP, spot, children }: { label: string; photo?: string; spot?: boolean; children: ReactNode }) {
   return (
     <main className="ab-ps" aria-label={label}>
-      <div className="ab-ps-photo"><Photo src={BACKDROP} alt="" width={390} height={844} first /></div>
+      <div className={`ab-ps-photo${spot ? ' is-spot' : ''}`}><Photo src={photo} alt="" width={390} height={844} first /></div>
       <div className="ab-ps-sheet">{children}</div>
     </main>
   )
 }
 
-// ---------- 0 · Entry ----------
-export function Entry({ onStart, busy, failed }: { onStart: () => void; busy: boolean; failed: boolean }) {
+// ---------- S0 · Welcome ----------
+export function Welcome({ onContinue }: { onContinue: () => void }) {
   return (
-    <PhotoSheet label="Start">
-      <Mono>SMU IS211 · OutRent</Mono>
-      <h1 className="t-h1">Your bike’s here</h1>
-      <p className="lede">You’re Daniel. You booked a mountain bike on OutRent for a Saturday morning ride, and it’s just been dropped off at the trailhead. There’s a S$150 deposit on your card until you return it.</p>
-      <p className="lede">Use the app like you normally would before you ride off. Compare what you see with the shop’s photos. Takes about 3 minutes.</p>
-      {failed && <p className="ab-dock-note" role="alert">We could not reach the server. Check your connection and tap Start again.</p>}
-      <button type="button" className="cta" data-log="start" disabled={busy} onClick={onStart}>Start</button>
-      <div className="ab-ps-small">
-        <p className="small">Hi! We’re SMU students building OutRent for our IS211 project. Thanks for helping us test it.</p>
-        <p className="small">We don’t collect names or any personal info.</p>
-        <p className="small">Tapping “Take photo” won’t open your camera. The photos are already taken for you, it’s a prototype.</p>
+    <PhotoSheet label="Welcome">
+      <h1 className="t-h1">Thanks for helping us out!</h1>
+      <p className="lede">We’re SMU students building OutRent, an app for renting bikes and outdoor gear. You’ll try one screen of it.</p>
+      <ul className="ab-facts">
+        <li><Icon name="clock" /><span>About 3 minutes</span></li>
+        <li><Icon name="camera" /><span>You’ll take a few photos. The camera is a mock-up, your real camera stays off.</span></li>
+        <li><Icon name="lock-simple" /><span>We only record taps and timings. Nothing personal.</span></li>
+      </ul>
+      <button type="button" className="cta" onClick={onContinue}>Continue</button>
+    </PhotoSheet>
+  )
+}
+
+// ---------- S1 · Scenario: its button is t0 and creates the row ----------
+export function Scenario({ onStart, busy, failed }: { onStart: () => void; busy: boolean; failed: boolean }) {
+  return (
+    <PhotoSheet label="Your scenario" photo={SPOT} spot>
+      <Mono>Your scenario</Mono>
+      <h1 className="t-h1">You’re Daniel</h1>
+      <div className="ab-lines">
+        <p className="lede">You rented a mountain bike for a Saturday morning ride.</p>
+        <p className="lede">The shop just dropped it off here, at the trailhead.</p>
+        <p className="lede">There’s a S$150 deposit on your card until you return it.</p>
       </div>
+      <div className="ab-task">
+        <Mono>Your task</Mono>
+        <b>Do what you’d normally do with a rental before riding off.</b>
+        <p className="small">Just do what feels natural.</p>
+      </div>
+      {failed && <p className="ab-dock-note" role="alert">We could not reach the server. Check your connection and tap Start again.</p>}
+      <button type="button" className="cta" disabled={busy} onClick={onStart}>Start</button>
     </PhotoSheet>
   )
 }
@@ -220,84 +239,117 @@ export function ReportSent({ reason, count, onBack }: { reason: string; count: n
   )
 }
 
-// ---------- 6 · Three questions ----------
-export function Questions({ noticed, seq, seqWhy, openText, onNoticed, onSeq, onSeqWhy, onOpenText, onDone }: {
-  noticed: string; seq: number; seqWhy: string; openText: string
-  onNoticed: (v: string) => void; onSeq: (n: number) => void; onSeqWhy: (s: string) => void; onOpenText: (s: string) => void; onDone: () => void
-}) {
+// ---------- Q1 to Q5: one question per screen ----------
+function QScreen({ n, title, caption, ready, next = 'Next', onNext, children }: { n: number; title: string; caption?: string; ready: boolean; next?: string; onNext: () => void; children: ReactNode }) {
+  const top = useRef<HTMLDivElement>(null)
+  useEffect(() => { top.current?.focus({ preventScroll: true }) }, [])
   return (
     <>
-      <Page label="3 quick questions" top={<Bar eyebrow="3 quick questions" />}>
-        <h1 className="ab-sr">3 quick questions</h1>
-        <fieldset className="ab-q">
-          <legend className="ab-q-t">Did you notice anything wrong with the bike?</legend>
-          <div className="ab-card ab-group ab-inq">
-            {NOTICED.map((v) => (
-              <label key={v} className="ab-opt" data-log={`noticed:${v}`}>
-                <input type="radio" name="noticed" checked={noticed === v} onChange={() => onNoticed(v)} />
-                <i aria-hidden="true" />{v}
-              </label>
-            ))}
-          </div>
-        </fieldset>
-        <fieldset className="ab-q">
-          <legend className="ab-q-t">Overall, how difficult or easy was the task?</legend>
-          <div className="ab-scale">
-            {[1, 2, 3, 4, 5, 6, 7].map((n) => (
-              <label key={n} className="ab-scale-n" data-log={`seq:${n}`}>
-                <input type="radio" name="seq" checked={seq === n} onChange={() => onSeq(n)} />
-                <span>{n}</span>
-              </label>
-            ))}
-          </div>
-          <div className="ab-ends"><span>Very difficult</span><span>Very easy</span></div>
-          <label className="ab-label" htmlFor="ab-seq-why">Why? (optional)</label>
-          <textarea id="ab-seq-why" name="seq_why" autoComplete="off" className="ab-field" rows={2} value={seqWhy} onChange={(e) => onSeqWhy(e.target.value)} />
-        </fieldset>
-        <fieldset className="ab-q">
-          <legend className="ab-q-t">If something was wrong with the bike, where would you go to tell the shop?</legend>
-          <label className="ab-label ab-label-top" htmlFor="ab-open">Optional</label>
-          <textarea id="ab-open" name="open_text" autoComplete="off" className="ab-field" rows={3} value={openText} onChange={(e) => onOpenText(e.target.value)} />
-        </fieldset>
-      </Page>
-      <div className="dock" data-log="done-disabled"><button type="button" className="cta s11-save ab-main" data-log="done" disabled={!noticed || !seq} onClick={onDone}>Next</button></div>
+      <main className="screen d-screen ab-screen ab-qs" aria-label={`Question ${n} of 5`}>
+        <div className="ab-qs-in ab-focus" ref={top} tabIndex={-1}>
+          <Mono>{n} of 5</Mono>
+          <h1 className="t-h1">{title}</h1>
+          {caption && <p className="small">{caption}</p>}
+          {children}
+        </div>
+      </main>
+      <div className="dock" data-log={`next-disabled:${n}`}>
+        <button type="button" className="cta s11-save ab-main" data-log={`next:${n}`} disabled={!ready} onClick={onNext}>{next}</button>
+      </div>
     </>
   )
 }
+// The app's radio row, one of a few.
+const Row = ({ label, on, log, onPick }: { label: string; on: boolean; log: string; onPick: () => void }) => (
+  <button type="button" className="opt ab-row" aria-pressed={on} data-log={log} onClick={onPick}><span className="rad" /><b>{label}</b></button>
+)
+const Rows = ({ label, name, options, value, onPick }: { label: string; name: string; options: string[]; value: string; onPick: (v: string) => void }) => (
+  <div className="ab-rows" role="group" aria-label={label}>
+    {options.map((o) => <Row key={o} label={o} on={value === o} log={`${name}:${o}`} onPick={() => onPick(o)} />)}
+  </div>
+)
+const Tiles = ({ label, name, value, low, high, onPick }: { label: string; name: string; value: number; low: string; high: string; onPick: (n: number) => void }) => (
+  <div>
+    <div className="ab-scale" role="group" aria-label={`${label}, 1 is ${low}, 7 is ${high}`}>
+      {[1, 2, 3, 4, 5, 6, 7].map((n) => <button key={n} type="button" className="ab-tile" aria-pressed={value === n} data-log={`${name}:${n}`} onClick={() => onPick(n)}>{n}</button>)}
+    </div>
+    <div className="ab-ends"><span>{low}</span><span>{high}</span></div>
+  </div>
+)
+// One line tall, growing as they type.
+function Field({ id, placeholder, value, onChange }: { id: string; placeholder: string; value: string; onChange: (s: string) => void }) {
+  const box = useRef<HTMLTextAreaElement>(null)
+  useLayoutEffect(() => {
+    const el = box.current
+    if (!el) return
+    el.style.height = 'auto'
+    el.style.height = `${el.scrollHeight + el.offsetHeight - el.clientHeight}px`
+  }, [value])
+  return <textarea id={id} ref={box} name={id} rows={1} autoComplete="off" className="ab-field ab-grow" aria-label={placeholder} placeholder={placeholder} value={value} onChange={(e) => onChange(e.target.value)} />
+}
 
-// ---------- 7 · Pick A or B ----------
-export function Preference({ left, pick, why, onPick, onView, onWhy, onFinish }: {
-  left: Variant; pick: Variant | null; why: string; onPick: (v: Variant) => void; onView: (v: Variant, from: HTMLElement) => void; onWhy: (s: string) => void; onFinish: () => void
+export function Q1({ value, onPick, onNext }: { value: string; onPick: (v: string) => void; onNext: () => void }) {
+  const title = 'Did you notice anything wrong with the bike?'
+  return <QScreen n={1} title={title} ready={!!value} onNext={onNext}><Rows label={title} name="noticed" options={NOTICED} value={value} onPick={onPick} /></QScreen>
+}
+export function Q2({ value, onPick, onNext }: { value: number; onPick: (n: number) => void; onNext: () => void }) {
+  const title = 'Overall, how difficult or easy was the task?'
+  return <QScreen n={2} title={title} ready={value > 0} onNext={onNext}><Tiles label={title} name="seq" value={value} low="Very difficult" high="Very easy" onPick={onPick} /></QScreen>
+}
+export function Q3({ ease, not, where, onEase, onNot, onWhere, onNext }: {
+  ease: number; not: boolean; where: string; onEase: (n: number) => void; onNot: () => void; onWhere: (s: string) => void; onNext: () => void
+}) {
+  const title = 'How easy was it to find where to report a problem with the bike?'
+  return (
+    <QScreen n={3} title={title} ready={ease > 0 || not} onNext={onNext}>
+      <Tiles label={title} name="find" value={ease} low="Very hard" high="Very easy" onPick={onEase} />
+      <Row label="I didn’t look for it" on={not} log="find:not-looked" onPick={onNot} />
+      <Field id="ab-find-where" placeholder="Where did you look first? (optional)" value={where} onChange={onWhere} />
+    </QScreen>
+  )
+}
+export function Q4({ left, pick, why, onPick, onView, onWhy, onNext }: {
+  left: Variant; pick: Variant | null; why: string; onPick: (v: Variant) => void; onView: (v: Variant, from: HTMLElement) => void; onWhy: (s: string) => void; onNext: () => void
 }) {
   const order: Variant[] = left === 'a' ? ['a', 'b'] : ['b', 'a']
   return (
-    <>
-      <Page label="Last one" top={<Bar eyebrow="Last one" />}>
-        <h1 className="ab-sr">Last one</h1>
-        <fieldset className="ab-q">
-          <legend className="ab-q-t">Which version of that page do you prefer?</legend>
-          <div className="ab-picks">
-            {order.map((v) => (
-              <div key={v} className={`ab-pick${pick === v ? ' is-on' : ''}`} style={{ '--ar': 390 / LAYOUT_H } as CSSProperties}>
-                <button type="button" className="ab-pick-img" data-log={`pref-view:${v.toUpperCase()}`} aria-label={`See “${LAYOUTS[v].caption}” full size`} onClick={(e) => onView(v, e.currentTarget)}>
-                  <Photo src={LAYOUTS[v].src} alt={LAYOUTS[v].alt} width={170} height={Math.round(170 * LAYOUT_H / 390)} first />
-                </button>
-                <label className="ab-pick-cap" data-log={`pick:${v.toUpperCase()}`}>
-                  <input type="radio" name="pick" checked={pick === v} onChange={() => onPick(v)} />
-                  <i aria-hidden="true" />{LAYOUTS[v].caption}
-                </label>
-              </div>
-            ))}
+    <QScreen n={4} title="Which layout would you rather use?" caption="Two versions of the page you just used. Tap a picture to see it full size." ready={!!pick} onNext={onNext}>
+      <div className="ab-picks" role="group" aria-label="Which layout would you rather use?">
+        {order.map((v) => (
+          <div key={v} className={`ab-pick${pick === v ? ' is-on' : ''}`} style={{ '--ar': 390 / LAYOUT_H } as CSSProperties}>
+            <button type="button" className="ab-pick-img" data-log={`pref-view:${v.toUpperCase()}`} aria-label={`See “${LAYOUTS[v].caption}” full size`} onClick={(e) => onView(v, e.currentTarget)}>
+              <Photo src={LAYOUTS[v].src} alt={LAYOUTS[v].alt} width={170} height={Math.round(170 * LAYOUT_H / 390)} first />
+            </button>
+            <Row label={LAYOUTS[v].caption} on={pick === v} log={`pick:${v.toUpperCase()}`} onPick={() => onPick(v)} />
           </div>
-        </fieldset>
-        <div className="ab-q">
-          <label className="ab-label" htmlFor="ab-why">Why? (optional)</label>
-          <textarea id="ab-why" name="preference_why" autoComplete="off" className="ab-field" rows={3} value={why} onChange={(e) => onWhy(e.target.value)} />
-        </div>
-      </Page>
-      <div className="dock" data-log="finish-disabled"><button type="button" className="cta s11-save ab-main" data-log="finish" disabled={!pick} onClick={onFinish}>Submit</button></div>
-    </>
+        ))}
+      </div>
+      <Field id="ab-why" placeholder="Why? (optional)" value={why} onChange={onWhy} />
+    </QScreen>
+  )
+}
+export function Q5({ cycling, rented, age, onCycling, onRented, onAge, onFinish }: {
+  cycling: string; rented: string; age: string; onCycling: (v: string) => void; onRented: (v: string) => void; onAge: (v: string) => void; onFinish: () => void
+}) {
+  const group = (label: string, name: string, options: string[], value: string, onPick: (v: string) => void) => (
+    <section className="ab-group5">
+      <Mono>{label}</Mono>
+      <Rows label={label} name={name} options={options} value={value} onPick={onPick} />
+    </section>
+  )
+  return (
+    <QScreen n={5} title="About you" caption="So we can describe who took part." ready={!!cycling && !!rented && !!age} next="Finish" onNext={onFinish}>
+      {group('How often do you cycle?', 'cycling', CYCLING, cycling, onCycling)}
+      {group('Rented sports or outdoor gear before?', 'rented', RENTED, rented, onRented)}
+      {group('Your age', 'age', AGES, age, onAge)}
+    </QScreen>
   )
 }
 
-export const Thanks = () => <PhotoSheet label="Thanks"><p className="lede">Done, thanks a lot! You can close this tab.</p></PhotoSheet>
+// ---------- S9 · Thank you ----------
+export const Thanks = () => (
+  <PhotoSheet label="Thank you">
+    <h1 className="t-h1">Done, thank you!</h1>
+    <p className="lede">You can close this tab now.</p>
+  </PhotoSheet>
+)
