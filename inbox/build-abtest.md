@@ -136,7 +136,21 @@ Reopening the link after Finish shows only the thank-you line, with no new row.
   - `ab_start(...)`, which creates and assigns the row;
   - `ab_log(token, patch)`, which appends events and sets fields only on the row that owns that token.
 - Never put the service-role key in the site or in git.
-- The Supabase project `outrent-abtest` (free tier, Singapore) is set up by Haoyue or by Management. You get the URL and the anon key; they go in `app/.env.local` (gitignored, never committed). The SQL lives in `app/src/abtest/schema.sql`. If Management has already applied it, check that it matches yours.
+- **Supabase is set up by Management (31 Oct 12:00).**
+  - Project `outrent-abtest`, URL `https://mswjwsmszuhutuqzguwi.supabase.co`.
+  - The schema is `inbox/abtest-schema.sql` on ops. Copy it into the repo as `app/src/abtest/schema.sql`. Do not change it without telling Management.
+  - Haoyue gives you the publishable (anon) key. It goes in `app/.env.local` (gitignored); never commit it.
+  - The site calls only two functions:
+    - `rpc('ab_start', { p_forced, p_pilot, p_data })` → `{ id, variant, token }`;
+    - `rpc('ab_log', { p_token, p_data, p_events })`.
+  - The table itself cannot be read with the anon key, by design.
+  - `p_data` is a flat object with the summary field names listed under Logging. It is merged into the row, so send each field as soon as it is known.
+  - `p_events` is an array of `{ t, type, screen, target, data }`.
+  - The results view needs two event types:
+    - `scroll` events carry `data.max_y`;
+    - `show` events (the page coming back after being hidden) carry `data.away_ms`.
+  - For the final writes on `pagehide`, use `fetch(..., { keepalive: true })` with the apikey header, not `sendBeacon`, because sendBeacon cannot send the headers Supabase needs.
+  - Batch events: send at most every 1 s, plus on every screen change.
 
 ### Logging
 
