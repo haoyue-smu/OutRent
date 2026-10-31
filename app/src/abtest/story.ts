@@ -1,10 +1,13 @@
 import { PARTS, type PartId } from '../pages/11-handover-check/pieces'
 import driveBent from '@photos/_abtest/assets/11-mine-drive-bent.webp'
+import backdrop from '@photos/07-fees-liability/assets/07-direction-backdrop-marlin7.webp'
 import layoutA from '@photos/_abtest/assets/layout-a.webp'
 import layoutB from '@photos/_abtest/assets/layout-b.webp'
 
 // The fixed story clock and the photos. Nothing on screen uses the real time.
 
+// The Marlin 7 at the trailhead, behind the first and the last screen, as on page 07.
+export const BACKDROP = backdrop
 // Daniel's drivetrain is the damaged photo: the cage bent into the spokes, not in the shop's photo.
 export const mineOf = (id: PartId) => (id === 'drive' ? driveBent : PARTS.find((p) => p.id === id)!.mine)
 export const TAKEN: Record<PartId, string> = { crank: '25 Oct · 7:40', saddle: '25 Oct · 7:40', drive: '25 Oct · 7:41' }
@@ -24,7 +27,7 @@ export const LAYOUTS = {
 
 // Every photo the test shows, decoded before it is needed, so the 1.0 s preview starts with the picture on screen.
 export const preload = () => Promise.allSettled(
-  [...PARTS.flatMap((p) => [p.shop, mineOf(p.id)]), layoutA, layoutB].map((src) => { const i = new Image(); i.src = src; return i.decode() }),
+  [backdrop, ...PARTS.flatMap((p) => [p.shop, mineOf(p.id)]), layoutA, layoutB].map((src) => { const i = new Image(); i.src = src; return i.decode() }),
 )
 // Waits for a photo, but never for long: a slow decode must not stop the participant from going on.
 export const decoded = (src: string, limit = 1500) => {

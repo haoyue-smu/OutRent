@@ -4,7 +4,7 @@ import { Photo } from '../shell/Photo'
 import { BackButton, Mono } from '../shell/direction'
 import { PARTS, RecordPart, ReportRow, type PartId } from '../pages/11-handover-check/pieces'
 import type { Variant } from './api'
-import { CAPTION, EVIDENCE_DONE, EVIDENCE_OPEN, FIRST_TAKEN, LAYOUTS, NOTICED, REASONS, SENT_FULL, SENT_SHORT, SHOP_TAG, TAKEN, mineOf } from './story'
+import { BACKDROP, CAPTION, EVIDENCE_DONE, EVIDENCE_OPEN, FIRST_TAKEN, LAYOUTS, NOTICED, REASONS, SENT_FULL, SENT_SHORT, SHOP_TAG, TAKEN, mineOf } from './story'
 
 // The screens. The app's own copy is as in the flow artifact; what the participant reads outside the app is as in UPDATE 3. No screen reads the store or the router; App.tsx owns the state and the log.
 
@@ -25,24 +25,31 @@ const Bar = ({ eyebrow, onBack, backLabel }: { eyebrow: string; onBack?: () => v
   <>{onBack ? <BackButton label={backLabel ?? 'Back'} onClick={onBack} /> : <span />}<Mono className="mid">{eyebrow}</Mono><span /></>
 )
 
+// The first and the last screen: a paper sheet over the Marlin 7, as on page 07. The sheet takes only the height it needs.
+function PhotoSheet({ label, children }: { label: string; children: ReactNode }) {
+  return (
+    <main className="ab-ps" aria-label={label}>
+      <div className="ab-ps-photo"><Photo src={BACKDROP} alt="" width={390} height={844} first /></div>
+      <div className="ab-ps-sheet">{children}</div>
+    </main>
+  )
+}
+
 // ---------- 0 · Entry ----------
 export function Entry({ onStart, busy, failed }: { onStart: () => void; busy: boolean; failed: boolean }) {
   return (
-    <>
-      <Page label="Start" top={<Bar eyebrow="SMU IS211 · OutRent" />}>
-        <div className="pad">
-          <p className="lede ab-intro">Hi! We’re SMU students building OutRent, an app for renting bikes and outdoor gear, for our IS211 project. Thanks for helping us test it.</p>
-          <h1 className="t-h1 s11-h">Your bike’s here</h1>
-          <p className="lede ab-para">You’re Daniel. You booked a mountain bike on OutRent for a Saturday morning ride, and it’s just been dropped off at the trailhead. There’s a S$150 deposit on your card until you return it.</p>
-          <p className="lede ab-para">Use the app like you normally would before you ride off. Takes about 3 minutes.</p>
-          <p className="small ab-para">We don’t collect names or any personal info.</p>
-        </div>
-      </Page>
-      <div className="dock">
-        {failed && <p className="ab-dock-note" role="alert">We could not reach the server. Check your connection and tap Start again.</p>}
-        <button type="button" className="cta s11-save" data-log="start" disabled={busy} onClick={onStart}>Start</button>
+    <PhotoSheet label="Start">
+      <Mono>SMU IS211 · OutRent</Mono>
+      <h1 className="t-h1">Your bike’s here</h1>
+      <p className="lede">You’re Daniel. You booked a mountain bike on OutRent for a Saturday morning ride, and it’s just been dropped off at the trailhead. There’s a S$150 deposit on your card until you return it.</p>
+      <p className="lede">Use the app like you normally would before you ride off. Takes about 3 minutes.</p>
+      {failed && <p className="ab-dock-note" role="alert">We could not reach the server. Check your connection and tap Start again.</p>}
+      <button type="button" className="cta" data-log="start" disabled={busy} onClick={onStart}>Start</button>
+      <div className="ab-ps-small">
+        <p className="small">Hi! We’re SMU students building OutRent for our IS211 project. Thanks for helping us test it.</p>
+        <p className="small">We don’t collect names or any personal info.</p>
       </div>
-    </>
+    </PhotoSheet>
   )
 }
 
@@ -273,4 +280,4 @@ export function Preference({ left, pick, why, onPick, onWhy, onFinish }: {
   )
 }
 
-export const Thanks = () => <main className="ab-thanks"><p className="lede">Done, thanks a lot! You can close this tab.</p></main>
+export const Thanks = () => <PhotoSheet label="Thanks"><p className="lede">Done, thanks a lot! You can close this tab.</p></PhotoSheet>

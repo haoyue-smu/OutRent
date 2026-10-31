@@ -6,6 +6,7 @@
 //   node app/e2e/abtest.mjs drop               the keepalive write on pagehide
 //   node app/e2e/abtest.mjs slow               the damaged photo on a slow connection
 //   node app/e2e/abtest.mjs grep               the built bundle holds no old copy
+//   node app/e2e/abtest.mjs entry              the entry and thank-you screens: the sheet fits a small phone, screenshots
 // Every run opens rows with pilot=1. Output goes to app/e2e/out/abtest/ (git ignores it).
 import { createRequire } from 'module'
 import fs from 'fs'
@@ -447,6 +448,33 @@ async function grep() {
   for (const w of ['SMU IS211', 'Your bike', 'Link at the bottom', 'thanks a lot', 'photo_view_open']) check(`bundle has "${w}"`, text.includes(w))
 }
 
+// The whole sheet, button included, fits without scrolling, and the whole bike shows above it.
+async function entry() {
+  const browser = await chromium.launch()
+  for (const [w, h] of [[390, 844], [375, 667], [375, 553], [320, 568]]) {
+    const ctx = await browser.newContext({ ...VIEW, viewport: { width: w, height: h } })
+    const p = await ctx.newPage()
+    await p.goto(`${BASE}/?pilot=1&new=1&v=a`)
+    await p.waitForSelector('text=Your bike’s here'); await settled(p); await sleep(600)
+    const m = await p.evaluate(() => {
+      const s = document.querySelector('.ab-ps-sheet'), b = document.querySelector('.cta').getBoundingClientRect(), i = document.querySelector('.ab-ps-photo img'), r = i.getBoundingClientRect()
+      const sr = s.getBoundingClientRect(), scale = Math.max(r.width / i.naturalWidth, r.height / i.naturalHeight)
+      // The bike in the photo, as parts of its height: from the top of the bar to the bottom of the tyres.
+      const crop = r.height - i.naturalHeight * scale, parts = parseFloat(getComputedStyle(i).objectPosition.split(' ')[1]) / 100
+      const y = (f) => r.top + crop * parts + f * i.naturalHeight * scale
+      return { sheet: Math.round(sr.height), sheetTop: Math.round(sr.top), scrolls: s.scrollHeight > s.clientHeight, button: b.bottom <= innerHeight, bikeTop: Math.round(y(0.387)), bikeBottom: Math.round(y(0.661)), page: document.documentElement.scrollHeight <= innerHeight }
+    })
+    const main = h >= 667
+    if (main) {
+      check(`${w} × ${h}: the sheet needs no scrolling and the button shows`, !m.scrolls && m.button && m.page, JSON.stringify(m))
+      check(`${w} × ${h}: the whole bike shows above the sheet`, m.bikeTop >= 0 && m.bikeBottom <= m.sheetTop, JSON.stringify(m))
+    } else console.log(`INFO ${w} × ${h}: ${JSON.stringify(m)}`)
+    await p.screenshot({ path: `${OUT}entry-${w}x${h}.png` })
+    await ctx.close()
+  }
+  await browser.close()
+}
+
 // One screenshot for the hand-back: the slot right after the drivetrain photo drops in, at 390 × 844.
 async function slot() {
   const { browser, p } = await open(chromium, VIEW, 'v=a')
@@ -461,6 +489,6 @@ async function slot() {
 }
 
 const mode = process.argv[2]
-await ({ flows, layouts, diff, assign, drop, slow, grep, slot })[mode]()
+await ({ flows, layouts, diff, assign, drop, slow, grep, slot, entry })[mode]()
 console.log(fails.length ? `\n${fails.length} FAILED:\n` + fails.join('\n') : '\nALL PASS')
 process.exit(fails.length ? 1 : 0)
