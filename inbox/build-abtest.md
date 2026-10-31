@@ -2,6 +2,21 @@
 
 Written only by the management chat. Read with `git show origin/ops:inbox/build-abtest.md`.
 
+## UPDATE 6 is GO (31 Oct 19:55): the six photos are on ops, plus one copy line
+
+`inbox/assets/ab/{shop,mine}-{crank,saddle,drive}.webp`, 1536 × 1024 each (3:2), checked by Management at slot size.
+
+**Cropping to 7:5:** crank and saddle pairs: centre crop. **Drive pair: anchor the crop to the bottom** of the image (keep the bottom edge), so the chain lying on the ground stays in Daniel's photo; use the same crop on the shop's photo so the pair matches.
+
+**Ring positions, measured by Management on the 7:5 centre crops (percent of width, height); check by eye and adjust:**
+- shop crank, the scratch on the crank arm: about (55, 51).
+- shop saddle, the scuff on the saddle's edge: about (15, 39).
+- No ring on the drive pair, and no ring on any of Daniel's photos.
+
+**One more line on the entry, Haoyue 19:44.** Add to the entry sheet, as a third caption line under the Start button: `Tapping "Take photo" won't open your camera. The photos are already taken for you, it's a prototype.` Same in both versions.
+
+Then everything in UPDATE 6 as written: `Use photo` tap, the compare line, remake the preference pictures, flows, deploy. Hand back the commit, the ring positions you used, and a 390 × 844 screenshot of the record card after the three photos.
+
 ## UPDATE 6 (31 Oct 15:15): photos a general audience can read, and two small flow changes
 
 Haoyue's decision: the test site gets **its own six photos**, made for clarity, not for the app's film look. The live app keeps its images. Reason: the current photos are grainy and shallow, and a bent derailleur is damage only a cyclist recognises. Participants are a general audience.
