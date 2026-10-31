@@ -4,10 +4,12 @@ Written only by the management chat. Read with `git show origin/ops:inbox/build-
 
 ## UPDATE 9 (31 Oct 23:15): the task line, agreed with the team
 
-One copy change on S1, the scenario screen. The task card now reads:
-- eyebrow `Your task` (unchanged)
-- line at weight 600: `Do the hand-over check before you ride.`
-- caption under it: `If anything's wrong, let the shop know.`
+One copy change on S1, the scenario screen, and the task card must be the most prominent thing on the sheet (Haoyue 23:09). The card now reads:
+- eyebrow `Your task`
+- line 1, at the app's h2 size, weight 600: `Do the hand-over check before you ride.`
+- line 2, the same size and weight, not a caption: `If anything's wrong, let the shop know.`
+
+Make it stand out: the card keeps its white background and radius, gets a 2 px forest left border or a forest eyebrow, 20 px padding, and a 24 px gap from the paragraphs above. The three scenario paragraphs above it stay in the body style. Anyone glancing at the screen must read the task first and the story second. Still no scrolling at 375 × 667: shorten the photo before anything else.
 
 Remove `Do what you'd normally do with a rental before riding off.` and `Just do what feels natural.` from the bundle. Nothing else changes: no card after the third photo, no new columns.
 
