@@ -30,4 +30,9 @@ export const LAYOUTS = {
 export const preload = () => Promise.allSettled(
   [...PARTS.flatMap((p) => [p.shop, mineOf(p.id)]), layoutA, layoutB].map((src) => { const i = new Image(); i.src = src; return i.decode() }),
 )
-export const decoded = (src: string) => { const i = new Image(); i.src = src; return i.decode().catch(() => undefined) }
+// Waits for a photo, but never for long: a slow decode must not stop the participant from going on.
+export const decoded = (src: string) => {
+  const i = new Image()
+  i.src = src
+  return Promise.race([i.decode().catch(() => undefined), new Promise((done) => setTimeout(done, 1500))])
+}

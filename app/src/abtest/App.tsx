@@ -9,6 +9,7 @@ import { decoded, mineOf, preload } from './story'
 
 // The test's own small state and its log. Every time is ms since the Start tap; t0 is on the row.
 const SHOW_MS = 1000       // the simulated camera's preview
+const FRAME_LIMIT = 120    // the preview counts as on screen after two frames, or this long if the browser holds frames back
 const TAP_SLOP = 10        // a pointer that moved further than this was a scroll, not a tap
 const SCROLL_EVERY = 250   // at most one scroll event per this many ms
 const SCROLL_UP = 24       // a move up smaller than this is a finger settling, not scrolling back
@@ -78,6 +79,7 @@ function Session({ row }: { row: Row }) {
   const peakY = useRef(0)
   const resumed = useRef(s.n > 0)
   const away = useRef(false)
+  const taking = useRef(false)
   const down = useRef<{ x: number; y: number } | null>(null)
 
   const now = useCallback(() => Date.now() - row.t0, [row.t0])
@@ -130,16 +132,20 @@ function Session({ row }: { row: Row }) {
 
   // The simulated camera: the preview shows for 1.0 s from the moment it is on screen, then the photo drops into its slot.
   const take = async (id: PartId) => {
-    if (cameraRef.current || state.current.shots.includes(id)) return
-    cameraRef.current = id
+    if (taking.current || cameraRef.current || state.current.shots.includes(id)) return
+    taking.current = true
     await decoded(mineOf(id))
+    cameraRef.current = id
+    taking.current = false
     setCamera(id)
   }
   useEffect(() => {
     if (!camera) return
     const part = camera
-    let timer = 0
-    const frame = requestAnimationFrame(() => requestAnimationFrame(() => {
+    let timer = 0, shown = false
+    const onScreen = () => {
+      if (shown) return
+      shown = true
       const t = now()
       logEvent('photo', `preview:${part}`)
       if (part === 'drive' && state.current.damageAt === null) { patch({ damageAt: t }); setFields({ t_damage_visible: t }) }
@@ -153,8 +159,11 @@ function Session({ row }: { row: Row }) {
         peakY.current = scroller.current?.scrollTop ?? 0
         setCamera(null)
       }, SHOW_MS)
-    }))
-    return () => { cancelAnimationFrame(frame); clearTimeout(timer) }
+    }
+    // Frames stop while the page is hidden, and some browsers hold them back; the preview must still end.
+    const frame = requestAnimationFrame(() => requestAnimationFrame(onScreen))
+    const limit = window.setTimeout(onScreen, FRAME_LIMIT)
+    return () => { cancelAnimationFrame(frame); clearTimeout(limit); clearTimeout(timer) }
   }, [camera, now, logEvent, patch, setFields])
 
   // The photo lands: the live page's short flash, nothing with reduced motion. The drivetrain's landing is also when the
