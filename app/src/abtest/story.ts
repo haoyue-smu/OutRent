@@ -1,0 +1,33 @@
+import { PARTS, type PartId } from '../pages/11-handover-check/pieces'
+import rDrive from '@photos/12-rental-summary/assets/12-direction-r-drive.webp'
+import layoutA from '@photos/_abtest/assets/layout-a.webp'
+import layoutB from '@photos/_abtest/assets/layout-b.webp'
+
+// The fixed story clock and the photos. Nothing on screen uses the real time.
+
+// Daniel's drivetrain. Until the damaged image arrives this is the old photo, and every place that shows it carries a
+// visible PLACEHOLDER tag, so it cannot go live by accident. When it arrives: import it above and set this to false.
+export const DRIVE_IS_PLACEHOLDER = true
+export const DRIVE_PHOTO = rDrive
+
+export const mineOf = (id: PartId) => (id === 'drive' ? DRIVE_PHOTO : PARTS.find((p) => p.id === id)!.mine)
+export const TAKEN: Record<PartId, string> = { crank: '25 Oct · 7:40', saddle: '25 Oct · 7:40', drive: '25 Oct · 7:41' }
+export const CAPTION: Record<PartId, string> = { crank: 'CRANK ARM · 25 OCT · 7:40', saddle: 'SADDLE EDGE · 25 OCT · 7:40', drive: 'DRIVETRAIN · 25 OCT · 7:41' }
+export const SHOP_TAG = '18 Oct · Timah'
+export const FIRST_TAKEN = '25 Oct · 7:40'
+export const EVIDENCE_DONE = 'Hand-over record, 25 Oct · 7:41'
+export const EVIDENCE_OPEN = 'Hand-over record, in progress'
+export const SENT_SHORT = '7:46'
+export const SENT_FULL = '25 Oct · 7:46'
+export const REASONS = ['Wrong item', 'Damaged', 'Not adjusted to my fit', 'Something else']
+export const NOTICED = ['Yes', 'No', 'Not sure']
+export const LAYOUTS = {
+  a: { src: layoutA, caption: 'Report link on top', alt: 'The hand-over page with the report link above the record card' },
+  b: { src: layoutB, caption: 'Report link below the photos', alt: 'The hand-over page with the report link below the record card' },
+}
+
+// Every photo the test shows, decoded before it is needed, so the 1.0 s preview starts with the picture on screen.
+export const preload = () => Promise.allSettled(
+  [...PARTS.flatMap((p) => [p.shop, mineOf(p.id)]), layoutA, layoutB].map((src) => { const i = new Image(); i.src = src; return i.decode() }),
+)
+export const decoded = (src: string) => { const i = new Image(); i.src = src; return i.decode().catch(() => undefined) }
