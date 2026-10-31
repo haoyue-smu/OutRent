@@ -3,7 +3,7 @@ import { gsap } from 'gsap'
 import { still } from '../shell/direction'
 import { PARTS, type PartId } from '../pages/11-handover-check/pieces'
 import { deviceName, makeQueue, startRow, type Queue, type Variant } from './api'
-import { Camera, Entry, HandoverPage, Preference, Questions, ReportForm, ReportSent, Thanks, Viewer, type PhotoView } from './Screens'
+import { Camera, Entry, HandoverPage, LayoutViewer, Preference, Questions, ReportForm, ReportSent, Thanks, Viewer, type PhotoView } from './Screens'
 import { clearRow, dropNew, readParams, readRow, readSaved, writeRow, writeSaved, type Row, type Saved, type Screen } from './session'
 import { decoded, mineOf, preload } from './story'
 
@@ -69,6 +69,7 @@ function Session({ row }: { row: Row }) {
   const [s, setS] = useState<Saved>(() => readSaved(row.token))
   const [camera, setCamera] = useState<PartId | null>(null)
   const [view, setView] = useState<PhotoView | null>(null)
+  const [prefView, setPrefView] = useState<Variant | null>(null)
   const viewFrom = useRef<HTMLElement | null>(null)
   const state = useRef(s); state.current = s
   const cameraRef = useRef(camera); cameraRef.current = camera
@@ -236,6 +237,19 @@ function Session({ row }: { row: Row }) {
     viewFrom.current?.focus({ preventScroll: true })
   }
 
+  // Screen 7's pictures open the same way. Only events: no column counts them.
+  const openPref = (v: Variant, from: HTMLElement) => {
+    viewFrom.current = from
+    logEvent('pref_view_open', undefined, { version: v.toUpperCase() })
+    setPrefView(v)
+  }
+  const closePref = () => {
+    if (!prefView) return
+    logEvent('pref_view_close', undefined, { version: prefView.toUpperCase() })
+    setPrefView(null)
+    viewFrom.current?.focus({ preventScroll: true })
+  }
+
   const tapLink = () => {
     const c = state.current, t = now()
     if (c.damageAt !== null) { if (!c.reportTapped) { patch({ reportTapped: true }); setFields({ t_report_tap: t }) } }
@@ -301,12 +315,14 @@ function Session({ row }: { row: Row }) {
       {s.screen === 'preference' && (
         <Preference left={s.left ?? 'a'} pick={s.pick} why={s.why}
           onPick={(pick: Variant) => { patch({ pick }); setFields({ preference: pick.toUpperCase() }); logEvent('form', 'preference', { pick: pick.toUpperCase() }) }}
+          onView={openPref}
           onWhy={(why) => { patch({ why }); setFields({ preference_why: why }); logEvent('form', 'preference_why', { len: why.length }) }}
           onFinish={finish} />
       )}
       {s.screen === 'thanks' && <Thanks />}
       {camera && <Camera part={camera} />}
       {view && <Viewer view={view} onClose={closeView} />}
+      {prefView && <LayoutViewer version={prefView} onClose={closePref} />}
     </div>
   )
 }

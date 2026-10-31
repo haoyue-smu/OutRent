@@ -1,5 +1,5 @@
 // The A/B test site, acceptance runs. The built site must be up (vite preview --config vite.abtest.config.ts --port 5193).
-//   node app/e2e/abtest.mjs layouts            screenshots for screen 7, saved as work/haoyue/_abtest/assets/layout-{a,b}.webp
+//   node app/e2e/abtest.mjs layouts            pictures for screen 7 (whole page after the photos, link outlined), saved as work/haoyue/_abtest/assets/layout-{a,b}.webp
 //   node app/e2e/abtest.mjs flows              whole flow: WebKit iPhone 13 and Chromium Pixel 7, A and B, report and save only
 //   node app/e2e/abtest.mjs diff               acceptance 1: the four screenshots, the DOM and the pixel diff
 //   node app/e2e/abtest.mjs assign             acceptance 5: ten Starts in a row, a reload, a forced row
@@ -116,9 +116,19 @@ async function finishSurvey(p) {
   await p.waitForSelector('text=Which version of that page do you prefer?')
   await settled(p)
   check('submit disabled until a pick', await p.isDisabled('button:has-text("Submit")'))
+  check('neither picture is cropped', await p.$$eval('.ab-pick-img img', (x) => x.every((i) => { const r = i.getBoundingClientRect(); return Math.abs(r.width / r.height - i.naturalWidth / i.naturalHeight) < 0.01 })))
+  await p.tap('.ab-pick-img >> nth=1')
+  await p.waitForSelector('.ab-viewer')
+  check('a picture opens full size and scrolls', await p.$eval('.ab-viewer figure', (f) => f.scrollHeight > f.clientHeight), await p.textContent('.ab-viewer figcaption'))
+  check('its opening did not pick it', await p.$$eval('input[name=pick]:checked', (x) => x.length) === 0)
+  await p.$eval('.ab-viewer figure', (f) => { f.scrollTop = f.scrollHeight })
+  check('close stays on screen when scrolled', await p.isVisible('.ab-viewer-x'))
+  await p.tap('.ab-viewer-x')
+  await p.waitForSelector('.ab-viewer', { state: 'detached' })
   const caps = await p.$$eval('.ab-pick-cap', (x) => x.map((e) => e.textContent))
   check('both captions', caps.includes('Link at the top') && caps.includes('Link at the bottom'), caps.join(' | '))
-  await p.tap('.ab-pick >> nth=0')
+  await p.tap('.ab-pick-cap >> nth=0')
+  check('a tap on the caption picks, with a forest border', await p.$eval('.ab-pick >> nth=0', (e) => e.classList.contains('is-on')) && !(await p.isDisabled('button:has-text("Submit")')))
   await p.fill('#ab-why', 'Easier to find')
   await p.tap('button:has-text("Submit")')
   await p.waitForSelector('text=Done, thanks a lot! You can close this tab.')
@@ -192,6 +202,7 @@ async function flow(name, browserType, device, variant, withReport, viewFirst) {
   const views = viewFirst ? 3 : 0, kinds = (t) => row.events.filter((e) => e.type === t)
   check('photo_views counts them', (row.photo_views ?? 0) === views, row.photo_views)
   check('every open has its close, with part and who', kinds('photo_view_open').length === views && kinds('photo_view_close').length === views && kinds('photo_view_open').every((e) => e.data.part && e.data.who), JSON.stringify(kinds('photo_view_open').map((e) => e.data)))
+  check('the enlarged picture is logged', kinds('pref_view_open').length === 1 && /^[AB]$/.test(kinds('pref_view_open')[0].data.version), JSON.stringify(kinds('pref_view_open').map((e) => e.data)))
   check('first tap after the photos', row.first_tap_after_photos === (viewFirst ? 'photo_view' : withReport ? 'link' : 'save'), row.first_tap_after_photos)
   if (viewFirst) check('the report tap is still the metric, after the views', row.t_report_tap > kinds('photo_view_close').at(-1).t && row.t_report_tap > row.t_damage_visible, `${row.t_report_tap - row.t_damage_visible} ms`)
   await browser.close()
@@ -211,11 +222,20 @@ async function flows() {
   console.log('\nrows', out.map((o) => o.id).join(' '))
 }
 
-// Screen 7's two screenshots: 390 × 844, before any photo. Saved as WebP through the browser, so no image tool is needed.
+// Screen 7's two pictures: 390 wide, the whole page after the three photos, the link outlined in both the same way.
+// The outline is only in the picture. Saved as WebP through the browser, so no image tool is needed.
 async function layouts() {
   for (const v of ['a', 'b']) {
     const { browser, p } = await open(chromium, VIEW, `v=${v}`)
-    await start(p); await settled(p); await sleep(400)
+    await start(p); await settled(p)
+    await takeAll(p)
+    await sleep(800)
+    await p.addStyleTag({ content: '.reportrow { outline: 3px solid #E6B800; outline-offset: 3px }' })
+    await p.evaluate(() => { document.querySelector('.ab-screen').scrollTop = 0; document.activeElement?.blur() })
+    const h = await p.evaluate(() => document.querySelector('.ab-screen').scrollHeight)
+    await p.setViewportSize({ width: 390, height: h })
+    await sleep(400); await settled(p)
+    console.log('height', v, h)
     const png = await p.screenshot({ type: 'png' })
     const webp = await p.evaluate(async (b64) => {
       const img = new Image(); img.src = 'data:image/png;base64,' + b64; await img.decode()
@@ -475,6 +495,36 @@ async function entry() {
   await browser.close()
 }
 
+// Screen 7 for the hand-back, at 390 × 844 and on a small phone: nothing overflows, and both pictures show whole.
+async function pref() {
+  const browser = await chromium.launch()
+  for (const [w, h] of [[390, 844], [375, 667]]) {
+    const ctx = await browser.newContext({ ...VIEW, viewport: { width: w, height: h } })
+    const p = await ctx.newPage()
+    await p.goto(`${BASE}/?pilot=1&new=1&v=a`)
+    await p.waitForSelector('text=Your bike’s here')
+    await start(p); await settled(p)
+    await takeAll(p)
+    await scrollTo(p, '.ab-main')
+    await p.tap('button:has-text("Save record")')
+    await p.waitForSelector('text=3 quick questions')
+    await p.tap('label:has-text("Yes")'); await p.tap('[data-log="seq:6"]'); await p.tap('button:has-text("Next")')
+    await p.waitForSelector('text=Which version of that page do you prefer?')
+    await settled(p); await sleep(400)
+    await p.tap('.ab-pick-cap >> nth=0'); await sleep(200)
+    await p.evaluate(() => document.activeElement?.blur()); await sleep(100)
+    const m = await p.evaluate(() => ({ over: document.querySelector('.ab-screen').scrollWidth > innerWidth, pics: [...document.querySelectorAll('.ab-pick-img')].map((e) => { const r = e.getBoundingClientRect(); return [Math.round(r.width), Math.round(r.height), Math.round(r.bottom)] }) }))
+    check(`${w} × ${h}: no sideways overflow, the pictures fit the screen`, !m.over && m.pics.every((x) => x[2] <= h), JSON.stringify(m))
+    await p.screenshot({ path: `${OUT}pref-${w}x${h}.png` })
+    if (w === 390) {
+      await p.tap('.ab-pick-img >> nth=0'); await p.waitForSelector('.ab-viewer'); await sleep(400)
+      await p.screenshot({ path: `${OUT}pref-viewer.png` })
+    }
+    await ctx.close()
+  }
+  await browser.close()
+}
+
 // One screenshot for the hand-back: the slot right after the drivetrain photo drops in, at 390 × 844.
 async function slot() {
   const { browser, p } = await open(chromium, VIEW, 'v=a')
@@ -489,6 +539,6 @@ async function slot() {
 }
 
 const mode = process.argv[2]
-await ({ flows, layouts, diff, assign, drop, slow, grep, slot, entry })[mode]()
+await ({ flows, layouts, diff, assign, drop, slow, grep, slot, entry, pref })[mode]()
 console.log(fails.length ? `\n${fails.length} FAILED:\n` + fails.join('\n') : '\nALL PASS')
 process.exit(fails.length ? 1 : 0)

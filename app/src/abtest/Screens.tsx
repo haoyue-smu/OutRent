@@ -1,10 +1,10 @@
-import { useEffect, useRef, type KeyboardEvent, type ReactNode, type Ref } from 'react'
+import { useEffect, useRef, type CSSProperties, type KeyboardEvent, type ReactNode, type Ref } from 'react'
 import { Icon } from '../shell/Icon'
 import { Photo } from '../shell/Photo'
 import { BackButton, Mono } from '../shell/direction'
 import { PARTS, RecordPart, ReportRow, type PartId } from '../pages/11-handover-check/pieces'
 import type { Variant } from './api'
-import { BACKDROP, CAPTION, EVIDENCE_DONE, EVIDENCE_OPEN, FIRST_TAKEN, LAYOUTS, NOTICED, REASONS, SENT_FULL, SENT_SHORT, SHOP_TAG, TAKEN, mineOf } from './story'
+import { BACKDROP, CAPTION, EVIDENCE_DONE, EVIDENCE_OPEN, FIRST_TAKEN, LAYOUTS, LAYOUT_H, NOTICED, REASONS, SENT_FULL, SENT_SHORT, SHOP_TAG, TAKEN, mineOf } from './story'
 
 // The screens. The app's own copy is as in the flow artifact; what the participant reads outside the app is as in UPDATE 3. No screen reads the store or the router; App.tsx owns the state and the log.
 
@@ -116,25 +116,33 @@ export function Camera({ part }: { part: PartId }) {
 
 // ---------- A photo full size, from either column, the same in both versions ----------
 export type PhotoView = { part: PartId; who: 'shop' | 'you' }
-export function Viewer({ view, onClose }: { view: PhotoView; onClose: () => void }) {
-  const p = PARTS.find((x) => x.id === view.part)!
+function ViewerFrame({ label, src, alt, caption, tall, onClose }: { label: string; src: string; alt: string; caption: string; tall?: boolean; onClose: () => void }) {
   const close = useRef<HTMLButtonElement>(null)
   useEffect(() => { close.current?.focus({ preventScroll: true }) }, [])
   const onKey = (e: KeyboardEvent) => {
     if (e.key === 'Escape') onClose()
     if (e.key === 'Tab') e.preventDefault() // the close button is the only thing to reach
   }
-  const mine = view.who === 'you'
   return (
-    <div className="ab-viewer" role="dialog" aria-modal="true" aria-label={`Photo of the ${p.name.toLowerCase()}`} data-log="viewer-outside" onKeyDown={onKey}
+    <div className={`ab-viewer${tall ? ' is-tall' : ''}`} role="dialog" aria-modal="true" aria-label={label} data-log="viewer-outside" onKeyDown={onKey}
       onClick={(e) => { if (!(e.target as Element).closest('img')) onClose() }}>
       <button type="button" className="ab-viewer-x" ref={close} data-log="viewer-close" aria-label="Close photo"><Icon name="x" /></button>
       <figure>
-        <span data-log="viewer-photo"><Photo src={mine ? mineOf(p.id) : p.shop} alt={mine ? `Your photo of the ${p.name.toLowerCase()}` : `The shop’s photo of the ${p.name.toLowerCase()}`} width={390} height={278} first /></span>
-        <figcaption>{p.name} · {mine ? `${TAKEN[p.id]} · you` : SHOP_TAG}</figcaption>
+        <span data-log="viewer-photo"><Photo src={src} alt={alt} width={390} height={tall ? LAYOUT_H : 278} first /></span>
+        <figcaption>{caption}</figcaption>
       </figure>
     </div>
   )
+}
+export function Viewer({ view, onClose }: { view: PhotoView; onClose: () => void }) {
+  const p = PARTS.find((x) => x.id === view.part)!, name = p.name.toLowerCase(), mine = view.who === 'you'
+  return <ViewerFrame label={`Photo of the ${name}`} src={mine ? mineOf(p.id) : p.shop} alt={mine ? `Your photo of the ${name}` : `The shop’s photo of the ${name}`}
+    caption={`${p.name} · ${mine ? `${TAKEN[p.id]} · you` : SHOP_TAG}`} onClose={onClose} />
+}
+// One of screen 7's pictures, full size: taller than the screen, so it scrolls.
+export function LayoutViewer({ version, onClose }: { version: Variant; onClose: () => void }) {
+  const l = LAYOUTS[version]
+  return <ViewerFrame label={l.caption} src={l.src} alt={l.alt} caption={l.caption} tall onClose={onClose} />
 }
 
 // ---------- 4 · Report form ----------
@@ -250,8 +258,8 @@ export function Questions({ noticed, seq, seqWhy, openText, onNoticed, onSeq, on
 }
 
 // ---------- 7 · Pick A or B ----------
-export function Preference({ left, pick, why, onPick, onWhy, onFinish }: {
-  left: Variant; pick: Variant | null; why: string; onPick: (v: Variant) => void; onWhy: (s: string) => void; onFinish: () => void
+export function Preference({ left, pick, why, onPick, onView, onWhy, onFinish }: {
+  left: Variant; pick: Variant | null; why: string; onPick: (v: Variant) => void; onView: (v: Variant, from: HTMLElement) => void; onWhy: (s: string) => void; onFinish: () => void
 }) {
   const order: Variant[] = left === 'a' ? ['a', 'b'] : ['b', 'a']
   return (
@@ -262,11 +270,15 @@ export function Preference({ left, pick, why, onPick, onWhy, onFinish }: {
           <legend className="ab-q-t">Which version of that page do you prefer?</legend>
           <div className="ab-picks">
             {order.map((v) => (
-              <label key={v} className="ab-pick" data-log={`pick:${v.toUpperCase()}`}>
-                <input type="radio" name="pick" checked={pick === v} onChange={() => onPick(v)} />
-                <span className="ab-pick-img"><Photo src={LAYOUTS[v].src} alt={LAYOUTS[v].alt} width={170} height={368} first /></span>
-                <span className="ab-pick-cap">{LAYOUTS[v].caption}</span>
-              </label>
+              <div key={v} className={`ab-pick${pick === v ? ' is-on' : ''}`} style={{ '--ar': 390 / LAYOUT_H } as CSSProperties}>
+                <button type="button" className="ab-pick-img" data-log={`pref-view:${v.toUpperCase()}`} aria-label={`See “${LAYOUTS[v].caption}” full size`} onClick={(e) => onView(v, e.currentTarget)}>
+                  <Photo src={LAYOUTS[v].src} alt={LAYOUTS[v].alt} width={170} height={Math.round(170 * LAYOUT_H / 390)} first />
+                </button>
+                <label className="ab-pick-cap" data-log={`pick:${v.toUpperCase()}`}>
+                  <input type="radio" name="pick" checked={pick === v} onChange={() => onPick(v)} />
+                  <i aria-hidden="true" />{LAYOUTS[v].caption}
+                </label>
+              </div>
             ))}
           </div>
         </fieldset>

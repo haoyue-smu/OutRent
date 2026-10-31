@@ -33,6 +33,12 @@ body { background: var(--desk); font-family: var(--font); color: var(--ink); -we
 .ab-viewer-x { position: absolute; top: var(--top-safe); right: var(--s-2); display: grid; place-items: center; width: var(--touch); height: var(--touch); padding: 0; border: 0; background: none; color: var(--white); cursor: pointer; }
 .ab-viewer-x .icon { width: 24px; height: 24px; }
 .ab-viewer-x:focus-visible { outline-color: var(--white); outline-offset: -4px; }
+/* A picture taller than the screen scrolls under the close button, which needs its own ground over it. */
+.ab-viewer.is-tall { justify-content: flex-start; }
+.ab-viewer.is-tall figure { flex: 1; min-height: 0; display: block; padding: calc(var(--top-safe) + 52px) 0 calc(var(--s-5) + env(safe-area-inset-bottom)); overflow-y: auto; overscroll-behavior: contain; }
+.ab-viewer.is-tall .photo { max-height: none; }
+.ab-viewer.is-tall figcaption { margin-top: var(--s-3); }
+.ab-viewer.is-tall .ab-viewer-x { z-index: 1; border-radius: var(--r-pill); background: var(--ink); }
 
 /* The simulated camera */
 .ab-camera { position: absolute; inset: 0; z-index: 40; display: flex; flex-direction: column; background: var(--ink); color: var(--white); }
@@ -91,12 +97,16 @@ body { background: var(--desk); font-family: var(--font); color: var(--ink); -we
 
 /* Pick A or B */
 .ab-picks { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-3); }
-.ab-pick { position: relative; display: flex; flex-direction: column; gap: 6px; min-width: 0; cursor: pointer; }
-.ab-pick-img { position: relative; display: block; aspect-ratio: 390 / 844; border: 2px solid var(--rule); border-radius: var(--r-thumb); overflow: hidden; background: var(--sheet); box-sizing: border-box; }
-.ab-pick-img .photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top; }
-.ab-pick input:checked + .ab-pick-img { border-color: var(--forest); }
-.ab-pick input:focus-visible + .ab-pick-img { outline: 2px solid var(--forest); outline-offset: 2px; }
-.ab-pick-cap { font-size: var(--fs-small); line-height: var(--lh-small); text-align: center; }
+.ab-pick { display: flex; flex-direction: column; gap: var(--s-1); min-width: 0; }
+/* The whole page, never cropped: as wide as the column, unless that would be taller than the screen leaves room for. */
+.ab-pick-img { display: block; width: min(100%, calc((100vh - 268px) * var(--ar))); width: min(100%, calc((100dvh - 268px) * var(--ar))); aspect-ratio: var(--ar); margin: 0 auto; padding: 0; border: 2px solid var(--rule); border-radius: var(--r-thumb); overflow: hidden; background: var(--sheet); box-sizing: border-box; cursor: pointer; }
+.ab-pick-img .photo { display: block; width: 100%; height: 100%; object-fit: contain; }
+.ab-pick.is-on .ab-pick-img { border-color: var(--forest); }
+.ab-pick-img:focus-visible { outline-offset: 2px; }
+.ab-pick-cap { position: relative; display: flex; align-items: center; justify-content: center; gap: var(--s-2); min-height: var(--touch); font-size: var(--fs-small); line-height: var(--lh-small); cursor: pointer; }
+.ab-pick-cap i { flex: none; width: 20px; height: 20px; box-sizing: border-box; border: 1.5px solid var(--ink-3); border-radius: var(--r-pill); }
+.ab-pick-cap input:checked + i { border: 6px solid var(--forest); }
+.ab-pick-cap input:focus-visible + i { outline: 2px solid var(--forest); outline-offset: 2px; }
 
 /* The first and the last screen. The photo runs under the status bar and on behind the sheet, far enough to stay covered
    while the sheet rises; its crop keeps the whole bike in the part that shows, on any phone. */
