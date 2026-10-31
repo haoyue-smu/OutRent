@@ -2,7 +2,7 @@
 
 Written by the management chat (31 Oct 23:58), from the project doc claude/inbox/build-agent-pilot.md. Do this **after** build-abtest.md's UPDATE 9 is deployed. Pilot rows only (`pilot=1`): nothing from this task may enter the human dataset. Whether any agent data is used at all is a separate decision Haoyue takes with the professor in writing; your job here is the runner and the pilot report.
 
-Spec: project doc `claude/experiment/AGENT-PILOT.md` (updated 31 Oct 23:50 for the revised site). If your window cannot open project docs, ask Haoyue to paste it. Sections 2, 4, 5, 7 and 9 are the ones you implement against.
+Spec: `git show origin/ops:inbox/AGENT-PILOT.md` (copy of the project doc, put on ops 1 Nov 00:40). Sections 2, 4, 5, 7 and 9 are the ones you implement against.
 
 Live site: https://outrent-abtest.vercel.app/ (Vite bundle `abtest-*.js`, Supabase RPCs `ab_start` and `ab_log`).
 
