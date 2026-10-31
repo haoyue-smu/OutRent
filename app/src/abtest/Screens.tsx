@@ -4,11 +4,10 @@ import { Photo } from '../shell/Photo'
 import { BackButton, Mono } from '../shell/direction'
 import { PARTS, RecordPart, ReportRow, type PartId } from '../pages/11-handover-check/pieces'
 import type { Variant } from './api'
-import { CAPTION, DRIVE_IS_PLACEHOLDER, EVIDENCE_DONE, EVIDENCE_OPEN, FIRST_TAKEN, LAYOUTS, NOTICED, REASONS, SENT_FULL, SENT_SHORT, SHOP_TAG, TAKEN, mineOf } from './story'
+import { CAPTION, EVIDENCE_DONE, EVIDENCE_OPEN, FIRST_TAKEN, LAYOUTS, NOTICED, REASONS, SENT_FULL, SENT_SHORT, SHOP_TAG, TAKEN, mineOf } from './story'
 
 // The screens, copy as in the flow artifact. No screen reads the store or the router; App.tsx owns the state and the log.
 
-const Placeholder = ({ id }: { id: PartId }) => (id === 'drive' && DRIVE_IS_PLACEHOLDER ? <span className="ab-placeholder">PLACEHOLDER</span> : null)
 const Kv = ({ k, v }: { k: string; v: ReactNode }) => <div className="ab-kv"><span>{k}</span><span>{v}</span></div>
 
 // A screen's scrolling page. Moves focus to its heading when it opens, so a screen reader starts at the top.
@@ -81,7 +80,7 @@ export function HandoverPage({ variant, shots, sent, linkRef, scrollRef, onTake,
               <RecordPart key={p.id} p={p} shot={shots.includes(p.id)} when={TAKEN[p.id]} eager mine={mineOf(p.id)}
                 onTake={() => onTake(p.id)}
                 shopTag={<span className="ab-tag">{SHOP_TAG}</span>}
-                mineTag={<><span className="ab-tag">{TAKEN[p.id]} · you</span><Placeholder id={p.id} /></>} />
+                mineTag={<span className="ab-tag">{TAKEN[p.id]} · you</span>} />
             ))}
           </div>
         </article>
@@ -102,7 +101,6 @@ export function Camera({ part }: { part: PartId }) {
       <span className="ab-camera-cap">{CAPTION[part]}</span>
       <div className="ab-camera-photo">
         <Photo src={mineOf(part)} alt={`Your photo of the ${PARTS.find((p) => p.id === part)!.name.toLowerCase()}`} width={390} height={278} first />
-        <Placeholder id={part} />
       </div>
       <div className="ab-camera-bar" aria-hidden="true"><span>Retake</span><span className="ab-shutter" /><span>Use photo</span></div>
     </div>
@@ -137,7 +135,6 @@ export function ReportForm({ shots, reason, photos, details, onBack, onReason, o
             {PARTS.filter((p) => shots.includes(p.id)).map((p) => (
               <button key={p.id} type="button" className="ab-thumb" data-log={`thumb:${p.id}`} aria-pressed={photos.includes(p.id)} aria-label={`Attach your photo of the ${p.name.toLowerCase()}`} onClick={() => onTogglePhoto(p.id)}>
                 <Photo src={mineOf(p.id)} alt="" width={64} height={48} first />
-                <Placeholder id={p.id} />
               </button>
             ))}
             <button type="button" className="ab-thumb ab-add" data-log="add-photo" aria-label="Add a photo" onClick={() => undefined}><Icon name="plus" /></button>

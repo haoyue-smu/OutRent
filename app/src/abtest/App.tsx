@@ -10,6 +10,7 @@ import { decoded, mineOf, preload } from './story'
 // The test's own small state and its log. Every time is ms since the Start tap; t0 is on the row.
 const SHOW_MS = 1000       // the simulated camera's preview
 const FRAME_LIMIT = 120    // the preview counts as on screen after two frames, or this long if the browser holds frames back
+const LOAD_LIMIT = 8000    // how long the preview waits for a photo on a slow connection before it goes on without it
 const TAP_SLOP = 10        // a pointer that moved further than this was a scroll, not a tap
 const SCROLL_EVERY = 250   // at most one scroll event per this many ms
 const SCROLL_UP = 24       // a move up smaller than this is a finger settling, not scrolling back
@@ -142,12 +143,12 @@ function Session({ row }: { row: Row }) {
   useEffect(() => {
     if (!camera) return
     const part = camera
-    let timer = 0, shown = false
+    let timer = 0, frame = 0, limit = 0, shown = false, gone = false
     const onScreen = () => {
       if (shown) return
       shown = true
       const t = now()
-      logEvent('photo', `preview:${part}`)
+      logEvent('photo', `preview:${part}`, { loaded: document.querySelector<HTMLImageElement>('.ab-camera img')?.complete ?? false })
       if (part === 'drive' && state.current.damageAt === null) { patch({ damageAt: t }); setFields({ t_damage_visible: t }) }
       timer = window.setTimeout(() => {
         const shots = [...state.current.shots, part]
@@ -160,10 +161,14 @@ function Session({ row }: { row: Row }) {
         setCamera(null)
       }, SHOW_MS)
     }
-    // Frames stop while the page is hidden, and some browsers hold them back; the preview must still end.
-    const frame = requestAnimationFrame(() => requestAnimationFrame(onScreen))
-    const limit = window.setTimeout(onScreen, FRAME_LIMIT)
-    return () => { cancelAnimationFrame(frame); clearTimeout(limit); clearTimeout(timer) }
+    // The clock starts when the photo can be seen, so the damage's time is not counted from an empty screen. Frames stop
+    // while the page is hidden, and some browsers hold them back; the preview must still end.
+    void decoded(mineOf(part), LOAD_LIMIT).then(() => {
+      if (gone) return
+      frame = requestAnimationFrame(() => requestAnimationFrame(onScreen))
+      limit = window.setTimeout(onScreen, FRAME_LIMIT)
+    })
+    return () => { gone = true; cancelAnimationFrame(frame); clearTimeout(limit); clearTimeout(timer) }
   }, [camera, now, logEvent, patch, setFields])
 
   // The photo lands: the live page's short flash, nothing with reduced motion. The drivetrain's landing is also when the

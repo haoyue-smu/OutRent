@@ -11,9 +11,8 @@ A second entry point of the app (`abtest.html`, `vite.abtest.config.ts`), built 
    VITE_ABTEST_SUPABASE_URL=https://<ref>.supabase.co
    VITE_ABTEST_SUPABASE_ANON=<anon key>
    ```
-3. When the damaged photo arrives: put it in `work/haoyue/11-handover-check/assets/`, import it in `story.ts` as `DRIVE_PHOTO` and set `DRIVE_IS_PLACEHOLDER = false`.
-4. Build from `app/`: `npx vite build --config vite.abtest.config.ts`.
-5. Deploy from a separate folder, so the `outrent` Vercel project never changes: copy `dist-abtest/` to a new folder, then there `npx vercel link` (new project `outrent-abtest`), `npx vercel --prod`, and alias it to `outrent-abtest.vercel.app`.
+3. Build from `app/`: `npx vite build --config vite.abtest.config.ts`.
+4. Deploy from a separate folder, so the `outrent` Vercel project never changes: copy `dist-abtest/` to a new folder, then there `npx vercel link` (new project `outrent-abtest`), `npx vercel --prod`, and alias it to `outrent-abtest.vercel.app`.
 
 ## Checks
 

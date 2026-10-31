@@ -1,16 +1,12 @@
 import { PARTS, type PartId } from '../pages/11-handover-check/pieces'
-import rDrive from '@photos/12-rental-summary/assets/12-direction-r-drive.webp'
+import driveBent from '@photos/_abtest/assets/11-mine-drive-bent.webp'
 import layoutA from '@photos/_abtest/assets/layout-a.webp'
 import layoutB from '@photos/_abtest/assets/layout-b.webp'
 
 // The fixed story clock and the photos. Nothing on screen uses the real time.
 
-// Daniel's drivetrain. Until the damaged image arrives this is the old photo, and every place that shows it carries a
-// visible PLACEHOLDER tag, so it cannot go live by accident. When it arrives: import it above and set this to false.
-export const DRIVE_IS_PLACEHOLDER = true
-export const DRIVE_PHOTO = rDrive
-
-export const mineOf = (id: PartId) => (id === 'drive' ? DRIVE_PHOTO : PARTS.find((p) => p.id === id)!.mine)
+// Daniel's drivetrain is the damaged photo: the cage bent into the spokes, not in the shop's photo.
+export const mineOf = (id: PartId) => (id === 'drive' ? driveBent : PARTS.find((p) => p.id === id)!.mine)
 export const TAKEN: Record<PartId, string> = { crank: '25 Oct · 7:40', saddle: '25 Oct · 7:40', drive: '25 Oct · 7:41' }
 export const CAPTION: Record<PartId, string> = { crank: 'CRANK ARM · 25 OCT · 7:40', saddle: 'SADDLE EDGE · 25 OCT · 7:40', drive: 'DRIVETRAIN · 25 OCT · 7:41' }
 export const SHOP_TAG = '18 Oct · Timah'
@@ -31,8 +27,8 @@ export const preload = () => Promise.allSettled(
   [...PARTS.flatMap((p) => [p.shop, mineOf(p.id)]), layoutA, layoutB].map((src) => { const i = new Image(); i.src = src; return i.decode() }),
 )
 // Waits for a photo, but never for long: a slow decode must not stop the participant from going on.
-export const decoded = (src: string) => {
+export const decoded = (src: string, limit = 1500) => {
   const i = new Image()
   i.src = src
-  return Promise.race([i.decode().catch(() => undefined), new Promise((done) => setTimeout(done, 1500))])
+  return Promise.race([i.decode().catch(() => undefined), new Promise((done) => setTimeout(done, limit))])
 }

@@ -22,7 +22,6 @@ body { background: var(--desk); font-family: var(--font); color: var(--ink); -we
 
 /* Tags on the photos */
 .ab-tag { position: absolute; left: 6px; bottom: 6px; padding: 2px 6px; border-radius: var(--r-tick); background: var(--ink); color: var(--white); font-family: var(--mono); font-size: var(--fs-mono-s); line-height: var(--lh-mono); white-space: nowrap; }
-.ab-placeholder { position: absolute; left: 6px; top: 6px; padding: 2px 6px; border-radius: var(--r-tick); background: var(--error); color: var(--white); font-family: var(--mono); font-size: var(--fs-mono-s); line-height: var(--lh-mono); }
 
 /* The simulated camera */
 .ab-camera { position: absolute; inset: 0; z-index: 40; display: flex; flex-direction: column; background: var(--ink); color: var(--white); }
@@ -55,7 +54,6 @@ body { background: var(--desk); font-family: var(--font); color: var(--ink); -we
 .ab-thumb { position: relative; width: 72px; height: 54px; padding: 0; border: 2px solid transparent; border-radius: var(--r-thumb); overflow: hidden; background: none; cursor: pointer; box-sizing: border-box; }
 .ab-thumb .photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .ab-thumb[aria-pressed="true"] { border-color: var(--forest); }
-.ab-thumb .ab-placeholder { left: 2px; top: 2px; padding: 0 2px; }
 .ab-add { display: grid; place-items: center; border: 1.5px dashed var(--ink-3); color: var(--ink); }
 .ab-add .icon { width: 20px; height: 20px; }
 .ab-label { display: block; margin: var(--s-3) 0 var(--s-2); font-size: var(--fs-small); line-height: var(--lh-small); color: var(--ink-2); }

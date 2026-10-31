@@ -4,6 +4,7 @@
 //   node app/e2e/abtest.mjs diff               acceptance 1: the four screenshots, the DOM and the pixel diff
 //   node app/e2e/abtest.mjs assign             acceptance 5: ten Starts in a row, a reload, a forced row
 //   node app/e2e/abtest.mjs drop               the keepalive write on pagehide
+//   node app/e2e/abtest.mjs slow               the damaged photo on a slow connection
 // Every run opens rows with pilot=1. Output goes to app/e2e/out/abtest/ (git ignores it).
 import { createRequire } from 'module'
 import fs from 'fs'
@@ -72,6 +73,7 @@ async function takePhoto(p, name) {
   await scrollTo(p, sel)
   await p.tap(sel)
   await p.waitForSelector('.ab-camera')
+  if (name === 'Drivetrain') check('the preview shows the damaged photo', /11-mine-drive-bent/.test(await p.getAttribute('.ab-camera img', 'src')))
   await p.waitForSelector('.ab-camera', { state: 'detached', timeout: 15000 })
 }
 const takeAll = async (p) => { for (const n of ['Crank arm', 'Saddle edge', 'Drivetrain']) await takePhoto(p, n) }
@@ -87,6 +89,7 @@ async function report(p, photos = ['drive']) {
   await p.tap('label:has-text("Damaged")')
   for (const id of photos) await p.tap(`[data-log="thumb:${id}"]`)
   await p.tap('[data-log="add-photo"]')
+  if (photos.includes('drive')) check('the report thumbnail shows the damaged photo', /11-mine-drive-bent/.test(await p.getAttribute('[data-log="thumb:drive"] img', 'src')))
   await p.fill('#ab-details', 'The rear part looks bent')
   await p.tap('button:has-text("Send to Timah Cycles")')
   await p.waitForSelector('text=Report sent')
@@ -136,6 +139,8 @@ async function flow(name, browserType, device, variant, withReport) {
   check('tapping a taken photo does nothing', !(await p.isVisible('.ab-camera')))
   await takePhoto(p, 'Saddle edge')
   await takePhoto(p, 'Drivetrain')
+  const drive = await p.$$eval('section.part[aria-label="Drivetrain"] img', (x) => x.map((i) => i.getAttribute('src')))
+  check('the slot shows the damaged photo', drive.length === 2 && /11-mine-drive-bent/.test(drive[1]) && /11-direction-s-drive/.test(drive[0]), drive.join(' | '))
   check('save enabled after three', !(await p.isDisabled('button:has-text("Save record")')))
   check('note above save', await p.isVisible('text=Both records are kept with booking OR-10482'))
   check('no condition text after photos', !/No marks|Circle the|nothing new/i.test(await p.textContent('body')))
@@ -372,7 +377,28 @@ async function drop() {
   }
 }
 
+// A slow connection: the damaged photo takes 4 s. The damage's clock must start when it can be seen, and the preview must
+// then still show for its full second.
+async function slow() {
+  const browser = await chromium.launch()
+  const ctx = await browser.newContext(VIEW)
+  const calls = watch(ctx)
+  await ctx.route('**/*11-mine-drive-bent*', async (route) => { await sleep(4000); await route.continue() })
+  const p = await ctx.newPage()
+  await p.goto(`${BASE}/?pilot=1&new=1&v=a`)
+  await p.waitForSelector('text=Your rental bike just arrived')
+  await start(p); await settled(p)
+  const at = Date.now()
+  await takePhoto(p, 'Drivetrain')
+  await sleep(1000)
+  const events = calls.flatMap((c) => c.body.p_patch?.events ?? [])
+  const shown = events.find((e) => e.target === 'preview:drive'), taken = events.find((e) => e.target === 'taken:drive')
+  check('the clock starts with the photo loaded', shown?.data?.loaded === true, JSON.stringify(shown))
+  check('the preview then shows for its second', taken.t - shown.t >= 1000 && taken.t - shown.t < 1300, `${taken.t - shown.t} ms, ${Date.now() - at} ms in all`)
+  await browser.close()
+}
+
 const mode = process.argv[2]
-await ({ flows, layouts, diff, assign, drop })[mode]()
+await ({ flows, layouts, diff, assign, drop, slow })[mode]()
 console.log(fails.length ? `\n${fails.length} FAILED:\n` + fails.join('\n') : '\nALL PASS')
 process.exit(fails.length ? 1 : 0)
