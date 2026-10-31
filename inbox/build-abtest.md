@@ -2,6 +2,26 @@
 
 Written only by the management chat. Read with `git show origin/ops:inbox/build-abtest.md`.
 
+## UPDATE 5 (31 Oct 15:05): the preference screen does not show the difference
+
+Haoyue's screenshot shows three problems:
+- The two pictures are tiny.
+- In "Link at the bottom" **the link is not in the picture at all**: it is below the fold of a before-photos screenshot.
+- The participant cannot see what they are choosing between.
+
+This was a fault in Management's brief, which asked for before-photos screenshots. Fix it as follows.
+
+- **New pictures:** each version is shown as the **whole page, top to bottom**, after the three photos are taken (the state the participant just decided in), scaled down to fit the column.
+  - The link block in each is marked with the same outline: 3 px `#E6B800`, offset 3 px, as in the flow artifact.
+  - Even at this size, the participant sees at a glance "link at the top of the page" against "link at the bottom of the page".
+  - Make them with `?v=a` / `?v=b` at 390 px wide, full-page.
+- **Size:** the two pictures side by side, as tall as the screen allows above the Why field. Do not crop them.
+- **Tap to enlarge:** tapping a picture opens it full size in the same viewer as the hand-over photos (scrollable when taller than the screen; close with ×). Log the event `pref_view_open` with `data: { version }`.
+- **Choosing:** a tap on the caption or on the radio under each picture selects it. The selected one gets a forest border, as now. Keep the random left/right order, and `preference_left`.
+- Nothing else changes, and no new column is needed (the views are only events).
+
+Do UPDATE 4 and UPDATE 5 together and deploy once. Add a screenshot of this screen at 390 × 844 to the hand-back.
+
 ## UPDATE 4 (31 Oct 15:00): the entry screen looks like a form, not like OutRent
 
 Haoyue saw it on his iPhone and finds it ugly: a wall of grey text at the top, half the screen empty, then a button. It must look like a screen from the app.
