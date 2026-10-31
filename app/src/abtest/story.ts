@@ -1,5 +1,10 @@
-import { PARTS, type PartId } from '../pages/11-handover-check/pieces'
-import driveBent from '@photos/_abtest/assets/11-mine-drive-bent.webp'
+import { PARTS, type Part, type PartId } from '../pages/11-handover-check/pieces'
+import shopCrank from '@photos/_abtest/assets/shop-crank.webp'
+import shopSaddle from '@photos/_abtest/assets/shop-saddle.webp'
+import shopDrive from '@photos/_abtest/assets/shop-drive.webp'
+import mineCrank from '@photos/_abtest/assets/mine-crank.webp'
+import mineSaddle from '@photos/_abtest/assets/mine-saddle.webp'
+import mineDrive from '@photos/_abtest/assets/mine-drive.webp'
 import backdrop from '@photos/07-fees-liability/assets/07-direction-backdrop-marlin7.webp'
 import layoutA from '@photos/_abtest/assets/layout-a.webp'
 import layoutB from '@photos/_abtest/assets/layout-b.webp'
@@ -8,8 +13,15 @@ import layoutB from '@photos/_abtest/assets/layout-b.webp'
 
 // The Marlin 7 at the trailhead, behind the first and the last screen, as on page 07.
 export const BACKDROP = backdrop
-// Daniel's drivetrain is the damaged photo: the cage bent into the spokes, not in the shop's photo.
-export const mineOf = (id: PartId) => (id === 'drive' ? driveBent : PARTS.find((p) => p.id === id)!.mine)
+// The test's own six photos, made so anyone can read them; the live app keeps its images. Daniel's drivetrain shows the
+// chain off and lying on the ground, which the shop's does not. The rings sit on the shop's scratch and scuff.
+const OWN: Record<PartId, Partial<Part>> = {
+  crank: { shop: shopCrank, mine: mineCrank, shopRing: [55, 52] },
+  saddle: { shop: shopSaddle, mine: mineSaddle, shopRing: [15, 39] },
+  drive: { shop: shopDrive, mine: mineDrive },
+}
+export const AB_PARTS: Part[] = PARTS.map((p) => ({ ...p, ...OWN[p.id] }))
+export const mineOf = (id: PartId) => AB_PARTS.find((p) => p.id === id)!.mine
 export const TAKEN: Record<PartId, string> = { crank: '25 Oct · 7:40', saddle: '25 Oct · 7:40', drive: '25 Oct · 7:41' }
 export const CAPTION: Record<PartId, string> = { crank: 'CRANK ARM · 25 OCT · 7:40', saddle: 'SADDLE EDGE · 25 OCT · 7:40', drive: 'DRIVETRAIN · 25 OCT · 7:41' }
 export const SHOP_TAG = '18 Oct · Timah'
@@ -29,7 +41,7 @@ export const LAYOUTS = {
 
 // Every photo the test shows, decoded before it is needed, so the 1.0 s preview starts with the picture on screen.
 export const preload = () => Promise.allSettled(
-  [backdrop, ...PARTS.flatMap((p) => [p.shop, mineOf(p.id)]), layoutA, layoutB].map((src) => { const i = new Image(); i.src = src; return i.decode() }),
+  [backdrop, ...AB_PARTS.flatMap((p) => [p.shop, p.mine]), layoutA, layoutB].map((src) => { const i = new Image(); i.src = src; return i.decode() }),
 )
 // Waits for a photo, but never for long: a slow decode must not stop the participant from going on.
 export const decoded = (src: string, limit = 1500) => {

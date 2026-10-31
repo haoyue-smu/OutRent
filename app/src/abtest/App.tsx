@@ -8,7 +8,6 @@ import { clearRow, dropNew, readParams, readRow, readSaved, writeRow, writeSaved
 import { decoded, mineOf, preload } from './story'
 
 // The test's own small state and its log. Every time is ms since the Start tap; t0 is on the row.
-const SHOW_MS = 1000       // the simulated camera's preview
 const FRAME_LIMIT = 120    // the preview counts as on screen after two frames, or this long if the browser holds frames back
 const LOAD_LIMIT = 8000    // how long the preview waits for a photo on a slow connection before it goes on without it
 const TAP_SLOP = 10        // a pointer that moved further than this was a scroll, not a tap
@@ -68,6 +67,8 @@ function Start({ onRow }: { onRow: (r: Row) => void }) {
 function Session({ row }: { row: Row }) {
   const [s, setS] = useState<Saved>(() => readSaved(row.token))
   const [camera, setCamera] = useState<PartId | null>(null)
+  const [retakes, setRetakes] = useState(0)
+  const previewShown = useRef(false)
   const [view, setView] = useState<PhotoView | null>(null)
   const [prefView, setPrefView] = useState<Variant | null>(null)
   const viewFrom = useRef<HTMLElement | null>(null)
@@ -134,7 +135,7 @@ function Session({ row }: { row: Row }) {
     return () => io.disconnect()
   }, [s.screen, now, setFields])
 
-  // The simulated camera: the preview shows for 1.0 s from the moment it is on screen, then the photo drops into its slot.
+  // The simulated camera: the preview stays until "Use photo" is tapped, then the photo drops into its slot.
   const take = async (id: PartId) => {
     if (taking.current || cameraRef.current || state.current.shots.includes(id)) return
     taking.current = true
@@ -146,33 +147,44 @@ function Session({ row }: { row: Row }) {
   useEffect(() => {
     if (!camera) return
     const part = camera
-    let timer = 0, frame = 0, limit = 0, shown = false, gone = false
+    let frame = 0, limit = 0, shown = false, gone = false
+    previewShown.current = false
     const onScreen = () => {
       if (shown) return
       shown = true
+      previewShown.current = true
       const t = now()
       logEvent('photo', `preview:${part}`, { loaded: document.querySelector<HTMLImageElement>('.ab-camera img')?.complete ?? false })
       if (part === 'drive' && state.current.damageAt === null) { patch({ damageAt: t }); setFields({ t_damage_visible: t }) }
-      timer = window.setTimeout(() => {
-        const shots = [...state.current.shots, part]
-        lastDrop.current = part
-        patch({ shots })
-        const dropped = now()
-        queue.current.push({ photo_taken: [{ part, t: dropped }] })
-        logEvent('photo', `taken:${part}`, { count: shots.length })
-        peakY.current = scroller.current?.scrollTop ?? 0
-        setCamera(null)
-      }, SHOW_MS)
     }
     // The clock starts when the photo can be seen, so the damage's time is not counted from an empty screen. Frames stop
-    // while the page is hidden, and some browsers hold them back; the preview must still end.
+    // while the page is hidden, and some browsers hold them back; the clock must still start.
     void decoded(mineOf(part), LOAD_LIMIT).then(() => {
       if (gone) return
       frame = requestAnimationFrame(() => requestAnimationFrame(onScreen))
       limit = window.setTimeout(onScreen, FRAME_LIMIT)
     })
-    return () => { gone = true; cancelAnimationFrame(frame); clearTimeout(limit); clearTimeout(timer) }
+    return () => { gone = true; cancelAnimationFrame(frame); clearTimeout(limit) }
   }, [camera, now, logEvent, patch, setFields])
+  // A tap before the photo is on screen does nothing: the damage's clock must have started first.
+  const usePhoto = () => {
+    const part = cameraRef.current
+    if (!part || !previewShown.current) return
+    const shots = [...state.current.shots, part]
+    logEvent('photo_use_tap', part)
+    lastDrop.current = part
+    patch({ shots })
+    queue.current.push({ photo_taken: [{ part, t: now() }] })
+    logEvent('photo', `taken:${part}`, { count: shots.length })
+    peakY.current = scroller.current?.scrollTop ?? 0
+    cameraRef.current = null
+    setRetakes(0)
+    setCamera(null)
+  }
+  const retake = () => {
+    if (cameraRef.current) logEvent('photo', `retake:${cameraRef.current}`)
+    setRetakes((n) => n + 1)
+  }
 
   // The photo lands: the live page's short flash, nothing with reduced motion. The drivetrain's landing is also when the
   // link is measured against the screen.
@@ -320,7 +332,7 @@ function Session({ row }: { row: Row }) {
           onFinish={finish} />
       )}
       {s.screen === 'thanks' && <Thanks />}
-      {camera && <Camera part={camera} />}
+      {camera && <Camera part={camera} retakes={retakes} onRetake={retake} onUse={usePhoto} />}
       {view && <Viewer view={view} onClose={closeView} />}
       {prefView && <LayoutViewer version={prefView} onClose={closePref} />}
     </div>

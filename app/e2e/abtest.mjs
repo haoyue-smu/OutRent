@@ -75,7 +75,17 @@ async function takePhoto(p, name) {
   await scrollTo(p, sel)
   await p.tap(sel)
   await p.waitForSelector('.ab-camera')
-  if (name === 'Drivetrain') check('the preview shows the damaged photo', /11-mine-drive-bent/.test(await p.getAttribute('.ab-camera img', 'src')))
+  if (name === 'Drivetrain') {
+    check('the preview shows the chain on the ground', /mine-drive/.test(await p.getAttribute('.ab-camera img', 'src')))
+    await sleep(1300)
+    check('the preview waits for a tap', await p.isVisible('.ab-camera'))
+    await p.tap('[data-log="camera-retake"]')
+    await sleep(300)
+    check('Retake shows the same photo', await p.isVisible('.ab-camera') && /mine-drive/.test(await p.getAttribute('.ab-camera img', 'src')))
+  }
+  const box = await p.$$eval('.ab-camera-bar button', (x) => x.map((b) => b.getBoundingClientRect().height))
+  if (box.some((h) => h < 44)) check('camera buttons are 44 px', false, box.join(' '))
+  await p.tap('[data-log="camera-use"]')
   await p.waitForSelector('.ab-camera', { state: 'detached', timeout: 15000 })
 }
 const takeAll = async (p) => { for (const n of ['Crank arm', 'Saddle edge', 'Drivetrain']) await takePhoto(p, n) }
@@ -91,7 +101,7 @@ async function report(p, photos = ['drive']) {
   await p.tap('label:has-text("Damaged")')
   for (const id of photos) await p.tap(`[data-log="thumb:${id}"]`)
   await p.tap('[data-log="add-photo"]')
-  if (photos.includes('drive')) check('the report thumbnail shows the damaged photo', /11-mine-drive-bent/.test(await p.getAttribute('[data-log="thumb:drive"] img', 'src')))
+  if (photos.includes('drive')) check('the report thumbnail shows the chain on the ground', /mine-drive/.test(await p.getAttribute('[data-log="thumb:drive"] img', 'src')))
   await p.fill('#ab-details', 'The rear part looks bent')
   await p.tap('button:has-text("Send to Timah Cycles")')
   await p.waitForSelector('text=Report sent')
@@ -170,11 +180,11 @@ async function flow(name, browserType, device, variant, withReport, viewFirst) {
   await takePhoto(p, 'Crank arm')
   check('button counts down', (await p.textContent('.ab-main')) === 'Take 2 more photos')
   check('you column', (await p.textContent('.cols')).includes('25 Oct · 7:40'))
-  if (viewFirst) await viewPhoto(p, 'shop crank, before the third photo', 'section.part[aria-label="Crank arm"] .ab-view', 'Crank arm · 18 Oct · Timah', 'outside', /11-direction-s-crank/)
+  if (viewFirst) await viewPhoto(p, 'shop crank, before the third photo', 'section.part[aria-label="Crank arm"] .ab-view', 'Crank arm · 18 Oct · Timah', 'outside', /shop-crank/)
   await takePhoto(p, 'Saddle edge')
   await takePhoto(p, 'Drivetrain')
   const drive = await p.$$eval('section.part[aria-label="Drivetrain"] img', (x) => x.map((i) => i.getAttribute('src')))
-  check('the slot shows the damaged photo', drive.length === 2 && /11-mine-drive-bent/.test(drive[1]) && /11-direction-s-drive/.test(drive[0]), drive.join(' | '))
+  check('the slot shows the new pair', drive.length === 2 && /mine-drive/.test(drive[1]) && /shop-drive/.test(drive[0]), drive.join(' | '))
   check('save enabled after three', !(await p.isDisabled('button:has-text("Save record")')))
   check('note above save', await p.isVisible('text=Both records are kept with booking OR-10482'))
   check('no condition text after photos', !/No marks|Circle the|nothing new/i.test(await p.textContent('body')))
@@ -183,10 +193,10 @@ async function flow(name, browserType, device, variant, withReport, viewFirst) {
     const sel = 'section.part[aria-label="Drivetrain"] .shot'
     await scrollTo(p, sel); await sleep(800)
     const before = await p.screenshot()
-    await viewPhoto(p, 'your drivetrain', sel, 'Drivetrain · 25 Oct · 7:41 · you', 'x', /11-mine-drive-bent/)
+    await viewPhoto(p, 'your drivetrain', sel, 'Drivetrain · 25 Oct · 7:41 · you', 'x', /mine-drive/)
     await p.evaluate(() => document.activeElement?.blur()); await sleep(300)
     check('the page looks the same after closing', before.equals(await p.screenshot()))
-    await viewPhoto(p, 'shop drivetrain', 'section.part[aria-label="Drivetrain"] .ab-view', 'Drivetrain · 18 Oct · Timah', 'outside', /11-direction-s-drive/)
+    await viewPhoto(p, 'shop drivetrain', 'section.part[aria-label="Drivetrain"] .ab-view', 'Drivetrain · 18 Oct · Timah', 'outside', /shop-drive/)
   }
   if (withReport) await report(p)
   await finishSurvey(p)
@@ -202,6 +212,10 @@ async function flow(name, browserType, device, variant, withReport, viewFirst) {
   const views = viewFirst ? 3 : 0, kinds = (t) => row.events.filter((e) => e.type === t)
   check('photo_views counts them', (row.photo_views ?? 0) === views, row.photo_views)
   check('every open has its close, with part and who', kinds('photo_view_open').length === views && kinds('photo_view_close').length === views && kinds('photo_view_open').every((e) => e.data.part && e.data.who), JSON.stringify(kinds('photo_view_open').map((e) => e.data)))
+  const uses = kinds('photo_use_tap')
+  check('photo_use_tap for each photo', uses.length === 3 && uses.map((e) => e.target).sort().join() === 'crank,drive,saddle', uses.map((e) => `${e.target} ${e.t}`).join(' '))
+  check('the damage clock starts at the preview, before Use photo', row.t_damage_visible < uses.find((e) => e.target === 'drive').t && uses.find((e) => e.target === 'drive').t - row.t_damage_visible >= 1300, `${uses.find((e) => e.target === 'drive').t - row.t_damage_visible} ms`)
+  check('the Retake tap is logged', row.events.some((e) => e.type === 'tap' && e.target === 'camera-retake'))
   check('the enlarged picture is logged', kinds('pref_view_open').length === 1 && /^[AB]$/.test(kinds('pref_view_open')[0].data.version), JSON.stringify(kinds('pref_view_open').map((e) => e.data)))
   check('first tap after the photos', row.first_tap_after_photos === (viewFirst ? 'photo_view' : withReport ? 'link' : 'save'), row.first_tap_after_photos)
   if (viewFirst) check('the report tap is still the metric, after the views', row.t_report_tap > kinds('photo_view_close').at(-1).t && row.t_report_tap > row.t_damage_visible, `${row.t_report_tap - row.t_damage_visible} ms`)
@@ -438,13 +452,12 @@ async function drop() {
   }
 }
 
-// A slow connection: the damaged photo takes 4 s. The damage's clock must start when it can be seen, and the preview must
-// then still show for its full second.
+// A slow connection: Daniel's drivetrain takes 4 s. The damage's clock must start when it can be seen.
 async function slow() {
   const browser = await chromium.launch()
   const ctx = await browser.newContext(VIEW)
   const calls = watch(ctx)
-  await ctx.route('**/*11-mine-drive-bent*', async (route) => { await sleep(4000); await route.continue() })
+  await ctx.route('**/*mine-drive*', async (route) => { await sleep(4000); await route.continue() })
   const p = await ctx.newPage()
   await p.goto(`${BASE}/?pilot=1&new=1&v=a`)
   await p.waitForSelector('text=Your bike’s here')
@@ -455,7 +468,7 @@ async function slow() {
   const events = calls.flatMap((c) => c.body.p_patch?.events ?? [])
   const shown = events.find((e) => e.target === 'preview:drive'), taken = events.find((e) => e.target === 'taken:drive')
   check('the clock starts with the photo loaded', shown?.data?.loaded === true, JSON.stringify(shown))
-  check('the preview then shows for its second', taken.t - shown.t >= 1000 && taken.t - shown.t < 1300, `${taken.t - shown.t} ms, ${Date.now() - at} ms in all`)
+  check('Use photo comes after it', taken.t > shown.t, `${taken.t - shown.t} ms, ${Date.now() - at} ms in all`)
   await browser.close()
 }
 
@@ -464,8 +477,8 @@ async function grep() {
   const dir = new URL('../dist-abtest/', import.meta.url).pathname.replace(/^\/([A-Z]:)/, '$1')
   const files = fs.readdirSync(dir, { recursive: true }).filter((f) => /\.(js|css|html)$/.test(f))
   const text = files.map((f) => fs.readFileSync(dir + f, 'utf8')).join('\n')
-  for (const w of ['PLACEHOLDER', 'There are no right answers', 'testing the app, not you', 'Your rental bike just arrived', 'Report link on top', 'Thanks. You can close this page', 'No marks to record', 'Circle the', 'nothing new']) check(`bundle has no "${w}"`, !text.includes(w))
-  for (const w of ['SMU IS211', 'Your bike', 'Link at the bottom', 'thanks a lot', 'photo_view_open']) check(`bundle has "${w}"`, text.includes(w))
+  for (const w of ['PLACEHOLDER', 'mine-drive-bent', 'There are no right answers', 'testing the app, not you', 'Your rental bike just arrived', 'Report link on top', 'Thanks. You can close this page', 'No marks to record', 'Circle the', 'nothing new']) check(`bundle has no "${w}"`, !text.includes(w))
+  for (const w of ['SMU IS211', 'Your bike', 'Link at the bottom', 'thanks a lot', 'photo_view_open', 'photo_use_tap', 'Compare what you see', 'it’s a prototype']) check(`bundle has "${w}"`, text.includes(w))
 }
 
 // The whole sheet, button included, fits without scrolling, and the whole bike shows above it.
@@ -530,7 +543,9 @@ async function slot() {
   const { browser, p } = await open(chromium, VIEW, 'v=a')
   await start(p); await settled(p)
   await takePhoto(p, 'Crank arm'); await takePhoto(p, 'Saddle edge'); await takePhoto(p, 'Drivetrain')
-  await sleep(700)
+  await sleep(900)
+  await p.evaluate(() => { const s = document.querySelector('.ab-screen'); s.scrollTop += document.querySelector('.record').getBoundingClientRect().top - 12 })
+  await sleep(200)
   await p.screenshot({ path: `${OUT}slot-drivetrain.png` })
   await p.tap('section.part[aria-label="Drivetrain"] .shot')
   await p.waitForSelector('.ab-viewer'); await sleep(300)

@@ -2,9 +2,9 @@ import { useEffect, useRef, type CSSProperties, type KeyboardEvent, type ReactNo
 import { Icon } from '../shell/Icon'
 import { Photo } from '../shell/Photo'
 import { BackButton, Mono } from '../shell/direction'
-import { PARTS, RecordPart, ReportRow, type PartId } from '../pages/11-handover-check/pieces'
+import { RecordPart, ReportRow, type PartId } from '../pages/11-handover-check/pieces'
 import type { Variant } from './api'
-import { BACKDROP, CAPTION, EVIDENCE_DONE, EVIDENCE_OPEN, FIRST_TAKEN, LAYOUTS, LAYOUT_H, NOTICED, REASONS, SENT_FULL, SENT_SHORT, SHOP_TAG, TAKEN, mineOf } from './story'
+import { AB_PARTS, BACKDROP, CAPTION, EVIDENCE_DONE, EVIDENCE_OPEN, FIRST_TAKEN, LAYOUTS, LAYOUT_H, NOTICED, REASONS, SENT_FULL, SENT_SHORT, SHOP_TAG, TAKEN, mineOf } from './story'
 
 // The screens. The app's own copy is as in the flow artifact; what the participant reads outside the app is as in UPDATE 3. No screen reads the store or the router; App.tsx owns the state and the log.
 
@@ -42,12 +42,13 @@ export function Entry({ onStart, busy, failed }: { onStart: () => void; busy: bo
       <Mono>SMU IS211 · OutRent</Mono>
       <h1 className="t-h1">Your bike’s here</h1>
       <p className="lede">You’re Daniel. You booked a mountain bike on OutRent for a Saturday morning ride, and it’s just been dropped off at the trailhead. There’s a S$150 deposit on your card until you return it.</p>
-      <p className="lede">Use the app like you normally would before you ride off. Takes about 3 minutes.</p>
+      <p className="lede">Use the app like you normally would before you ride off. Compare what you see with the shop’s photos. Takes about 3 minutes.</p>
       {failed && <p className="ab-dock-note" role="alert">We could not reach the server. Check your connection and tap Start again.</p>}
       <button type="button" className="cta" data-log="start" disabled={busy} onClick={onStart}>Start</button>
       <div className="ab-ps-small">
         <p className="small">Hi! We’re SMU students building OutRent for our IS211 project. Thanks for helping us test it.</p>
         <p className="small">We don’t collect names or any personal info.</p>
+        <p className="small">Tapping “Take photo” won’t open your camera. The photos are already taken for you, it’s a prototype.</p>
       </div>
     </PhotoSheet>
   )
@@ -80,7 +81,7 @@ export function HandoverPage({ variant, shots, sent, linkRef, scrollRef, onTake,
             <div><Mono>You</Mono><b>{shots.length ? FIRST_TAKEN : 'Not taken yet'}</b></div>
           </div>
           <div className="parts">
-            {PARTS.map((p) => (
+            {AB_PARTS.map((p) => (
               <RecordPart key={p.id} p={p} shot={shots.includes(p.id)} when={TAKEN[p.id]} eager mine={mineOf(p.id)}
                 onTake={(el) => { if (shots.includes(p.id)) onView({ part: p.id, who: 'you' }, el); else onTake(p.id) }}
                 shopTag={<>
@@ -102,14 +103,21 @@ export function HandoverPage({ variant, shots, sent, linkRef, scrollRef, onTake,
 }
 
 // ---------- 2 · Simulated camera ----------
-export function Camera({ part }: { part: PartId }) {
+// The preview stays until "Use photo" is tapped. "Retake" shows the same photo again, with a short fade so the tap is felt.
+export function Camera({ part, retakes, onRetake, onUse }: { part: PartId; retakes: number; onRetake: () => void; onUse: () => void }) {
+  const use = useRef<HTMLButtonElement>(null)
+  useEffect(() => { use.current?.focus({ preventScroll: true }) }, [])
   return (
-    <div className="ab-camera" data-log="camera" role="status">
+    <div className="ab-camera" data-log="camera" role="dialog" aria-modal="true" aria-label={CAPTION[part]}>
       <span className="ab-camera-cap">{CAPTION[part]}</span>
-      <div className="ab-camera-photo">
-        <Photo src={mineOf(part)} alt={`Your photo of the ${PARTS.find((p) => p.id === part)!.name.toLowerCase()}`} width={390} height={278} first />
+      <div key={retakes} className={`ab-camera-photo${retakes ? ' is-again' : ''}`}>
+        <Photo src={mineOf(part)} alt={`Your photo of the ${AB_PARTS.find((p) => p.id === part)!.name.toLowerCase()}`} width={390} height={278} first />
       </div>
-      <div className="ab-camera-bar" aria-hidden="true"><span>Retake</span><span className="ab-shutter" /><span>Use photo</span></div>
+      <div className="ab-camera-bar">
+        <button type="button" data-log="camera-retake" onClick={onRetake}>Retake</button>
+        <span className="ab-shutter" aria-hidden="true" />
+        <button type="button" className="is-use" ref={use} data-log="camera-use" onClick={onUse}>Use photo</button>
+      </div>
     </div>
   )
 }
@@ -135,7 +143,7 @@ function ViewerFrame({ label, src, alt, caption, tall, onClose }: { label: strin
   )
 }
 export function Viewer({ view, onClose }: { view: PhotoView; onClose: () => void }) {
-  const p = PARTS.find((x) => x.id === view.part)!, name = p.name.toLowerCase(), mine = view.who === 'you'
+  const p = AB_PARTS.find((x) => x.id === view.part)!, name = p.name.toLowerCase(), mine = view.who === 'you'
   return <ViewerFrame label={`Photo of the ${name}`} src={mine ? mineOf(p.id) : p.shop} alt={mine ? `Your photo of the ${name}` : `The shop’s photo of the ${name}`}
     caption={`${p.name} · ${mine ? `${TAKEN[p.id]} · you` : SHOP_TAG}`} onClose={onClose} />
 }
@@ -170,7 +178,7 @@ export function ReportForm({ shots, reason, photos, details, onBack, onReason, o
         <div className="pad ab-block">
           <Mono id="ab-photos">Photos from your hand-over record</Mono>
           <div className="ab-thumbs" role="group" aria-labelledby="ab-photos">
-            {PARTS.filter((p) => shots.includes(p.id)).map((p) => (
+            {AB_PARTS.filter((p) => shots.includes(p.id)).map((p) => (
               <button key={p.id} type="button" className="ab-thumb" data-log={`thumb:${p.id}`} aria-pressed={photos.includes(p.id)} aria-label={`Attach your photo of the ${p.name.toLowerCase()}`} onClick={() => onTogglePhoto(p.id)}>
                 <Photo src={mineOf(p.id)} alt="" width={64} height={48} first />
               </button>
