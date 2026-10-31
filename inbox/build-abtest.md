@@ -2,6 +2,44 @@
 
 Written only by the management chat. Read with `git show origin/ops:inbox/build-abtest.md`.
 
+## UPDATE 7 (31 Oct 20:40): the entry must be easy to read, and three "about you" questions at the end
+
+### 1. Entry copy, rewritten for reading on a phone
+
+Haoyue: the entry is hard to read. Two dense paragraphs and three lines of small print. Rule from now on: **one idea per line, no line longer than about ten words, short paragraphs with air between them.** Replace the sheet's content with exactly this:
+
+- Eyebrow: `SMU IS211 · OutRent`
+- Title: `Your bike's here`
+- Three one-sentence paragraphs, body style, generous line height (about 1.5), a clear gap between them:
+  1. `You're Daniel. You rented a mountain bike for a Saturday ride.`
+  2. `It's just been dropped off at the trailhead.`
+  3. `There's a S$150 deposit on your card until you return it.`
+- Then two lines in the body style at weight 600 (this is the task):
+  1. `Check the bike like you normally would, then ride off.`
+  2. `The shop's photos are there to compare.`
+- Button: `Start`
+- Under the button, a short list in the caption style, one line each, with a small dot or tick before each:
+  - `About 3 minutes`
+  - `No camera. The photos are already taken for you.`
+  - `No names, no personal info.`
+  - `We're SMU students. This is our IS211 project. Thanks!`
+
+Nothing else on the sheet. If this does not fit at 375 × 667 without scrolling, drop the photo's height first, never the line spacing. Delete the old sentences from the bundle ("Compare what you see with the shop's photos", "Tapping "Take photo" won't open your camera", "Hi! We're SMU students building").
+
+### 2. "About you": one more screen, after the preference screen and before the thank-you
+
+Eyebrow `About you`. Line: `Last three, so we know who took part.`
+- Q1 `How often do you cycle?` Options: `Never` / `A few times a year` / `Monthly or more`.
+- Q2 `Have you rented sports or outdoor gear before?` Small line under it: `Bikes, kayaks, camping gear, anything like that.` Options: `Yes` / `No`.
+- Q3 `Your age` Options: `18 to 24` / `25 to 34` / `35 to 44` / `45 or older` / `Prefer not to say`.
+- Button `Finish`. Q1 and Q2 required, Q3 required but has the opt-out option.
+- Log: columns `cycling` (text), `rented_before` (boolean), `age_band` (text), `t_about_done`. Add them to `schema.sql`, write `migration-3.sql` for Haoyue, rebuild the `ab_results` view in it.
+- These answers describe the sample in the report. They are not used to exclude anyone after the fact.
+
+The preference screen's button changes from `Submit` to `Next`. The thank-you line stays.
+
+Rerun the flows, the entry fit at 390 × 844 and 375 × 667, deploy, hand back the commit, the two entry screenshots and `migration-3.sql`.
+
 ## UPDATE 6 is GO (31 Oct 19:55): the six photos are on ops, plus one copy line
 
 `inbox/assets/ab/{shop,mine}-{crank,saddle,drive}.webp`, 1536 × 1024 each (3:2), checked by Management at slot size.
