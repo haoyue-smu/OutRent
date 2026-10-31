@@ -1,6 +1,6 @@
 # OutRent product requirements (Iter2 prototype)
 
-Version 1.8 · 25 Oct 2026 · Product owner window. Consumed by the UX design window and the implementation window.
+Version 1.9 · 31 Oct 2026 · Product owner window. Consumed by the UX design window and the implementation window.
 
 ## 0. How to use this document
 
@@ -37,6 +37,8 @@ OutRent is a one-stop platform for renting bulky outdoor sports equipment and fo
 
 Daniel Lim, 29, marketing executive, Singapore. Four-room HDB flat, one car. Rides 3–4 times a week. Owns a road bike, an older bike and a bike box that all compete for space at home. First-time renter. "I've got the bike I want, everything around it is the problem." The prototype opens as Daniel, signed in, the evening before his first Chestnut Nature Park trail ride (MOCK-DATA.md, mock clock).
 
+**The easy scenario, as walked (v1.9).** Wed 22 Oct: from Coach Aisyah's kit, Daniel saves his fit, finds the Trek Marlin 7 at Timah Cycles, books delivery to the Chestnut trailhead carpark for Sat 7:40 with collection at 13:30, reads the charges and the liability terms, pays S$50 by PayNow with S$150 held on his card (OR-10482, confirmed 9:12). Sat 25 Oct, 7:40: Hafiz hands over the bike set to Daniel's fit. Daniel photographs the three parts the shop photographed. His drivetrain photo (7:41) shows a bent rear derailleur that is not in the shop's 18 Oct photos. He reports it from the record before he rides (R-10482-1, sent 7:46); the shop replies at 7:49 that it is on their record, not his, and Hafiz straightens the hanger before leaving (7:52). Daniel rides 8:00–12:30. Collection at the carpark 13:30; the return check against the record finds the two known marks and the reported derailleur, trail dirt only, nothing chargeable; the deposit is released 14:05; he sets up the weekly ride (14:07). Every value is in MOCK-DATA §4.
+
 ## 2. Change protocol
 
 The design and implementation windows do not add features and do not change requirements. A gap, a contradiction or a needed value goes back to the PO window with the story ID. The PO updates this file, bumps the version and lists the changed stories below. Both windows align to the newest version.
@@ -52,6 +54,7 @@ The design and implementation windows do not add features and do not change requ
 | 1.6 | 25 Oct 2026 | Answers the Creative Director's gaps 3, 4, 5, 6, 9, 14, 15 and the batch-5 value check (product/PO-ANSWERS-v1.6.md). No story text changed. MOCK-DATA.md at 1.5: demo-route clock, courier, mark time, item types and sizes, rack nearest home, intake record detail, §12 catalogue and pricing rules; coach's note shortened. Open questions 11, 13 updated. |
 | 1.7 | 25 Oct 2026 | Haoyue's answers of 25 Oct 02:39 (product/PO-ANSWERS-v1.7.md): open question 11 closed, all PO-set values accepted; open question 13 closed, Home keeps four categories. No story text changed. MOCK-DATA.md at 1.6: §12 seeds Paddleboards and Camping with one item each. |
 | 1.8 | 25 Oct 2026 | Answers the persona-review deposit question and FIXES 19–22 (product/PO-ANSWERS-v1.8.md). Changed stories: E4-9 (PayNow deposit fallback), E6-1 (setup also from an upcoming booking). MOCK-DATA.md at 1.7. |
+| 1.9 | 31 Oct 2026 | The A/B test scenario (product/PO-ANSWERS-v1.9.md). §1 gains the easy-scenario walk with the hand-over report. Changed stories: E5-5 (AC2 rewritten: no marking by Daniel, record complete with three photos, new problems via E5-6; AC4; states), E5-6 (AC1 evidence, new AC3 reply and outcome, states), E9-3 (report-reply notification). MOCK-DATA.md at 1.8. Outcome proposal in open question 14. |
 
 ## 3. Won't build
 
@@ -344,17 +347,18 @@ States: delayed tracking, delay notification.
 `HE #11 #12 #13 #16` · Seed: SEED-BOOKING
 As a renter liable for damage, Daniel wants the condition fixed in evidence at handover, so the deposit is judged on record, not memory.
 1. At handover, the supplier's dated photos and Daniel's own photos of the same unit sit side by side for comparison, both timed in the same form. The hand-over views are close-ups of one part each: every known mark of the unit plus the part most at risk for its category; the set is defined per listing by the supplier, and Daniel's photos take the same views (MOCK-DATA §4). `[D]`
-2. Daniel marks existing damage; marked items are part of the record with date and author. `[D+B]`
+2. The record is complete when Daniel's photos of the listed views are taken; he marks nothing on them. The supplier's known marks are part of the record from the supplier's side, with their date and author, and so is anything Daniel reports (E5-6) once reported. A problem Daniel sees goes through E5-6, never through a marking step on the record. `[D+B]`
 3. The completed record is reachable later from the booking detail and can be reopened to view. `[B]`
-4. The record states its consequence: existing marks are not chargeable. `[D]`
-States: recording, completed record, reopened view.
+4. The record states its consequence: what is on the record at hand-over, known marks and reported problems alike, is not chargeable. `[D]`
+States: recording, completed record (with a report, and the no-report variant), reopened view.
 
 ### E5-6 Report a problem at handover · Must
 Seed: SEED-BOOKING
 As a renter facing a wrong or damaged item, Daniel wants a way to object at the door, so acceptance is a choice.
-1. From the handover record, Daniel can report a problem; the report names the booking and the evidence just captured. `[D+B]`
-2. The report's submitted state is visible, timed (MOCK-DATA §4) and reachable later. `[D]`
-States: report form, submitted.
+1. From the handover record, Daniel can report a problem; the report names the booking and offers the photos just taken as evidence (MOCK-DATA §4, R-10482-1). `[D+B]`
+2. The report's submitted state is visible, timed and numbered (MOCK-DATA §4) and reachable later. `[D]`
+3. The supplier's reply and the report's outcome are visible later with the report, in the booking detail and on the close; a notification carries the reply (E9-3). No messages screen is required for this. `[D+B]`
+States: report form, submitted, replied (in the booking detail).
 
 ### E5-7 Return, close, deposit back · Must
 `B1` `Idea 1` `HE #13` · Seed: SEED-BOOKING
@@ -521,7 +525,7 @@ States: list with unread, list all read, empty list, thread with reply.
 ### E9-3 The notification catalogue · Must
 Seed: SEED-NOTIFS, VS-1, VS-2
 As a user, Daniel wants events to reach him and lead somewhere, so the app can start conversations, not only answer them.
-1. These events produce notifications, each leading to its subject: booking confirmed → booking detail; supplier cancellation → cancellation notice (E4-7); delivery delay → tracking (E5-4); collection done and deposit released → closed summary (one notification, sent when the deposit release shows; the collection itself does not notify separately); idle item → item detail (E7-4); new message → thread. `[D+B]`
+1. These events produce notifications, each leading to its subject: booking confirmed → booking detail; supplier cancellation → cancellation notice (E4-7); delivery delay → tracking (E5-4); collection done and deposit released → closed summary (one notification, sent when the deposit release shows; the collection itself does not notify separately); report reply → the booking detail's report section (E5-6); idle item → item detail (E7-4); new message → thread. `[D+B]`
 2. No notification is a dead end; every one opens the thing it is about. `[B]`
 The idle-item and new-message types carry the priority of their destination stories (E7-4, E9-1: Should); the other four are Must.
 States: one drawn example per notification type.
@@ -577,3 +581,4 @@ Raised here, answered by the PO window, folded into the next version:
 11. Resolved 25 Oct 2026 (Haoyue, "all ok"): every PO-set value of v1.5 and v1.6 is accepted as it stands. Set by PO, v1.5: Daniel's home address (Blk 325C Sengkang East Way #11-42, Singapore 543325); the hand-over spot at the Chestnut trailhead carpark ("By the park entrance sign"); the shop's handover record time (18 Oct · 16:20); the E5-6 report submitted time (25 Oct · 7:46). Added v1.6: the courier's name (Hafiz, no photo); the weekly 10% rule as a platform rule; the multi-day rule (10% off the day rate from 3 days); the two bike sizes in SEED-EQUIPMENT; Rack S near home and the pooled-run window 7:00–10:00; the intake record time (28 Oct · 19:45) and views. Any change goes through the PO window and changes everywhere at once.
 12. Not asked for, no value set: the 12 Oct photos (2 of the 5 on the Trek Marlin 7 listing) carry a date but no time. If they appear beside a timed record, raise by story ID (E3-1 or E5-5) and the PO sets a time.
 13. Resolved 25 Oct 2026 (Haoyue, option A): Home shows four categories, Bikes, Kayaks, Paddleboards, Camping. Paddleboards and Camping are each seeded with one item (MOCK-DATA §12) so the tiles lead to real data.
+14. Proposed by PO, v1.9, awaiting Haoyue: the outcome of the hand-over report (MOCK-DATA §4): Hafiz, still at the carpark, straightens the derailleur hanger at 7:52 after the shop's 7:49 reply; Daniel rides at 8:00; the derailleur is on the shop's record and nothing is chargeable; collection 13:30 and deposit release 14:05 unchanged. Also the reference format R-10482-1 and the reply text.
