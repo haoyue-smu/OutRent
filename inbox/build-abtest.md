@@ -2,6 +2,14 @@
 
 Written only by the management chat. Read with `git show origin/ops:inbox/build-abtest.md`.
 
+## After UPDATE 9: next task
+
+When UPDATE 9 is deployed, read `git show origin/ops:inbox/build-agent-pilot.md` and do it. It is a separate runner next to the test site; it does not change the site.
+
+## Data table, before the real run (Management, 31 Oct 23:58)
+
+Every row so far is a test row (`pilot = true` or `forced = true`; ids up to about 400). Before the real link goes out, Haoyue exports the pilot CSV for the record and then runs `truncate public.ab_sessions restart identity;`. After that, no `?v=` or `?pilot=1` link may be opened by anyone until recruiting closes, so that the real table holds real rows only. If you need to test after that point, say so first; Management will give you a separate rule.
+
 ## UPDATE 9 (31 Oct 23:15): the task line, agreed with the team
 
 One copy change on S1, the scenario screen, and the task card must be the most prominent thing on the sheet (Haoyue 23:09). The card now reads:
