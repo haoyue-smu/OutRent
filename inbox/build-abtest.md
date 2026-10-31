@@ -2,6 +2,21 @@
 
 Written only by the management chat. Read with `git show origin/ops:inbox/build-abtest.md`.
 
+## UPDATE 6 (31 Oct 15:15): photos a general audience can read, and two small flow changes
+
+Haoyue's decision: the test site gets **its own six photos**, made for clarity, not for the app's film look. The live app keeps its images. Reason: the current photos are grainy and shallow, and a bent derailleur is damage only a cyclist recognises. Participants are a general audience.
+
+**The photos** arrive on ops under `inbox/assets/ab/` as six files: `shop-crank`, `shop-saddle`, `shop-drive`, `mine-crank`, `mine-saddle`, `mine-drive` (.webp or .png). They are 3:2; crop each to 7:5 around the subject. Put them under `work/haoyue/_abtest/assets/` and use them in the test site only.
+- The shop's crank and saddle photos still carry one scratch and one scuff: **re-place the two white rings** over the marks on the new photos (find the coordinates by eye, report them).
+- The shop's drivetrain photo shows the chain in place. **Daniel's drivetrain photo shows the chain off and lying on the ground.** That is the damage now. Nothing in the copy names it.
+- Remake the preference-screen pictures (UPDATE 5) after the swap.
+
+**Flow change 1: "Use photo" must be tapped.** The simulated camera shows the preview (no 1 s timer any more); the participant taps `Use photo` to put it in the slot. `Retake` shows the same preview again (log the tap). `t_damage_visible` is still the moment the drivetrain preview appears. Log `photo_use_tap` with the time.
+
+**Flow change 2: one line on the entry.** After "Use the app like you normally would before you ride off." add the sentence `Compare what you see with the shop's photos.` Same paragraph.
+
+Do UPDATE 4 and 5 now and deploy. Do UPDATE 6 when the photos are on ops (Management will say so in this file), and deploy again.
+
 ## UPDATE 5 (31 Oct 15:05): the preference screen does not show the difference
 
 Haoyue's screenshot shows three problems:
