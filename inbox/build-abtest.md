@@ -2,6 +2,18 @@
 
 Written only by the management chat. Read with `git show origin/ops:inbox/build-abtest.md`.
 
+## UPDATE 12 (1 Nov 12:00): make the ends of the 1–7 scales impossible to miss · urgent, real participants are on the site
+
+Haoyue: the end labels on Q2 and Q3 are small grey text under the tiles; a participant chose 7, then changed it to 1. Change on **Q2 and Q3**, identical for A and B, no copy change in the question:
+
+- Move the two end labels **above** the tile row, in the body style (ink colour, body size, weight 500), left- and right-aligned:
+  - Q2: `1 = Very difficult` on the left, `7 = Very easy` on the right.
+  - Q3: `1 = Very hard` on the left, `7 = Very easy` on the right.
+- Remove the grey labels under the tiles.
+- Nothing else changes (tiles, logging, the "I didn't look for it" row).
+
+Deploy straight after the bundle check and a screenshot of Q2 and Q3 at 390 × 844; run the flows afterwards and push when they pass, as with UPDATE 10. Hand back the commit and the deploy time (so we can note which rows saw the old labels).
+
 ## UPDATE 11b (1 Nov 11:32): slot images recropped · same file names
 
 Haoyue: in the shop's drivetrain slot the chain is not visible. `inbox/assets/ab/shop-drive-v2-slot.webp` and `mine-drive-v2-slot.webp` are replaced on ops with new crops (shop now shows the whole chain loop on the chainring and cassette; Daniel's shows the bare chainring, the hanging chain and the heap). Pull them, replace the two files, rebuild, deploy. No other change. Screenshot the record card after the three photos at 390 × 844.
