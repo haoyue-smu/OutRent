@@ -15,9 +15,9 @@ Expected at 390 px: "Do the hand-over check before / you ride." or one line, nev
 
 When UPDATE 9 is deployed, read `git show origin/ops:inbox/build-agent-pilot.md` and do it. It is a separate runner next to the test site; it does not change the site.
 
-## Data table, before the real run (Management, 31 Oct 23:58)
+## Data table (rule changed 1 Nov 10:45, replaces the 31 Oct 23:58 rule)
 
-Every row so far is a test row (`pilot = true` or `forced = true`; ids up to about 400). Before the real link goes out, Haoyue exports the pilot CSV for the record and then runs `truncate public.ab_sessions restart identity;`. After that, no `?v=` or `?pilot=1` link may be opened by anyone until recruiting closes, so that the real table holds real rows only. If you need to test after that point, say so first; Management will give you a separate rule.
+**No truncate.** Real participants are the rows with `pilot = false and forced = false`; the analysis uses only those. Pilot and forced rows keep their own block sequence (your `block_seq` design), so they never take a real participant's place in the pairs. You may therefore keep using `?v=` and `?pilot=1` links, including for Run D and the usual flows, while real participants are on the site. Never open the plain link (no `v`, no `pilot`) in a test: that creates a real row.
 
 ## UPDATE 9 (31 Oct 23:15): the task line, agreed with the team
 
