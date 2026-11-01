@@ -2,6 +2,20 @@
 
 Written only by the management chat. Read with `git show origin/ops:inbox/build-abtest.md`.
 
+## UPDATE 11 (1 Nov 11:15): a more obvious drivetrain pair · urgent, recruiting waits for this
+
+Haoyue and a teammate, both knowing the test, missed the chain on the ground in the current photo. New pair, **portrait 3:4 (1086 × 1448)**, on ops: `inbox/assets/ab/shop-drive-v2.webp` and `inbox/assets/ab/mine-drive-v2.webp`. The chain heap fills the lower third of Daniel's photo.
+
+1. Replace the drivetrain pair (shop and Daniel's) with these two, everywhere: camera preview, slot, viewer, report thumbnails. Crank and saddle pairs stay.
+2. **Camera preview:** the portrait photo fills the screen (`object-fit: cover`, `object-position: 50% 70%` so the chain heap stays in view on short and tall phones). Crank and saddle previews keep their current fit.
+3. **Slot (7:5) and report thumbnail:** `object-fit: cover; object-position: 50% 60%`. Management checked this crop at 160 × 114: the shop photo shows the chain on the bike, Daniel's shows the chain hanging and the heap on the ground.
+4. **Viewer (tap to enlarge):** whole photo, contained.
+5. No ring on either drive photo. Tags stay where they are now (top right).
+6. Remake the two preference pictures (Q4).
+7. Rerun the flows, A/B pixel check, deploy. Hand back the commit and three 390 × 844 screenshots: the drivetrain preview, the record card after the three photos (A), and the same in B.
+
+Do this before anything else in this file.
+
 ## UPDATE 10 (1 Nov 10:45): one-line fix on the scenario task card · do it right after the agent report
 
 Haoyue on his iPhone: "Do the hand-over check before you ride." breaks as "Do the hand-over / check before you ride.", while the next line fits on one line. Cause: `.t-h2` in `design/components.css` has `text-wrap: balance`, which evens out the two lines. Fix in the test only, do not touch `design/components.css` (the live app uses it):
