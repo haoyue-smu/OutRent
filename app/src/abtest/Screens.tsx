@@ -67,7 +67,7 @@ export function Scenario({ onStart, busy, failed }: { onStart: () => void; busy:
       </div>
       <div className="ab-task">
         <Mono>Your task</Mono>
-        <p className="t-h2">Do the hand-over check before you ride.</p>
+        <p className="t-h2">Do the hand‑over check before you ride.</p>
         <p className="t-h2">If anything’s wrong, let the shop know.</p>
       </div>
       {failed && <p className="ab-dock-note" role="alert">We could not reach the server. Check your connection and tap Start again.</p>}

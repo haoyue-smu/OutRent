@@ -140,6 +140,7 @@ body { background: var(--desk); font-family: var(--font); color: var(--ink); -we
 .ab-ps-photo.is-spot { min-height: 96px; }
 .ab-task { display: flex; flex-direction: column; gap: var(--s-2); margin-top: var(--s-2); padding: var(--s-5); border-radius: var(--r-card); background: var(--sheet); box-shadow: var(--shadow-sheet); }
 .ab-task .mono { color: var(--forest); }
+.ab-task .t-h2 { text-wrap: pretty; }
 /* A short phone: a little tighter, so the whole sheet still fits without scrolling. */
 @media (max-height: 700px) {
   .ab-ps-sheet { padding-top: var(--s-4); padding-bottom: calc(var(--s-4) + env(safe-area-inset-bottom)); }
