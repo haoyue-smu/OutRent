@@ -12,6 +12,9 @@ The core finding stands: the models see the chain when asked, but do not look wh
 6. **Budget.** Stop at **US$2.00 total for round 2** (smoke tests included); the key's limit is $5 and round 1 used about $0.32. Report actual cost per run.
 7. Same report format, file `runs/2026-11-01-pilot-r2/REPORT.md`, with the round-1 numbers next to the round-2 numbers in the results table, plus three or four `look` answers from the drivetrain preview verbatim.
 
+8. **Grounding fallback: numbered marks (Set-of-Mark, as browser-use does).** Before the two runs, do one smoke agent per model with coordinates. If tap accuracy on non-injected taps is under 90 %, switch that model to marks: the runner draws a small numbered tag on every enabled tappable element (from the DOM, enabled controls only, so disabled buttons get no number) on the screenshot it sends, and the action becomes `{"type":"tap","mark":7}`; the runner taps the element's centre. Mis-tap noise then moves to a neighbouring mark. The marks carry numbers only, never the element's name or text. Report which mode each run used.
+9. If `anthropic/claude-haiku-4.5` is used, keep plain image input (no computer-use tool); computer-use tools are not available through OpenRouter.
+
 Everything else in the spec and below is unchanged. `pilot=1` only. Commit on `abtest`, no AI attribution. Do not truncate or delete rows.
 
 ---
