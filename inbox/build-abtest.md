@@ -2,6 +2,15 @@
 
 Written only by the management chat. Read with `git show origin/ops:inbox/build-abtest.md`.
 
+## UPDATE 10 (1 Nov 10:45): one-line fix on the scenario task card · do it right after the agent report
+
+Haoyue on his iPhone: "Do the hand-over check before you ride." breaks as "Do the hand-over / check before you ride.", while the next line fits on one line. Cause: `.t-h2` in `design/components.css` has `text-wrap: balance`, which evens out the two lines. Fix in the test only, do not touch `design/components.css` (the live app uses it):
+
+- `app/src/abtest/abtest.css`: `.ab-task .t-h2 { text-wrap: pretty; }`
+- In the copy, keep "hand-over" from breaking at the hyphen: use a non-breaking hyphen (U+2011) in that one word on S1.
+
+Expected at 390 px: "Do the hand-over check before / you ride." or one line, never "Do the hand-over / check before you ride." Screenshot S1 at 390 × 844 and 375 × 667, deploy, hand back the commit. Real participants may already be using the site; the change is identical for A and B, so deploy as soon as it passes.
+
 ## After UPDATE 9: next task
 
 When UPDATE 9 is deployed, read `git show origin/ops:inbox/build-agent-pilot.md` and do it. It is a separate runner next to the test site; it does not change the site.
