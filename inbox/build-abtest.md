@@ -8,7 +8,7 @@ Haoyue and a teammate, both knowing the test, missed the chain on the ground in 
 
 1. Replace the drivetrain pair (shop and Daniel's) with these two, everywhere: camera preview, slot, viewer, report thumbnails. Crank and saddle pairs stay.
 2. **Camera preview:** the portrait photo fills the screen (`object-fit: cover`, `object-position: 50% 70%` so the chain heap stays in view on short and tall phones). Crank and saddle previews keep their current fit.
-3. **Slot (7:5) and report thumbnail:** `object-fit: cover; object-position: 50% 60%`. Management checked this crop at 160 × 114: the shop photo shows the chain on the bike, Daniel's shows the chain hanging and the heap on the ground.
+3. **Slot and report thumbnail: use the pre-cropped files, not a CSS crop** (changed 11:20: Haoyue's screenshot of your build shows the shop slot as wheel and floor with no chain, and Daniel's heap cut at the bottom). Files on ops: `inbox/assets/ab/shop-drive-v2-slot.webp` and `inbox/assets/ab/mine-drive-v2-slot.webp`, 1086 × 776 (exactly 7:5), cropped by Management so the shop slot shows the chain on the derailleur and chainring, and Daniel's shows the hanging chain and the heap. Use them with `object-fit: cover; object-position: 50% 50%`. If your slot is not 7:5, make it 7:5 for this row, or tell me its real size and I recrop. The full portrait files stay for the camera preview and the viewer.
 4. **Viewer (tap to enlarge):** whole photo, contained.
 5. No ring on either drive photo. Tags stay where they are now (top right).
 6. Remake the two preference pictures (Q4).
