@@ -4,7 +4,7 @@ import { Photo } from '../shell/Photo'
 import { BackButton, Mono } from '../shell/direction'
 import { RecordPart, ReportRow, type PartId } from '../pages/11-handover-check/pieces'
 import type { Variant } from './api'
-import { AB_PARTS, AGES, BACKDROP, CAPTION, CYCLING, EVIDENCE_DONE, EVIDENCE_OPEN, FIRST_TAKEN, LAYOUTS, LAYOUT_H, NOTICED, REASONS, RENTED, SENT_FULL, SENT_SHORT, SHOP_TAG, SPOT, TAKEN, mineOf } from './story'
+import { AB_PARTS, AGES, BACKDROP, CAPTION, CYCLING, EVIDENCE_DONE, EVIDENCE_OPEN, FIRST_TAKEN, LAYOUTS, LAYOUT_H, NOTICED, REASONS, RENTED, SENT_FULL, SENT_SHORT, SHOP_TAG, SPOT, TAKEN, mineOf, slotOf } from './story'
 
 // The screens. The app's own copy is as in the flow artifact; what the participant reads outside the app is as in UPDATE 3. No screen reads the store or the router; App.tsx owns the state and the log.
 
@@ -103,7 +103,7 @@ export function HandoverPage({ variant, shots, sent, linkRef, scrollRef, onTake,
           </div>
           <div className="parts">
             {AB_PARTS.map((p) => (
-              <RecordPart key={p.id} p={p} shot={shots.includes(p.id)} when={TAKEN[p.id]} eager mine={mineOf(p.id)}
+              <RecordPart key={p.id} p={{ ...p, shop: slotOf(p.id).shop }} shot={shots.includes(p.id)} when={TAKEN[p.id]} eager mine={slotOf(p.id).mine}
                 onTake={(el) => { if (shots.includes(p.id)) onView({ part: p.id, who: 'you' }, el); else onTake(p.id) }}
                 shopTag={<>
                   <span className="ab-tag">{SHOP_TAG}</span>
@@ -131,7 +131,7 @@ export function Camera({ part, retakes, onRetake, onUse }: { part: PartId; retak
   return (
     <div className="ab-camera" data-log="camera" role="dialog" aria-modal="true" aria-label={CAPTION[part]}>
       <span className="ab-camera-cap">{CAPTION[part]}</span>
-      <div key={retakes} className={`ab-camera-photo${retakes ? ' is-again' : ''}`}>
+      <div key={retakes} className={`ab-camera-photo${retakes ? ' is-again' : ''}${part === 'drive' ? ' is-drive' : ''}`}>
         <Photo src={mineOf(part)} alt={`Your photo of the ${AB_PARTS.find((p) => p.id === part)!.name.toLowerCase()}`} width={390} height={278} first />
       </div>
       <div className="ab-camera-bar">
@@ -201,7 +201,7 @@ export function ReportForm({ shots, reason, photos, details, onBack, onReason, o
           <div className="ab-thumbs" role="group" aria-labelledby="ab-photos">
             {AB_PARTS.filter((p) => shots.includes(p.id)).map((p) => (
               <button key={p.id} type="button" className="ab-thumb" data-log={`thumb:${p.id}`} aria-pressed={photos.includes(p.id)} aria-label={`Attach your photo of the ${p.name.toLowerCase()}`} onClick={() => onTogglePhoto(p.id)}>
-                <Photo src={mineOf(p.id)} alt="" width={64} height={48} first />
+                <Photo src={slotOf(p.id).mine} alt="" width={64} height={48} first />
               </button>
             ))}
             <button type="button" className="ab-thumb ab-add" data-log="add-photo" aria-label="Add a photo" onClick={() => undefined}><Icon name="plus" /></button>
