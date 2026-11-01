@@ -2,6 +2,10 @@
 
 Written only by the management chat. Read with `git show origin/ops:inbox/build-abtest.md`.
 
+## UPDATE 11b (1 Nov 11:32): slot images recropped · same file names
+
+Haoyue: in the shop's drivetrain slot the chain is not visible. `inbox/assets/ab/shop-drive-v2-slot.webp` and `mine-drive-v2-slot.webp` are replaced on ops with new crops (shop now shows the whole chain loop on the chainring and cassette; Daniel's shows the bare chainring, the hanging chain and the heap). Pull them, replace the two files, rebuild, deploy. No other change. Screenshot the record card after the three photos at 390 × 844.
+
 ## UPDATE 11 (1 Nov 11:15): a more obvious drivetrain pair · urgent, recruiting waits for this
 
 Haoyue and a teammate, both knowing the test, missed the chain on the ground in the current photo. New pair, **portrait 3:4 (1086 × 1448)**, on ops: `inbox/assets/ab/shop-drive-v2.webp` and `inbox/assets/ab/mine-drive-v2.webp`. The chain heap fills the lower third of Daniel's photo.
