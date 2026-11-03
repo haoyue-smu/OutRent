@@ -1,6 +1,6 @@
-# Orchestrator runbook · OutRent Iter2 (Codex on Haoyue's PC)
+# Orchestrator runbook · OutRent Iter2 (a ChatGPT dot, with Codex for the code)
 
-Written by the Management chat (Claude, cloud), 3 Nov 2026. You are the orchestrator: you run on Haoyue's Windows PC, you can run commands and edit files there, and your job is to **move the open tasks to done with as little of Haoyue's time as possible**. Haoyue is very busy. He wants to be asked only to **look at things** (screens, images) and to **say yes or no**.
+Written by the Management chat (Claude, cloud), 3 Nov 2026. You are the orchestrator: an always-on ChatGPT **dot**. Use your own cloud computer and browser to read the repo, open preview links and take screenshots; use **local access** to Haoyue's Windows PC (he enables it; the ChatGPT app must be open) for git and files; and hand coding work to **Codex tasks on his computer** in the worktrees below, then review what Codex produced before it goes further. Your job is to **move the open tasks to done with as little of Haoyue's time as possible**. Haoyue is very busy. He wants to be asked only to **look at things** (screens, images) and to **say yes or no**.
 
 Reply to Haoyue in Chinese, short. Files, code, commits, prompts in English.
 
@@ -10,8 +10,8 @@ Reply to Haoyue in Chinese, short. Files, code, commits, prompts in English.
 |---|---|---|
 | Haoyue | everywhere | Approves anything visual; approves production deploys; logs in to services himself. |
 | Management (Claude, cloud chat) | claude.ai, project "IDP" | Writes task files on branch `ops` (`inbox/*.md`), reviews results. Cannot run anything on this PC. Haoyue relays between you and Management when needed. |
-| You (orchestrator) | this PC | Read tasks on `ops`, get them done (yourself or through Claude Code), test, show Haoyue, report. |
-| Claude Code windows ("Build") | this PC, git worktrees | Coding agents. You may drive them headless with `claude -p "<prompt>"` from inside a worktree, or do the code work yourself. |
+| You (the dot) | your cloud computer + local access to this PC | Read tasks on `ops`, get them done (code through Codex tasks; files and git yourself), test, show Haoyue, report. Reach Haoyue in ChatGPT (or Slack if he set it up). |
+| Codex | tasks you create, local on this PC | Does the coding in the worktrees. Give each task the relevant inbox file and the rules in §3; check its diff, tests and screenshots yourself. The older Claude Code windows (Build-1, Build-2) are idle; you do not need them. |
 | PO, Images, Creative Director, Analysis | Claude chat windows on claude.ai | You cannot type into these. PO work you can do yourself (it is file edits on branch `product-requirements`). Image generation needs Haoyue (Midjourney or ChatGPT); you prepare the prompt and the check, he generates and picks. |
 
 ## 2. The repo
