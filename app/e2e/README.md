@@ -12,11 +12,12 @@ node app/e2e/crawl.mjs
 
 `run.mjs` runs the existing journeys plus report checks and returns a failing exit code for failed assertions. Select names to run a focused check:
 
-- `ER`: default booking, three-photo gate, cosmetic scratch report, saved record, return, booking reply, weekly ride, and storage at the Hub.
+- `ER`: default booking, three-photo gate, cosmetic scratch report, saved record, waiting from 7:47 to the 7:49 booking reply, return, weekly ride, and storage at the Hub.
 - `ERstates`: draft and sent reload, 375/393 widths, long optional details, seeded report, and no-report variants.
 - `ERr`: reduced-motion report journey.
 - `ERoffset`: Back navigation, the alternate 7:20 delivery timeline, and prevention of retroactive reports after return.
-- `ERalternate`: other report reasons remain pending rather than receiving the scratch response.
+- `ERalternate`: other report reasons receive the general acknowledgement without a scratch claim.
+- `node app/e2e/scratch-photo.mjs`: approved photo, sent-attachment rings, 375/393 px, saved bookings with missing payment state, reply/ride boundaries, general replies and unchanged return photos. Outputs go to `out/scratch-photo-review/`. Set `SCRATCH_CASES` to comma-separated case prefixes for a focused recheck; those results are saved separately.
 - `ERshots`: explicitly refresh the eight review screenshots at 393 × 852; excluded from the default run because `ER` already captures them.
 
 The crawl accepts route prefixes, for example `node app/e2e/crawl.mjs 09 11 12 components`. It checks buttons, links, native fields and sliders, then controls revealed one level deeper on the same page. It records actual response evidence, local popup loads, failed requests, console errors, broken images, overflow, placeholders, and every action it could not cover. Each route is capped at 240 controls. Already-selected controls and previously taken photos are listed separately. It blocks write requests and external navigation. Existing prototype placeholders are reported as limitations; a nonzero crawl exit is not automatically a new regression.

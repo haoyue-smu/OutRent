@@ -79,9 +79,16 @@
 .report9 dl > div { display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: var(--s-2); }
 .report9 dt { color: var(--ink-2); }
 .report9 dd { margin: 0; }
+.report9-photos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-2); margin-top: var(--s-3); }
+.report9-photos figure { min-width: 0; margin: 0; }
+.report9-photo { display: block; width: 100%; }
+.report9-photo .photo { display: block; width: 100%; height: auto; aspect-ratio: 7 / 5; object-fit: cover; border-radius: var(--r-thumb); }
+.report9-photos figcaption { margin-top: var(--s-1); font-size: var(--fs-small); line-height: var(--lh-small); color: var(--ink-2); }
 .report9-details { margin: var(--s-3) 0 0; font-size: var(--fs-callout); line-height: var(--lh-callout); white-space: pre-wrap; }
 .report9-reply { margin-top: var(--s-4); padding-top: var(--s-4); border-top: var(--hair) solid var(--rule); }
 .report9-reply > .small { margin: var(--s-1) 0 0; }
 .report9 blockquote { margin: var(--s-3) 0; font-size: var(--fs-callout); line-height: var(--lh-callout); }
 .report9-outcome { margin: 0; font-size: var(--fs-small); line-height: var(--lh-small); font-weight: 600; color: var(--forest); }
 .report9-pending { margin: var(--s-3) 0 0; }
+.report9-pending p { margin: 0; }
+.report9-wait { display: inline-flex; align-items: center; min-height: 44px; margin-top: var(--s-1); }

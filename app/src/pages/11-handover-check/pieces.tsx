@@ -3,12 +3,24 @@ import { REPORT } from '../../shell/report'
 import { Icon } from '../../shell/Icon'
 import { Photo } from '../../shell/Photo'
 import { Mono } from '../../shell/direction'
-import type { Part } from './data'
+import { PARTS, type Part } from './data'
 import './handover.css'
 
-export function RecordPart({ p, shot, ticked, when, onTake }: {
-  p: Part; shot: boolean; ticked: boolean; when: string; onTake: (el: HTMLElement) => void
+// The ring belongs to submitted photo evidence, not to an unsent draft or an unattached photo.
+export function ReportPhoto({ part, report, width, height, className = '', alt = '' }: {
+  part: Part; report: HandoverReport; width: number; height: number; className?: string; alt?: string
 }) {
+  const reported = report.sent && report.photos.includes(part.id) && part.id === 'drive'
+  return <span className={`report-photo ${className}`} data-report-photo={part.id} data-reported={reported}>
+    <Photo src={part.mine} alt={alt} width={width} height={height} />
+    {reported && <span className="ring2 on" style={{ left: '34%', top: '52%' }} aria-hidden="true" />}
+  </span>
+}
+
+export function RecordPart({ p, shot, ticked, when, report, sentShort, onTake }: {
+  p: Part; shot: boolean; ticked: boolean; when: string; report: HandoverReport; sentShort: string; onTake: (el: HTMLElement) => void
+}) {
+  const reported = report.sent && report.photos.includes(p.id) && p.id === 'drive'
   return (
     <section className={`part${ticked ? ' ok' : ''}`} aria-label={p.name}>
       <div className="part-h"><b>{p.name}<span className="tick" aria-hidden="true"><Icon name="check" /></span></b><Mono>{p.note}</Mono></div>
@@ -20,10 +32,10 @@ export function RecordPart({ p, shot, ticked, when, onTake }: {
         <figure>
           <button type="button" className={`ph shot${shot ? ' taken' : ''}`} onClick={(e) => onTake(e.currentTarget)}
             aria-label={shot ? `Your photo of the ${p.name.toLowerCase()}, ${when}` : `Take your photo of the ${p.name.toLowerCase()}`}>
-            {shot ? <Photo src={p.mine} alt="" width={160} height={114} className="mine" /> : <span className="cam"><Icon name="camera" /><span>Take photo</span></span>}
+            {shot ? <ReportPhoto part={p} report={report} width={160} height={114} className="mine" /> : <span className="cam"><Icon name="camera" /><span>Take photo</span></span>}
             <span className="flash" aria-hidden="true" />
           </button>
-          {shot && <figcaption className="photo-date">{when}</figcaption>}
+          {shot && <figcaption className="photo-date">{when}{reported && <span className="photo-reported">Reported · {sentShort}</span>}</figcaption>}
         </figure>
       </div>
     </section>
@@ -55,6 +67,12 @@ export function ReportSentCard({ report, sentAt = REPORT.sentAt }: { report: Han
         <div><dt>Sent</dt><dd>{sentAt}</dd></div>
         <div><dt>Next</dt><dd>Timah Cycles replies to your booking</dd></div>
       </dl>
+      {report.photos.length > 0 && <div className="report-evidence" aria-label="Photos attached to the report">
+        {PARTS.filter((part) => report.photos.includes(part.id)).map((part) => <figure key={part.id}>
+          <ReportPhoto part={part} report={report} width={113} height={81} alt={`${part.name} attached to your report`} />
+          <figcaption>{part.name}</figcaption>
+        </figure>)}
+      </div>}
     </div>
   )
 }

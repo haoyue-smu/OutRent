@@ -9,8 +9,8 @@ import { routeFor } from '../../pages'
 import { lock } from '../../shell/PageFrame'
 import { SAT, clockOf, collectAt, dateTime, isClosed, set, setClock, useStore, type HandoverReport } from '../../shell/store'
 import { collectH, deliverH, releaseH } from '../../shell/rental'
-import { REPORT, isScratchReport, reportTimes } from '../../shell/report'
-import { RecordPart } from './pieces'
+import { REPORT, hasReportReply, reportTimes } from '../../shell/report'
+import { RecordPart, ReportPhoto } from './pieces'
 import { PARTS, type Part, type PartId } from './data'
 import { ReportForm, ReportSent } from './Report'
 import './handover.css'
@@ -18,7 +18,7 @@ import './handover.css'
 // 11 Handover check · the fitter's line. One record card: the shop's photo and Daniel's, side by side, for the
 // same three parts; on save each part is ticked and the record folds shut into a filed slip.
 // Source: the Creative Director's prototype v52 (#11), with the PO v1.11 report. Daniel takes three photos;
-// only the shop's photos carry known-mark rings. The record, report draft and sent state survive re-entry.
+// known-mark rings stay on shop photos; submitted drivetrain evidence gets the approved scratch ring.
 
 export default function Handover() {
   const navigate = useNavigate()
@@ -137,7 +137,7 @@ export default function Handover() {
           </div>
           {showParts && (
             <div className="parts" ref={parts}>
-              {PARTS.map((p) => <RecordPart key={p.id} p={p} shot={shots.includes(p.id)} ticked={ticked.includes(p.id)} when={dateTime(deliverH(s) + (p.id === 'drive' ? 1 / 60 : 0))} onTake={(el) => take(p, el)} />)}
+              {PARTS.map((p) => <RecordPart key={p.id} p={p} shot={shots.includes(p.id)} ticked={ticked.includes(p.id)} when={dateTime(deliverH(s) + (p.id === 'drive' ? 1 / 60 : 0))} report={report} sentShort={sentShort} onTake={(el) => take(p, el)} />)}
             </div>
           )}
           {filed && (
@@ -145,12 +145,12 @@ export default function Handover() {
               <div className="fps">
                 {PARTS.map((p) => (
                   <div key={p.id} className="fp">
-                    <span className="fpp"><Photo src={p.shop} alt="" width={54} height={40} /><Photo src={p.mine} alt="" width={54} height={40} /></span>
+                    <span className="fpp"><Photo src={p.shop} alt="" width={54} height={40} /><ReportPhoto part={p} report={report} width={54} height={40} /></span>
                     <span>{p.short}</span>
                   </div>
                 ))}
               </div>
-              <div className="fsum"><b>Recorded · <span className="nb">{savedAt}</span></b><span>3 parts checked · 2 known marks · {report.sent ? '1 problem reported' : 'nothing new'}.</span><span className="fsum-l">Timah Cycles has the same record.</span>{isScratchReport(report) && <span className="fsum-l">{REPORT.outcome}</span>}</div>
+              <div className="fsum"><b>Recorded · <span className="nb">{savedAt}</span></b><span>3 parts checked · 2 known marks · {report.sent ? '1 problem reported' : 'nothing new'}.</span><span className="fsum-l">Timah Cycles has the same record.</span>{hasReportReply(s) && <span className="fsum-l">{REPORT.outcome}</span>}</div>
               <button type="button" className="reopen" onClick={() => setShowParts((v) => !v)} aria-expanded={showParts}>{showParts ? 'Close the record' : 'See all photos'}</button>
             </div>
           )}

@@ -11,7 +11,7 @@ const PERSONA = {
   ER: 'Daniel · cosmetic scratch report and full demo route', ERstates: 'Report seeds, reload and narrow screens', ERr: 'Report flow · reduced motion',
   ERoffset: 'Report history and the 7:20 delivery slot',
   ERshots: 'Report path screenshots at 393 × 852',
-  ERalternate: 'Other report reasons stay pending',
+  ERalternate: 'Other report reasons receive the general acknowledgement',
 }
 const want = process.argv.slice(2).length ? process.argv.slice(2) : Object.keys(PERSONA).filter((k) => J[k] && k !== 'ERshots')
 const out = []

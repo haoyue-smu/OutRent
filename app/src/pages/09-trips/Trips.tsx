@@ -6,8 +6,10 @@ import { GoTo } from '../../shell/Link'
 import { Chev, LineIcon, Mono, TabBar, TimeSkip, still, useToast } from '../../shell/direction'
 import { routeFor } from '../../pages'
 import { dayLong, dm, nextDayBack, pickDay, poolBack, wd } from '../../shell/storage'
-import { clockOf, collectAt, countdown, dateTime, deliverAt, fitNow, set, setClock, useStore } from '../../shell/store'
-import { REPORT, isScratchReport, reportTimes } from '../../shell/report'
+import { SAT, clockOf, collectAt, countdown, dateTime, deliverAt, fitNow, set, setClock, useStore } from '../../shell/store'
+import { REPORT, hasReportReply, reportReply, reportTimes } from '../../shell/report'
+import { PARTS } from '../11-handover-check/data'
+import { ReportPhoto } from '../11-handover-check/pieces'
 import {
   CANCEL_BY, bookingsNow, collectH, deliverH, leavesH, legsLine, nextRideH, payWith, placeFull, releaseH, spotWhere, stage, trackH,
 } from '../../shell/rental'
@@ -72,10 +74,16 @@ export default function Trips() {
   const root = useRef<HTMLElement>(null)
   const s = useStore((x) => x)
   const [skip, setSkip] = useState(false)
-  const replied = isScratchReport(s.report)
-  const { replyH, savedAt, sentAt, replyAt } = reportTimes(s)
-  const now = Math.max(bookingsNow(s), replied ? replyH : 0)
-  const st = stage(s)
+  const [waitingForReply, setWaitingForReply] = useState(false)
+  const { savedAt, sentAt, replyAt, replyH } = reportTimes(s)
+  const now = bookingsNow(s)
+  const replied = hasReportReply(s, now)
+  // A direct or legacy hand-over can have evidence without a payment flag. Keep that booking inspectable;
+  // the missing flag does not prove payment and is never filled in here.
+  const bookingPresent = s.paid || s.arrived || s.record.saved || s.report.sent
+  const st = !s.paid && bookingPresent
+    ? s.closed || s.now >= releaseH(s) ? 'closed' : s.record.saved ? 'riding' : 'here'
+    : stage(s)
   const f = fitNow(s)
   const d = deliverAt(s), c = collectAt(s), pd = s.book.place.d, pc = s.book.place.c
   const closed = st === 'closed', weekly = s.weekly
@@ -83,9 +91,6 @@ export default function Trips() {
   const firstIn = (() => { const k = countdown(now, nextRideH(s)); return `${k.a} ${k.au} ${k.b} ${k.bu}` })()
 
   useEffect(() => { setClock(clockOf(now)) }, [now])
-  useEffect(() => {
-    if (replied && s.now < replyH) set({ now: replyH })
-  }, [replied, s.now, replyH])
 
   // The shelves rise in turn; the board rolls through digits and settles on the time left.
   useLayoutEffect(() => {
@@ -107,7 +112,7 @@ export default function Trips() {
   const track = () => { if (st === 'booked') setSkip(true); else go('10-delivery-tracking') }
 
   // ---------- Up next: the one-off rental while it runs ----------
-  const upcoming = st !== 'none' && !closed
+  const upcoming = bookingPresent && !closed
   let board: { k: string; parts: [string, string][] } = { k: '', parts: [] }
   let action = { label: 'Track delivery', run: track }
   let where = placeFull(pd)
@@ -117,9 +122,13 @@ export default function Trips() {
     action = { label: 'Start the hand-over check', run: () => go('11-handover-check') }
   }
   if (st === 'riding') {
-    board = { k: `Collected at ${spotWhere(pc)} in`, parts: cd(collectH(s)) }
+    // Saving the record keeps the booking visible while Daniel waits for the 8:00 group ride.
+    const beforeRide = now < SAT + 8
+    board = beforeRide
+      ? { k: 'Hand-over recorded · ride starts in', parts: cd(SAT + 8) }
+      : { k: `Collected at ${spotWhere(pc)} in`, parts: cd(collectH(s)) }
     action = { label: 'Open the hand-over record', run: () => go('11-handover-check') }
-    where = placeFull(pc)
+    where = placeFull(beforeRide ? pd : pc)
   }
   const day = Math.floor(now / 24) === 3 ? 'Today' : 'Tomorrow'
 
@@ -142,7 +151,7 @@ export default function Trips() {
                     <span><b>Set to your fit</b><span>Saddle {f.saddle} cm · frame {f.frame} · fork sag 25%</span><Mono>Timah Cycles · 24 Oct · 18:10</Mono></span>
                   </div>
                   <div className="where9"><LineIcon name="pin" /><span>{where}</span></div>
-                  <p className="small bk-pay">S$50 paid by {payWith(s)} · S$150 deposit held{st === 'booked' && now < CANCEL_BY ? <> · free to cancel until {nb('24 Oct · 20:00')}</> : null}</p>
+                  <p className="small bk-pay">{s.paid ? <>S$50 paid by {payWith(s)} · S$150 deposit held{st === 'booked' && now < CANCEL_BY ? <> · free to cancel until {nb('24 Oct · 20:00')}</> : null}</> : 'Payment details unavailable.'}</p>
                   <button className="cta" type="button" onClick={action.run}>{action.label}</button>
                 </div>
               </article>
@@ -184,15 +193,21 @@ export default function Trips() {
                     <div><dt>Sent</dt><dd>{sentAt}</dd></div>
                     <div><dt>Photos</dt><dd>{s.report.photos.length ? s.report.photos.map((id) => ({ crank: 'Crank arm', saddle: 'Saddle edge', drive: 'Drivetrain' })[id as 'crank' | 'saddle' | 'drive']).join(', ') : 'None attached'}</dd></div>
                   </dl>
+                  {s.report.photos.length > 0 && <div className="report9-photos" aria-label="Attached hand-over photos">
+                    {PARTS.filter((part) => s.report.photos.includes(part.id)).map((part) => <figure key={part.id}>
+                      <ReportPhoto part={part} report={s.report} width={113} height={81} className="report9-photo" alt={`Attached hand-over photo of the ${part.name.toLowerCase()}`} />
+                      <figcaption>{part.name}</figcaption>
+                    </figure>)}
+                  </div>}
                   {s.report.details && <p className="report9-details">{s.report.details}</p>}
                   {replied ? (
                     <div className="report9-reply">
                       <h4>Timah Cycles</h4>
                       <p className="small">{replyAt}</p>
-                      <blockquote>{REPORT.reply}</blockquote>
+                      <blockquote>{reportReply(s.report)}</blockquote>
                       <p className="report9-outcome">{REPORT.outcome}</p>
                     </div>
-                  ) : <p className="small report9-pending">Timah Cycles replies to your booking</p>}
+                  ) : <div className="report9-pending"><p className="small">Timah Cycles replies to your booking</p><button type="button" className="link report9-wait" onClick={() => setWaitingForReply(true)}>Wait until {clockOf(replyH)}</button></div>}
                 </section>
               )}
             </section>
@@ -244,7 +259,7 @@ export default function Trips() {
               <div className="lbl"><b>Past</b><Mono>1 rental</Mono></div>
               <button className="row9" type="button" onClick={() => go('12-rental-summary')}>
                 <span className="th"><Photo src={stand} alt="" width={52} height={52} /></span>
-                <span><b>Trek Marlin 7 · 25 Oct</b><span><span className="ok">S$150 released</span> · S$50 paid · closed {nb(dateTime(releaseH(s)))}</span></span>
+                <span><b>Trek Marlin 7 · 25 Oct</b><span>{s.paid ? <><span className="ok">S$150 released</span> · S$50 paid · closed {nb(dateTime(releaseH(s)))}</> : 'Payment details unavailable.'}</span></span>
                 <Chev />
               </button>
             </>
@@ -253,6 +268,8 @@ export default function Trips() {
       </main>
       <TabBar current="09-trips" onToast={toast} />
       {toastNode}
+      {waitingForReply && <TimeSkip from={now} to={replyH} marks={[[replyH, clockOf(replyH)]]} caption="Timah Cycles replies to your hand-over report."
+        onDone={() => { set((x) => ({ ...x, now: Math.max(x.now, reportTimes(x).replyH) })); setWaitingForReply(false) }} />}
       {skip && (
         <TimeSkip from={now} to={trackH(s)} marks={[[72, 'SAT']]} caption={`Saturday morning. It leaves the shop at ${clockOf(leavesH(s))}.`}
           onDone={() => { set((x) => ({ ...x, now: Math.max(x.now, trackH(x)) })); navigate(routeFor('10-delivery-tracking'), { state: { how: 'skip' } }) }} />

@@ -7,7 +7,7 @@ import { BackButton, MeasuredGrid, Mono, still } from '../../shell/direction'
 import { routeFor } from '../../pages'
 import { clockOf, collectAt, dateTime, deliverAt, fitNow, getState, set, setClock, useStore } from '../../shell/store'
 import { collectH, payWith, releaseH } from '../../shell/rental'
-import { REPORT, isScratchReport } from '../../shell/report'
+import { REPORT, hasReportReply, isScratchReport, reportReply, reportTimes } from '../../shell/report'
 import rCrank from '@photos/12-rental-summary/assets/12-direction-r-crank.webp'
 import rSaddle from '@photos/12-rental-summary/assets/12-direction-r-saddle.webp'
 import rDrive from '@photos/12-rental-summary/assets/12-direction-r-drive.webp'
@@ -33,6 +33,8 @@ export default function Summary() {
   const d = deliverAt(s), c = collectAt(s), pd = s.book.place.d
   const rel = releaseH(s)
   const weekly = s.weekly
+  const replied = hasReportReply(s)
+  const { replyAt } = reportTimes(s)
   const scratchReported = isScratchReport(s.report)
 
   // The summary is the rental closed: arriving here (from the skip, from Past or directly) records it.
@@ -86,8 +88,14 @@ export default function Summary() {
 
           <section className="sec12">
             <h2 className="t-h2">Checked against the {d} photos</h2>
-            {scratchReported && <p className="return12">Checked {s.book.place.c === 0 ? 'at the carpark' : 'at Blk 325C'}, {dateTime(collectH(s))}, against the hand-over record: 2 known marks and the scratch reported at hand-over ({REPORT.reference}), all on the shop’s record. Trail dirt only. Nothing new, nothing chargeable. Deposit S$150 released {clockOf(rel)}.</p>}
-            {s.report.sent && !scratchReported && <p className="return12">Report {REPORT.reference}: {s.report.reason}. Timah Cycles replies to your booking.</p>}
+            {replied && scratchReported && <p className="return12">Checked {s.book.place.c === 0 ? 'at the carpark' : 'at Blk 325C'}, {dateTime(collectH(s))}, against the hand-over record: 2 known marks and the scratch reported at hand-over ({REPORT.reference}), all on the shop’s record. Trail dirt only. Nothing new, nothing chargeable. Deposit S$150 released {clockOf(rel)}.</p>}
+            {replied && !scratchReported && <div className="return12-reply">
+              <p className="return12">Report {REPORT.reference}: {s.report.reason}.</p>
+              <p className="return12"><b>Timah Cycles</b> · {replyAt}</p>
+              <blockquote className="return12">{reportReply(s.report)}</blockquote>
+              <p className="return12">{REPORT.outcome}.</p>
+            </div>}
+            {s.report.sent && !replied && <p className="return12">Report {REPORT.reference}: {s.report.reason}. Timah Cycles replies to your booking.</p>}
             <div className="backs">
               {BACKS.map((b) => (
                 <figure key={b.part}>

@@ -16,6 +16,7 @@ export const REPORTED = { ...HANDOVER, now: 79 + 49 / 60,
   report: { reason: 'Damaged', photos: ['drive'], details: '', sent: true },
 }
 const REPLY = 'Thanks for the photo. The scratch is on our record for this bike now, not yours. Enjoy the ride.'
+const GENERIC_REPLY = 'Thanks for the report. It’s on our record for this bike now, not yours.'
 export const seededUrl = (page, seed, suffix = '') => `${BASE}/${page}?seed=${encodeURIComponent(Buffer.from(JSON.stringify(seed)).toString('base64'))}${suffix}`
 
 async function health(t, label) {
@@ -78,6 +79,16 @@ async function reportAndSave(t, screenshots = false) {
   await t.chk(s, 'Filed record mentions the report', '3 parts checked · 2 known marks · 1 problem reported', await t.text('.filed'))
   await t.chk(s, 'Record saved at 7:47', '25 Oct · 7:47', await t.text('.filed'))
   if (screenshots) await t.shot('report-06-filed-slip', '.filed')
+  await t.go(s, 'Saved record returns to tracking', t.btn('Back to tracking', true), '10-delivery-tracking')
+  await t.go(s, 'Tracking returns to the live booking', t.btn('Back', true), '09-trips')
+  await t.chk(s, 'Saved booking remains visible before the ride', '1', String(await p.locator('article[aria-label="Booking OR-10482"]').count()), { exact: true })
+  await t.chk(s, 'Viewing the booking preserves 7:47', '7:47', await t.text('.roothead'))
+  await t.chk(s, 'Shop reply is not shown early', '0', String(await p.locator('.report9-reply').count()), { exact: true })
+  await t.tap(t.btn('Wait until 7:49', true), { wait: 700 })
+  await p.locator('.skip').waitFor({ state: 'detached', timeout: 10000 })
+  await t.chk(s, 'Waiting reaches 7:49', '7:49', await t.text('.roothead'))
+  await t.chk(s, 'Normal journey reaches the shop reply before riding', REPLY, await t.text('#handover-report'))
+  await t.go(s, 'Reopen the filed record', t.btn('Open the hand-over record', true), '11-handover-check')
   await t.go(s, 'Ride and return', p.locator('.s11-save'), '12-rental-summary', { timeout: 10000 })
   await t.chk(s, 'Return names the scratch', 'scratch reported at hand-over', await t.text())
   await t.chk(s, 'Return carries the report reference', 'R-10482-1', await t.text())
@@ -219,9 +230,9 @@ export async function ERalternate(t) {
   const { p } = t, s = t.S()
   const wrongItem = { ...REPORTED, report: { ...REPORTED.report, reason: 'Wrong item' } }
   await p.goto(seededUrl('09-trips', wrongItem)); await t.waitPage('09-trips')
-  await t.chk(s, 'Other reasons remain pending in the booking', 'Timah Cycles replies to your booking', await t.text('#handover-report'))
+  await t.chk(s, 'Other reasons receive the general booking reply', GENERIC_REPLY, await t.text('#handover-report'))
   await t.chk(s, 'Wrong item gets no fabricated scratch reply', 'Thanks for the photo. The scratch', await t.text('#handover-report'), { not: true })
   await p.goto(seededUrl('12-rental-summary', wrongItem)); await t.waitPage('12-rental-summary')
-  await t.chk(s, 'Other reasons remain pending at return', 'Timah Cycles replies to your booking', await t.text())
+  await t.chk(s, 'Other reasons keep the general reply at return', GENERIC_REPLY, await t.text())
   await t.chk(s, 'Wrong item gets no scratch liability outcome', 'scratch reported at hand-over', await t.text(), { not: true })
 }
