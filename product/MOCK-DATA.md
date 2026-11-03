@@ -1,6 +1,6 @@
 # OutRent mock data and seeded world
 
-Version 1.9 · 1 Nov 2026 · Owner: Haoyue. Status: **approved as the extension to DESIGN.md section 8** (consistency is the standard: a value may change, but it must change everywhere at once, through the PO window). This file is the single source for every value, name, date and starting state in the prototype. DESIGN.md section 8 values are repeated here unchanged and stay locked.
+Version 1.10 · 3 Nov 2026 · Owner: Haoyue. Status: **approved as the extension to DESIGN.md section 8** (consistency is the standard: a value may change, but it must change everywhere at once, through the PO window). This file is the single source for every value, name, date and starting state in the prototype. DESIGN.md section 8 values are repeated here unchanged and stay locked.
 
 v1.1 answers DESIGN-GAPS-v1.0 from the design window. Changed: supplier corrected to Timah Cycles per DESIGN.md §8 (v1.0 had an outdated name); SEED-RIDE added to §4; slots, listing facts and fulfilment timeline added to §4; §3 notes on inside leg and plain-language labels; §5 kit wear line; §7 no-reviews item; §9 transfer costs and corrected rack locations; VS-1 supplier facts; FD-RECURRING weekly price.
 
@@ -19,6 +19,8 @@ v1.7 (product/PO-ANSWERS-v1.8.md): deposit rule (held on the card on file; PayNo
 v1.8 (product/PO-ANSWERS-v1.9.md, the A/B test scenario): the easy scenario gains a step. §4: a third condition item on the Trek Marlin 7 (bent rear derailleur, seen in Daniel's drivetrain photo 25 Oct · 7:41, not in the shop's photos), Daniel marks nothing, the E5-6 report gets its reference, reply and outcome, the fulfilment timeline and the return line change; §8 one more notification. Proposal for the outcome awaits Haoyue (REQUIREMENTS open question 14).
 
 v1.9 (product/PO-ANSWERS-v1.10.md): the hand-over damage is the chain, not a derailleur (team, 31 Oct evening): the chain has come off the chainring and lies on the ground in Daniel's 7:41 photo. Reply text, outcome, timeline and return line reworded; times unchanged. The outcome proposal of v1.8 is accepted by Haoyue (open question 14 closed).
+
+v1.10 (product/PO-ANSWERS-v1.11.md): the prototype's hand-over problem is a small fresh cosmetic scratch on the chainstay, with the chain on (Haoyue, 3 Nov). Condition item, reply, outcome and return line updated; no repair or action by Hafiz, and the 7:52 fix is removed. Report 7:46, record 7:47, reply 7:49, ride 8:00–12:30, collection 13:30 and deposit release 14:05 unchanged. The closed A/B test retains its own scenario.
 
 Rules:
 
@@ -100,15 +102,15 @@ Booking **OR-10482**, confirmed 22 Oct · 9:12.
 - Photos: 5 of this unit, dated 18 Oct 2026 (3) and 12 Oct 2026 (2). The supplier's handover record (E5-5) is the 18 Oct set, timed 18 Oct · 16:20 (set by PO, v1.4); Daniel's record is 25 Oct · 7:40. The 12 Oct photos carry no time yet (REQUIREMENTS open question 12).
 - Condition items on this unit, three (v1.8):
   - Known marks, in the supplier's 18 Oct photos (18 Oct · 16:20): a small scratch on the left crank arm; a scuff on the saddle edge. Unchanged.
-  - **Reported at hand-over: chain off, lying on the ground** (the chain has come off the chainring), seen in Daniel's drivetrain photo (25 Oct · 7:41), **not in the shop's 18 Oct photos**. Reported by Daniel (E5-6, below); after the report it is on the shop's side of the record, like the known marks, and not chargeable to Daniel.
+  - **Reported at hand-over: a fresh scratch on the chainstay**, seen in Daniel's drivetrain photo (25 Oct · 7:41), **not in the shop's 18 Oct photos**. A small cosmetic scratch on the frame tube beside the chain; the chain is on and the bike is fine to ride. Reported by Daniel (E5-6, below); after the report it is on the shop's side of the record, like the known marks, and not chargeable to Daniel.
 - Hand-over views for this listing (set in the supplier's listing, rule in REQUIREMENTS E5-5): three close-ups, one part each: left crank arm (scratch), saddle edge (scuff), drivetrain (the part most at risk for a bike). Daniel's photos take the same three views.
 - Daniel's record (v1.8): three photos, crank arm and saddle edge at 25 Oct · 7:40, drivetrain at 25 Oct · 7:41, author "Daniel Lim". Daniel marks nothing on the photos; the record is complete with the three photos (E5-5 AC2). The shop's known marks sit on the shop's side with their own time and author ("Timah Cycles"). Saved at 25 Oct · 7:47, after the report.
 - Record summary lines (values; labels are copy): with the report, "3 parts checked · 2 known marks · 1 problem reported"; without a report (the no-report variant, used by the test site for people who do not report), "3 parts checked · 2 known marks · nothing new".
 - Report a problem at hand-over (E5-6), on the demo route (v1.8):
   - Reference **R-10482-1** (booking number, then the report's sequence number for that booking).
   - Reason: Damaged. Evidence: the hand-over record, Daniel's drivetrain photo 25 Oct · 7:41 (1 photo attached). Details: none. Sent to Timah Cycles **25 Oct · 7:46**.
-  - Reply from Timah Cycles, **25 Oct · 7:49** (sender shown as "Timah Cycles"; attributed content, their voice): "Thanks for the photo. The chain is on our record for this bike, not yours. Hafiz is still at the carpark and will put it back on before he leaves. If it slips on the ride, message us and we'll swap the bike at collection."
-  - Outcome, on the record and the booking: **fixed at hand-over · on the shop's record · not chargeable to Daniel**. Hafiz refits the chain at 25 Oct · 7:52; Daniel rides at 8:00.
+  - Reply from Timah Cycles, **25 Oct · 7:49** (sender shown as "Timah Cycles"; attributed content, their voice): "Thanks for the photo. The scratch is on our record for this bike now, not yours. Enjoy the ride."
+  - Outcome, on the record and the booking: **on the shop's record · not chargeable to Daniel**. Cosmetic only; no repair or action by Hafiz is needed. Daniel rides at 8:00.
   - Where the sent report and the reply appear: the booking detail (09) under the hand-over record (reference, reason, sent time, reply, outcome); the reopened record (11) with the same status line; the close (12) in the return check. No messages screen exists in the prototype (E9-1, E9-2 are Should and unbuilt); the reply is not shown in a thread. Sent-screen "Next" line: "Timah Cycles replies to your booking".
 - Courier (set by PO, v1.5): **Hafiz**, Timah Cycles' courier, shown by first name with the shop ("Hafiz · Timah Cycles"). No photo: an initial or a van mark stands in. The same courier delivers (7:40), is the one held up in VS-2, and collects from Rack C in VS-5.
 - Specifications: frame M, aluminium; wheels 29 in; front suspension, 100 mm travel; 1 × 10 gears; hydraulic disc brakes; weight 13.9 kg.
@@ -118,8 +120,8 @@ Booking **OR-10482**, confirmed 22 Oct · 9:12.
 **Fulfilment timeline** (tracking stage times):
 - Set to Daniel's fit: 24 Oct · 17:30, done 24 Oct · 18:10.
 - Leaves the shop: 25 Oct · 7:05. On the way from 7:05; arriving from 7:30; delivered 25 Oct · 7:40.
-- Hand-over: Daniel's photos 7:40–7:41; report R-10482-1 sent 7:46; record saved 7:47; shop reply 7:49; chain refitted by Hafiz 7:52; Hafiz leaves 7:55; ride 8:00–12:30.
-- Return: collected at the carpark 25 Oct · 13:30. Condition as at hand-over: two known marks and the chain reported at 7:46, all on the shop's record; trail dirt only; nothing new, nothing chargeable. Deposit release shows 25 Oct · 14:05.
+- Hand-over: Daniel's photos 7:40–7:41; report R-10482-1 sent 7:46; record saved 7:47; shop reply 7:49; Hafiz leaves 7:55; ride 8:00–12:30.
+- Return: collected at the carpark 25 Oct · 13:30. Condition as at hand-over: two known marks and the scratch reported at hand-over (R-10482-1), all on the shop's record; trail dirt only; nothing new, nothing chargeable. Deposit release shows 25 Oct · 14:05.
 
 Cancellation terms for this booking: Daniel cancels free until 24 Oct · 20:00; after that the day rate S$38 is kept and the deposit is always released. If the supplier cancels, everything is refunded and the deposit hold is released at once.
 
