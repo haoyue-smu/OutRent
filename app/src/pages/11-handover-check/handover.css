@@ -33,10 +33,6 @@
 .shot .flash { position: absolute; inset: 0; background: var(--white); opacity: 0; pointer-events: none; }
 .ring2 { position: absolute; width: 46px; height: 46px; margin: -23px 0 0 -23px; border: 2px solid var(--white); border-radius: var(--r-pill); box-shadow: var(--shadow-ring-strong); opacity: 0; transform: scale(1.5); transition: opacity 0.35s, transform 0.5s var(--ease); }
 .ring2.on { opacity: 1; transform: scale(1); }
-.markbtn { display: inline-flex; align-items: center; min-height: 40px; margin-top: 10px; padding: 0 14px; border: 1.5px solid var(--ink); border-radius: var(--r-pill); background: none; color: var(--ink); font: inherit; font-size: 13.5px; font-weight: 600; cursor: pointer; }
-.marked, .nomark { display: flex; align-items: center; gap: 6px; margin-top: 10px; font-size: var(--fs-small); font-weight: 600; color: var(--forest); }
-.nomark { font-weight: 500; color: var(--ink-2); }
-.marked .icon { width: 13px; height: 13px; }
 
 /* The filed slip */
 .filed { display: flex; flex-direction: column; gap: 14px; padding-top: 18px; }
@@ -49,7 +45,7 @@
 .fsum b { display: block; font-size: var(--fs-body); font-weight: 600; color: var(--forest); }
 .fsum span { font-size: var(--fs-small); color: var(--ink-2); }
 .fsum .fsum-l { display: block; }
-.reopen { align-self: flex-start; min-height: 40px; margin-top: 2px; padding: 0 14px; border: var(--hair) solid var(--rule); border-radius: var(--r-pill); background: none; color: var(--ink); font: inherit; font-size: 13.5px; font-weight: 600; cursor: pointer; }
+.reopen { align-self: flex-start; min-height: 44px; margin-top: 2px; padding: 0 14px; border: var(--hair) solid var(--rule); border-radius: var(--r-pill); background: none; color: var(--ink); font: inherit; font-size: 13.5px; font-weight: 600; cursor: pointer; }
 
 .reportrow { display: grid; grid-template-columns: 22px 1fr 14px; gap: var(--s-3); align-items: center; width: 100%; margin-top: 18px; padding: 14px var(--s-4); border: 1.5px solid var(--rule); border-radius: 16px; background: var(--sheet); color: var(--ink); font: inherit; text-align: left; cursor: pointer; }
 .reportrow:active { transform: scale(0.98); }
@@ -58,3 +54,35 @@
 .reportrow b { display: block; font-size: var(--fs-callout); font-weight: 600; }
 .reportrow span span { font-size: var(--fs-small); color: var(--ink-2); }
 .s11-save { width: 100%; }
+
+/* Report form and receipt; shared with the component specimens. */
+.report-screen { scroll-padding-block: 80px 120px; }
+.report-card { margin: var(--s-5) var(--gutter) 0; padding: var(--s-4); border: var(--hair) solid var(--rule); border-radius: var(--r-card); background: var(--sheet); }
+.report-reasons { min-width: 0; padding-block: var(--s-1); }
+.report-option { position: relative; display: flex; align-items: center; gap: var(--s-3); min-height: 48px; border-bottom: var(--hair) solid var(--rule-2); font-size: var(--fs-callout); cursor: pointer; }
+.report-option:last-child { border-bottom: 0; }
+.report-option input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
+.report-option i { flex: none; width: 20px; height: 20px; border: 1.5px solid var(--ink-3); border-radius: var(--r-pill); }
+.report-option input:checked + i { border: 6px solid var(--forest); }
+.report-option input:focus-visible + i { outline: 2px solid var(--forest); outline-offset: 2px; }
+.report-block { margin-top: var(--s-5); }
+.report-label { display: block; margin: 0 0 var(--s-2); font-size: var(--fs-callout); line-height: var(--lh-callout); font-weight: 500; }
+.report-thumbs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-2); }
+.report-thumb { position: relative; display: flex; flex-direction: column; gap: var(--s-1); min-width: 0; font-size: var(--fs-small); cursor: pointer; }
+.report-thumb input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
+.report-thumb-photo { position: relative; display: block; border: 2px solid var(--rule); border-radius: var(--r-thumb); overflow: hidden; pointer-events: none; }
+.report-thumb .photo { display: block; width: 100%; height: auto; aspect-ratio: 7 / 5; object-fit: cover; }
+.report-thumb input:checked + .report-thumb-photo { border-color: var(--forest); }
+.report-thumb input:focus-visible + .report-thumb-photo { outline: 2px solid var(--forest); outline-offset: 2px; }
+.report-selected { display: none; position: absolute; right: 0; bottom: 0; padding: 2px; background: var(--forest); color: var(--white); }
+.report-thumb input:checked + .report-thumb-photo .report-selected { display: flex; }
+.report-field { display: block; width: 100%; padding: var(--s-3); border: var(--hair) solid var(--rule); border-radius: var(--r-thumb); background: var(--sheet); font-family: var(--sans); font-size: var(--fs-body); line-height: var(--lh-body); resize: vertical; }
+.report-error { color: var(--error); font-size: var(--fs-callout); }
+.report-facts { margin: 0; font-size: var(--fs-callout); line-height: var(--lh-callout); }
+.report-facts > div { display: grid; grid-template-columns: 76px minmax(0, 1fr); gap: var(--s-2); padding-block: var(--s-2); border-bottom: var(--hair) solid var(--rule-2); }
+.report-facts > div:last-child { border-bottom: 0; }
+.report-facts dt { color: var(--ink-2); }
+.report-facts dd { margin: 0; overflow-wrap: anywhere; white-space: pre-wrap; }
+.report-badge { display: grid; place-items: center; width: 48px; height: 48px; border-radius: var(--r-pill); background: var(--mint); color: var(--forest); }
+.report-sent-h { margin-top: var(--s-3); }
+.photo-date { font-size: var(--fs-small); line-height: var(--lh-small); color: var(--ink-2); font-variant-numeric: tabular-nums; }

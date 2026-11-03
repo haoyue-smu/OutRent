@@ -24,6 +24,7 @@
 .tl12 div > span { font-size: var(--fs-small); line-height: var(--lh-small); color: var(--ink-2); }
 
 /* Checked against the hand-over photos */
+.return12 { margin: 0; font-size: var(--fs-callout); line-height: var(--lh-callout); color: var(--ink-2); overflow-wrap: anywhere; }
 .backs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-2); }
 .backs figure { display: flex; flex-direction: column; gap: 6px; margin: 0; }
 .backs .photo { display: block; width: 100%; height: auto; aspect-ratio: 7 / 5; object-fit: cover; border-radius: 10px; }

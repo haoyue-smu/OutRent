@@ -1,42 +1,36 @@
 import { useEffect, useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { gsap } from 'gsap'
 import { useBack } from '../../shell/Link'
 import { Icon } from '../../shell/Icon'
 import { Photo } from '../../shell/Photo'
-import { BackButton, Mono, TimeSkip, haptic, still, useToast } from '../../shell/direction'
+import { BackButton, Mono, TimeSkip, haptic, still } from '../../shell/direction'
 import { routeFor } from '../../pages'
 import { lock } from '../../shell/PageFrame'
-import { SAT, collectAt, dateTime, deliverAt, set, setClock, useStore } from '../../shell/store'
+import { SAT, clockOf, collectAt, dateTime, isClosed, set, setClock, useStore, type HandoverReport } from '../../shell/store'
 import { collectH, deliverH, releaseH } from '../../shell/rental'
-import sCrank from '@photos/11-handover-check/assets/11-direction-s-crank.webp'
-import sSaddle from '@photos/11-handover-check/assets/11-direction-s-saddle.webp'
-import sDrive from '@photos/11-handover-check/assets/11-direction-s-drive.webp'
-import rCrank from '@photos/12-rental-summary/assets/12-direction-r-crank.webp'
-import rSaddle from '@photos/12-rental-summary/assets/12-direction-r-saddle.webp'
-import rDrive from '@photos/12-rental-summary/assets/12-direction-r-drive.webp'
+import { REPORT, isScratchReport, reportTimes } from '../../shell/report'
+import { RecordPart } from './pieces'
+import { PARTS, type Part, type PartId } from './data'
+import { ReportForm, ReportSent } from './Report'
 import './handover.css'
 
 // 11 Handover check · the fitter's line. One record card: the shop's photo and Daniel's, side by side, for the
 // same three parts; on save each part is ticked and the record folds shut into a filed slip.
-// Source: the Creative Director's prototype v52 (#11). Real state: the photos, marks and the saved record are
-// kept in the story store (Back, re-entry and a reload show them); the record carries the delivery time.
-
-type PartId = 'crank' | 'saddle' | 'drive'
-type Part = { id: PartId; name: string; note: string; shop: string; mine: string; shopRing?: [number, number]; mineRing?: [number, number]; mark?: string; short: string }
-const PARTS: Part[] = [
-  { id: 'crank', name: 'Crank arm', note: 'Known scratch', shop: sCrank, mine: rCrank, shopRing: [57, 66], mineRing: [50, 61], mark: 'scratch', short: 'Crank arm · scratch' },
-  { id: 'saddle', name: 'Saddle edge', note: 'Known scuff', shop: sSaddle, mine: rSaddle, shopRing: [28, 45], mineRing: [68, 50], mark: 'scuff', short: 'Saddle · scuff' },
-  { id: 'drive', name: 'Drivetrain', note: 'Part most at risk', shop: sDrive, mine: rDrive, short: 'Drivetrain' },
-]
+// Source: the Creative Director's prototype v52 (#11), with the PO v1.11 report. Daniel takes three photos;
+// only the shop's photos carry known-mark rings. The record, report draft and sent state survive re-entry.
 
 export default function Handover() {
   const navigate = useNavigate()
   const back = useBack(() => navigate(routeFor('10-delivery-tracking')))
-  const [toastNode, toast] = useToast()
+  const [query, setQuery] = useSearchParams()
   const s = useStore((x) => x)
   const rec = s.record
-  const shots = rec.shots as PartId[], marks = rec.marks as PartId[], saved = rec.saved
+  const shots = rec.shots as PartId[], saved = rec.saved
+  const report = s.report
+  const reportView = query.get('report')
+  const canReport = !isClosed(s)
+  const reporting = (reportView === 'form' || reportView === 'sent') && (report.sent || canReport)
   const [ticked, setTicked] = useState<PartId[]>(saved ? PARTS.map((p) => p.id) : [])
   const [showParts, setShowParts] = useState(!saved)
   const [filed, setFiled] = useState(saved)
@@ -46,17 +40,38 @@ export default function Handover() {
   const parts = useRef<HTMLDivElement>(null)
   const slip = useRef<HTMLDivElement>(null)
   const btn = useRef<HTMLButtonElement>(null)
+  const reportButton = useRef<HTMLButtonElement>(null)
+  const wasReporting = useRef(false)
   const WHEN = dateTime(deliverH(s))
+  const times = reportTimes(s)
+  const { savedAt, sentShort } = times
 
-  useEffect(() => { setClock(deliverAt(s)) }, [s])
+  useEffect(() => { setClock(clockOf(Math.max(s.now, saved ? times.savedH : report.sent ? times.sentH : deliverH(s)))) }, [s, saved, report.sent, times.savedH, times.sentH])
+  useEffect(() => {
+    if (reporting) document.querySelector<HTMLElement>('.report-screen h1')?.focus({ preventScroll: true })
+    else if (wasReporting.current) reportButton.current?.focus()
+    wasReporting.current = reporting
+  }, [reporting, reportView])
 
-  const marksOk = PARTS.every((p) => !p.mark || !shots.includes(p.id) || marks.includes(p.id))
-  const left = 3 - shots.length
+  const left = PARTS.filter((p) => !shots.includes(p.id)).length
   const label = saved ? 'See the rental summary'
     : left === 3 ? 'Take 3 photos'
     : left > 0 ? `Take ${left} more photo${left === 1 ? '' : 's'}`
-    : marksOk ? 'Save the hand-over record' : 'Mark the known marks'
+    : 'Save the hand-over record'
   const keep = (patch: Partial<typeof rec>) => set((x) => ({ ...x, record: { ...x.record, ...patch } }))
+  const updateReport = (patch: Partial<HandoverReport>) => set((x) => ({ ...x, report: { ...x.report, ...patch } }))
+  const showReport = (view: 'form' | 'sent' | null, replace = false) => {
+    if (!view && window.history.state?.usr?.handoverReport) { navigate(-1); return }
+    const next = new URLSearchParams(query)
+    if (view) next.set('report', view); else next.delete('report')
+    setQuery(next, { replace, state: view ? { handoverReport: !reporting || !!window.history.state?.usr?.handoverReport } : null })
+  }
+  const send = () => {
+    if (!report.reason || report.sent || !canReport) return
+    set((x) => ({ ...x, now: Math.max(x.now, reportTimes(x).sentH), report: { ...x.report, sent: true } }))
+    haptic()
+    showReport('sent', true)
+  }
 
   const take = (p: Part, el: HTMLElement) => {
     if (shots.includes(p.id)) return
@@ -64,12 +79,16 @@ export default function Handover() {
     haptic()
     if (!still()) gsap.fromTo(el.querySelector('.flash'), { opacity: 0.95 }, { opacity: 0, duration: 0.5, ease: 'power2.out' })
   }
-  const mark = (p: Part) => { keep({ marks: [...marks, p.id] }); haptic() }
 
   // Each part is ticked, then the record folds shut into a slip.
   const save = () => {
-    if (saved) { setSkipping(true); return }
-    keep({ saved: true })
+    if (saved) {
+      if (s.closed || s.now >= releaseH(s)) navigate(routeFor('12-rental-summary'))
+      else setSkipping(true)
+      return
+    }
+    if (left) return
+    set((x) => ({ ...x, now: Math.max(x.now, deliverH(x) + 7 / 60), record: { ...x.record, saved: true } }))
     lock(btn.current)
     if (still()) { setTicked(PARTS.map((p) => p.id)); setShowParts(false); setFiled(true); haptic(); return }
     const tl = gsap.timeline()
@@ -91,7 +110,12 @@ export default function Handover() {
   }
 
   // The time skip over the ride: delivery -> 8:00–12:30 ride -> collection -> deposit released.
-  const marksSkip: [number, string][] = [[deliverH(s), deliverAt(s)], [SAT + 8, '8:00'], [SAT + 12.5, '12:30'], [collectH(s), collectAt(s)]]
+  const skipFrom = Math.max(deliverH(s), s.now)
+  const marksSkip: [number, string][] = [[SAT + 8, '8:00'], [SAT + 12.5, '12:30'], [collectH(s), collectAt(s)]]
+
+  if (reporting) return report.sent
+    ? <ReportSent report={report} sentAt={times.sentAt} onBack={() => showReport(null, true)} />
+    : <ReportForm shots={shots} report={report} onChange={updateReport} onBack={() => showReport(null, true)} onSend={send} />
 
   return (
     <>
@@ -113,35 +137,7 @@ export default function Handover() {
           </div>
           {showParts && (
             <div className="parts" ref={parts}>
-              {PARTS.map((p) => {
-                const shot = shots.includes(p.id), marked = marks.includes(p.id)
-                return (
-                  <section key={p.id} className={`part${ticked.includes(p.id) ? ' ok' : ''}`} aria-label={p.name}>
-                    <div className="part-h"><b>{p.name}<span className="tick" aria-hidden="true"><Icon name="check" /></span></b><Mono>{p.note}</Mono></div>
-                    <div className="pair">
-                      <figure>
-                        <div className="ph">
-                          <Photo src={p.shop} alt={`The shop’s photo of the ${p.name.toLowerCase()}`} width={160} height={114} />
-                          {p.shopRing && <span className="ring2 on" style={{ left: `${p.shopRing[0]}%`, top: `${p.shopRing[1]}%` }} aria-hidden="true" />}
-                        </div>
-                      </figure>
-                      <figure>
-                        <button type="button" className={`ph shot${shot ? ' taken' : ''}`} onClick={(e) => take(p, e.currentTarget)}
-                          aria-label={shot ? `Your photo of the ${p.name.toLowerCase()}, ${WHEN}` : `Take your photo of the ${p.name.toLowerCase()}`}>
-                          {shot
-                            ? <Photo src={p.mine} alt="" width={160} height={114} className="mine" />
-                            : <span className="cam"><Icon name="camera" /><span>Take photo</span></span>}
-                          {p.mineRing && <span className={`ring2${marked ? ' on' : ''}`} style={{ left: `${p.mineRing[0]}%`, top: `${p.mineRing[1]}%` }} aria-hidden="true" />}
-                          <span className="flash" aria-hidden="true" />
-                        </button>
-                      </figure>
-                    </div>
-                    {shot && p.mark && !marked && <button type="button" className="markbtn" onClick={() => mark(p)}>Circle the {p.mark} on your photo</button>}
-                    {shot && p.mark && marked && <span className="marked"><Icon name="check" small />{p.mark[0].toUpperCase() + p.mark.slice(1)} recorded · {WHEN}</span>}
-                    {shot && !p.mark && <span className="nomark">No marks to record</span>}
-                  </section>
-                )
-              })}
+              {PARTS.map((p) => <RecordPart key={p.id} p={p} shot={shots.includes(p.id)} ticked={ticked.includes(p.id)} when={dateTime(deliverH(s) + (p.id === 'drive' ? 1 / 60 : 0))} onTake={(el) => take(p, el)} />)}
             </div>
           )}
           {filed && (
@@ -154,24 +150,23 @@ export default function Handover() {
                   </div>
                 ))}
               </div>
-              <div className="fsum"><b>Recorded · <span className="nb">{WHEN}</span></b><span>3 parts checked · 2 known marks · nothing new.</span><span className="fsum-l">Timah Cycles has the same record.</span></div>
+              <div className="fsum"><b>Recorded · <span className="nb">{savedAt}</span></b><span>3 parts checked · 2 known marks · {report.sent ? '1 problem reported' : 'nothing new'}.</span><span className="fsum-l">Timah Cycles has the same record.</span>{isScratchReport(report) && <span className="fsum-l">{REPORT.outcome}</span>}</div>
               <button type="button" className="reopen" onClick={() => setShowParts((v) => !v)} aria-expanded={showParts}>{showParts ? 'Close the record' : 'See all photos'}</button>
             </div>
           )}
         </article>
-        <div className="pad">
-          <button type="button" className="reportrow" onClick={() => toast('Reporting a problem is not in this demo yet.')}>
+        {(report.sent || canReport) && <div className="pad">
+          <button type="button" ref={reportButton} className="reportrow" onClick={() => showReport(report.sent ? 'sent' : 'form')}>
             <Icon name="flag" />
-            <span><b>Something wrong with the bike?</b><span>Report a problem before you ride</span></span>
+            <span><b>{report.sent ? `Report sent · ${sentShort}` : 'Something wrong with the bike?'}</b><span>{report.sent ? 'View your report' : 'Report a problem before you ride'}</span></span>
             <Icon name="caret-right" small />
           </button>
-        </div>
+        </div>}
       </main>
       <div className="dock">
-        <button type="button" ref={btn} className="cta s11-save" disabled={!saved && (left > 0 || !marksOk)} onClick={save} aria-live="polite">{label}</button>
+        <button type="button" ref={btn} className="cta s11-save" disabled={!saved && left > 0} onClick={save} aria-live="polite">{label}</button>
       </div>
-      {toastNode}
-      {skipping && <TimeSkip from={deliverH(s)} to={releaseH(s)} marks={marksSkip}
+      {skipping && <TimeSkip from={skipFrom} to={releaseH(s)} marks={marksSkip.filter(([time]) => time > skipFrom)}
         caption={`The ride happens here: 8:00–12:30 at Chestnut. Collected at ${collectAt(s)}.`}
         onDone={() => { set((x) => ({ ...x, closed: true, now: Math.max(x.now, releaseH(x)) })); navigate(routeFor('12-rental-summary'), { state: { how: 'skip' } }) }} />}
     </>

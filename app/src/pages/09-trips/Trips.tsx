@@ -2,10 +2,12 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { gsap } from 'gsap'
 import { Photo } from '../../shell/Photo'
+import { GoTo } from '../../shell/Link'
 import { Chev, LineIcon, Mono, TabBar, TimeSkip, still, useToast } from '../../shell/direction'
 import { routeFor } from '../../pages'
 import { dayLong, dm, nextDayBack, pickDay, poolBack, wd } from '../../shell/storage'
 import { clockOf, collectAt, countdown, dateTime, deliverAt, fitNow, set, setClock, useStore } from '../../shell/store'
+import { REPORT, isScratchReport, reportTimes } from '../../shell/report'
 import {
   CANCEL_BY, bookingsNow, collectH, deliverH, leavesH, legsLine, nextRideH, payWith, placeFull, releaseH, spotWhere, stage, trackH,
 } from '../../shell/rental'
@@ -70,7 +72,9 @@ export default function Trips() {
   const root = useRef<HTMLElement>(null)
   const s = useStore((x) => x)
   const [skip, setSkip] = useState(false)
-  const now = bookingsNow(s)
+  const replied = isScratchReport(s.report)
+  const { replyH, savedAt, sentAt, replyAt } = reportTimes(s)
+  const now = Math.max(bookingsNow(s), replied ? replyH : 0)
   const st = stage(s)
   const f = fitNow(s)
   const d = deliverAt(s), c = collectAt(s), pd = s.book.place.d, pc = s.book.place.c
@@ -79,6 +83,9 @@ export default function Trips() {
   const firstIn = (() => { const k = countdown(now, nextRideH(s)); return `${k.a} ${k.au} ${k.b} ${k.bu}` })()
 
   useEffect(() => { setClock(clockOf(now)) }, [now])
+  useEffect(() => {
+    if (replied && s.now < replyH) set({ now: replyH })
+  }, [replied, s.now, replyH])
 
   // The shelves rise in turn; the board rolls through digits and settles on the time left.
   useLayoutEffect(() => {
@@ -159,6 +166,36 @@ export default function Trips() {
           )}
           {!upcoming && !(closed && weekly) && (
             <><div className="lbl"><b>Up next</b></div><p className="none9">Nothing booked.</p></>
+          )}
+
+          {(s.record.saved || s.report.sent) && (
+            <section className="handover9" aria-labelledby="handover9-title">
+              <h2 className="t-h2" id="handover9-title">Hand-over record</h2>
+              <GoTo page="11-handover-check" className="record9-link">
+                <span><b>{s.record.saved ? 'Open the hand-over record' : 'Continue the hand-over record'}</b><span>{s.record.saved ? `Recorded ${savedAt}` : 'Photos saved on this device'}</span></span>
+                <Chev />
+              </GoTo>
+              {s.report.sent && (
+                <section className="report9" id="handover-report" aria-labelledby="report9-title">
+                  <h3 id="report9-title">Report sent</h3>
+                  <dl>
+                    <div><dt>Reference</dt><dd>{REPORT.reference}</dd></div>
+                    <div><dt>Reason</dt><dd>{s.report.reason}</dd></div>
+                    <div><dt>Sent</dt><dd>{sentAt}</dd></div>
+                    <div><dt>Photos</dt><dd>{s.report.photos.length ? s.report.photos.map((id) => ({ crank: 'Crank arm', saddle: 'Saddle edge', drive: 'Drivetrain' })[id as 'crank' | 'saddle' | 'drive']).join(', ') : 'None attached'}</dd></div>
+                  </dl>
+                  {s.report.details && <p className="report9-details">{s.report.details}</p>}
+                  {replied ? (
+                    <div className="report9-reply">
+                      <h4>Timah Cycles</h4>
+                      <p className="small">{replyAt}</p>
+                      <blockquote>{REPORT.reply}</blockquote>
+                      <p className="report9-outcome">{REPORT.outcome}</p>
+                    </div>
+                  ) : <p className="small report9-pending">Timah Cycles replies to your booking</p>}
+                </section>
+              )}
+            </section>
           )}
 
           {weekly && !closed && (

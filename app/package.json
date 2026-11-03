@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "check": "tsc -b && oxlint && node ../tools/check.mjs --app",
     "lint": "oxlint",
     "preview": "vite preview"
   },

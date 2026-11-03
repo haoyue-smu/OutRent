@@ -6,7 +6,10 @@ import {
 } from '../shell/direction'
 import { Tape } from '../pages/03-fit-profile/session'
 import { Van } from '../pages/10-delivery-tracking/Tracking'
+import { PhotoAttachThumb, ReasonRow, ReportSentCard } from '../pages/11-handover-check/pieces'
+import { PARTS, REASONS } from '../pages/11-handover-check/data'
 import { Fit } from '../shell/store'
+import { REPORT_SEED } from '../shell/report'
 import { useDragScroll } from '../shell/dragScroll'
 import lockup from '@design/brand/outrent-lockup.svg?raw'
 import post from '@photos/01-home/assets/01-direction-02-coach-post.webp'
@@ -106,7 +109,7 @@ function TypeRow({ role, use, children }: { role: string; use: string; children:
 }
 
 const seedUrl = (page: string, seed: object) => `/${page}?seed=${btoa(JSON.stringify(seed))}`
-const RODE = { paid: true, book: { d: '7:40', c: '13:30' }, arrived: true, record: { shots: ['crank', 'saddle', 'drive'], marks: ['crank', 'saddle'], saved: true } }
+const RODE = { paid: true, book: { d: '7:40', c: '13:30' }, arrived: true, record: { shots: ['crank', 'saddle', 'drive'], marks: [], saved: true } }
 function Reference() {
   const [toastNode, toast] = useToast()
   const sheet = useSheet()
@@ -503,6 +506,8 @@ function StyleGuide() {
   const [chip, setChip] = useState('7:40')
   const [day, setDay] = useState(28)
   const [drawer, setDrawer] = useState<'up' | 'down'>('up')
+  const [reportReason, setReportReason] = useState('Damaged')
+  const [reportPhotos, setReportPhotos] = useState<string[]>(['drive'])
   const tape = useRef<HTMLDivElement>(null)
   const row = useRef<HTMLDivElement>(null)
   const [h, setH] = useState(176)
@@ -616,13 +621,32 @@ function StyleGuide() {
             </div>
             <div className="g-photo"><span className="todo" role="img" aria-label="Photo to come"><span className="mono">Image to come</span><span className="w">Blk 325C Sengkang East Way, your home address</span></span></div>
           </Block>
+          <Block title="Report a problem" about="A reason names the problem. Attached photos carry the evidence. The sent card keeps the reference and time with the booking.">
+            <Lab t="Reason radio row">
+              <div className="s-w"><fieldset className="report-card report-reasons">
+                <legend className="sr-only">Report reason specimen</legend>
+                {REASONS.map((reason) => <ReasonRow key={reason} name="gallery-report-reason" reason={reason} checked={reportReason === reason} onChange={() => setReportReason(reason)} />)}
+              </fieldset></div>
+            </Lab>
+            <Lab t="Photo attach thumb">
+              <div className="s-w report-thumbs">
+                {PARTS.map((part) => <PhotoAttachThumb key={part.id} part={part} checked={reportPhotos.includes(part.id)} onChange={() => setReportPhotos((photos) => photos.includes(part.id) ? photos.filter((id) => id !== part.id) : [...photos, part.id])} />)}
+              </div>
+            </Lab>
+            <Lab t="Sent card"><div className="s-w"><ReportSentCard report={REPORT_SEED} /></div></Lab>
+          </Block>
           <Block title="Done marks" about="When a task is finished, its screen shows one mark, so the moment is clear. Each kind of task has its own.">
             <div className="s-marks">
               <Mark page="08-booking-confirmation" name="Stamp: paid" focus=".stamp" zoom={1} seed={{ ...SEP, now: 9.2 }} />
-              <Mark page="11-handover-check" name="Slip: record saved" focus=".filed" seed={{ ...RODE, now: 79.67 }} />
+              <Mark page="11-handover-check" name="Slip: no report" focus=".filed" seed={{ ...RODE, now: 79 + 47 / 60 }} />
+              <Mark page="11-handover-check" name="Slip: problem reported" focus=".filed" seed={{ ...RODE, report: REPORT_SEED, now: 79 + 47 / 60 }} />
               <Mark page="13-weekly-ride" name="Ring: weekly ride set up" focus=".tag2 .hole" zoom={0.8} seed={{ ...RODE, closed: true, weekly: true, now: 86.1 }} />
               <Mark page="15-equipment-detail" name="Dot: arrived at the Hub" focus=".idle15" seed={{ now: 178, storage: { way: 'home', booked: true, hub: true } }} />
               <Mark page="17-hub-pickup" name="Token: pickup booked" focus=".dial17" seed={{ storage: { way: 'home', booked: true } }} />
+            </div>
+            <div className="s-w s-stack">
+              <a className="link" href={seedUrl('11-handover-check', { ...RODE, report: REPORT_SEED, now: 79 + 47 / 60 })}>Open the filed slip with a report</a>
+              <a className="link" href={seedUrl('11-handover-check', { ...RODE, now: 79 + 47 / 60 })}>Open the filed slip without a report</a>
             </div>
           </Block>
         </div>

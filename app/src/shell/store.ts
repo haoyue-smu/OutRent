@@ -9,6 +9,8 @@ export type Place = 0 | 1                    // 0 Chestnut trailhead carpark, 1 
 export type Pay = 'PayNow' | 'Visa'
 export type StoreWay = '' | 'home' | 'rack'  // door pickup S$10, or Rack S drop-off S$5
 export type Return = '' | 'pool' | 'next'    // shared run Fri 31 Oct free, or next day 30 Oct S$8
+export type ReportReason = '' | 'Wrong item' | 'Damaged' | 'Not adjusted to my fit' | 'Something else'
+export type HandoverReport = { reason: ReportReason; photos: string[]; details: string; sent: boolean }
 
 export type State = {
   fit: { height: number; leg: number; hasProfile: boolean }
@@ -17,6 +19,7 @@ export type State = {
   now: number                                // the story clock: hours from Wed 22 Oct 0:00
   arrived: boolean                           // 10: the bike is at the hand-over spot
   record: { shots: string[]; marks: string[]; saved: boolean }   // 11
+  report: HandoverReport                     // 11 draft and submitted report, also shown on 09 and 12
   closed: boolean                            // 12: returned, deposit released
   weekly: boolean                            // 13: every Saturday from 1 Nov
   storage: { way: StoreWay; booked: boolean; hub: boolean; rentOn: boolean; ret: Return; day?: number }   // day: pickup day in Oct (17)
@@ -31,6 +34,7 @@ export const SEED: State = {
   now: 9 + 1 / 60,
   arrived: false,
   record: { shots: [], marks: [], saved: false },
+  report: { reason: '', photos: [], details: '', sent: false },
   closed: false,
   weekly: false,
   storage: { way: '', booked: false, hub: false, rentOn: false, ret: '' },
@@ -61,7 +65,7 @@ const load = (): State => {
   if (seeded) return deep(SEED as unknown as Record<string, unknown>, seeded as Record<string, unknown>) as unknown as State
   try {
     const raw = localStorage.getItem(KEY)
-    if (raw) return { ...SEED, ...JSON.parse(raw) }
+    if (raw) return deep(SEED as unknown as Record<string, unknown>, JSON.parse(raw)) as unknown as State
   } catch { /* private mode or blocked storage: start from the seed */ }
   return SEED
 }

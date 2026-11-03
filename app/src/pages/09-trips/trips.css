@@ -64,3 +64,24 @@
 .row9 .th.g-dt { display: flex; flex-direction: column; align-items: center; justify-content: center; background: var(--sheet); }
 .row9 .th.g-dt b { font-size: 19px; line-height: 20px; font-weight: 600; letter-spacing: -0.02em; }
 .row9 .th.g-dt span { font-family: var(--mono); font-size: 9px; letter-spacing: 0.08em; color: var(--ink-3); }
+
+/* The hand-over evidence stays with OR-10482, including after the rental closes. */
+.handover9 { margin-top: var(--s-6); }
+.record9-link { display: flex; align-items: center; justify-content: space-between; gap: var(--s-3); min-height: 44px; padding: var(--s-3) 0; border-bottom: var(--hair) solid var(--rule); color: var(--ink); text-decoration: none; }
+.record9-link > span { min-width: 0; }
+.record9-link b, .record9-link span span { display: block; }
+.record9-link b { font-size: var(--fs-callout); font-weight: 600; }
+.record9-link span span { margin-top: var(--s-1); font-size: var(--fs-small); color: var(--ink-2); }
+.record9-link:hover, .record9-link:active { color: var(--forest); }
+.report9 { padding: var(--s-4); margin-top: var(--s-3); border-radius: var(--r-card); background: var(--sheet); overflow-wrap: anywhere; scroll-margin-top: var(--s-4); }
+.report9 h3, .report9 h4 { margin: 0; font-size: var(--fs-callout); line-height: var(--lh-callout); font-weight: 600; }
+.report9 dl { display: grid; gap: var(--s-2); margin: var(--s-3) 0 0; font-size: var(--fs-small); line-height: var(--lh-small); }
+.report9 dl > div { display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: var(--s-2); }
+.report9 dt { color: var(--ink-2); }
+.report9 dd { margin: 0; }
+.report9-details { margin: var(--s-3) 0 0; font-size: var(--fs-callout); line-height: var(--lh-callout); white-space: pre-wrap; }
+.report9-reply { margin-top: var(--s-4); padding-top: var(--s-4); border-top: var(--hair) solid var(--rule); }
+.report9-reply > .small { margin: var(--s-1) 0 0; }
+.report9 blockquote { margin: var(--s-3) 0; font-size: var(--fs-callout); line-height: var(--lh-callout); }
+.report9-outcome { margin: 0; font-size: var(--fs-small); line-height: var(--lh-small); font-weight: 600; color: var(--forest); }
+.report9-pending { margin: var(--s-3) 0 0; }
