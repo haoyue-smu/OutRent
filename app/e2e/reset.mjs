@@ -1,12 +1,12 @@
 // Progress is kept on the device until a reset: /reset, /?reset, or holding the Home logo for 3 s (mouse and touch).
 // node app/e2e/reset.mjs   (BASE=http://localhost:5191 by default)
-import { chromium, BASE } from './lib.mjs'
+import { launch, BASE } from './lib.mjs'
 
 const results = []
 const ok = (name, pass, got = '') => { results.push(pass); console.log(pass ? 'PASS' : 'FAIL', name, got ? '| ' + got : '') }
 const KEY = 'outrent.state.v52'
 const booked = { fit: { height: 170, leg: 78, hasProfile: true }, book: { d: '7:20', c: '14:30', place: { d: 0, c: 0 }, pay: 'PayNow', ack: false }, paid: true, now: 9.2, storage: { way: 'home', booked: true, hub: false, rentOn: false, ret: '', day: 28 } }
-const b = await chromium.launch()
+const b = await launch()
 
 async function seeded(ctx) {
   const p = await ctx.newPage()
@@ -15,6 +15,7 @@ async function seeded(ctx) {
   return p
 }
 async function isSeed(p, label) {
+  await p.waitForURL(/\/01-home$/, { timeout: 5000 })
   await p.waitForTimeout(1200)
   ok(`${label}: URL is Home`, /\/01-home$/.test(p.url()), p.url())
   const home = await p.locator('.frame-stage').innerText()
@@ -105,3 +106,4 @@ async function isSeed(p, label) {
 }
 await b.close()
 console.log(`done reset ${results.filter(Boolean).length}/${results.length}`)
+if (results.some((pass) => !pass)) process.exitCode = 1

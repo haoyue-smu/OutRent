@@ -1,7 +1,7 @@
 // E6 owner and storage, E7 chaos (tab switches mid-flow, double taps, taps during skips, reloads, reduced motion).
 import { book } from './journeys.mjs'
 
-async function toHub(t, way) {
+export async function toHub(t, way) {
   const { p } = t
   let s = t.S()
   await t.go(s, 'tab My gear', p.locator('.tabbar button', { hasText: 'My gear' }), '14-my-equipment')
@@ -153,7 +153,7 @@ export async function E7(t) {
   // B · double tap on a button that changes its own label (11 save → see the summary)
   await t.go(s, 'hand-over', t.btn('Start the hand-over check'), '11-handover-check')
   for (const part of ['crank arm', 'saddle edge', 'drivetrain']) await t.tap(t.btn(`Take your photo of the ${part}`))
-  await t.tap(t.btn('Circle the scratch on your photo')); await t.tap(t.btn('Circle the scuff on your photo'))
+  await t.chk(s, 'three photos enable Save without marking', 'false', String(await p.locator('.dock .cta').isDisabled()), { exact: true })
   const save = p.locator('.dock .cta')
   await save.tap(); await p.waitForTimeout(90); await save.tap().catch(() => {})
   await p.waitForTimeout(1500)
@@ -201,7 +201,7 @@ export async function E7r(t) {
   await t.chk(s, '10 arrives at once', 'false', String(await p.locator('.s10-go').isDisabled()), { exact: true })
   await t.go(s, 'hand-over', t.btn('Start the hand-over check'), '11-handover-check')
   for (const part of ['crank arm', 'saddle edge', 'drivetrain']) await t.tap(t.btn(`Take your photo of the ${part}`))
-  await t.tap(t.btn('Circle the scratch on your photo')); await t.tap(t.btn('Circle the scuff on your photo'))
+  await t.chk(s, 'three photos enable Save without marking', 'false', String(await p.locator('.dock .cta').isDisabled()), { exact: true })
   await t.tap(p.locator('.dock .cta'), { wait: 600 })
   await t.go(s, 'summary', p.locator('.dock .cta'), '12-rental-summary', { timeout: 5000 })
   await t.go(s, 'weekly', t.btn('See the weekly ride'), '13-weekly-ride')

@@ -6,6 +6,7 @@ import fs from 'fs'
 
 const require = createRequire(process.env.PW_FROM || 'D:/YUE/c_project/outrent/node_modules/')
 export const { chromium } = require('playwright-core')
+export const launch = () => chromium.launch(process.env.BROWSER_EXECUTABLE ? { executablePath: process.env.BROWSER_EXECUTABLE } : {})
 export const BASE = process.env.BASE || 'http://localhost:5191'
 export const OUT = process.env.E2E_OUT || new URL('./out/', import.meta.url).pathname.replace(/^\/([A-Z]:)/, '$1')
 fs.mkdirSync(OUT + 'shots', { recursive: true })
@@ -13,20 +14,26 @@ fs.mkdirSync(OUT + 'shots', { recursive: true })
 export const norm = (s) => (s == null ? '' : String(s)).replace(/\s+/g, ' ').trim()
 
 export async function journey(J, persona, fn, opts = {}) {
-  const browser = await chromium.launch()
-  const ctx = await browser.newContext({ viewport: { width: 393, height: 852 }, deviceScaleFactor: 2, hasTouch: true, reducedMotion: opts.reduced ? 'reduce' : 'no-preference', ...(opts.desk ? { viewport: { width: 1100, height: 940 } } : {}) })
+  const browser = await launch()
+  const ctx = await browser.newContext({ viewport: { width: opts.width ?? 393, height: 852 }, deviceScaleFactor: 2, hasTouch: true, reducedMotion: opts.reduced ? 'reduce' : 'no-preference', ...(opts.desk ? { viewport: { width: 1100, height: 940 } } : {}) })
   const p = await ctx.newPage()
   const errs = []
   p.on('console', (m) => { if (m.type() === 'error') errs.push(m.text()) })
   p.on('pageerror', (e) => errs.push('pageerror: ' + e.message))
+  p.on('requestfailed', (r) => { if (!r.failure()?.errorText.includes('ERR_ABORTED')) errs.push('request: ' + r.url() + ' ' + r.failure()?.errorText) })
+  p.on('response', (r) => { if (r.status() >= 400) errs.push('HTTP ' + r.status() + ': ' + r.url()) })
   const R = []
   let nshot = 0, stepNo = 0
   const t = {
-    p, J,
+    p, J, reduced: !!opts.reduced,
     S: () => 'S' + String(++stepNo).padStart(2, '0'),
     async rec(step, action, expected, actual, pass, o = {}) {
       let shot = null
-      if (!pass) { nshot++; shot = `shots/${J}-${nshot}.png`; try { await p.screenshot({ path: OUT + shot }) } catch { /* page gone */ } }
+      if (!pass) {
+        nshot++; shot = `shots/${J}-${nshot}.png`
+        try { await p.screenshot({ path: OUT + shot, scale: 'css', timeout: 10000 }) }
+        catch (e) { fs.writeFileSync(OUT + J + '-screenshot-error.txt', e.message); shot = null }
+      }
       R.push({ journey: J, persona, step, action, expected: norm(expected), actual: norm(actual).slice(0, 300), pass, severity: pass ? 0 : (o.sev ?? 3), shot })
       console.log(pass ? 'PASS' : 'FAIL', J, step, '|', action, '|', norm(expected), '=>', norm(actual).slice(0, 160))
       return pass
@@ -66,9 +73,17 @@ export async function journey(J, persona, fn, opts = {}) {
       await t.waitPage(path)
     },
     state: () => p.evaluate(() => JSON.parse(localStorage.getItem('outrent.state.v52') || '{}')),
+    async shot(name, target) {
+      if (target) await p.locator(target).scrollIntoViewIfNeeded()
+      await p.waitForTimeout(opts.reduced ? 300 : 600)
+      await p.screenshot({ path: OUT + 'shots/' + name + '.png', scale: 'css' })
+    },
     toast: () => p.evaluate(() => document.querySelector('.toast.on')?.textContent ?? ''),
   }
-  try { await fn(t) } catch (e) { await t.rec('CRASH', 'journey threw', 'no exception', e.message.split('\n')[0], false, { sev: 4 }) }
+  try { await fn(t) } catch (e) {
+    fs.writeFileSync(OUT + J + '-exception.txt', e.stack || e.message)
+    await t.rec('CRASH', 'journey threw', 'no exception', e.message.split('\n')[0], false, { sev: 4 })
+  }
   await t.rec('END', 'console and page errors', 'none', errs.join(' | ') || 'none', errs.length === 0)
   fs.writeFileSync(OUT + J + '.json', JSON.stringify(R, null, 1))
   await browser.close()
