@@ -53,8 +53,22 @@ async function controls(p) {
 }
 
 async function activate(target, d) {
-  if (d.type === 'checkbox') await target.setChecked(!(await target.isChecked()), { timeout: 3500 })
-  else if (d.type === 'radio') await target.check({ timeout: 3500 })
+  if (d.type === 'checkbox') {
+    const checkedBefore = await target.isChecked()
+    const expected = !checkedBefore
+    const needsLabel = await target.evaluate((input) => getComputedStyle(input).pointerEvents === 'none')
+    if (needsLabel) {
+      const handle = await target.evaluateHandle((input) => [...(input.labels || [])].find((label) =>
+        label.getClientRects().length > 0 && getComputedStyle(label).visibility !== 'hidden' && !label.closest('[hidden], [inert], [aria-hidden="true"]')) || null)
+      const label = handle.asElement()
+      if (!label) { await handle.dispose(); throw new Error('Input has no pointer target and no visible associated label') }
+      try { await label.click({ timeout: 3500 }) }
+      finally { await handle.dispose() }
+    } else await target.setChecked(expected, { timeout: 3500 })
+    const checkedAfter = await target.isChecked()
+    if (checkedAfter !== expected) throw new Error(`Checkbox did not reach checked=${expected}`)
+    return { target: needsLabel ? 'associated visible label' : 'input', checkedBefore, checkedAfter }
+  } else if (d.type === 'radio') await target.check({ timeout: 3500 })
   else if (d.tag === 'select') {
     const value = await target.evaluate((e) => [...e.options].find((o) => !o.disabled && o.value !== e.value)?.value)
     if (value != null) await target.selectOption(value)
@@ -125,6 +139,9 @@ for (const c of selected) {
   const url = seededUrl(c.page, c.seed, c.suffix || '')
   const row = { route: c.name, completed: false, found: 0, tried: 0, working: 0, controls: [], expectedNoChange: [], problems: [], placeholders: [], errors: [], limits: [] }
   const open = async () => {
+    // Gallery hash navigation can preserve React's collapsed-reference state. Start a new
+    // document so the recorded control indices always belong to the requested initial mode.
+    if (c.page === 'components') await p.goto('about:blank')
     await p.goto(url, { waitUntil: 'domcontentloaded' })
     await p.waitForSelector(c.page === 'components' ? '.gallery-page' : '.frame')
     await p.waitForTimeout(550)
@@ -159,7 +176,8 @@ for (const c of selected) {
       try {
         await target.scrollIntoViewIfNeeded({ timeout: 3500 })
         const before = await snapshot(p, d.index)
-        await activate(target, d)
+        const activation = await activate(target, d)
+        if (activation) entry.activation = activation
         await p.waitForTimeout(700)
         const after = await snapshot(p, d.index)
         entry.evidence = Object.keys(before).filter((key) => JSON.stringify(before[key]) !== JSON.stringify(after[key]))
