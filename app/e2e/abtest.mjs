@@ -213,7 +213,16 @@ async function flow(name, browserType, device, variant, withReport, viewFirst, n
     const before = await p.screenshot()
     await viewPhoto(p, 'your drivetrain', sel, 'Drivetrain · 25 Oct · 7:41 · you', 'x', /mine-drive-v2-(?!slot)/)
     await p.evaluate(() => document.activeElement?.blur()); await sleep(300)
-    check('the page looks the same after closing', before.equals(await p.screenshot()))
+    const after = await p.screenshot()
+    // WebKit can repaint a photo a shade differently after a dialog closes; anything past a small colour shift is a real change.
+    const shift = before.equals(after) ? 0 : await p.evaluate(async ([a, z]) => {
+      const load = async (s) => { const i = new Image(); i.src = 'data:image/png;base64,' + s; await i.decode(); const c = document.createElement('canvas'); c.width = i.width; c.height = i.height; const x = c.getContext('2d'); x.drawImage(i, 0, 0); return x.getImageData(0, 0, i.width, i.height).data }
+      const A = await load(a), B = await load(z)
+      let m = 0
+      for (let i = 0; i < A.length; i += 4) m = Math.max(m, Math.abs(A[i] - B[i]) + Math.abs(A[i + 1] - B[i + 1]) + Math.abs(A[i + 2] - B[i + 2]))
+      return m
+    }, [before.toString('base64'), after.toString('base64')])
+    check('the page looks the same after closing', shift <= 24, shift ? `colour shift ${shift} of 765` : '')
     await viewPhoto(p, 'shop drivetrain', 'section.part[aria-label="Drivetrain"] .ab-view', 'Drivetrain · 18 Oct · Timah', 'outside', /shop-drive-v2-(?!slot)/)
   }
   if (withReport) await report(p)
@@ -249,7 +258,7 @@ async function flow(name, browserType, device, variant, withReport, viewFirst, n
 
 async function flows() {
   const out = []
-  for (const [name, type, device] of [['iphone13-webkit', webkit, devices['iPhone 13']], ['pixel7-chromium', chromium, devices['Pixel 7']]]) {
+  for (const [name, type, device] of [['iphone13-webkit', webkit, devices['iPhone 13']], ['pixel7-chromium', chromium, devices['Pixel 7']]].filter(([n]) => !process.env.ONLY_BROWSER || n.includes(process.env.ONLY_BROWSER))) {
     for (const v of ['a', 'b']) {
       for (const r of [true, false]) out.push(await flow(name, type, device, v, r))
       out.push(await flow(name, type, device, v, true, true))
@@ -322,7 +331,7 @@ async function capture(browser, v, photos, control) {
     return { y: Math.min(b.top, row.top - parseFloat(getComputedStyle(document.querySelector('.reportrow')).marginTop)), bottom: b.bottom, h: b.bottom - Math.min(b.top, row.top - parseFloat(getComputedStyle(document.querySelector('.reportrow')).marginTop)) }
   })
   const link = await p.evaluate(() => { const c = document.querySelector('.ab-link').cloneNode(true); return c.outerHTML })
-  box.cardBottom = await p.evaluate(() => document.querySelector('.record').getBoundingClientRect().bottom) - (v === 'a' ? box.h : 0)
+  box.cardBottom = await p.evaluate(() => document.querySelector('.record').getBoundingClientRect().bottom) - (v === 'b' ? box.h : 0)
   box.rings = await p.evaluate(() => { const c = document.querySelector('.record').getBoundingClientRect().top; return [...document.querySelectorAll('.ring2')].map((r) => r.getBoundingClientRect().top - c) })
   await ctx.close()
   return { png: png.toString('base64'), box, dom, h, link }
@@ -332,7 +341,8 @@ async function diff() {
   const tool = await (await browser.newContext()).newPage()
   const results = {}
   for (const [photos, control] of [[false, false], [true, false], [false, true], [true, true]]) {
-    const A = await capture(browser, 'a', photos, control), B = await capture(browser, 'b', photos, control)
+    // A here is the version with the link above the card, which is B since the 4 Nov swap.
+    const A = await capture(browser, 'b', photos, control), B = await capture(browser, 'a', photos, control)
     const label = (photos ? 'after photos' : 'before photos') + (control ? ' (control)' : ' (raw)')
     check(`${label}: DOM identical without the link block`, A.dom === B.dom)
     check(`${label}: the link block itself is identical`, A.link === B.link)
@@ -380,7 +390,7 @@ async function diff() {
     const shot = async (shift) => {
       const ctx = await browser.newContext(VIEW)
       const p = await ctx.newPage()
-      await p.goto(`${BASE}/?pilot=1&new=1&v=b`)
+      await p.goto(`${BASE}/?pilot=1&new=1&v=a`)
       await start(p); await settled(p)
       if (photos) await takeAll(p)
       await sleep(800)

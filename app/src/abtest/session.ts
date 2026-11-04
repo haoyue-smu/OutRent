@@ -70,7 +70,8 @@ export function readParams() {
   const q = new URLSearchParams(location.search)
   const v = q.get('v')
   const forced: Variant | null = v === 'a' || v === 'b' ? v : null
-  const pilot = q.get('pilot') === '1'
+  // Recruiting closed 2 Nov 23:59 SGT: every visit from now on is a demo, so every new row is pilot.
+  const pilot = true
   return { forced, pilot, again: q.get('new') === '1' && (forced !== null || pilot) }
 }
 // ?new=1 works once: it leaves the URL, so a reload stays on the row it opened.

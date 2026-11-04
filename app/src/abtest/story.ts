@@ -46,8 +46,10 @@ export const AGES = ['18 to 24', '25 to 34', '35 to 44', '45 or older', 'Prefer 
 // Screen 7's pictures: the whole page after the three photos, 390 px wide, with the link outlined. This is their height.
 export const LAYOUT_H = 1012
 export const LAYOUTS = {
-  a: { src: layoutA, caption: 'Report link at the top', alt: 'The whole hand-over page, with the report link outlined above the record card' },
-  b: { src: layoutB, caption: 'Report link at the bottom', alt: 'The whole hand-over page, with the report link outlined below the record card' },
+  // A is the control, the link below the record card (swapped 4 Nov to match the analysis). The picture files keep their old
+  // names: layout-b.webp shows the link below, layout-a.webp above.
+  a: { src: layoutB, caption: 'Report link at the bottom', alt: 'The whole hand-over page, with the report link outlined below the record card' },
+  b: { src: layoutA, caption: 'Report link at the top', alt: 'The whole hand-over page, with the report link outlined above the record card' },
 }
 
 // Every photo the test shows, decoded before it is needed, so the 1.0 s preview starts with the picture on screen.

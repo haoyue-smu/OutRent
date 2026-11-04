@@ -94,7 +94,7 @@ export function HandoverPage({ variant, shots, sent, linkRef, scrollRef, onTake,
           <h1 className="t-h1 s11-h">Check it before you ride</h1>
           <p className="lede s11-lede">Photograph the same three parts the shop did. What you record here is never charged to you.</p>
         </div>
-        {variant === 'a' && link}
+        {variant === 'b' && link}
         <article className="record" aria-label="Hand-over record, OR-10482">
           <header className="rec-h"><Mono>Hand-over record · OR-10482</Mono></header>
           <div className="cols">
@@ -113,7 +113,7 @@ export function HandoverPage({ variant, shots, sent, linkRef, scrollRef, onTake,
             ))}
           </div>
         </article>
-        {variant === 'b' && link}
+        {variant === 'a' && link}
       </Page>
       <div className="dock" data-log="main-disabled">
         <p className="ab-dock-note" hidden={left > 0}>Both records are kept with booking OR-10482</p>
