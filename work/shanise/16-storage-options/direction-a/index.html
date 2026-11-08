@@ -10,35 +10,16 @@
 <link rel="stylesheet" href="../../../../design/tokens.css">
 <link rel="stylesheet" href="../../../../design/components.css">
 <style>
-  /* Page-only layout goes here. Use var(--tokens) only: no hex, rgb or px font sizes outside the scale.
-     A new reusable look = a new component: list it under "Off-system" in DECISIONS.md. */
-</style>
-</head>
-<body>
-  <!-- One phone screen, 393 × 852. Build only inside .screen. -->
-  <main class="screen" data-page="16-storage-options" data-direction="A">
-
-    <div class="topbar">
-      <a class="icon-btn" href="#" aria-label="Back" data-goes-to="previous">
-        <svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-arrow-left"/></svg>
-      </a>
-      <span class="name">Storage Options</span>
-      <span></span>
-    </div>
-
-    <div class="content" style="padding-top: var(--s-5)">
-      <h1 class="t-large">Storage Options</h1>
-
-      <!-- Image slot example: always a placeholder. Say what the image should show. -->
-      <div class="img-ph" style="height: 180px" role="img" aria-label="Photo: describe the image here"></div>
-
-      <p class="t-body">Replace this with the page content from specs/16-storage-options.md.</p>
-    </div>
-
-    <!-- Links to other pages: use href="#" plus data-goes-to="<page-id>", e.g. data-goes-to="05-listing-detail". -->
-    <div class="actionbar glass is-single">
-      <a class="btn is-block" href="#" data-goes-to="next">Primary action</a>
-    </div>
-  </main>
-</body>
-</html>
+.screen { width:min(393px,100%); }
+.storage-content { padding:var(--s-6) var(--gutter) var(--s-10); display:flex; flex-direction:column; gap:var(--s-6); }
+.group { display:flex; flex-direction:column; gap:var(--s-3); }
+.line { display:flex; align-items:baseline; justify-content:space-between; gap:var(--s-3); }
+p { margin:0; }
+.storage-photo { height:180px; }
+.img-ph::after { display:none; }
+.service { display:flex; gap:var(--s-3); align-items:flex-start; }
+.service > .icon { color:var(--sage); margin-top:var(--s-1); }
+.price-unit { font-size:var(--fs-callout); font-weight:400; letter-spacing:0; }
+.price { font-variant-numeric:tabular-nums; }
+.transport-list { margin:0; padding-left:var(--s-5); display:flex; flex-direction:column; gap:var(--s-3); }
+</style></head><body><main class="screen is-white" data-page="16-storage-options" data-direction="A"><div class="topbar"><a class="icon-btn" href="#" data-goes-to="previous" aria-label="Back"><svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-arrow-left"/></svg></a><span class="name">Storage options</span><span></span></div><div class="storage-content"><header class="group"><h1 class="t-large">Room for your bike.<br>Space at home.</h1><p class="t-callout">Store your bike at the OutRent Hub, whether or not you rent through us.</p></header><div class="img-ph storage-photo" role="img" aria-label="Photo: bicycles stored neatly in individual bays at the OutRent Hub"></div><section class="group" aria-labelledby="included-title"><h2 class="t-title" id="included-title">We look after your bike</h2><div class="service"><svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-bicycle"/></svg><div><b class="t-callout">Storage</b><p class="t-foot">A place for your bike at the Hub.</p></div></div><div class="service"><svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-check-circle"/></svg><div><b class="t-callout">Check-up</b><p class="t-foot">We check its condition when it arrives.</p></div></div><div class="service"><svg class="icon" aria-hidden="true"><use href="../../../../design/icons.svg#i-check-circle"/></svg><div><b class="t-callout">Cleaning</b><p class="t-foot">We handle cleaning while it is stored.</p></div></div></section><section class="card group" aria-labelledby="cost-title"><h2 class="t-title" id="cost-title">Storage cost</h2><p class="t-title price">S$18 <span class="price-unit">/ month</span></p><p class="t-foot">Collection and delivery are charged separately.</p><hr class="divider"><div class="line t-callout"><span>Home collection</span><b class="price">S$12</b></div><div class="line t-callout"><span>Delivery to an address</span><b class="price">S$12 / trip</b></div></section><section class="card is-filled group" aria-labelledby="earn-title"><h2 class="t-title" id="earn-title">Earn while it is stored</h2><p class="t-title price">S$40 / month <span class="t-foot">example</span></p><p class="t-callout">Based on 2 rentals at S$20 each.</p><p class="t-foot">Illustrative estimate, not guaranteed income. Storage and transport costs are separate.</p><p class="t-callout">Renting out is optional. You review the arrangement and confirm before your bike is listed.</p></section><section class="group" aria-labelledby="transport-title"><h2 class="t-title" id="transport-title">There and back</h2><ol class="transport-list t-callout"><li><b>To the Hub</b><br>Choose home collection, 5–7 pm, or drop your bike at a public rack for a pooled courier collection.</li><li><b>Back to you</b><br>Arrange delivery to your home or a ride location. Check the available time and charges before confirming on the next page.</li></ol><p class="t-foot">Hub storage means planning ahead when you want your bike back.</p></section><a class="btn is-block" href="#" data-goes-to="17-hub-pickup" aria-label="Choose how it gets there">Choose how it gets there</a><p class="t-foot">Review collection and return details next. Nothing is booked yet.</p></div></main></body></html>
